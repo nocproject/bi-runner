@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="{{ language }}">
+<head>
+    <meta charset="UTF-8">
+    <title>BI</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href='{{ hashed("/ui/bi/css/libs.css") }}'>
+
+    <!-- card css -->
+    <link rel="stylesheet" href='{{ hashed("/ui/bi/css/bi.css") }}'>
+    <script src='{{ hashed("/ui/bi/libs/libs.js") }}'></script>
+    <!--<script src="/ui/pkg/dcjs/dc.min.js"></script>-->
+    <!-- l10n -->
+    <!--<link rel="gettext" href='{{ hashed("/ui/" + name + "/translations/%s.json" % language) }}' lang="{{ language }}">-->
+    <!-- Load application -->
+    <script src='{{ hashed("/ui/common/gettext.js") }}'></script>
+    <script src='{{ hashed("/ui/bi/bi.js") }}'></script>
+</head>
+<body>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">NOC BI</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">Reports<span class="caret"></span></a>
+                    <ul id="reports-list" class="dropdown-menu">
+                        <li></li>
+                        <li>
+                            <a onclick="$(location).attr('search','?');$(location).attr('pathname','ui/bi/editor');">
+                            <!--<a onclick="$(location).attr('search','');">-->
+                                <i class="fa fa-plus" aria-hidden="true"></i> New Report</a></li>
+                    </ul>
+                </li>
+                <li><a id="report-name" href="#"></a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a id="userBtn" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                       aria-haspopup="true"
+                       aria-expanded="false"></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#about" data-toggle="modal"><i class="fa fa-question-circle"
+                                                                    aria-hidden="true"></i> About</a></li>
+                        <!--<li><a href="#"><i class="fa fa-cog" aria-hidden="true"></i> Setting</a></li>-->
+                        <li role="separator" class="divider"></li>
+                        <li><a href="/api/login/logout/"><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container-fluid -->
+</nav>
+<!-- About Modal HTML -->
+<div id="about" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">About NOC BI</h4>
+            </div>
+            <div class="modal-body">
+                <p>NOC BI version 0.0</p>
+                <small>Copyright © 2007-2016, The NOC Project</small>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <section class="col-md-12">
+        <div id="dashboard"></div>
+    </section>
+</div>
+<!-- </div> -->
+<script>
+    $.get("/main/desktop/user_settings/", function(settings) {
+        var displayName = [];
+
+        if(settings.first_name) {
+            displayName.push(settings.first_name);
+        }
+        if(settings.last_name) {
+            displayName.push(settings.last_name);
+        }
+        if(displayName.length === 0) {
+            displayName.push(settings.username);
+        }
+        $("<i class='fa fa-user' aria-hidden='true'></i> " + displayName.join(" ") + "<span class='caret'></span>").appendTo("#userBtn");
+    });
+
+    $.post("/api/bi/",
+        '{"params": [], "id": 0, "method": "list_dashboards"}',
+        function(response) {
+            var data = JSON.parse(response);
+
+            if('length' in data.result) {
+                for(var i = 0; i < data.result.length; i++) {
+                    $('#reports-list').append('<li><a onclick="$(location).attr(\'search\',\'?id=' + data.result[i].id + '\');">' + data.result[i].title + '</a></li>');
+                }
+            }
+        });
+
+    dashboard = new Dashboard("#dashboard");
+
+    var query = $(location).attr('search').substr(1);
+    if(query) {
+        var params = deparam(query);
+        if('id' in params) {
+            $('#report-name').after('<li><a id="edit-btn" onclick="$(location).attr(\'pathname\',\'ui/bi/editor/board\');"> New</a></li>');
+            dashboard.run(params.id);
+        }
+    }
+</script>
+</body>
+</html>

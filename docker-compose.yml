@@ -1,0 +1,19 @@
+version: '2'
+
+services:
+
+  bi-runner:
+    build:
+      context: .
+      dockerfile: ./.docker/bi-runner.dockerfile
+    command: npm run build.dev
+    container_name: bi-runner-start
+    image: bi-runner
+    networks:
+      - dev-network
+    ports:
+      - '5555:5555'
+
+networks:
+  dev-network:
+    driver: bridge
