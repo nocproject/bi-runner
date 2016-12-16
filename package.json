@@ -4,7 +4,8 @@
   "description": "NOC BI",
   "main": "index.html",
   "scripts": {
-    "build.dev": "gulp build.dev --color"
+    "build.dev": "gulp build.dev --color",
+    "build.prod": "gulp build.prod --color"
   },
   "author": "",
   "license": "MIT",
