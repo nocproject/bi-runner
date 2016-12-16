@@ -161,8 +161,7 @@ var Dashboard = function(element) {
                 $.each(dashboardJSON.widgets, function(index, obj) {
                     dashboard[obj.cell] = {
                         chart: dc[obj.type]('#' + getWidgetProp(obj.cell, 'cell')),
-                        query: getWidgetProp(obj.cell, 'query'),
-                        draw: dashboard[obj.type]
+                        query: getWidgetProp(obj.cell, 'query')
                     };
                     dashboard.widgets.push(dashboard[obj.cell]);
                 });
@@ -582,7 +581,7 @@ var Dashboard = function(element) {
 
     var drawAll = function() {
         // c11
-        dashboard.c11.draw(dashboard.c11);
+        dashboard.lineChart(dashboard.c11);
 
         // c12
         drawBar(dashboard.c12);
