@@ -5,8 +5,15 @@ var Dashboard = function(element) {
     // public methods
     this.reset = function(widget) {
         console.log('reset :', widget);
-        dashboard[widget].chart.filterAll();
-        dashboard[widget].chart.render();
+        dashboard.widgets
+        .filter(function(w) {
+            console.log(w.chart.anchorName());
+            return w.chart.anchorName() === widget;
+        })
+        .map(function(w) {
+            w.chart.filterAll();
+            w.chart.render();
+        });
     };
 
     this.setSelectorInterval = function(start, end) {
@@ -124,9 +131,14 @@ var Dashboard = function(element) {
             function(error, data) {
                 if(error)
                     throw new Error(error);
-                // ToDo check is exists
 
                 this.dashboardJSON = data.result;
+                if(!this.dashboardJSON) {
+                    $('#report-name').text('Report not found!');
+                    $('#edit-btn').closest('li').remove();
+                    return;
+                }
+
                 dashboard.clear();
                 var container = $("<div class='container-fluid'></div>").appendTo($(element));
                 var sortedByRows = dashboardJSON.layout.cells.sort(function(a, b) {
@@ -148,22 +160,17 @@ var Dashboard = function(element) {
                     });
                 });
 
-                var tableTpl = '<table class="table table=hover" id="c31">\n    <thead>\n    <tr class="header">\n        <th class="data-table-col" data-col="managed_object">Object</th>\n        <th class="data-table-col" data-col="segment">Segment</th>\n        <th class="data-table-col" data-col="date">Date</th>\n        <th class="data-table-col" data-col="cnt">Qty</th>\n    </tr>\n    </thead>\n</table>';
+                var tableTpl = '<table class="table table=hover" id="result-table">\n    <thead>\n    <tr class="header">\n        <th class="data-table-col" data-col="managed_object">Object</th>\n        <th class="data-table-col" data-col="segment">Segment</th>\n        <th class="data-table-col" data-col="date">Date</th>\n        <th class="data-table-col" data-col="cnt">Qty</th>\n    </tr>\n    </thead>\n</table>';
 
-                $("#c31").replaceWith(tableTpl);
+                $("#result-table").replaceWith(tableTpl);
 
-                dashboard.widgets = [];
-
-                dashboardJSON.widgets.map(function(widget) {
-                    console.log(widget);
-                });
-
-                $.each(dashboardJSON.widgets, function(index, obj) {
-                    dashboard[obj.cell] = {
-                        chart: dc[obj.type]('#' + getWidgetProp(obj.cell, 'cell')),
-                        query: getWidgetProp(obj.cell, 'query')
+                dashboard.widgets = dashboardJSON.widgets.map(function(widget) {
+                    dashboard[widget.cell] = {
+                        chart: dc[widget.type]('#' + getWidgetProp(widget.cell, 'cell')),
+                        query: getWidgetProp(widget.cell, 'query'),
+                        draw: dashboard[widget.type]
                     };
-                    dashboard.widgets.push(dashboard[obj.cell]);
+                    return dashboard[widget.cell];
                 });
 
                 NocFilter.init({
@@ -342,7 +349,7 @@ var Dashboard = function(element) {
                 .renderHorizontalGridLines(true)
                 .dimension(dateDimension)
                 .x(d3.time.scale().domain([minDate, maxDate]))
-                .yAxisLabel(null, 10)
+                .yAxisLabel(null, 20)
                 .group(reboots)
                 .on('filtered', function(chart, filter) {
                     console.log('filtered : ' + filter);
@@ -357,7 +364,7 @@ var Dashboard = function(element) {
         );
     };
 
-    var drawBar = function(widget) {
+    this.rowChart = function(widget) {
         var chart = widget.chart;
 
         spinnerShow(chart);
@@ -422,8 +429,9 @@ var Dashboard = function(element) {
         );
     };
 
-    var drawPie = function(widget, field) {
+    this.pieChart = function(widget) {
         var chart = widget.chart;
+        var field = widget.query.params[0].fields[0].expr;
 
         spinnerShow(chart);
         d3.json('/api/bi/')
@@ -491,7 +499,7 @@ var Dashboard = function(element) {
         );
     };
 
-    var printTable = function(widget) {
+    this.dataTable = function(widget) {
         var chart = widget.chart;
 
         spinnerShow(chart);
@@ -580,241 +588,18 @@ var Dashboard = function(element) {
     };
 
     var drawAll = function() {
-        // c11
-        dashboard.lineChart(dashboard.c11);
-
-        // c12
-        drawBar(dashboard.c12);
-
-        // c21
-        drawPie(dashboard.c21, 'segment');
-
-        // c22
-        drawPie(dashboard.c22, 'administrative_domain');
-
-        // c31
-        printTable(dashboard.c31);
+        dashboard.widgets.map(function(widget) {
+            widget.draw(widget);
+        });
     };
 
     var drawExcept = function(skippedWidgetName) {
         dashboard.widgets.map(function(widget) {
             var chartName = widget.chart.anchorName();
             if(chartName !== skippedWidgetName) {
-                if(chartName === 'c11') {
-                    console.log('redraw :' + chartName);
-                    dashboard.lineChart(dashboard[chartName]);
-                }
-                if(chartName === 'c12') {
-                    console.log('redraw :' + chartName);
-                    drawBar(dashboard[chartName]);
-                }
-                if(chartName === 'c21') {
-                    console.log('redraw :' + chartName);
-                    drawPie(dashboard[chartName], 'segment');
-                }
-                if(chartName === 'c22') {
-                    console.log('redraw :' + chartName);
-                    drawPie(dashboard[chartName], 'administrative_domain');
-                }
-                if(chartName === 'c31') {
-                    console.log('redraw :' + chartName);
-                    printTable(dashboard[chartName]);
-                }
+                widget.draw(widget);
+                console.log('redraw :' + chartName);
             }
         });
     };
-
-    // var dashboardJSON = {
-    //     layout: {
-    //         name: 'Отчет по перезагрузкам',
-    //         uuid: 'f2736f99-a568-4820-b746-1e71d48b4374',
-    //         description: '',
-    //         cells: [{
-    //             height: 300,
-    //             lg: null,
-    //             md: 6,
-    //             name: 'c11',
-    //             row: 0,
-    //             sm: null,
-    //             xs: null
-    //         }, {
-    //             height: 300,
-    //             lg: null,
-    //             md: 6,
-    //             name: 'c12',
-    //             row: 0,
-    //             sm: null,
-    //             xs: null
-    //         }, {
-    //             height: 300,
-    //             lg: null,
-    //             md: 6,
-    //             name: 'c21',
-    //             row: 1,
-    //             sm: null,
-    //             xs: null
-    //         }, {
-    //             height: 300,
-    //             lg: null,
-    //             md: 6,
-    //             name: 'c22',
-    //             row: 1,
-    //             sm: null,
-    //             xs: null
-    //         }, {
-    //             height: 300,
-    //             lg: null,
-    //             md: 12,
-    //             name: 'c31',
-    //             row: 2,
-    //             sm: null,
-    //             xs: null
-    //         }]
-    //     },
-    //     datasources: [{
-    //         name: 'datasource_name',
-    //         query: 'datasource_query'
-    //     }],
-    //     widgets: [{
-    //         cell: 'c11',
-    //         title: 'Reboots per Day',
-    //         note: __('c11: Cell footer'),
-    //         type: 'lineChart', // [basechart | stackablechart | lineChart | dataTable | dataCount ...]
-    //         query: {
-    //             id: 0,
-    //             method: "query",
-    //             params: [{
-    //                 datasource: "reboots",
-    //                 fields: [{
-    //                     // expr: "toStartOfYear(date)",
-    //                     expr: "date",
-    //                     group: 0,
-    //                     order: 0,
-    //                     desc: true
-    //                 }, {
-    //                     expr: "count()",
-    //                     alias: "cnt"
-    //                 }]
-    //             }]
-    //         }
-    //     }, {
-    //         cell: 'c12',
-    //         title: 'Group by Weekday',
-    //         note: __('c12: Cell footer'),
-    //         type: 'dataCount', // [basechart | stackablechart | lineChart | dataTable | dataCount ...]
-    //         query: {
-    //             id: 0,
-    //             method: "query",
-    //             params: [{
-    //                 datasource: "reboots",
-    //                 fields: [{
-    //                     expr: "toDayOfWeek(date)",
-    //                     alias: "day",
-    //                     group: 0,
-    //                     order: 0,
-    //                     desc: true
-    //                 }, {
-    //                     expr: "count()", alias: "cnt"
-    //                 }]
-    //             }]
-    //         }
-    //     }, {
-    //         cell: 'c21',
-    //         title: 'Group by Segment, top 10',
-    //         note: __('c21: Cell footer'),
-    //         type: 'pieChart', // [basechart | stackablechart | lineChart | dataTable | dataCount ...]
-    //         query: {
-    //             id: 0,
-    //             method: "query",
-    //             params: [{
-    //                 datasource: "reboots",
-    //                 fields: [{
-    //                     expr: "segment",
-    //                     group: 0
-    //                 }, {
-    //                     expr: {
-    //                         "$lookup": ['networksegment', {"$field": "segment"}]
-    //                     },
-    //                     group: 1,
-    //                     alias: "name"
-    //                 }, {
-    //                     expr: "count()",
-    //                     alias: "cnt",
-    //                     order: 0,
-    //                     desc: true
-    //                 }],
-    //                 limit: 10
-    //             }]
-    //         }
-    //     }, {
-    //         cell: 'c22',
-    //         title: 'Group by Administrative Domain, top 10',
-    //         note: __('c22: Cell footer'),
-    //         type: 'pieChart', // [basechart | stackablechart | lineChart | dataTable | dataCount ...]
-    //         query: {
-    //             id: 0,
-    //             method: "query",
-    //             params: [{
-    //                 datasource: "reboots",
-    //                 fields: [{
-    //                     expr: "administrative_domain",
-    //                     group: 0
-    //                 }, {
-    //                     expr: {
-    //                         "$lookup": ['administrativedomain', {"$field": "administrative_domain"}]
-    //                     },
-    //                     alias: "name"
-    //                 }, {
-    //                     expr: "count()",
-    //                     alias: "cnt",
-    //                     order: 0,
-    //                     desc: true
-    //                 }],
-    //                 limit: 10
-    //             }]
-    //         }
-    //     }, {
-    //         cell: 'c31',
-    //         title: 'Managed Object, top 10',
-    //         note: __('c31: Cell footer'),
-    //         type: 'dataTable', // [basechart | stackablechart | lineChart | dataTable | dataCount ...]
-    //         query: {
-    //             id: 0,
-    //             method: "query",
-    //             params: [{
-    //                 datasource: "reboots",
-    //                 fields: [{
-    //                     // expr: "toStartOfYear(date)",
-    //                     expr: "date",
-    //                     group: 0
-    //                 }, {
-    //                     expr: "managed_object",
-    //                     group: 1
-    //                 }, {
-    //                     expr: "administrative_domain",
-    //                     group: 2
-    //                 }, {
-    //                     expr: "segment",
-    //                     group: 3
-    //                 }, {
-    //                     expr: {
-    //                         "$lookup": ['managedobject', {"$field": "managed_object"}]
-    //                     },
-    //                     alias: "name"
-    //                 }, {
-    //                     expr: {
-    //                         "$lookup": ['networksegment', {"$field": "segment"}]
-    //                     },
-    //                     alias: "segment_name"
-    //                 }, {
-    //                     expr: "count()",
-    //                     alias: "cnt",
-    //                     order: 0,
-    //                     desc: true
-    //                 }],
-    //                 limit: 10
-    //             }]
-    //         }
-    //     }]
-    // };
 };

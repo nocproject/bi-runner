@@ -39,8 +39,7 @@
                     <ul id="reports-list" class="dropdown-menu">
                         <li></li>
                         <li>
-                            <a onclick="$(location).attr('search','?');$(location).attr('pathname','ui/bi/editor');">
-                            <!--<a onclick="$(location).attr('search','');">-->
+                            <a onclick="$(location).attr('href', $(location).attr('protocol') + '//' + $(location).attr('host') + $(location).attr('port').length > 0 ? ':' + $(location).attr('port') : '' + '/ui/bi/editor');">
                                 <i class="fa fa-plus" aria-hidden="true"></i> New Report</a></li>
                     </ul>
                 </li>
@@ -124,7 +123,7 @@
     if(query) {
         var params = deparam(query);
         if('id' in params) {
-            $('#report-name').after('<li><a id="edit-btn" onclick="$(location).attr(\'pathname\',\'ui/bi/editor/board\');"> New</a></li>');
+            $('#report-name').closest('li').after('<li><a id="edit-btn" href="#" onclick="$(location).attr(\'pathname\',\'ui/bi/editor/board\');"> Edit</a></li>');
             dashboard.run(params.id);
         }
     }
