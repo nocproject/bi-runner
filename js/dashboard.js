@@ -17,7 +17,7 @@ var Dashboard = function(element) {
     };
 
     this.setSelectorInterval = function(start, end) {
-        $("#time-selector > .chart-title > .title-left").text(dateToString(start) + " - " + dateToString(end));
+        $("#time-selector > .chart-title > .title-left").text(dashboard.dateToString(start) + " - " + dashboard.dateToString(end));
     };
 
     this.timeSelector = function(arg) {
@@ -38,7 +38,7 @@ var Dashboard = function(element) {
             start = d3.time[command[1]](now);
             end = d3.time[command[1]].ceil(now);
 
-            console.log(dateToString(start, format), dateToString(end, format));
+            console.log(dashboard.dateToString(start, format), dashboard.dateToString(end, format));
             NocFilter.setStartCondition([start, end]);
             downChevron();
             drawAll();
@@ -160,11 +160,10 @@ var Dashboard = function(element) {
                     });
                 });
 
-                var tableTpl = '<table class="table table=hover" id="result-table">\n    <thead>\n    <tr class="header">\n        <th class="data-table-col" data-col="managed_object">Object</th>\n        <th class="data-table-col" data-col="segment">Segment</th>\n        <th class="data-table-col" data-col="date">Date</th>\n        <th class="data-table-col" data-col="cnt">Qty</th>\n    </tr>\n    </thead>\n</table>';
-
-                $("#result-table").replaceWith(tableTpl);
-
                 dashboard.widgets = dashboardJSON.widgets.map(function(widget) {
+                    if('dataTable' === widget.type) {
+                        objToTable(widget);
+                    }
                     dashboard[widget.cell] = {
                         chart: dc[widget.type]('#' + getWidgetProp(widget.cell, 'cell')),
                         query: getWidgetProp(widget.cell, 'query'),
@@ -179,6 +178,21 @@ var Dashboard = function(element) {
                 });
                 drawAll();
             });
+    };
+
+    // format functions
+
+    this.dateToString = function(date, format) {
+        format = typeof format !== 'undefined' ? format : '%d.%b.%y';
+        return d3.time.format(format)(date);
+    };
+
+    this.secondsToString = function(sec) {
+        var hours = Math.floor(sec / 3600);
+        var minutes = Math.floor((sec % 3600) / 60);
+        var seconds = sec % 60;
+
+        return hours + ':' + d3.format("02d")(minutes) + ':' + d3.format("02d")(seconds);
     };
 
     // utils
@@ -225,11 +239,6 @@ var Dashboard = function(element) {
 
     var onRenderLet = function(chart) {
         spinnerHide(chart);
-    };
-
-    var dateToString = function(date, format) {
-        format = typeof format !== 'undefined' ? format : "%d.%b.%y";
-        return d3.time.format(format)(date);
     };
 
     var filterToggle = function(widget, field, value, text) {
@@ -305,6 +314,17 @@ var Dashboard = function(element) {
         return cellTpl;
     };
 
+    var objToTable = function(widget) {
+        var tableTpl = '<table class="table table=hover" id="{cell}"><thead><tr class="header">'.replace('{cell}', widget.cell);
+
+        widget.query.params[0].fields.map(function(field) {
+            if('label' in field) {
+                tableTpl += '<th class="data-table-col" data-col="{field}">{label}</th>'.replace('{label}', field.label).replace('{field}', field.expr);
+            }
+        });
+        $('#' + widget.cell).replaceWith(tableTpl + '</tr></thead></table>');
+    };
+
     // draw charts
     this.lineChart = function(widget) {
         var chart = widget.chart;
@@ -318,8 +338,8 @@ var Dashboard = function(element) {
                 if(error)
                     throw new Error(error);
 
-                console.log(chart.anchorName() + " : " + data.result.result.length);
-                console.log("sql : " + data.result.sql);
+                if(failResult(chart, data)) return;
+
                 var ndx = zip(data, true);
                 var dateDimension = ndx.dimension(function(d) {
                     return d.date;
@@ -349,12 +369,12 @@ var Dashboard = function(element) {
                 .renderHorizontalGridLines(true)
                 .dimension(dateDimension)
                 .x(d3.time.scale().domain([minDate, maxDate]))
-                .yAxisLabel(null, 20)
+                .yAxisLabel(null, 15)
                 .group(reboots)
                 .on('filtered', function(chart, filter) {
                     console.log('filtered : ' + filter);
                     spinnerShow(chart);
-                    filterToggle(widget, 'date', filter, filter ? dateToString(filter[0]) + " - " + dateToString(filter[1]) : '');
+                    filterToggle(widget, 'date', filter, filter ? dashboard.dateToString(filter[0]) + " - " + dashboard.dateToString(filter[1]) : '');
                 })
                 .on('pretransition', spinnerShow)
                 .on('renderlet', onRenderLet);
@@ -376,8 +396,8 @@ var Dashboard = function(element) {
                 if(error)
                     throw new Error(error);
 
-                console.log(chart.anchorName() + " : " + data.result.result.length);
-                console.log("sql : " + data.result.sql);
+                if(failResult(chart, data)) return;
+
                 var ndx = zip(data, false);
                 var dayOfWeek = ndx.dimension(function(d) {
                     // var day = (d.date.getDay() === 0) ? 6 : d.date.getDay() - 1;
@@ -441,8 +461,9 @@ var Dashboard = function(element) {
             function(error, data) {
                 if(error)
                     throw new Error(error);
-                console.log(chart.anchorName() + " : " + data.result.result.length);
-                console.log("sql : " + data.result.sql);
+
+                if(failResult(chart, data)) return;
+
                 var ndx = zip(data, false);
                 var dimension = ndx.dimension(function(d) {
                     return d[field] + "." + d.name;
@@ -510,6 +531,9 @@ var Dashboard = function(element) {
             function(error, data) {
                 if(error)
                     throw new Error(error);
+
+                if(failResult(chart, data)) return;
+
                 var ndx = crossfilter();
 
                 for(var rowIndex = 0; rowIndex < data.result.result.length; rowIndex++) {
@@ -535,11 +559,56 @@ var Dashboard = function(element) {
                 // }
                 // ndx = ndx.add([record]);
                 // });
-                console.log('ndx ready');
                 var dateDimension = ndx.dimension(function(d) {
                     return d.date;
                 });
+                // ToDo optimize
+                var cols = widget.query.params[0].fields
+                .filter(function(field) {
+                    return 'label' in field;
+                })
+                .map(function(field) {
+                    if('format' in field) {
+                        if('alias' in field) {
+                            return {
+                                label: field.label, format: function(d) {
+                                    return dashboard[field.format](d[field.alias]);
+                                }
+                            };
+                        } else {
+                            return {
+                                label: field.label, format: function(d) {
+                                    return dashboard[field.format](d[field.expr]);
+                                }
+                            };
+                        }
+                    }
+                    if('alias' in field) {
+                        return {
+                            label: field.label, format: function(d) {
+                                return d[field.alias];
+                            }
+                        };
+                    } else {
+                        return {
+                            label: field.label, format: function(d) {
+                                return d[field.expr];
+                            }
+                        };
+                    }
+                });
 
+                var sort = widget.query.params[0].fields
+                .filter(function(field) {
+                    return 'order' in field;
+                })
+                .map(function(field) {
+                    if('desc' in field) {
+                        if(field.desc)
+                            return {field: 'alias' in field ? field.alias : field.expr, direct: d3.descending};
+                    }
+                    return {field: 'alias' in field ? field.alias : field.expr, direct: d3.ascending};
+                })[0];
                 // setting top dynamically
                 // $('.data-table-col').click(function() {
                 //     var column = $(this).attr('data-col');
@@ -549,31 +618,32 @@ var Dashboard = function(element) {
                 //     table.redraw();
                 // });
 
-                console.log(chart.anchorName() + " :" + data.result.result.length);
-                console.log("sql : " + data.result.sql);
+
                 chart
                 .dimension(dateDimension)
                 .group(function() {
                     return 'click on column header to switch';
                 })
-                .columns([
-                    function(d) {
-                        return d.name;
-                    },
-                    function(d) {
-                        return d.segment_name;
-                    },
-                    function(d) {
-                        return dateToString(d.date);
-                    },
-                    function(d) {
-                        return d.cnt;
-                    }
-                ])
+                .columns(cols
+                    //     [
+                    //     function(d) {
+                    //         return d.name;
+                    //     },
+                    //     function(d) {
+                    //         return d.segment_name;
+                    //     },
+                    //     function(d) {
+                    //         return dateToString(d.date);
+                    //     },
+                    //     function(d) {
+                    //         return d.cnt;
+                    //     }
+                    // ]
+                )
                 .sortBy(function(d) {
-                    return parseInt(d.cnt);
+                    return parseInt(d[sort.field]);
                 })
-                .order(d3.descending)
+                .order(sort.direct)
                 // .size(Infinity)
                 // .endSlice(10)
                 .on('renderlet', function(tab) {
@@ -602,4 +672,15 @@ var Dashboard = function(element) {
             }
         });
     };
+
+    var failResult = function(chart, data) {
+        console.log(chart.anchorName() + " :");
+        if(!('result' in data)) {
+            console.log(data.error);
+            return true;
+        }
+        console.log('length : ' + data.result.result.length);
+        console.log("sql : " + data.result.sql);
+        return false;
+    }
 };
