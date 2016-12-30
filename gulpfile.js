@@ -46,7 +46,8 @@ var LIBS_FILES = [
     './node_modules/crossfilter/crossfilter.js',
     './node_modules/d3/d3.js',
     './node_modules/pikaday/pikaday.js',
-    './node_modules/dc/dc.js'
+    './node_modules/dc/dc.js',
+    './node_modules/file-saver/FileSaver.js'
 ];
 
 var CSS_FILES = [

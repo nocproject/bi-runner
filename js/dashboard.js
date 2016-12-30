@@ -123,6 +123,31 @@ var Dashboard = function(element) {
         });
     };
 
+    this.export = function() {
+
+        if(!dashboard.exportQuery) {
+            console.log('export is null');
+            return;
+        }
+
+        dashboard.exportQuery.params[0].filter = dashboard.widgets[0].query.params[0].filter;
+        d3.json('/api/bi/')
+        .header("Content-Type", "application/json")
+        .post(
+            JSON.stringify(dashboard.exportQuery),
+            function(error, data) {
+                if(error)
+                    throw new Error(error);
+
+                if(failResult('export', data)) return;
+
+                var blob = new Blob([toCsv(data.result.result, '"', ';')], {type: "text/plain;charset=utf-8"});
+                saveAs(blob, 'export.csv');
+
+                console.log('export done.');
+            })
+    };
+
     this.run = function(id) { //public
         d3.json('/api/bi/')
         .header("Content-Type", "application/json")
@@ -136,6 +161,7 @@ var Dashboard = function(element) {
                 if(!this.dashboardJSON) {
                     $('#report-name').text('Report not found!');
                     $('#edit-btn').closest('li').remove();
+                    $('#export-btn').closest('li').remove();
                     return;
                 }
 
@@ -159,6 +185,12 @@ var Dashboard = function(element) {
                         dashboard.reset(obj.name);
                     });
                 });
+
+                if('export' in dashboardJSON){
+                    dashboard.exportQuery = dashboardJSON.export;
+                } else {
+                    dashboard.exportQuery = null;
+                }
 
                 dashboard.widgets = dashboardJSON.widgets.map(function(widget) {
                     if('dataTable' === widget.type) {
@@ -325,6 +357,68 @@ var Dashboard = function(element) {
         $('#' + widget.cell).replaceWith(tableTpl + '</tr></thead></table>');
     };
 
+    /**
+     * Converts an array of objects (with identical schemas) into a CSV table.
+     * @param {Array} objArray An array of objects.  Each object in the array must have the same property list.
+     * @param {string} sDelimiter The string delimiter.  Defaults to a double quote (") if omitted.
+     * @param {string} cDelimiter The column delimiter.  Defaults to a comma (,) if omitted.
+     * @return {string} The CSV equivalent of objArray.
+     */
+    var toCsv = function(objArray, sDelimiter, cDelimiter) {
+        var i, l, names = [], name, value, obj, row, output = "", n, nl;
+
+        function toCsvValue(theValue, sDelimiter) {
+            var t = typeof (theValue), output;
+            if(typeof (sDelimiter) === "undefined" || sDelimiter === null) {
+                sDelimiter = '"';
+            }
+            if(t === "undefined" || t === null) {
+                output = "";
+            } else if(t === "string") {
+                output = sDelimiter + theValue + sDelimiter;
+            } else {
+                output = String(theValue);
+            }
+            return output;
+        }
+
+        // Initialize default parameters.
+        if(typeof (sDelimiter) === "undefined" || sDelimiter === null) {
+            sDelimiter = '"';
+        }
+        if(typeof (cDelimiter) === "undefined" || cDelimiter === null) {
+            cDelimiter = ",";
+        }
+        for(i = 0, l = objArray.length; i < l; i += 1) {
+            // Get the names of the properties.
+            obj = objArray[i];
+            row = "";
+            if(i === 0) {
+                // Loop through the names
+                for(name in obj) {
+                    if(obj.hasOwnProperty(name)) {
+                        names.push(name);
+                        row += [sDelimiter, name, sDelimiter, cDelimiter].join("");
+                    }
+                }
+                row = row.substring(0, row.length - 1);
+                output += row;
+            }
+            output += '\n';
+            row = "";
+            for(n = 0, nl = names.length; n < nl; n += 1) {
+                name = names[n];
+                value = obj[name];
+                if(n > 0) {
+                    row += cDelimiter
+                }
+                row += toCsvValue(value, '"');
+            }
+            output += row;
+        }
+        return output;
+    };
+
     // draw charts
     this.lineChart = function(widget) {
         var chart = widget.chart;
@@ -338,7 +432,7 @@ var Dashboard = function(element) {
                 if(error)
                     throw new Error(error);
 
-                if(failResult(chart, data)) return;
+                if(failResult(chart.anchorName(), data)) return;
 
                 var ndx = zip(data, true);
                 var dateDimension = ndx.dimension(function(d) {
@@ -396,7 +490,7 @@ var Dashboard = function(element) {
                 if(error)
                     throw new Error(error);
 
-                if(failResult(chart, data)) return;
+                if(failResult(chart.anchorName(), data)) return;
 
                 var ndx = zip(data, false);
                 var dayOfWeek = ndx.dimension(function(d) {
@@ -462,7 +556,7 @@ var Dashboard = function(element) {
                 if(error)
                     throw new Error(error);
 
-                if(failResult(chart, data)) return;
+                if(failResult(chart.anchorName(), data)) return;
 
                 var ndx = zip(data, false);
                 var dimension = ndx.dimension(function(d) {
@@ -532,7 +626,7 @@ var Dashboard = function(element) {
                 if(error)
                     throw new Error(error);
 
-                if(failResult(chart, data)) return;
+                if(failResult(chart.anchorName(), data)) return;
 
                 var ndx = crossfilter();
 
@@ -673,8 +767,8 @@ var Dashboard = function(element) {
         });
     };
 
-    var failResult = function(chart, data) {
-        console.log(chart.anchorName() + " :");
+    var failResult = function(anchorName, data) {
+        console.log(anchorName + " :");
         if(!('result' in data)) {
             console.log(data.error);
             return true;

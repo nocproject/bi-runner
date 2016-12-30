@@ -112,6 +112,9 @@ var NocFilter = (function() {
             filter.startCondition = interval;
             dashboard.setSelectorInterval(interval[0], interval[1]);
             this.updateFilter('startCondition', [filter.startCondition]);
+        },
+        getFilter: function() {
+            return filter;
         }
     };
 })();

@@ -43,7 +43,7 @@
                                 <i class="fa fa-plus" aria-hidden="true"></i> New Report</a></li>
                     </ul>
                 </li>
-                <li><a id="report-name" href="#"></a></li>
+                <li><a id="report-name"></a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">
@@ -123,7 +123,9 @@
     if(query) {
         var params = deparam(query);
         if('id' in params) {
-            $('#report-name').closest('li').after('<li><a id="edit-btn" href="#" onclick="$(location).attr(\'pathname\',\'ui/bi/editor/board\');"> Edit</a></li>');
+            $('#report-name').closest('li')
+            .after('<li><a id="edit-btn" href="#" onclick="$(location).attr(\'pathname\',\'ui/bi/editor/board\');"> Edit</a></li>')
+            .after('<li><a id="export-btn" href="#" onclick="dashboard.export()"><i class="fa fa-arrow-down" aria-hidden="true"></i>Export</a></li>');
             dashboard.run(params.id);
         }
     }
