@@ -9,7 +9,7 @@ stages:
   - upload
 
 build_npm:
-  stage: build_package
+  stage: build
   image: node:6.9-alpine
   script:
     - npm install
