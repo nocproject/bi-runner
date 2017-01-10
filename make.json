@@ -1,0 +1,11 @@
+{
+  "name": "bootstrap",
+  "version": "3.3.6",
+  "dst_prefix": "ui/pkg/bootstrap/",
+  "src_prefix": "",
+  "files": [
+    "css/bootstrap.min.css",
+    "css/bootstrap-theme.min.css",
+    "js/bootstrap.min.js"
+  ]
+}

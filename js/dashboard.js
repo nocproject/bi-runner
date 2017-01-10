@@ -131,6 +131,8 @@ var Dashboard = function(element) {
         }
 
         dashboard.exportQuery.params[0].filter = dashboard.widgets[0].query.params[0].filter;
+        $("#export-btn").off("click");
+
         d3.json('/api/bi/')
         .header("Content-Type", "application/json")
         .post(
@@ -144,6 +146,11 @@ var Dashboard = function(element) {
                 var blob = new Blob([toCsv(data.result.result, '"', ';')], {type: "text/plain;charset=utf-8"});
                 saveAs(blob, 'export.csv');
 
+                $('#export-btn').on("click", "", function () {
+                    dashboard.export();
+                    $('#export-btn').find('.spinner').show();
+                });
+                $('#export-btn').find('.spinner').hide();
                 console.log('export done.');
             })
     };
@@ -164,6 +171,11 @@ var Dashboard = function(element) {
                     $('#export-btn').closest('li').remove();
                     return;
                 }
+
+                $('#export-btn').on("click", "", function (e) {
+                    dashboard.export();
+                    $('#export-btn').find('.spinner').show();
+                });
 
                 dashboard.clear();
                 var container = $("<div class='container-fluid'></div>").appendTo($(element));
@@ -186,7 +198,7 @@ var Dashboard = function(element) {
                     });
                 });
 
-                if('export' in dashboardJSON){
+                if('export' in dashboardJSON) {
                     dashboard.exportQuery = dashboardJSON.export;
                 } else {
                     dashboard.exportQuery = null;
