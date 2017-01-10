@@ -1,0 +1,43 @@
+variables:
+  REG_NAME: registry.getnoc.com
+  S3_BASE: https://s3.getnoc.com
+  S3_BUCKET: $CI_PROJECT_NAMESPACE
+
+stages:
+  - build
+  - build_package
+  - upload
+
+build_npm:
+  stage: build_package
+  image: node:6.9-alpine
+  script:
+    - npm install
+    - npm run build.prod
+  tags:
+    - docker
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 3 min
+
+build:
+  stage: build_package
+  image: python:2.7-alpine
+  script:
+    - mkdir -p dist2
+    - ./build.py make.json
+  tags:
+    - docker
+  artifacts:
+    paths:
+      - dist2/
+    expire_in: 3 min
+
+upload:
+  stage: upload
+  image: registry.getnoc.com/infrastructure/s3helper:master
+  script:
+    /tmp/mc -q cp dist2/* cdn/$S3_BUCKET/
+  tags:
+    - docker
