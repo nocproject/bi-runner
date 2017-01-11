@@ -37,11 +37,7 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                        aria-expanded="false">Reports<span class="caret"></span></a>
                     <ul id="reports-list" class="dropdown-menu">
-                        <li></li>
-                        <li>
-                            <a onclick="$(location).attr('href', $(location).attr('protocol') + '//' + $(location).attr('host') + $(location).attr('port').length > 0 ? ':' + $(location).attr('port') : '' + '/ui/bi/editor');">
-                                <i class="fa fa-plus" aria-hidden="true"></i> New Report</a></li>
-                    </ul>
+pwd                    </ul>
                 </li>
                 <li><a id="report-name"></a></li>
             </ul>
@@ -124,7 +120,7 @@
         var params = deparam(query);
         if('id' in params) {
             $('#report-name').closest('li')
-            .after('<li><a id="edit-btn" href="#" onclick="$(location).attr(\'pathname\',\'ui/bi/editor/board\');"> Edit</a></li>')
+//            .after('<li><a id="edit-btn" href="#" onclick="$(location).attr(\'pathname\',\'ui/bi/editor/board\');"> Edit</a></li>')
             .after('<li><a id="export-btn" href="#"><span class="spinner" style="display: none;"><i class="fa fa-spinner fa-spin fa-fw"></i></span> Export</a></li>');
             dashboard.run(params.id);
         }
