@@ -37,7 +37,7 @@ var FONTS_FILES = [
 ];
 
 var LIBS_FILES = [
-    './node_modules/jquery/dist/cdn/jquery-2.1.0.js',
+    './node_modules/jquery/dist/jquery.js',
     './node_modules/bootstrap/dist/js/bootstrap.js',
     // './node_modules/moment/moment.js',
     // './node_modules/moment/locale/ru.js',
