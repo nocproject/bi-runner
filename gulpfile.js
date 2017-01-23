@@ -9,6 +9,7 @@ var batch = require('gulp-batch');
 var uglyfly = require('gulp-uglyfly');
 var cssnano = require('gulp-cssnano');
 var sourcemaps = require('gulp-sourcemaps');
+var sass = require('gulp-sass');
 
 var APP_JS = 'bi.js';
 var APP_CSS = 'bi.css';
@@ -27,8 +28,7 @@ var SOURCE_FILES = [
 ];
 
 var APP_CSS_FILES = [
-    './css/bi.css',
-    './css/pikaday-theme.css'
+    './css/bi.css'
 ];
 
 var FONTS_FILES = [
@@ -47,15 +47,15 @@ var LIBS_FILES = [
     './node_modules/d3/d3.js',
     './node_modules/pikaday/pikaday.js',
     './node_modules/dc/dc.js',
-    './node_modules/file-saver/FileSaver.js'
+    './node_modules/file-saver/FileSaver.js',
+    './node_modules/select2/dist/js/select2.js'
 ];
 
 var CSS_FILES = [
     './node_modules/font-awesome/css/font-awesome.css',
-    './node_modules/bootstrap/dist/css/bootstrap.css',
-    './node_modules/bootstrap/dist/css/bootstrap-theme.css',
     './node_modules/pikaday/css/pikaday.css',
-    './node_modules/dc/dc.css'
+    './node_modules/dc/dc.css',
+    './node_modules/select2/dist/css/select2.css'
 ];
 
 gulp.task('clean', function() {
@@ -98,7 +98,7 @@ gulp.task('lib.css.dev', function() {
     .pipe(gulp.dest(CSS_DEST))
 });
 
-gulp.task('app.css.dev', function() {
+gulp.task('app.css.dev', ['build.scss'], function() {
     return gulp.src(APP_CSS_FILES)
     .pipe(concat(APP_CSS))
     .pipe(gulp.dest(CSS_DEST))
@@ -110,6 +110,12 @@ gulp.task('watch', function() {
         gulp.start('app.scrips.dev', done);
         gulp.start('app.css.dev', done);
     }));
+});
+
+gulp.task('build.scss', function() {
+    return gulp.src('./scss/bi.scss')
+    .pipe(sass().on('error', sass.logError))
+    .pipe(gulp.dest('./css'));
 });
 
 gulp.task('build.dev', ['clean'], gulp_sync_task(
@@ -132,7 +138,7 @@ gulp.task('app.scripts.prod', function() {
     .pipe(gulp.dest(APP_DEST))
 });
 
-gulp.task('app.css.prod', function() {
+gulp.task('app.css.prod', ['build.scss'], function() {
     return gulp.src(APP_CSS_FILES)
     .pipe(concat(APP_CSS))
     .pipe(cssnano())

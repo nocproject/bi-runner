@@ -50,11 +50,9 @@ var Dashboard = function(element) {
         $('#report-name').text(null);
     };
 
-    var createTimeSelector = function(container, reportTitle) {
-        var timeSelector = '<div class="row">\n    <div class="col-md-12">\n        <div id="time-selector" class="chart-wrapper">\n            <div class="chart-title">\n                <div class="title-left">{title}</div>\n                <div class="title-right collapsed"></div>\n                <div style="clear:both;"></div>\n            </div>\n            <div class="chart-stage collapse" aria-expanded="false">\n                <div class="row">\n                    <div class="btn-group-vertical nav-stack col-md-2 col-md-offset-1" style="padding-top: 30px;">\n                        <a onclick="dashboard.timeSelector(\'cur.day\')" class="btn btn-default"\n                           style="margin-bottom: 10px;">Today</a>\n                        <a onclick="dashboard.timeSelector(\'cur.monday\')" class="btn btn-default"\n                           style="margin-bottom: 10px;">This                            week</a>\n                        <a onclick="dashboard.timeSelector(\'cur.month\')" class="btn btn-default"\n                           style="margin-bottom: 10px;">This                            month</a>\n                        <a onclick="dashboard.timeSelector(\'cur.year\')" class="btn btn-default"\n                           style="margin-bottom: 10px;">This                            year</a>\n                    </div>\n                    <div class="btn-group-vertical nav-stack col-md-2" style="padding-top: 30px;">\n                        <a onclick="dashboard.timeSelector(\'prev.day\')" class="btn btn-default"\n                           style="margin-bottom: 10px;">Yesterday</a>\n                        <a onclick="dashboard.timeSelector(\'prev.monday\')" class="btn btn-default"\n                           style="margin-bottom: 10px;">Previous                            week </a>\n                        <a onclick="dashboard.timeSelector(\'prev.month\')" class="btn btn-default"\n                           style="margin-bottom: 10px;">Previous                        month </a>\n                        <a onclick="dashboard.timeSelector(\'prev.year\')" class="btn btn-default"\n                           style="margin-bottom: 10px;">Previous                            year </a>\n                    </div>\n                    <div class="col-md-5 col-md-offset-1" style="padding-bottom: 10px;">\n                        <div class="pull-left">\n                            <input id="startInterval" type="text" style="display: none;"/>\n                            <div id="startIntervalContainer"></div>\n                        </div>\n                        <div class="pull-left">\n                            <input id="endInterval" type="text" style="display: none;"/>\n                            <div id="endIntervalContainer"></div>\n                            <button id="selectBtn" type="button" class="btn btn-default pull-right"\n                                    style="width: 100px" disabled="disabled">\n                                Select\n                            </button>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div class="chart-notes">Time Selector</div>\n        </div>\n    </div>\n</div>\n';
-        $(timeSelector).appendTo(container);
-        $('#report-name').text(reportTitle);
-        $('#time-selector>.chart-title').click(function() {
+    var addCollapsed = function(panel, anchorName, container) {
+        $(panel).appendTo(container);
+        $(anchorName + '>.chart-title').click(function() {
             var $selector = $(this).next(null);
 
             if($selector.attr('aria-expanded') === 'true') {
@@ -66,6 +64,60 @@ var Dashboard = function(element) {
             }
             $selector.collapse("toggle")
         });
+    };
+
+    this.createFieldSelector = function(container, datasource) {
+        var fieldSelector = '<div class="row">\n    <div class="col-md-12">\n        <div id="field-selector" class="chart-wrapper">\n            <div class="chart-title">\n                <div class="title-left">Field Selector</div>\n                <div class="title-right collapsed"></div>\n                <div style="clear:both;"></div>\n            </div>\n            <div class="chart-stage collapse" aria-expanded="false">\n                <div class="row">\n                    <div class="col-md-5 col-md-offset-1">\n                        List of Fields\n                        <select id="fields">\n                            <option disabled="disabled">Loading...</option>\n                        </select>\n                    </div>\n                </div>\n            </div>\n            <div class="chart-notes">Field Selector</div>\n        </div>\n    </div>\n</div>\n';
+
+        addCollapsed(fieldSelector, '#field-selector', container);
+
+        $("#fields")
+        .select2({
+            theme: "bootstrap",
+            placeholder: "Select a field",
+            minimumResultsForSearch: Infinity,
+            templateResult: function(field) {
+                if(!field.id) {
+                    return field.text;
+                }
+                var e = field.text.split(',');
+                return $('<div class="title-left">' + e[0] + ' : </div><div class="title-right">'
+                    + e[1] + '</div><div style="clear:both;"></div>');
+            },
+            templateSelection: function(data) {
+                return data.text.split(',')[0];
+            }
+        })
+        .on("change", function() {
+            console.log("changed  to : ", $(this).val());
+        });
+
+        d3.json('/api/bi/')
+        .header('Content-Type', 'application/json')
+        .post(
+            '{"params": ["' + datasource + '"],"id": 0,"method": "get_datasource_info"}',
+            function(error, data) {
+                if(error)
+                    throw new Error(error);
+
+                console.log(data.result);
+                $('#fields').find('>option').remove();
+                data.result.fields.map(function(field) {
+                    var text = field.description ? field.description : field.name;
+                    $('#fields').append($('<option>', {
+                        value: field.name,
+                        text: text + "," + field.type,
+                        title: text
+                    }));
+                });
+            }
+        );
+    };
+
+    this.createTimeSelector = function(container) {
+        var timeSelector = '<div class="row">\n    <div class="col-md-12">\n        <div id="time-selector" class="chart-wrapper">\n            <div class="chart-title">\n                <div class="title-left">{title}</div>\n                <div class="title-right collapsed"></div>\n                <div style="clear:both;"></div>\n            </div>\n            <div class="chart-stage collapse" aria-expanded="false">\n                <div class="row">\n                    <div class="btn-group-vertical nav-stack col-md-2 col-md-offset-1" style="padding-top: 30px;">\n                        <a onclick="dashboard.timeSelector(\'cur.day\')" class="btn btn-default"\n                           style="margin-bottom: 10px;">Today</a>\n                        <a onclick="dashboard.timeSelector(\'cur.monday\')" class="btn btn-default"\n                           style="margin-bottom: 10px;">This                            week</a>\n                        <a onclick="dashboard.timeSelector(\'cur.month\')" class="btn btn-default"\n                           style="margin-bottom: 10px;">This                            month</a>\n                        <a onclick="dashboard.timeSelector(\'cur.year\')" class="btn btn-default"\n                           style="margin-bottom: 10px;">This                            year</a>\n                    </div>\n                    <div class="btn-group-vertical nav-stack col-md-2" style="padding-top: 30px;">\n                        <a onclick="dashboard.timeSelector(\'prev.day\')" class="btn btn-default"\n                           style="margin-bottom: 10px;">Yesterday</a>\n                        <a onclick="dashboard.timeSelector(\'prev.monday\')" class="btn btn-default"\n                           style="margin-bottom: 10px;">Previous                            week </a>\n                        <a onclick="dashboard.timeSelector(\'prev.month\')" class="btn btn-default"\n                           style="margin-bottom: 10px;">Previous                        month </a>\n                        <a onclick="dashboard.timeSelector(\'prev.year\')" class="btn btn-default"\n                           style="margin-bottom: 10px;">Previous                            year </a>\n                    </div>\n                    <div class="col-md-5 col-md-offset-1" style="padding-bottom: 10px;">\n                        <div class="pull-left">\n                            <input id="startInterval" type="text" style="display: none;"/>\n                            <div id="startIntervalContainer"></div>\n                        </div>\n                        <div class="pull-left">\n                            <input id="endInterval" type="text" style="display: none;"/>\n                            <div id="endIntervalContainer"></div>\n                            <button id="selectBtn" type="button" class="btn btn-default pull-right"\n                                    style="width: 100px" disabled="disabled">\n                                Select\n                            </button>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div class="chart-notes">Time Selector</div>\n        </div>\n    </div>\n</div>\n';
+
+        addCollapsed(timeSelector, '#time-selector', container);
 
         var startDate,
             endDate,
@@ -97,6 +149,7 @@ var Dashboard = function(element) {
                 }
             }
         });
+
         dashboard.endPicker = new Pikaday({
             field: document.getElementById('endInterval'),
             container: document.getElementById('endIntervalContainer'),
@@ -115,8 +168,7 @@ var Dashboard = function(element) {
         });
 
         selectBtn.click(function() {
-            console.log('button clicked!');
-            console.log(startDate + ',' + endDate);
+            console.log('selected : ' + startDate + ',' + endDate);
             NocFilter.setStartCondition([startDate, endDate]);
             downChevron();
             drawAll();
@@ -146,7 +198,7 @@ var Dashboard = function(element) {
                 var blob = new Blob([toCsv(data.result.result, '"', ';')], {type: "text/plain;charset=utf-8"});
                 saveAs(blob, 'export.csv');
 
-                $('#export-btn').on("click", "", function () {
+                $('#export-btn').on("click", "", function() {
                     dashboard.export();
                     $('#export-btn').find('.spinner').show();
                 });
@@ -172,7 +224,7 @@ var Dashboard = function(element) {
                     return;
                 }
 
-                $('#export-btn').on("click", "", function (e) {
+                $('#export-btn').on("click", "", function(e) {
                     dashboard.export();
                     $('#export-btn').find('.spinner').show();
                 });
@@ -185,7 +237,10 @@ var Dashboard = function(element) {
                 var rowPosition = undefined;
                 var currentRow;
 
-                createTimeSelector(container, dashboardJSON.title);
+                $('#report-name').text(dashboardJSON.title);
+                // selectors
+                dashboard.createTimeSelector(container);
+                dashboard.createFieldSelector(container, data.result.datasource);
 
                 $.each(sortedByRows, function(index, obj) {
                     if(rowPosition !== obj.row) {

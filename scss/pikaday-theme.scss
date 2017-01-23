@@ -1,9 +1,11 @@
+@import "variables";
+
 /**
  * This theme is an example to show how you can create your own.
  */
 .pika-single.pikaday-theme {
     font-family: 'PTSans';
-    color: #2c3e50;
+    color: $brand-primary;
     background: #ecf0f1;
     border: 0px solid #666;
     border-bottom-color: #999;
@@ -24,11 +26,11 @@
 /*}*/
 
 .pikaday-theme .pika-table th {
-    color: #2c3e50;
+    color: $brand-primary;
 }
 
 .pikaday-theme .pika-button {
-    color: #2c3e50;
+    color: $brand-primary;
     background: #ecf0f1;
 }
 
@@ -37,12 +39,12 @@
 }
 
 .pikaday-theme .is-today .pika-button {
-    color: #2c3e50;
+    color: $brand-primary;
 }
 
 .pikaday-theme .is-selected .pika-button {
     color: #fff;
-    background: #2c3e50;
+    background: $brand-primary;
     box-shadow: inset 0 1px 3px #178fe5;
 }
 
@@ -53,5 +55,5 @@
 
 .pikaday-theme .pika-button:hover {
     color: #fff !important;
-    background: #2c3e50 !important;
+    background: $brand-primary !important;
 }

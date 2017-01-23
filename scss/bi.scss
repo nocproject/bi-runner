@@ -1,0 +1,10 @@
+@import "variables";
+@import "./node_modules/bootstrap-sass/assets/stylesheets/_bootstrap.scss";
+@import "./node_modules/select2-bootstrap-theme/src/select2-bootstrap.scss";
+
+@import "chart";
+@import "pikaday-theme";
+
+body {
+  background: #95a5a6;
+}
