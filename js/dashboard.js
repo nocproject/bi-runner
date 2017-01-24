@@ -178,7 +178,7 @@ var Dashboard = function(element) {
     this.export = function() {
 
         if(!dashboard.exportQuery) {
-            console.log('export is null');
+            console.log('export query is null, you must define query into board definition');
             return;
         }
 
@@ -195,7 +195,7 @@ var Dashboard = function(element) {
 
                 if(failResult('export', data)) return;
 
-                var blob = new Blob([toCsv(data.result.result, '"', ';')], {type: "text/plain;charset=utf-8"});
+                var blob = new Blob([toCsv(data.result.result, data.result.fields, '"', ';')], {type: "text/plain;charset=utf-8"});
                 saveAs(blob, 'export.csv');
 
                 $('#export-btn').on("click", "", function() {
@@ -427,11 +427,12 @@ var Dashboard = function(element) {
     /**
      * Converts an array of objects (with identical schemas) into a CSV table.
      * @param {Array} objArray An array of objects.  Each object in the array must have the same property list.
+     * @param {nameArray} nameArray an array names of fields.
      * @param {string} sDelimiter The string delimiter.  Defaults to a double quote (") if omitted.
      * @param {string} cDelimiter The column delimiter.  Defaults to a comma (,) if omitted.
      * @return {string} The CSV equivalent of objArray.
      */
-    var toCsv = function(objArray, sDelimiter, cDelimiter) {
+    var toCsv = function(objArray, nameArray, sDelimiter, cDelimiter) {
         var i, l, names = [], name, value, obj, row, output = "", n, nl;
 
         function toCsvValue(theValue, sDelimiter) {
@@ -462,10 +463,10 @@ var Dashboard = function(element) {
             row = "";
             if(i === 0) {
                 // Loop through the names
-                for(name in obj) {
-                    if(obj.hasOwnProperty(name)) {
+                for(name in nameArray) {
+                    if(nameArray.hasOwnProperty(name)) {
                         names.push(name);
-                        row += [sDelimiter, name, sDelimiter, cDelimiter].join("");
+                        row += [sDelimiter, nameArray[name], sDelimiter, cDelimiter].join("");
                     }
                 }
                 row = row.substring(0, row.length - 1);
@@ -515,7 +516,7 @@ var Dashboard = function(element) {
                 // ToDo make query without start filter!
                 // dashboard.startPicker.setMinDate(minDate);
                 // dashboard.endPicker.setMinDate(minDate);
-                var reboots = dateDimension
+                var dim = dateDimension
                 .group()
                 .reduceSum(function(d) {
                     return d.cnt;
@@ -531,7 +532,7 @@ var Dashboard = function(element) {
                 .dimension(dateDimension)
                 .x(d3.time.scale().domain([minDate, maxDate]))
                 .yAxisLabel(null, 15)
-                .group(reboots)
+                .group(dim)
                 .on('filtered', function(chart, filter) {
                     console.log('filtered : ' + filter);
                     spinnerShow(chart);
@@ -662,9 +663,9 @@ var Dashboard = function(element) {
                     })
                 )
                 .cx(120)
-                .title(function(d) {
-                    return d.key.split('.')[1] + " :\n" + d.value + " reboot(s)";
-                })
+                // .title(function(d) {
+                //     return d.key.split('.')[1] + " :\n" + d.value + " reboot(s)";
+                // })
                 .on('filtered', function(chart, filter) {
                     console.log('filtered : ' + filter);
                     filterToggle(widget, field, filter, chart.filters().map(function(element) {
