@@ -66,15 +66,158 @@ var Dashboard = function(element) {
         });
     };
 
-    this.createFieldSelector = function(container, datasource) {
-        var fieldSelector = '<div class="row">\n    <div class="col-md-12">\n        <div id="field-selector" class="chart-wrapper">\n            <div class="chart-title">\n                <div class="title-left">Field Selector</div>\n                <div class="title-right collapsed"></div>\n                <div style="clear:both;"></div>\n            </div>\n            <div class="chart-stage collapse" aria-expanded="false">\n                <div class="row">\n                    <div class="col-md-5 col-md-offset-1">\n                        List of Fields\n                        <select id="fields">\n                            <option disabled="disabled">Loading...</option>\n                        </select>\n                    </div>\n                </div>\n            </div>\n            <div class="chart-notes">Field Selector</div>\n        </div>\n    </div>\n</div>\n';
+    var valuesListQuery = function(field, dict, datasource, filterPattern) {
+        var query = {
+            params: [
+                {
+                    fields: [
+                        {
+                            expr: field,
+                            group: 0
+                        },
+                        {
+                            expr: {
+                                $lookup: [
+                                    dict,
+                                    {
+                                        $field: field
+                                    }
+                                ]
+                            },
+                            alias: "value",
+                            order: 0
+                        }
+                    ],
+                    limit: 500,
+                    datasource: datasource
+                }
+            ],
+            id: 0,
+            method: "query"
+        };
+        if(filterPattern) {
+            query.params[0].filter = {
+                $like: [
+                    {
+                        $field: "value"
+                    },
+                    // $.param('%' + filterPattern + '%')
+                    '%' + filterPattern + '%'
+                ]
+            }
+        }
+        return query
+    };
 
-        addCollapsed(fieldSelector, '#field-selector', container);
+    var filterByFieldPanel = function(fieldValue, datasource) {
+        var type;
+        var filterByField = '<div id="filter-panel{id}" class="panel panel-default">\n    <div class="panel-heading" style="height: 35px">\n        <div>\n            <div class="title-left">Field name: <b>{name}</b>, {type}</div>\n            <div style="cursor: pointer;cursor: hand;float: right;" class="close-panel">\n                <i class="fa fa-times-circle" aria-hidden="true"></i>\n            </div>\n            <div style="clear:both;"></div>\n        </div>\n    </div>\n    <div class="panel-body">\n        <form class="form-horizontal">\n            <div class="form-group">\n                <label class="control-label col-xs-1 col-xs-offset-1">Condition:</label>\n                <div class="col-xs-1">\n                    <select class="form-control values condition">\n                        <option disabled="disabled">Loading...</option>\n                    </select>\n                </div>\n                <label class="control-label col-xs-2 col-xs-offset-1" for="value-1{id}">Value:</label>\n                <div class="col-xs-6">\n                    <input type="text" class="form-control" id="value-1{id}" placeholder="Value">\n                </div>\n            </div>\n            <div class="form-group second-value hidden">\n                <label class="control-label col-xs-6" for="value-2{id}">To Value:</label>\n                <div class="col-xs-6">\n                    <input type="text" class="form-control" id="value-2{id}" placeholder="To Value">\n                </div>\n            </div>\n            <hr>\n            <div class="form-group">\n                <div class="col-xs-2 col-xs-offset-1">\n                    <label class="checkbox">\n                        <input type="checkbox" class="show-chart" value="">Show the distribution of values\n                    </label>\n                </div>\n                <label class="control-label col-xs-1">Chart type:</label>\n                <div class="col-xs-1">\n                    <select class="form-control values chart-type" disabled>\n                        <option value="bar" disabled>Bar</option>\n                        <option value="pie">Pie</option>\n                        <option value="line" disabled>Line</option>\n                    </select>\n                </div>\n                <label class="control-label col-xs-1">Field:</label>\n                <div class="col-xs-3">\n                    <select class="form-control values chart-fields" disabled>\n                    </select>\n                </div>\n                <label class="control-label col-xs-1">Function:</label>\n                <div class="col-xs-2">\n                    <select class="form-control values chart-func" disabled>\n                        <option value="$count">Count</option>\n                        <option value="$sum">Sum</option>\n                    </select>\n                </div>\n            </div>\n            <div class="form-group">\n                <div class="col-xs-offset-1 col-xs-1">\n                    <input type="button" class="btn btn-default pull-left chart-show" value="Show Chart" disabled>\n                </div>\n            </div>\n            <div class="form-group">\n                <div class="col-xs-offset-2 col-xs-10">\n                    <input type="button" class="btn btn-default pull-right apply-filter" value="Apply">\n                    <input type="button" class="btn btn-default pull-right clear-filter" value="Clear">\n                </div>\n            </div>\n        </form>\n    </div>\n</div>';
+        var id = new Date().getTime();
+        var field = fieldValue.split(',');
+        var conditionOptions = [
+            {id: '$eq', text: '=='},
+            {id: '$ne', text: '<>'},
+            {id: '$lt', text: '<'},
+            {id: '$le', text: '<='},
+            {id: '$gt', text: '>'},
+            {id: '$ge', text: '>='}
+        ];
 
-        $("#fields")
+        filterByField = filterByField.replace(/{id}/g, id);
+
+        filterByField = filterByField.replace('{name}', field[0]);
+
+        if(field.length === 3) {
+            type = 'dictionary: <b>' + field[2] + '</b>';
+        } else {
+            type = 'type: <b>' + field[1] + '</b>';
+            conditionOptions.push({id: 'period', text: 'period'});
+        }
+
+        filterByField = filterByField.replace('{type}', type);
+
+        $('.filters-by-field').append($(filterByField));
+
+        $('#filter-panel' + id).find('.condition>option').remove();
+
+        $('#filter-panel' + id).find('.condition')
         .select2({
-            theme: "bootstrap",
-            placeholder: "Select a field",
+            theme: 'bootstrap',
+            placeholder: 'Select a condition',
+            minimumResultsForSearch: Infinity,
+            data: conditionOptions
+        });
+
+        if(field.length === 3) {
+            var value1 = 'value-1' + id;
+
+            $('#' + value1).replaceWith('<select id="' + value1 + '" class="form-control values"></select>');
+            // $('#' + value1).replaceWith('<select id="' + value1 + '" class="form-control values" multiple></select>');
+            $('#' + value1).select2({
+                theme: 'bootstrap',
+                placeholder: 'Select from ' + field[2],
+                // minimumInputLength: 2,
+                ajax: {
+                    url: '/api/bi/',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return JSON.stringify(valuesListQuery(field[0], field[2], datasource, params.term));
+                        // return {
+                        //     q: params.term, // search term
+                        //     page: params.page
+                        // };
+                    },
+                    processResults: function(data, params) {
+                        // parse the results into the format expected by Select2
+                        // since we are using custom formatting functions we do not need to
+                        // alter the remote JSON data, except to indicate that infinite
+                        // scrolling can be used
+                        params.page = params.page || 1;
+
+                        return {
+                            // results: data.items,
+                            results: data.result.result.map(function(e) {
+                                return {id: e[0], text: e[1]}
+                            }),
+                            pagination: {
+                                more: (params.page * 30) < data.total_count
+                            }
+                        };
+                    },
+                    cache: true
+                }
+            });
+
+            // $('#' + value1).val('Loading ...');
+            // d3.json('/api/bi/')
+            // .header('Content-Type', 'application/json')
+            // .post(
+            //     JSON.stringify(valuesListQuery(field[0], field[2], datasource)),
+            //     function(error, data) {
+            //         if(error)
+            //             throw new Error(error);
+            //
+            //         $('#' + value1).replaceWith('<select id="' + value1 + '" class="form-control values"></select>');
+            //         $('#' + value1).select2({
+            //             theme: 'bootstrap',
+            //             placeholder: 'Select from ' + field[2],
+            //             tag: true,
+            //             data: data.result.result.map(function(e) {
+            //                 return {id: e[0], text: e[1]}
+            //             })
+            //         });
+            //     }
+            // );
+        }
+
+        $('#filter-panel' + id).find('.values.chart-fields').append($('#fields').find('>option').clone());
+
+        $('#filter-panel' + id).find('.values.chart-fields').select2({
+            theme: 'bootstrap',
+            placeholder: 'Select a field',
             minimumResultsForSearch: Infinity,
             templateResult: function(field) {
                 if(!field.id) {
@@ -87,9 +230,82 @@ var Dashboard = function(element) {
             templateSelection: function(data) {
                 return data.text.split(',')[0];
             }
+        });
+
+        $('#filter-panel' + id).find('.close-panel').on('click', function() {
+            console.log(field + ' (' + id + ')  closing...');
+            $(this).parents('.panel').remove();
+            NocFilter.deleteFilter(field[0]);
+            drawAll();
+        });
+
+        $('#filter-panel' + id).find('.condition').on('change', function() {
+            if(!$('#filter-panel' + id).find('.second-value').hasClass('hidden')) {
+                $('#filter-panel' + id).find('.second-value').addClass('hidden');
+            }
+            if('period' === $(this).val()) {
+                $('#filter-panel' + id).find('.second-value').removeClass('hidden');
+            }
+            console.log('condition changed to : ' + $(this).val());
+        });
+
+        $('#filter-panel' + id).find('.apply-filter').on('click', function() {
+            console.log('panel id : filter-panel' + id);
+            console.log('field : ' + field);
+            console.log('value : ' + $('#value-1' + id).val());
+            console.log('condition : ' + $('#filter-panel' + id).find('.condition').val());
+            NocFilter.updateFilter(field[0], [$('#value-1' + id).val() + '.' + $('#filter-panel' + id).find('.condition').text()], $('#filter-panel' + id).find('.condition').val());
+            drawAll();
+        });
+
+        $('#filter-panel' + id).find('.clear-filter').on('click', function() {
+            console.log('panel id : filter-panel' + id);
+            console.log('field : ' + field);
+            console.log('value : ' + $('#value-1' + id).val());
+            console.log('condition : ' + $('#filter-panel' + id).find('.condition').val());
+            NocFilter.deleteFilter(field[0]);
+            drawAll();
+        });
+
+        $('#filter-panel' + id).find('.show-chart').on('change', function() {
+            var isChecked = !($(this).is(':checked'));
+
+            console.log('show chart : ' + isChecked);
+            $('#filter-panel' + id).find('.chart-type').attr('disabled', isChecked);
+            $('#filter-panel' + id).find('.chart-fields').attr('disabled', isChecked);
+            $('#filter-panel' + id).find('.chart-show').attr('disabled', isChecked);
+            $('#filter-panel' + id).find('.chart-func').attr('disabled', isChecked);
+        });
+    };
+
+    this.createFieldSelector = function(container, datasource) {
+        var fieldSelector = '<div class="row">\n    <div class="col-md-12">\n        <div id="field-selector" class="chart-wrapper">\n            <div class="chart-title">\n                <div class="title-left">Field Selector</div>\n                <div class="title-right collapsed"></div>\n                <div style="clear:both;"></div>\n            </div>\n            <div class="chart-stage collapse" aria-expanded="false">\n                <div class="row">\n                    <div class="col-md-5" style="padding-left: 25px;">\n                        List of Fields\n                        <select id="fields">\n                            <option disabled="disabled">Loading...</option>\n                        </select>\n                    </div>\n                </div>\n                <div class="row filters-by-field" style="padding-left: 25px; padding-top: 5px">\n                </div>\n                <button type="button" class="btn btn-default pull-right" style="width: 100px;margin-bottom: 15px;">\n                    Save\n                </button>\n            </div>\n            <div class="chart-notes">Field Selector</div>\n        </div>\n    </div>\n</div>\n';
+
+        addCollapsed(fieldSelector, '#field-selector', container);
+
+        $("#fields")
+        .select2({
+            theme: 'bootstrap',
+            placeholder: 'Select a field',
+            // minimumResultsForSearch: Infinity,
+            templateResult: function(field) {
+                if(!field.id) {
+                    return field.text;
+                }
+                var e = field.text.split(',');
+                return $('<div class="title-left">' + e[0] + ' : </div><div class="title-right">'
+                    + e[1] + '</div><div style="clear:both;"></div>');
+            },
+            templateSelection: function(data) {
+                return data.text.split(',')[0];
+            }
         })
-        .on("change", function() {
+        .on('change', function() {
             console.log("changed  to : ", $(this).val());
+            if($(this).val()) {
+                filterByFieldPanel($(this).val(), datasource);
+                $(this).val(null).trigger('change');
+            }
         });
 
         d3.json('/api/bi/')
@@ -101,15 +317,25 @@ var Dashboard = function(element) {
                     throw new Error(error);
 
                 console.log(data.result);
-                $('#fields').find('>option').remove();
-                data.result.fields.map(function(field) {
+                var $fields = $('#fields');
+                $fields.find('>option').remove();
+                data.result.fields
+                .sort(function(a, b) {
+                    return a.name.localeCompare(b.name);
+                })
+                .map(function(field) {
                     var text = field.description ? field.description : field.name;
-                    $('#fields').append($('<option>', {
-                        value: field.name,
-                        text: text + "," + field.type,
+                    var type = (field.dict) ? 'dict - ' + field.dict : field.type;
+
+                    $fields.append($('<option>', {
+                        value: [field.name, field.type, field.dict].filter(function(e) {
+                            return e
+                        }).join(','),
+                        text: text + "," + type,
                         title: text
                     }));
                 });
+                $fields.val(null).trigger('change');
             }
         );
     };

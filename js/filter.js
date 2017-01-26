@@ -5,13 +5,22 @@ var NocFilter = (function() {
 
     // private methods for make filter Object
     function eqValue(name, value) {
-        return {
-            $eq: [{
+        return conditionValue('$eq', name, value);
+    }
+
+    function conditionValue(condition, name, value) {
+        var expression = {};
+
+        if(condition) {
+            expression[condition] = [{
                 $field: name
             }, {
                 $field: value
-            }]
-        };
+            }];
+            return expression;
+        }
+
+        return eqValue(name, value);
     }
 
     function orValues(values) {
@@ -62,7 +71,7 @@ var NocFilter = (function() {
         widget.query.params[0].filter = filter;
     }
 
-    function makeFilter() {
+    function makeFilter(condition) {
         var keys = Object.getOwnPropertyNames(filter);
 
         return andValues(
@@ -71,7 +80,7 @@ var NocFilter = (function() {
                         return dateInterval(filter[key]);
                     } else {
                         var values = filter[key].map(function(element) {
-                            return eqValue(key, element);
+                            return conditionValue(condition, key, element);
                         });
                         if(values.length > 0) {
                             return orValues(values);
@@ -93,7 +102,7 @@ var NocFilter = (function() {
                 this.setStartCondition(args.startCondition);
             }
         },
-        updateFilter: function(fieldName, fieldValues) {
+        updateFilter: function(fieldName, fieldValues, condition) {
             if('date' === fieldName || 'startCondition' === fieldName) {
                 // ToDo compare with startCondition
                 filter.date = fieldValues[0];
@@ -102,7 +111,13 @@ var NocFilter = (function() {
                     return element.split('.')[0];
                 });
             }
-            updateWidgets(makeFilter());
+            updateWidgets(makeFilter(condition));
+        },
+        deleteFilter: function(fieldName) {
+            if(filter.hasOwnProperty(fieldName)) {
+                delete filter[fieldName];
+                updateWidgets(makeFilter());
+            }
         },
         getDate: function() {
             if('date' in filter) return filter.date;
