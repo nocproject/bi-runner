@@ -39,13 +39,13 @@ var FONTS_FILES = [
 var LIBS_FILES = [
     './node_modules/jquery/dist/jquery.js',
     './node_modules/bootstrap/dist/js/bootstrap.js',
-    // './node_modules/moment/moment.js',
-    // './node_modules/moment/locale/ru.js',
-    // './node_modules/holderjs/holder.js',
+    './node_modules/moment/moment.js',
+    './node_modules/moment/locale/ru.js',
     './node_modules/jquery-deparam/jquery-deparam.js',
     './node_modules/crossfilter/crossfilter.js',
     './node_modules/d3/d3.js',
-    './node_modules/pikaday/pikaday.js',
+    './node_modules/pikaday-time/pikaday.js',
+    './node_modules/pikaday-time/plugins/pikaday.jquery.js',
     './node_modules/dc/dc.js',
     './node_modules/file-saver/FileSaver.js',
     './node_modules/select2/dist/js/select2.js'
@@ -53,7 +53,7 @@ var LIBS_FILES = [
 
 var CSS_FILES = [
     './node_modules/font-awesome/css/font-awesome.css',
-    './node_modules/pikaday/css/pikaday.css',
+    './node_modules/pikaday-time/css/pikaday.css',
     './node_modules/dc/dc.css',
     './node_modules/select2/dist/css/select2.css'
 ];

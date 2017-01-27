@@ -1,6 +1,7 @@
 var Dashboard = function(element) {
     //public properties
     this.element = element;
+    this.fieldsType = {};
 
     // public methods
     this.reset = function(widget) {
@@ -50,68 +51,40 @@ var Dashboard = function(element) {
         $('#report-name').text(null);
     };
 
-    var addCollapsed = function(panel, anchorName, container) {
-        $(panel).appendTo(container);
-        $(anchorName + '>.chart-title').click(function() {
-            var $selector = $(this).next(null);
-
-            if($selector.attr('aria-expanded') === 'true') {
-                $(this).children('.title-right').removeClass('expanded');
-                $(this).children('.title-right').addClass('collapsed');
-            } else {
-                $(this).children('.title-right').removeClass('collapsed');
-                $(this).children('.title-right').addClass('expanded');
-            }
-            $selector.collapse("toggle")
-        });
-    };
-
-    var valuesListQuery = function(field, dict, datasource, filterPattern) {
-        var query = {
-            params: [
-                {
-                    fields: [
-                        {
-                            expr: field,
-                            group: 0
-                        },
-                        {
-                            expr: {
-                                $lookup: [
-                                    dict,
-                                    {
-                                        $field: field
-                                    }
-                                ]
-                            },
-                            alias: "value",
-                            order: 0
-                        }
-                    ],
-                    limit: 500,
-                    datasource: datasource
+    this.fieldsSelectConfig = function() {
+        return {
+            theme: 'bootstrap',
+            placeholder: 'Select a field',
+            minimumResultsForSearch: Infinity,
+            templateResult: function(field) {
+                if(!field.id) {
+                    return field.text;
                 }
-            ],
-            id: 0,
-            method: "query"
-        };
-        if(filterPattern) {
-            query.params[0].filter = {
-                $like: [
-                    {
-                        $field: "value"
-                    },
-                    // $.param('%' + filterPattern + '%')
-                    '%' + filterPattern + '%'
-                ]
-            }
+                var e = field.text.split(',');
+                return $('<div class="title-left">' + e[0] + ' : </div><div class="title-right">'
+                    + e[1] + '</div><div style="clear:both;"></div>');
+            },
+            templateSelection: function(data) {
+                return data.text.split(',')[0];
+            },
+            data: Object.getOwnPropertyNames(dashboard.fieldsType).map(function(name) {
+                var field = dashboard.fieldsType[name];
+                var text = field.description ? field.description : name;
+                var type = (field.dict) ? 'dict-' + field.dict : field.type;
+
+                return {
+                    id: [name, field.type, field.dict].filter(function(e) {
+                        return e
+                    }).join(','),
+                    text: text + "," + type
+                }
+            })
         }
-        return query
     };
 
-    var filterByFieldPanel = function(fieldValue, datasource) {
+    this.filterByFieldPanel = function(fieldValue, datasource) {
         var type;
-        var filterByField = '<div id="filter-panel{id}" class="panel panel-default">\n    <div class="panel-heading" style="height: 35px">\n        <div>\n            <div class="title-left">Field name: <b>{name}</b>, {type}</div>\n            <div style="cursor: pointer;cursor: hand;float: right;" class="close-panel">\n                <i class="fa fa-times-circle" aria-hidden="true"></i>\n            </div>\n            <div style="clear:both;"></div>\n        </div>\n    </div>\n    <div class="panel-body">\n        <form class="form-horizontal">\n            <div class="form-group">\n                <label class="control-label col-xs-1 col-xs-offset-1">Condition:</label>\n                <div class="col-xs-1">\n                    <select class="form-control values condition">\n                        <option disabled="disabled">Loading...</option>\n                    </select>\n                </div>\n                <label class="control-label col-xs-2 col-xs-offset-1" for="value-1{id}">Value:</label>\n                <div class="col-xs-6">\n                    <input type="text" class="form-control" id="value-1{id}" placeholder="Value">\n                </div>\n            </div>\n            <div class="form-group second-value hidden">\n                <label class="control-label col-xs-6" for="value-2{id}">To Value:</label>\n                <div class="col-xs-6">\n                    <input type="text" class="form-control" id="value-2{id}" placeholder="To Value">\n                </div>\n            </div>\n            <hr>\n            <div class="form-group">\n                <div class="col-xs-2 col-xs-offset-1">\n                    <label class="checkbox">\n                        <input type="checkbox" class="show-chart" value="">Show the distribution of values\n                    </label>\n                </div>\n                <label class="control-label col-xs-1">Chart type:</label>\n                <div class="col-xs-1">\n                    <select class="form-control values chart-type" disabled>\n                        <option value="bar" disabled>Bar</option>\n                        <option value="pie">Pie</option>\n                        <option value="line" disabled>Line</option>\n                    </select>\n                </div>\n                <label class="control-label col-xs-1">Field:</label>\n                <div class="col-xs-3">\n                    <select class="form-control values chart-fields" disabled>\n                    </select>\n                </div>\n                <label class="control-label col-xs-1">Function:</label>\n                <div class="col-xs-2">\n                    <select class="form-control values chart-func" disabled>\n                        <option value="$count">Count</option>\n                        <option value="$sum">Sum</option>\n                    </select>\n                </div>\n            </div>\n            <div class="form-group">\n                <div class="col-xs-offset-1 col-xs-1">\n                    <input type="button" class="btn btn-default pull-left chart-show" value="Show Chart" disabled>\n                </div>\n            </div>\n            <div class="form-group">\n                <div class="col-xs-offset-2 col-xs-10">\n                    <input type="button" class="btn btn-default pull-right apply-filter" value="Apply">\n                    <input type="button" class="btn btn-default pull-right clear-filter" value="Clear">\n                </div>\n            </div>\n        </form>\n    </div>\n</div>';
+        var filterByField = '<div id="filter-panel{id}" class="panel panel-default">\n    <div class="panel-heading" style="height: 35px">\n        <div>\n            <div class="title-left">Field name: <b>{name}</b>, {type}</div>\n            <div style="cursor: pointer;cursor: hand;float: right;" class="close-panel">\n                <i class="fa fa-times-circle" aria-hidden="true"></i>\n            </div>\n            <div style="clear:both;"></div>\n        </div>\n    </div>\n    <div class="panel-body">\n        <form class="form-horizontal">\n            <div class="form-group">\n                <label class="control-label col-xs-1 col-xs-offset-1">Condition:</label>\n                <div class="col-xs-1">\n                    <select class="form-control values condition">\n                        <option disabled="disabled">Loading...</option>\n                    </select>\n                </div>\n                <label class="control-label col-xs-2 col-xs-offset-1" for="value-1{id}">Value:</label>\n                <div class="col-xs-6">\n                    <input type="text" class="form-control" id="value-1{id}" placeholder="Value">\n                </div>\n            </div>\n            <div class="form-group second-value hidden">\n                <label class="control-label col-xs-6" for="value-2{id}">To Value:</label>\n                <div class="col-xs-6">\n                    <input type="text" class="form-control" id="value-2{id}" placeholder="To Value">\n                </div>\n            </div>\n            <hr>\n            <div class="form-group">\n                <div class="col-xs-2 col-xs-offset-1">\n                    <label class="checkbox">\n                        <input type="checkbox" class="show-chart" value="">Show the distribution of values\n                    </label>\n                </div>\n                <label class="control-label col-xs-1">Chart type:</label>\n                <div class="col-xs-1">\n                    <select class="form-control values chart-type" disabled></select>\n                </div>\n                <label class="control-label col-xs-1">Field:</label>\n                <div class="col-xs-3">\n                    <select class="form-control values chart-fields" disabled>\n                    </select>\n                </div>\n                <label class="control-label col-xs-1">Function:</label>\n                <div class="col-xs-2">\n                    <select class="form-control values chart-func" disabled></select>\n                </div>\n            </div>\n            <div class="form-group">\n                <div class="col-xs-offset-1 col-xs-1">\n                    <input type="button" class="btn btn-default pull-left chart-show" value="Show Chart" disabled>\n                </div>\n            </div>\n            <div class="form-group">\n                <div class="col-xs-offset-2 col-xs-10">\n                    <input type="button" class="btn btn-default pull-right apply-filter" value="Apply">\n                    <input type="button" class="btn btn-default pull-right clear-filter" value="Clear">\n                </div>\n            </div>\n        </form>\n    </div>\n</div>';
         var id = new Date().getTime();
         var field = fieldValue.split(',');
         var conditionOptions = [
@@ -122,6 +95,17 @@ var Dashboard = function(element) {
             {id: '$gt', text: '>'},
             {id: '$ge', text: '>='}
         ];
+        var chartTypes = [
+            {id: 'bar', text: 'Bar'},
+            {id: 'pie', text: 'Pie'},
+            {id: 'line', text: 'Line'}
+        ];
+        var chartFunction = [
+            {id: '$count', text: 'Count'},
+            {id: '$sum', text: 'Sum'}
+        ];
+        var value1 = 'value-1' + id;
+        var value2 = 'value-2' + id;
 
         filterByField = filterByField.replace(/{id}/g, id);
 
@@ -131,7 +115,7 @@ var Dashboard = function(element) {
             type = 'dictionary: <b>' + field[2] + '</b>';
         } else {
             type = 'type: <b>' + field[1] + '</b>';
-            conditionOptions.push({id: 'period', text: 'period'});
+            conditionOptions.push({id: 'interval', text: 'interval'});
         }
 
         filterByField = filterByField.replace('{type}', type);
@@ -148,9 +132,22 @@ var Dashboard = function(element) {
             data: conditionOptions
         });
 
-        if(field.length === 3) {
-            var value1 = 'value-1' + id;
+        $('#filter-panel' + id).find('.chart-type')
+        .select2({
+            theme: 'bootstrap',
+            placeholder: 'Select a condition',
+            minimumResultsForSearch: Infinity,
+            data: chartTypes
+        });
+        $('#filter-panel' + id).find('.chart-func')
+        .select2({
+            theme: 'bootstrap',
+            placeholder: 'Select a condition',
+            minimumResultsForSearch: Infinity,
+            data: chartFunction
+        });
 
+        if(field.length === 3) {
             $('#' + value1).replaceWith('<select id="' + value1 + '" class="form-control values"></select>');
             // $('#' + value1).replaceWith('<select id="' + value1 + '" class="form-control values" multiple></select>');
             $('#' + value1).select2({
@@ -164,73 +161,63 @@ var Dashboard = function(element) {
                     dataType: 'json',
                     delay: 250,
                     data: function(params) {
-                        return JSON.stringify(valuesListQuery(field[0], field[2], datasource, params.term));
-                        // return {
-                        //     q: params.term, // search term
-                        //     page: params.page
-                        // };
+                        return JSON.stringify(valuesListQuery(field[0], field[2], params.term, datasource));
                     },
-                    processResults: function(data, params) {
-                        // parse the results into the format expected by Select2
-                        // since we are using custom formatting functions we do not need to
-                        // alter the remote JSON data, except to indicate that infinite
-                        // scrolling can be used
-                        params.page = params.page || 1;
-
-                        return {
-                            // results: data.items,
-                            results: data.result.result.map(function(e) {
-                                return {id: e[0], text: e[1]}
-                            }),
-                            pagination: {
-                                more: (params.page * 30) < data.total_count
+                    processResults: function(data) {
+                        if(data.result) {
+                            return {
+                                results: data.result.result.map(function(e) {
+                                    return {id: e[0], text: e[1]}
+                                })
+                            };
+                        } else {
+                            return {
+                                results: [{text: data.error}]
                             }
-                        };
+                        }
                     },
                     cache: true
                 }
             });
+        } else if('DateTime' === field[1]) {
+            $('#' + value1).replaceWith('<input type="text" id="' + value1 + '" class="form-control values" readonly>');
+            $('#' + value2).replaceWith('<input type="text" id="' + value2 + '" class="form-control values" readonly>');
 
-            // $('#' + value1).val('Loading ...');
-            // d3.json('/api/bi/')
-            // .header('Content-Type', 'application/json')
-            // .post(
-            //     JSON.stringify(valuesListQuery(field[0], field[2], datasource)),
-            //     function(error, data) {
-            //         if(error)
-            //             throw new Error(error);
-            //
-            //         $('#' + value1).replaceWith('<select id="' + value1 + '" class="form-control values"></select>');
-            //         $('#' + value1).select2({
-            //             theme: 'bootstrap',
-            //             placeholder: 'Select from ' + field[2],
-            //             tag: true,
-            //             data: data.result.result.map(function(e) {
-            //                 return {id: e[0], text: e[1]}
-            //             })
-            //         });
-            //     }
-            // );
+            $('#' + value1).pikaday({
+                incrementMinuteBy: 10,
+                theme: 'pikaday-theme',
+                use24hour: true,
+                format: 'YYYY-MM-DDThh:mm:00',
+                showSeconds: false
+            });
+            $('#' + value2).pikaday({
+                incrementMinuteBy: 10,
+                theme: 'pikaday-theme',
+                // format: 'YYYY-MM-DDThh:mm:00',
+                use24hour: true,
+                showSeconds: false
+            });
+        } else if('Date' === field[1]) {
+            $('#' + value1).replaceWith('<input type="text" id="' + value1 + '" class="form-control values" readonly>');
+            $('#' + value2).replaceWith('<input type="text" id="' + value2 + '" class="form-control values" readonly>');
+
+            $('#' + value1).pikaday({
+                theme: 'pikaday-theme',
+                // format: 'YYYY-MM-DD',
+                showTime: false,
+                showMinutes: false,
+                showSeconds: false
+            });
+            $('#' + value2).pikaday({
+                theme: 'pikaday-theme',
+                // format: 'YYYY-MM-DD',
+                showTime: false,
+                showMinutes: false,
+                showSeconds: false
+            });
         }
 
-        $('#filter-panel' + id).find('.values.chart-fields').append($('#fields').find('>option').clone());
-
-        $('#filter-panel' + id).find('.values.chart-fields').select2({
-            theme: 'bootstrap',
-            placeholder: 'Select a field',
-            minimumResultsForSearch: Infinity,
-            templateResult: function(field) {
-                if(!field.id) {
-                    return field.text;
-                }
-                var e = field.text.split(',');
-                return $('<div class="title-left">' + e[0] + ' : </div><div class="title-right">'
-                    + e[1] + '</div><div style="clear:both;"></div>');
-            },
-            templateSelection: function(data) {
-                return data.text.split(',')[0];
-            }
-        });
+        $('#filter-panel' + id).find('.values.chart-fields').select2(this.fieldsSelectConfig());
 
         $('#filter-panel' + id).find('.close-panel').on('click', function() {
             console.log(field + ' (' + id + ')  closing...');
@@ -243,22 +230,29 @@ var Dashboard = function(element) {
             if(!$('#filter-panel' + id).find('.second-value').hasClass('hidden')) {
                 $('#filter-panel' + id).find('.second-value').addClass('hidden');
             }
-            if('period' === $(this).val()) {
+            if('interval' === $(this).val()) {
                 $('#filter-panel' + id).find('.second-value').removeClass('hidden');
             }
             console.log('condition changed to : ' + $(this).val());
         });
 
         $('#filter-panel' + id).find('.apply-filter').on('click', function() {
+            var valueId = $('#value-1' + id).val();
+            var value = $('#value-1' + id).text();
+            var condition = $('#filter-panel' + id).find('.condition').val();
+
+            console.log('apply filter');
             console.log('panel id : filter-panel' + id);
             console.log('field : ' + field);
-            console.log('value : ' + $('#value-1' + id).val());
-            console.log('condition : ' + $('#filter-panel' + id).find('.condition').val());
-            NocFilter.updateFilter(field[0], [$('#value-1' + id).val() + '.' + $('#filter-panel' + id).find('.condition').text()], $('#filter-panel' + id).find('.condition').val());
+            console.log('value : ' + valueId);
+            console.log('text : ' + value);
+            console.log('condition : ' + condition);
+            NocFilter.updateFilter(field[0], field[1], [valueId + '.' + value], condition);
             drawAll();
         });
 
         $('#filter-panel' + id).find('.clear-filter').on('click', function() {
+            console.log('clear filter');
             console.log('panel id : filter-panel' + id);
             console.log('field : ' + field);
             console.log('value : ' + $('#value-1' + id).val());
@@ -279,65 +273,20 @@ var Dashboard = function(element) {
     };
 
     this.createFieldSelector = function(container, datasource) {
-        var fieldSelector = '<div class="row">\n    <div class="col-md-12">\n        <div id="field-selector" class="chart-wrapper">\n            <div class="chart-title">\n                <div class="title-left">Field Selector</div>\n                <div class="title-right collapsed"></div>\n                <div style="clear:both;"></div>\n            </div>\n            <div class="chart-stage collapse" aria-expanded="false">\n                <div class="row">\n                    <div class="col-md-5" style="padding-left: 25px;">\n                        List of Fields\n                        <select id="fields">\n                            <option disabled="disabled">Loading...</option>\n                        </select>\n                    </div>\n                </div>\n                <div class="row filters-by-field" style="padding-left: 25px; padding-top: 5px">\n                </div>\n                <button type="button" class="btn btn-default pull-right" style="width: 100px;margin-bottom: 15px;">\n                    Save\n                </button>\n            </div>\n            <div class="chart-notes">Field Selector</div>\n        </div>\n    </div>\n</div>\n';
+        var fieldSelector = '<div class="row">\n    <div class="col-md-12">\n        <div id="field-selector" class="chart-wrapper">\n            <div class="chart-title">\n                <div class="title-left">Field Selector</div>\n                <div class="title-right collapsed"></div>\n                <div style="clear:both;"></div>\n            </div>\n            <div class="chart-stage collapse" aria-expanded="false">\n                <div class="row">\n                    <div class="col-md-5" style="padding-left: 25px;">\n                        List of Fields\n                        <select id="fields"></select>\n                    </div>\n                </div>\n                <div class="row filters-by-field" style="padding-left: 25px; padding-top: 5px">\n                </div>\n                <button type="button" class="btn btn-default pull-right" style="width: 100px;margin-bottom: 15px;">\n                    Save\n                </button>\n            </div>\n            <div class="chart-notes">Field Selector</div>\n        </div>\n    </div>\n</div>\n';
 
         addCollapsed(fieldSelector, '#field-selector', container);
 
         $("#fields")
-        .select2({
-            theme: 'bootstrap',
-            placeholder: 'Select a field',
-            // minimumResultsForSearch: Infinity,
-            templateResult: function(field) {
-                if(!field.id) {
-                    return field.text;
-                }
-                var e = field.text.split(',');
-                return $('<div class="title-left">' + e[0] + ' : </div><div class="title-right">'
-                    + e[1] + '</div><div style="clear:both;"></div>');
-            },
-            templateSelection: function(data) {
-                return data.text.split(',')[0];
-            }
-        })
+        .select2(this.fieldsSelectConfig())
         .on('change', function() {
             console.log("changed  to : ", $(this).val());
             if($(this).val()) {
-                filterByFieldPanel($(this).val(), datasource);
+                dashboard.filterByFieldPanel($(this).val(), datasource);
                 $(this).val(null).trigger('change');
             }
-        });
-
-        d3.json('/api/bi/')
-        .header('Content-Type', 'application/json')
-        .post(
-            '{"params": ["' + datasource + '"],"id": 0,"method": "get_datasource_info"}',
-            function(error, data) {
-                if(error)
-                    throw new Error(error);
-
-                console.log(data.result);
-                var $fields = $('#fields');
-                $fields.find('>option').remove();
-                data.result.fields
-                .sort(function(a, b) {
-                    return a.name.localeCompare(b.name);
-                })
-                .map(function(field) {
-                    var text = field.description ? field.description : field.name;
-                    var type = (field.dict) ? 'dict - ' + field.dict : field.type;
-
-                    $fields.append($('<option>', {
-                        value: [field.name, field.type, field.dict].filter(function(e) {
-                            return e
-                        }).join(','),
-                        text: text + "," + type,
-                        title: text
-                    }));
-                });
-                $fields.val(null).trigger('change');
-            }
-        );
+        })
+        .val(null).trigger('change');
     };
 
     this.createTimeSelector = function(container) {
@@ -367,6 +316,9 @@ var Dashboard = function(element) {
             maxDate: new Date(),
             theme: 'pikaday-theme',
             firstDay: 1,
+            showTime: false,
+            showMinutes: false,
+            showSeconds: false,
             onSelect: function() {
                 startDate = this.getDate();
                 updateStartDate();
@@ -384,6 +336,9 @@ var Dashboard = function(element) {
             minDate: new Date(2014, 1, 1),
             maxDate: new Date(),
             firstDay: 1,
+            showTime: false,
+            showMinutes: false,
+            showSeconds: false,
             onSelect: function() {
                 endDate = this.getDate();
                 updateEndDate();
@@ -433,6 +388,60 @@ var Dashboard = function(element) {
             })
     };
 
+    var drawBoard = function(datasource) {
+        var container = $("<div class='container-fluid'></div>").appendTo($(element));
+        var sortedByRows = dashboardJSON.layout.cells.sort(function(a, b) {
+            return a.row - b.row
+        });
+        var rowPosition = undefined;
+        var currentRow;
+
+        $('#export-btn').on("click", "", function(e) {
+            dashboard.export();
+            $('#export-btn').find('.spinner').show();
+        });
+
+        $('#report-name').text(dashboardJSON.title);
+        // selectors
+        dashboard.createTimeSelector(container);
+        dashboard.createFieldSelector(container, datasource);
+
+        $.each(sortedByRows, function(index, obj) {
+            if(rowPosition !== obj.row) {
+                rowPosition = obj.row;
+                currentRow = $('<div class="row"></div>').appendTo(container);
+            }
+            $(objToCell(obj)).appendTo(currentRow);
+            $('.reset .' + obj.name).click(function() {
+                dashboard.reset(obj.name);
+            });
+        });
+
+        if('export' in dashboardJSON) {
+            dashboard.exportQuery = dashboardJSON.export;
+        } else {
+            dashboard.exportQuery = null;
+        }
+
+        dashboard.widgets = dashboardJSON.widgets.map(function(widget) {
+            if('dataTable' === widget.type) {
+                objToTable(widget);
+            }
+            dashboard[widget.cell] = {
+                chart: dc[widget.type]('#' + getWidgetProp(widget.cell, 'cell')),
+                query: getWidgetProp(widget.cell, 'query'),
+                draw: dashboard[widget.type]
+            };
+            return dashboard[widget.cell];
+        });
+
+        NocFilter.init({
+            widgets: dashboard.widgets,
+            startCondition: [new Date('2016-01-01'), new Date('2017-01-01')]
+        });
+        drawAll();
+    };
+
     this.run = function(id) { //public
         d3.json('/api/bi/')
         .header("Content-Type", "application/json")
@@ -450,63 +459,33 @@ var Dashboard = function(element) {
                     return;
                 }
 
-                $('#export-btn').on("click", "", function(e) {
-                    dashboard.export();
-                    $('#export-btn').find('.spinner').show();
-                });
+                d3.json('/api/bi/')
+                .header("Content-Type", "application/json")
+                .post(
+                    '{"params": ["' + data.result.datasource + '"],"id": 0,"method": "get_datasource_info"}',
+                    function(error, data) {
+                        if(error)
+                            throw new Error(error);
 
-                dashboard.clear();
-                var container = $("<div class='container-fluid'></div>").appendTo($(element));
-                var sortedByRows = dashboardJSON.layout.cells.sort(function(a, b) {
-                    return a.row - b.row
-                });
-                var rowPosition = undefined;
-                var currentRow;
+                        data.result.fields
+                        .sort(function(a, b) {
+                            return a.name.localeCompare(b.name);
+                        })
+                        .map(function(field) {
+                            dashboard.fieldsType[field.name] = {
+                                type: field.type,
+                                dict: field.dict,
+                                desc: field.description
+                            };
+                        });
 
-                $('#report-name').text(dashboardJSON.title);
-                // selectors
-                dashboard.createTimeSelector(container);
-                dashboard.createFieldSelector(container, data.result.datasource);
-
-                $.each(sortedByRows, function(index, obj) {
-                    if(rowPosition !== obj.row) {
-                        rowPosition = obj.row;
-                        currentRow = $('<div class="row"></div>').appendTo(container);
-                    }
-                    $(objToCell(obj)).appendTo(currentRow);
-                    $('.reset .' + obj.name).click(function() {
-                        dashboard.reset(obj.name);
+                        dashboard.clear();
+                        drawBoard(this.dashboardJSON.datasource);
                     });
-                });
-
-                if('export' in dashboardJSON) {
-                    dashboard.exportQuery = dashboardJSON.export;
-                } else {
-                    dashboard.exportQuery = null;
-                }
-
-                dashboard.widgets = dashboardJSON.widgets.map(function(widget) {
-                    if('dataTable' === widget.type) {
-                        objToTable(widget);
-                    }
-                    dashboard[widget.cell] = {
-                        chart: dc[widget.type]('#' + getWidgetProp(widget.cell, 'cell')),
-                        query: getWidgetProp(widget.cell, 'query'),
-                        draw: dashboard[widget.type]
-                    };
-                    return dashboard[widget.cell];
-                });
-
-                NocFilter.init({
-                    widgets: dashboard.widgets,
-                    startCondition: [new Date('2016-01-01'), new Date('2017-01-01')]
-                });
-                drawAll();
             });
     };
 
     // format functions
-
     this.dateToString = function(date, format) {
         format = typeof format !== 'undefined' ? format : '%d.%b.%y';
         return d3.time.format(format)(date);
@@ -521,6 +500,65 @@ var Dashboard = function(element) {
     };
 
     // utils
+    var addCollapsed = function(panel, anchorName, container) {
+        $(panel).appendTo(container);
+        $(anchorName + '>.chart-title').click(function() {
+            var $selector = $(this).next(null);
+
+            if($selector.attr('aria-expanded') === 'true') {
+                $(this).children('.title-right').removeClass('expanded');
+                $(this).children('.title-right').addClass('collapsed');
+            } else {
+                $(this).children('.title-right').removeClass('collapsed');
+                $(this).children('.title-right').addClass('expanded');
+            }
+            $selector.collapse("toggle")
+        });
+    };
+
+    var valuesListQuery = function(field, dict, filterPattern, datasource) {
+        var query = {
+            params: [
+                {
+                    fields: [
+                        {
+                            expr: field,
+                            group: 0
+                        },
+                        {
+                            expr: {
+                                $lookup: [
+                                    dict,
+                                    {
+                                        $field: field
+                                    }
+                                ]
+                            },
+                            alias: "value",
+                            order: 0
+                        }
+                    ],
+                    limit: 500,
+                    datasource: datasource
+                }
+            ],
+            id: 0,
+            method: "query"
+        };
+        if(filterPattern) {
+            query.params[0].filter = {
+                $like: [
+                    {
+                        $field: "value"
+                    },
+                    // $.param('%' + filterPattern + '%')
+                    '%' + filterPattern + '%'
+                ]
+            }
+        }
+        return query
+    };
+
     var zip = function(data, dateParse) {
         var ndx = crossfilter();
 
@@ -592,7 +630,7 @@ var Dashboard = function(element) {
             }
         }
 
-        NocFilter.updateFilter(field, chart.filters());
+        NocFilter.updateFilter(field, dashboard.fieldsType[field], chart.filters(), '$eq');
 
         if(value) {
             // redraw other

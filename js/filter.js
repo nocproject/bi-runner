@@ -55,6 +55,26 @@ var NocFilter = (function() {
         }
     }
 
+    function dateTimeInterval(value) {
+        if(value) {
+            return [{
+                $gte: [{
+                    $field: "date"
+                }, {
+                    $field: "toDateTime('" + d3.time.format("%Y-%m-%dT%H:%M:%S")(value[0]) + "')"
+                }]
+            }, {
+                $lte: [{
+                    $field: "date"
+                }, {
+                    $field: "toDateTime('" + d3.time.format("%Y-%m-%dT%H:%M:%S")(value[1]) + "')"
+                }]
+            }];
+        } else {
+            return [];
+        }
+    }
+
     function flat(values) {
         return [].concat.apply([], values);
     }
@@ -76,7 +96,7 @@ var NocFilter = (function() {
 
         return andValues(
             flat(keys.map(function(key) {
-                    if('date' === key || 'startCondition' === key) {
+                    if('date' === key && 'interval' === condition) {
                         return dateInterval(filter[key]);
                     } else {
                         var values = filter[key].map(function(element) {
@@ -102,20 +122,21 @@ var NocFilter = (function() {
                 this.setStartCondition(args.startCondition);
             }
         },
-        updateFilter: function(fieldName, fieldValues, condition) {
-            if('date' === fieldName || 'startCondition' === fieldName) {
+        updateFilter: function(name, type, values, condition) {
+            console.warn('updateFilter : ', name, type, values, condition);
+            if('date' === name || 'interval' === condition) {
                 // ToDo compare with startCondition
-                filter.date = fieldValues[0];
+                filter.date = values[0];
             } else {
-                filter[fieldName] = fieldValues.map(function(element) {
+                filter[name] = values.map(function(element) {
                     return element.split('.')[0];
                 });
             }
             updateWidgets(makeFilter(condition));
         },
-        deleteFilter: function(fieldName) {
-            if(filter.hasOwnProperty(fieldName)) {
-                delete filter[fieldName];
+        deleteFilter: function(name) {
+            if(filter.hasOwnProperty(name)) {
+                delete filter[name];
                 updateWidgets(makeFilter());
             }
         },
@@ -124,9 +145,9 @@ var NocFilter = (function() {
             return undefined;
         },
         setStartCondition: function(interval) {
-            filter.startCondition = interval;
+            filter.date = interval;
             dashboard.setSelectorInterval(interval[0], interval[1]);
-            this.updateFilter('startCondition', [filter.startCondition]);
+            this.updateFilter('date', 'Date', [filter.date], 'interval');
         },
         getFilter: function() {
             return filter;
