@@ -45,7 +45,7 @@
 .pikaday-theme .is-selected .pika-button {
     color: #fff;
     background: $brand-primary;
-    box-shadow: inset 0 1px 3px #178fe5;
+    box-shadow: inset 0 1px 3px $input-border-focus;
 }
 
 .pikaday-theme .is-disabled .pika-button {

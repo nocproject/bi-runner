@@ -48,14 +48,16 @@ var LIBS_FILES = [
     './node_modules/pikaday-time/plugins/pikaday.jquery.js',
     './node_modules/dc/dc.js',
     './node_modules/file-saver/FileSaver.js',
-    './node_modules/select2/dist/js/select2.js'
+    './node_modules/select2/dist/js/select2.js',
+    './node_modules/bootstrap-select/dist/js/bootstrap-select.js'
 ];
 
 var CSS_FILES = [
     './node_modules/font-awesome/css/font-awesome.css',
     './node_modules/pikaday-time/css/pikaday.css',
     './node_modules/dc/dc.css',
-    './node_modules/select2/dist/css/select2.css'
+    './node_modules/select2/dist/css/select2.css',
+    './node_modules/bootstrap-select/dist/css/bootstrap-select.css'
 ];
 
 gulp.task('clean', function() {
@@ -98,7 +100,7 @@ gulp.task('lib.css.dev', function() {
     .pipe(gulp.dest(CSS_DEST))
 });
 
-gulp.task('app.css.dev', ['build.scss'], function() {
+gulp.task('app.css.dev', ['build.sass'], function() {
     return gulp.src(APP_CSS_FILES)
     .pipe(concat(APP_CSS))
     .pipe(gulp.dest(CSS_DEST))
@@ -112,8 +114,8 @@ gulp.task('watch', function() {
     }));
 });
 
-gulp.task('build.scss', function() {
-    return gulp.src('./scss/bi.scss')
+gulp.task('build.sass', function() {
+    return gulp.src('./sass/bi.sass')
     .pipe(sass().on('error', sass.logError))
     .pipe(gulp.dest('./css'));
 });
@@ -138,7 +140,7 @@ gulp.task('app.scripts.prod', function() {
     .pipe(gulp.dest(APP_DEST))
 });
 
-gulp.task('app.css.prod', ['build.scss'], function() {
+gulp.task('app.css.prod', ['build.sass'], function() {
     return gulp.src(APP_CSS_FILES)
     .pipe(concat(APP_CSS))
     .pipe(cssnano())
