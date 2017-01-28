@@ -8,8 +8,14 @@ var NocFilter = (function() {
         return conditionValue('$eq', name, value);
     }
 
-    function conditionValue(condition, name, value) {
+    function conditionValue(name, value, type, condition) {
         var expression = {};
+
+        if('Date' === type) {
+            value = toDate(value);
+        } else if('DateTime' === type) {
+            value = toDateTime(value);
+        }
 
         if(condition) {
             expression[condition] = [{
@@ -35,39 +41,30 @@ var NocFilter = (function() {
         };
     }
 
-    function dateInterval(value) {
-        if(value) {
-            return [{
-                $gte: [{
-                    $field: "date"
-                }, {
-                    $field: "toDate('" + d3.time.format("%Y-%m-%d")(value[0]) + "')"
-                }]
-            }, {
-                $lte: [{
-                    $field: "date"
-                }, {
-                    $field: "toDate('" + d3.time.format("%Y-%m-%d")(value[1]) + "')"
-                }]
-            }];
+    function interval(name, value, type) {
+        var from, to;
+        if('Date' === type) {
+            from = toDate(value[0]);
+            to = toDate(value[1]);
+        } else if('DateTime' === type) {
+            from = toDateTime(value[0]);
+            to = toDateTime(value[1]);
         } else {
-            return [];
+            from = value[0];
+            to = value[1];
         }
-    }
-
-    function dateTimeInterval(value) {
         if(value) {
             return [{
                 $gte: [{
-                    $field: "date"
+                    $field: name
                 }, {
-                    $field: "toDateTime('" + d3.time.format("%Y-%m-%dT%H:%M:%S")(value[0]) + "')"
+                    $field: from
                 }]
             }, {
                 $lte: [{
-                    $field: "date"
+                    $field: name
                 }, {
-                    $field: "toDateTime('" + d3.time.format("%Y-%m-%dT%H:%M:%S")(value[1]) + "')"
+                    $field: to
                 }]
             }];
         } else {
@@ -91,16 +88,17 @@ var NocFilter = (function() {
         widget.query.params[0].filter = filter;
     }
 
-    function makeFilter(condition) {
+    function makeFilter() {
         var keys = Object.getOwnPropertyNames(filter);
 
         return andValues(
-            flat(keys.map(function(key) {
-                    if('date' === key && 'interval' === condition) {
-                        return dateInterval(filter[key]);
+            flat(keys.map(function(name) {
+                    var key = filter[name];
+                    if('interval' === key.condition) {
+                        return interval(name, key.values, key.type);
                     } else {
-                        var values = filter[key].map(function(element) {
-                            return conditionValue(condition, key, element);
+                        var values = key.values.map(function(value) {
+                            return conditionValue(name, value, key.type, key.condition);
                         });
                         if(values.length > 0) {
                             return orValues(values);
@@ -113,6 +111,14 @@ var NocFilter = (function() {
         );
     }
 
+    function toDate(value) {
+        return "toDate('" + d3.time.format("%Y-%m-%d")(value) + "')";
+    }
+
+    function toDateTime(value) {
+        return "toDateTime('" + d3.time.format("%Y-%m-%dT%H:%M:%S")(value) + "')";
+    }
+
     // public
     return {
         init: function(args) {
@@ -123,16 +129,18 @@ var NocFilter = (function() {
             }
         },
         updateFilter: function(name, type, values, condition) {
-            console.warn('updateFilter : ', name, type, values, condition);
-            if('date' === name || 'interval' === condition) {
-                // ToDo compare with startCondition
-                filter.date = values[0];
-            } else {
-                filter[name] = values.map(function(element) {
-                    return element.split('.')[0];
-                });
-            }
-            updateWidgets(makeFilter(condition));
+            filter[name] = {
+                values: flat(values.map(function(value) {
+                    if('string' === typeof value) {
+                        return value.split('.')[0];
+                    } else {
+                        return value;
+                    }
+                })),
+                type: type,
+                condition: condition
+            };
+            updateWidgets(makeFilter());
         },
         deleteFilter: function(name) {
             if(filter.hasOwnProperty(name)) {

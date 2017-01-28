@@ -193,7 +193,7 @@ var Dashboard = function(element) {
             $('#' + value2).pikaday({
                 incrementMinuteBy: 10,
                 theme: 'pikaday-theme',
-                // format: 'YYYY-MM-DDThh:mm:00',
+                format: 'YYYY-MM-DDThh:mm:00',
                 use24hour: true,
                 showSeconds: false
             });
@@ -203,14 +203,14 @@ var Dashboard = function(element) {
 
             $('#' + value1).pikaday({
                 theme: 'pikaday-theme',
-                // format: 'YYYY-MM-DD',
+                format: 'YYYY-MM-DD',
                 showTime: false,
                 showMinutes: false,
                 showSeconds: false
             });
             $('#' + value2).pikaday({
                 theme: 'pikaday-theme',
-                // format: 'YYYY-MM-DD',
+                format: 'YYYY-MM-DD',
                 showTime: false,
                 showMinutes: false,
                 showSeconds: false
@@ -237,17 +237,32 @@ var Dashboard = function(element) {
         });
 
         $('#filter-panel' + id).find('.apply-filter').on('click', function() {
-            var valueId = $('#value-1' + id).val();
-            var value = $('#value-1' + id).text();
+            var value1Id = $('#value-1' + id).val();
+            var value1 = $('#value-1' + id).text();
+            var value2Id = $('#value-2' + id).val();
+            var value2 = $('#value-2' + id).text();
             var condition = $('#filter-panel' + id).find('.condition').val();
+            var values;
+            var intervalDate = function(pattern) {
+                var values = [d3.time.format(pattern).parse(value1Id)];
 
-            console.log('apply filter');
-            console.log('panel id : filter-panel' + id);
-            console.log('field : ' + field);
-            console.log('value : ' + valueId);
-            console.log('text : ' + value);
-            console.log('condition : ' + condition);
-            NocFilter.updateFilter(field[0], field[1], [valueId + '.' + value], condition);
+                if('interval' === condition) {
+                    value2Id = d3.time.format(pattern).parse(value2Id);
+                    values.push(value2Id);
+                }
+
+                return values;
+            };
+
+            if('Date' === field[1]) {
+                values = intervalDate('%Y-%m-%d');
+            } else if('DateTime' === field[1]) {
+                values = intervalDate('%Y-%m-%dT%H:%M:00');
+            } else {
+                values = [value1Id + '.' + value1];
+                if('interval' === condition) values.push(value2Id + '.' + value2);
+            }
+            NocFilter.updateFilter(field[0], field[1], values, condition);
             drawAll();
         });
 
@@ -630,7 +645,7 @@ var Dashboard = function(element) {
             }
         }
 
-        NocFilter.updateFilter(field, dashboard.fieldsType[field], chart.filters(), '$eq');
+        NocFilter.updateFilter(field, dashboard.fieldsType[field].type, chart.filters(), '$eq');
 
         if(value) {
             // redraw other
