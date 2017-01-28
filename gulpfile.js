@@ -100,7 +100,7 @@ gulp.task('lib.css.dev', function() {
     .pipe(gulp.dest(CSS_DEST))
 });
 
-gulp.task('app.css.dev', ['build.scss'], function() {
+gulp.task('app.css.dev', ['build.sass'], function() {
     return gulp.src(APP_CSS_FILES)
     .pipe(concat(APP_CSS))
     .pipe(gulp.dest(CSS_DEST))
@@ -114,8 +114,8 @@ gulp.task('watch', function() {
     }));
 });
 
-gulp.task('build.scss', function() {
-    return gulp.src('./scss/bi.scss')
+gulp.task('build.sass', function() {
+    return gulp.src('./sass/bi.sass')
     .pipe(sass().on('error', sass.logError))
     .pipe(gulp.dest('./css'));
 });
@@ -140,7 +140,7 @@ gulp.task('app.scripts.prod', function() {
     .pipe(gulp.dest(APP_DEST))
 });
 
-gulp.task('app.css.prod', ['build.scss'], function() {
+gulp.task('app.css.prod', ['build.sass'], function() {
     return gulp.src(APP_CSS_FILES)
     .pipe(concat(APP_CSS))
     .pipe(cssnano())
