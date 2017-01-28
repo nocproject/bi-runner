@@ -56,6 +56,8 @@ var Dashboard = function(element) {
             theme: 'bootstrap',
             placeholder: 'Select a field',
             minimumResultsForSearch: Infinity,
+            dropdownAutoWidth: true,
+            width: 'auto',
             templateResult: function(field) {
                 if(!field.id) {
                     return field.text;
@@ -84,16 +86,12 @@ var Dashboard = function(element) {
 
     this.filterByFieldPanel = function(fieldValue, datasource) {
         var type;
-        var filterByField = '<div id="filter-panel{id}" class="panel panel-default">\n    <div class="panel-heading" style="height: 35px">\n        <div>\n            <div class="title-left">Field name: <b>{name}</b>, {type}</div>\n            <div style="cursor: pointer;cursor: hand;float: right;" class="close-panel">\n                <i class="fa fa-times-circle" aria-hidden="true"></i>\n            </div>\n            <div style="clear:both;"></div>\n        </div>\n    </div>\n    <div class="panel-body">\n        <form class="form-horizontal">\n            <div class="form-group">\n                <label class="control-label col-md-1 col-md-offset-1">Condition:</label>\n                <div class="col-md-1">\n                    <select class="form-control values condition">\n                        <option disabled="disabled">Loading...</option>\n                    </select>\n                </div>\n                <label class="control-label col-md-2 col-md-offset-1" for="value-1{id}">Value:</label>\n                <div class="col-md-6">\n                    <input type="text" class="form-control" id="value-1{id}" placeholder="Value">\n                </div>\n            </div>\n            <div class="form-group second-value hidden">\n                <label class="control-label col-md-6" for="value-2{id}">To Value:</label>\n                <div class="col-md-6">\n                    <input type="text" class="form-control" id="value-2{id}" placeholder="To Value">\n                </div>\n            </div>\n            <hr>\n            <div class="form-group">\n                <div class="col-md-2 col-md-offset-1">\n                    <label class="checkbox">\n                        <input type="checkbox" class="show-chart" value="">Show the distribution of values\n                    </label>\n                </div>\n                <label class="control-label col-md-1">Chart type:</label>\n                <div class="col-md-1">\n                    <select class="form-control values chart-type" disabled></select>\n                </div>\n                <label class="control-label col-md-1">Field:</label>\n                <div class="col-md-3">\n                    <select class="form-control values chart-fields" disabled>\n                    </select>\n                </div>\n                <label class="control-label col-md-1">Function:</label>\n                <div class="col-md-2">\n                    <select class="form-control values chart-func" disabled></select>\n                </div>\n            </div>\n            <div class="form-group">\n                <div class="col-md-offset-1 col-md-1">\n                    <input type="button" class="btn btn-default pull-left chart-show" value="Show Chart" disabled>\n                </div>\n            </div>\n            <div class="form-group">\n                <div class="col-md-offset-2 col-md-10">\n                    <input type="button" class="btn btn-default pull-right apply-filter" value="Apply">\n                    <input type="button" class="btn btn-default pull-right clear-filter" value="Clear">\n                </div>\n            </div>\n        </form>\n    </div>\n</div>';
+        var filterByField = '<div id="filter-panel{id}" class="panel panel-default" style="margin-right: -10px;margin-bottom: 5px;">\n    <div class="panel-heading" style="color: #fff;">\n        <div>\n            <div class="title-left">Field name: <b>{name}</b>, {type}</div>\n            <div style="cursor: pointer;cursor: hand;float: right;" class="close-panel">\n                <i class="fa fa-times-circle" aria-hidden="true"></i>\n            </div>\n            <div style="clear:both;"></div>\n        </div>\n    </div>\n    <div class="panel-body" style="padding-bottom: 0px;">\n        <form class="form-horizontal">\n            <div class="form-group">\n                <label class="control-label col-md-1 col-md-offset-1">Condition:</label>\n                <div class="col-md-1">\n                    <select class="form-control values condition"></select>\n                </div>\n                <label class="control-label col-md-2 col-md-offset-1" for="value-1{id}">Value:</label>\n                <div class="col-md-6">\n                    <input type="text" class="form-control" id="value-1{id}" placeholder="Value">\n                </div>\n            </div>\n            <div class="form-group second-value hidden">\n                <label class="control-label col-md-6" for="value-2{id}">To Value:</label>\n                <div class="col-md-6">\n                    <input type="text" class="form-control" id="value-2{id}" placeholder="To Value">\n                </div>\n            </div>\n            <hr>\n            <div class="form-group">\n                <div class="col-md-2 col-md-offset-1">\n                    <label class="checkbox">\n                        <input type="checkbox" class="show-chart" value="">Show the distribution of values\n                    </label>\n                </div>\n                <label class="control-label col-md-1">Chart type:</label>\n                <div class="col-md-1">\n                    <select class="form-control values chart-type" disabled></select>\n                </div>\n                <label class="control-label col-md-1">Field:</label>\n                <div class="col-md-3">\n                    <select class="form-control values chart-fields" disabled>\n                    </select>\n                </div>\n                <label class="control-label col-md-1">Function:</label>\n                <div class="col-md-2">\n                    <select class="form-control values chart-func" disabled></select>\n                </div>\n            </div>\n            <div class="form-group">\n                <div class="col-md-offset-1 col-md-1">\n                    <input type="button" class="btn btn-default pull-left chart-show btn-sm" value="Show Chart" disabled>\n                </div>\n            </div>\n            <div class="form-group">\n                <div class="pull-right" style="margin-right: 10px;">\n                    <input type="button" class="btn btn-default clear-filter btn-sm" value="Clear">\n                    <input type="button" class="btn btn-default apply-filter btn-sm" value="Apply">\n                </div>\n            </div>\n        </form>\n    </div>\n</div>';
         var id = new Date().getTime();
         var field = fieldValue.split(',');
         var conditionOptions = [
             {id: '$eq', text: '=='},
-            {id: '$ne', text: '<>'},
-            {id: '$lt', text: '<'},
-            {id: '$le', text: '<='},
-            {id: '$gt', text: '>'},
-            {id: '$ge', text: '>='}
+            {id: '$ne', text: '<>'}
         ];
         var chartTypes = [
             {id: 'bar', text: 'Bar'},
@@ -115,14 +113,18 @@ var Dashboard = function(element) {
             type = 'dictionary: <b>' + field[2] + '</b>';
         } else {
             type = 'type: <b>' + field[1] + '</b>';
-            conditionOptions.push({id: 'interval', text: 'interval'});
+            conditionOptions.push(
+                {id: 'interval', text: 'interval'},
+                {id: '$lt', text: '<'},
+                {id: '$le', text: '<='},
+                {id: '$gt', text: '>'},
+                {id: '$ge', text: '>='}
+            );
         }
 
         filterByField = filterByField.replace('{type}', type);
 
         $('.filters-by-field').append($(filterByField));
-
-        $('#filter-panel' + id).find('.condition>option').remove();
 
         $('#filter-panel' + id).find('.condition')
         .select2({
@@ -288,7 +290,7 @@ var Dashboard = function(element) {
     };
 
     this.createFieldSelector = function(container, datasource) {
-        var fieldSelector = '<div class="row">\n    <div class="col-md-12">\n        <div id="field-selector" class="chart-wrapper">\n            <div class="chart-title">\n                <div class="title-left">Field Filter</div>\n                <div class="title-right collapsed"></div>\n                <div style="clear:both;"></div>\n            </div>\n            <div class="chart-stage collapse" aria-expanded="false">\n                <div class="row">\n                    <div class="form-group">\n                        <label class="col-md-2 col-md-offset-1">List of fields:</label>\n                        <div class="col-md-6">\n                            <select id="fields" class="form-control"></select>\n                        </div>\n                    </div>\n                </div>\n                <div class="row filters-by-field" style="padding-left: 25px; padding-top: 5px">\n                </div>\n                <button type="button" class="btn btn-default pull-right" style="width: 100px;margin-bottom: 15px;">\n                    Save\n                </button>\n            </div>\n            <div class="chart-notes">Field Selector</div>\n        </div>\n    </div>\n</div>\n';
+        var fieldSelector = '<div class="row">\n    <div class="col-md-12">\n        <div id="field-selector" class="chart-wrapper">\n            <div class="chart-title">\n                <div class="title-left">Field Selector</div>\n                <div class="title-right collapsed"></div>\n                <div style="clear:both;"></div>\n            </div>\n            <div class="chart-stage collapse" aria-expanded="false">\n                <div class="row">\n                    <form class="form-horizontal">\n                        <div class="form-group">\n                            <label class="col-md-2 col-md-offset-1">List of fields:</label>\n                            <div class="col-md-6">\n                                <select id="fields"></select>\n                            </div>\n                        </div>\n                    </form>\n                </div>\n                <div class="filters-by-field"></div>\n                <button class="btn btn-default pull-right">Save</button>\n            </div>\n            <div class="chart-notes">Field Selector</div>\n        </div>\n    </div>\n</div>\n';
 
         addCollapsed(fieldSelector, '#field-selector', container);
 
