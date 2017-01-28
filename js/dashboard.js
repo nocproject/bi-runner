@@ -288,12 +288,13 @@ var Dashboard = function(element) {
     };
 
     this.createFieldSelector = function(container, datasource) {
-        var fieldSelector = '<div class="row">\n    <div class="col-md-12">\n        <div id="field-selector" class="chart-wrapper">\n            <div class="chart-title">\n                <div class="title-left">Field Selector</div>\n                <div class="title-right collapsed"></div>\n                <div style="clear:both;"></div>\n            </div>\n            <div class="chart-stage collapse" aria-expanded="false">\n                <div class="row">\n                    <div class="col-md-5" style="padding-left: 25px;">\n                        List of Fields\n                        <select id="fields"></select>\n                    </div>\n                </div>\n                <div class="row filters-by-field" style="padding-left: 25px; padding-top: 5px">\n                </div>\n                <button type="button" class="btn btn-default pull-right" style="width: 100px;margin-bottom: 15px;">\n                    Save\n                </button>\n            </div>\n            <div class="chart-notes">Field Selector</div>\n        </div>\n    </div>\n</div>\n';
+        var fieldSelector = '<div class="row">\n    <div class="col-md-12">\n        <div id="field-selector" class="chart-wrapper">\n            <div class="chart-title">\n                <div class="title-left">Field Filter</div>\n                <div class="title-right collapsed"></div>\n                <div style="clear:both;"></div>\n            </div>\n            <div class="chart-stage collapse" aria-expanded="false">\n                <div class="row">\n                    <div class="col-md-5" style="padding-left: 25px;">\n                        List of Fields\n                        <select id="fields"></select>\n                    </div>\n                </div>\n                <div class="row filters-by-field" style="padding-left: 25px; padding-top: 5px">\n                </div>\n                <button type="button" class="btn btn-default pull-right" style="width: 100px;margin-bottom: 15px;">\n                    Save\n                </button>\n            </div>\n            <div class="chart-notes">Field Selector</div>\n        </div>\n    </div>\n</div>\n';
 
         addCollapsed(fieldSelector, '#field-selector', container);
 
         $("#fields")
-        .select2(this.fieldsSelectConfig())
+        .selectpicker()
+        // .select2(this.fieldsSelectConfig())
         .on('change', function() {
             console.log("changed  to : ", $(this).val());
             if($(this).val()) {

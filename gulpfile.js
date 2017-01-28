@@ -48,14 +48,16 @@ var LIBS_FILES = [
     './node_modules/pikaday-time/plugins/pikaday.jquery.js',
     './node_modules/dc/dc.js',
     './node_modules/file-saver/FileSaver.js',
-    './node_modules/select2/dist/js/select2.js'
+    './node_modules/select2/dist/js/select2.js',
+    './node_modules/bootstrap-select/dist/js/bootstrap-select.js'
 ];
 
 var CSS_FILES = [
     './node_modules/font-awesome/css/font-awesome.css',
     './node_modules/pikaday-time/css/pikaday.css',
     './node_modules/dc/dc.css',
-    './node_modules/select2/dist/css/select2.css'
+    './node_modules/select2/dist/css/select2.css',
+    './node_modules/bootstrap-select/dist/css/bootstrap-select.css'
 ];
 
 gulp.task('clean', function() {
