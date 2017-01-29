@@ -1,0 +1,33 @@
+@import "variables";
+
+input[type=checkbox] {
+  visibility: hidden;
+}
+
+.bi-checkbox {
+  width: 40px;
+  height: 10px;
+  background: $main-color;
+  margin: 20px 80px;
+  position: relative;
+  border-radius: 3px;
+}
+
+.bi-checkbox label {
+  display: block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+
+  transition: all .5s ease;
+  cursor: pointer;
+  position: absolute;
+  top: -3px;
+  left: -3px;
+
+  background: #ccc;
+}
+
+.bi-checkbox input[type=checkbox]:checked + label {
+  left: 27px;
+}
