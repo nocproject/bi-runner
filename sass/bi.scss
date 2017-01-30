@@ -3,9 +3,12 @@
 @import "../node_modules/select2-bootstrap-theme/src/select2-bootstrap";
 
 @import "chart";
-@import "checkbox";
 @import "pikaday-theme";
 
 body {
   background: #95a5a6;
+}
+
+*:focus {
+  outline: none;
 }

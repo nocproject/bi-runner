@@ -2,7 +2,6 @@ var gulp = require('gulp');
 var concat = require('gulp-concat');
 var clean = require('gulp-clean');
 var gulp_sync_task = require('gulp-sync-task');
-var gulpCopy = require('gulp-copy');
 var rename = require("gulp-rename");
 var watch = require('gulp-watch');
 var batch = require('gulp-batch');
@@ -48,7 +47,8 @@ var LIBS_FILES = [
     './node_modules/pikaday-time/plugins/pikaday.jquery.js',
     './node_modules/dc/dc.js',
     './node_modules/file-saver/FileSaver.js',
-    './node_modules/select2/dist/js/select2.js'
+    './node_modules/select2/dist/js/select2.js',
+    './node_modules/bootstrap-checkbox/dist/js/bootstrap-checkbox.js'
 ];
 
 var CSS_FILES = [
@@ -105,7 +105,7 @@ gulp.task('app.css.dev', ['build.sass'], function() {
 });
 
 gulp.task('watch', function() {
-    watch(['js/*.js', 'css/*.css', 'index-dev.html', 'index.html'], batch(function(events, done) {
+    watch(['js/*.js', 'sass/*.scss', 'index-dev.html', 'index.html'], batch(function(events, done) {
         gulp.start('index-stage.copy', done);
         gulp.start('app.scrips.dev', done);
         gulp.start('app.css.dev', done);
