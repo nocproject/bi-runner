@@ -2,6 +2,7 @@ var Dashboard = function(element) {
     //public properties
     this.element = element;
     this.fieldsType = {};
+    this.separator = '.';
 
     // public methods
     this.reset = function(widget) {
@@ -23,7 +24,8 @@ var Dashboard = function(element) {
 
     this.timeSelector = function(arg) {
         var start, end;
-        var command = arg.split('.');
+
+        var command = arg.split(dashboard.separator);
         var format = "%Y-%m-%d";
         var now = new Date;
 
@@ -40,7 +42,7 @@ var Dashboard = function(element) {
             end = d3.time[command[1]].ceil(now);
 
             console.log(dashboard.dateToString(start, format), dashboard.dateToString(end, format));
-            NocFilter.setStartCondition([start, end]);
+            NocFilter.setStartDateCondition([start, end]);
             downChevron();
             drawAll();
         }
@@ -86,7 +88,7 @@ var Dashboard = function(element) {
 
     this.filterByFieldPanel = function(fieldValue, datasource) {
         var type;
-        var filterByField = '<div id="filter-panel{id}" class="panel panel-default" style="margin-bottom: 10px">\n    <div class="panel-heading">\n        <div>\n            <div class="title-left">Field name: <b>{name}</b>, {type}</div>\n            <div style="cursor: pointer;cursor: hand;float: right;" class="close-panel">\n                <i class="fa fa-times-circle" aria-hidden="true"></i>\n            </div>\n            <div style="clear:both;"></div>\n        </div>\n    </div>\n    <div class="panel-body" style="padding-bottom: 0px;">\n        <form class="form-horizontal">\n            <div class="form-group">\n                <label class="control-label col-md-1 col-md-offset-1">Condition:</label>\n                <div class="col-md-1">\n                    <select class="form-control values condition"></select>\n                </div>\n                <label class="control-label col-md-2 col-md-offset-1" for="value-1{id}">Value:</label>\n                <div class="col-md-6">\n                    <input type="text" class="form-control" id="value-1{id}" placeholder="Value">\n                </div>\n            </div>\n            <div class="form-group second-value hidden">\n                <label class="control-label col-md-6" for="value-2{id}">To Value:</label>\n                <div class="col-md-6">\n                    <input type="text" class="form-control" id="value-2{id}" placeholder="To Value">\n                </div>\n            </div>\n            <hr>\n            <div class="form-group" style="margin-bottom: 5px;">\n                <div class="col-md-1">\n                    <label class="control-label">Show chart:</label>\n                </div>\n                <div class="col-md-2">\n                    <input type="checkbox" value="1" name="" class="show-chart"/>\n                </div>\n                <label class="control-label col-md-1">Chart type:</label>\n                <div class="col-md-1">\n                    <select class="form-control values chart-type" disabled></select>\n                </div>\n                <label class="control-label col-md-1">Field:</label>\n                <div class="col-md-3">\n                    <select class="form-control values chart-fields" disabled>\n                    </select>\n                </div>\n                <label class="control-label col-md-1">Function:</label>\n                <div class="col-md-2">\n                    <select class="form-control values chart-func" disabled></select>\n                </div>\n            </div>\n            <div class="form-group" style="margin-bottom: 10px;">\n                <div class="col-md-offset-1 pull-left">\n                    <a href="#" class="btn btn-default pull-left chart-show btn-sm" disabled>Show Chart</a>\n                </div>\n                <div class="pull-right" style="margin-right: 10px;">\n                    <a href="#" class="btn btn-default clear-filter btn-sm">Clear</a>\n                    <a href="#" class="btn btn-default apply-filter btn-sm">Apply</a>\n                </div>\n            </div>\n        </form>\n    </div>\n</div>';
+        var filterByField = '<div id="filter-panel{id}" class="panel panel-default" style="margin-bottom: 10px">\n    <div class="panel-heading">\n        <div>\n            <div class="title-left">Field name: <b>{name}</b>, {type}</div>\n            <div style="cursor: pointer;cursor: hand;float: right;" class="close-panel">\n                <i class="fa fa-times-circle" aria-hidden="true"></i>\n            </div>\n            <div style="clear:both;"></div>\n        </div>\n    </div>\n    <div class="panel-body" style="padding-bottom: 0px;">\n        <form class="form-horizontal">\n            <div class="form-group">\n                <label class="control-label col-md-1 col-md-offset-1">Condition:</label>\n                <div class="col-md-2">\n                    <select class="form-control values condition"></select>\n                </div>\n                <label class="control-label col-md-2" for="value-1{id}">Value:</label>\n                <div class="col-md-6">\n                    <input type="text" class="form-control" id="value-1{id}" placeholder="Value">\n                </div>\n            </div>\n            <div class="form-group second-value hidden">\n                <label class="control-label col-md-6" for="value-2{id}">To Value:</label>\n                <div class="col-md-6">\n                    <input type="text" class="form-control" id="value-2{id}" placeholder="To Value">\n                </div>\n            </div>\n            <!--<hr style="margin-top: 10px;margin-bottom: 10px;">-->\n            <!--<div class="form-group" style="margin-bottom: 10px;">-->\n                <!--<label class="col-md-1 control-label">Show chart:</label>-->\n                <!--<div class="col-md-2">-->\n                    <!--<input type="checkbox" value="1" name="" class="form-control show-chart"/>-->\n                <!--</div>-->\n                <!--<label class="control-label col-md-1">Chart type:</label>-->\n                <!--<div class="col-md-1">-->\n                    <!--<select class="form-control values chart-type" disabled></select>-->\n                <!--</div>-->\n                <!--<label class="control-label col-md-1">Field:</label>-->\n                <!--<div class="col-md-3">-->\n                    <!--<select class="form-control values chart-fields" disabled> </select>-->\n                <!--</div>-->\n                <!--<label class="control-label col-md-1">Function:</label>-->\n                <!--<div class="col-md-2">-->\n                    <!--<select class="form-control values chart-func" disabled></select>-->\n                <!--</div>-->\n            <!--</div>-->\n            <div class="form-group" style="margin-bottom: 10px;">\n                <!--<div class="col-md-offset-1 pull-left">-->\n                    <!--<a href="#" class="btn btn-default pull-left chart-show btn-sm" disabled>Show Chart</a>-->\n                <!--</div>-->\n                <div class="pull-right" style="margin-right: 10px;">\n                    <a href="#" class="btn btn-default clear-filter btn-sm">Clear</a>\n                    <a href="#" class="btn btn-default apply-filter btn-sm">Apply</a>\n                </div>\n            </div>\n        </form>\n    </div>\n</div>';
         var id = new Date().getTime();
         var field = fieldValue.split(',');
         var conditionOptions = [
@@ -125,29 +127,6 @@ var Dashboard = function(element) {
         filterByField = filterByField.replace('{type}', type);
 
         $('.filters-by-field').append($(filterByField));
-
-        $('#filter-panel' + id).find('.condition')
-        .select2({
-            theme: 'bootstrap',
-            placeholder: 'Select a condition',
-            minimumResultsForSearch: Infinity,
-            data: conditionOptions
-        });
-
-        $('#filter-panel' + id).find('.chart-type')
-        .select2({
-            theme: 'bootstrap',
-            placeholder: 'Select a condition',
-            minimumResultsForSearch: Infinity,
-            data: chartTypes
-        });
-        $('#filter-panel' + id).find('.chart-func')
-        .select2({
-            theme: 'bootstrap',
-            placeholder: 'Select a condition',
-            minimumResultsForSearch: Infinity,
-            data: chartFunction
-        });
 
         if(field.length === 3) {
             $('#' + value1).replaceWith('<select id="' + value1 + '" class="form-control values"></select>');
@@ -199,6 +178,9 @@ var Dashboard = function(element) {
                 use24hour: true,
                 showSeconds: false
             });
+            conditionOptions.push(
+                {id: 'periodic.interval', text: 'periodic interval'}
+            );
         } else if('Date' === field[1]) {
             $('#' + value1).replaceWith('<input type="text" id="' + value1 + '" class="form-control values" readonly>');
             $('#' + value2).replaceWith('<input type="text" id="' + value2 + '" class="form-control values" readonly>');
@@ -219,6 +201,30 @@ var Dashboard = function(element) {
             });
         }
 
+        $('#filter-panel' + id).find('.condition')
+        .select2({
+            theme: 'bootstrap',
+            placeholder: 'Select a condition',
+            minimumResultsForSearch: Infinity,
+            data: conditionOptions
+        });
+
+        $('#filter-panel' + id).find('.chart-type')
+        .select2({
+            theme: 'bootstrap',
+            placeholder: 'Select a condition',
+            minimumResultsForSearch: Infinity,
+            data: chartTypes
+        });
+        $('#filter-panel' + id).find('.chart-func')
+        .select2({
+            theme: 'bootstrap',
+            placeholder: 'Select a condition',
+            minimumResultsForSearch: Infinity,
+            data: chartFunction
+        });
+
+
         $('#filter-panel' + id).find('.values.chart-fields').select2(this.fieldsSelectConfig());
 
         $('#filter-panel' + id).find('.close-panel').on('click', function() {
@@ -234,6 +240,11 @@ var Dashboard = function(element) {
             }
             if('interval' === $(this).val()) {
                 $('#filter-panel' + id).find('.second-value').removeClass('hidden');
+            }
+            if('periodic.interval' === $(this).val()) {
+                $('#filter-panel' + id).find('.second-value').removeClass('hidden');
+                $('#' + value1).replaceWith('<input type="text" class="form-control" id="' + value1 + '" placeholder="Value">');
+                $('#' + value2).replaceWith('<input type="text" class="form-control" id="' + value2 + '" placeholder="Value">');
             }
             console.log('condition changed to : ' + $(this).val());
         });
@@ -258,13 +269,15 @@ var Dashboard = function(element) {
 
             if('Date' === field[1]) {
                 values = intervalDate('%Y-%m-%d');
-            } else if('DateTime' === field[1]) {
+            } else if('DateTime' === field[1] && 'periodic.interval' !== condition) {
                 values = intervalDate('%Y-%m-%dT%H:%M:00');
             } else {
-                values = [value1Id + '.' + value1];
-                if('interval' === condition) values.push(value2Id + '.' + value2);
+                values = [value1Id + dashboard.separator + value1];
+                if('interval' === condition || 'periodic.interval' === condition) {
+                    values.push(value2Id + dashboard.separator + value2);
+                }
             }
-            NocFilter.updateFilter(field[0], field[1], values, condition);
+            NocFilter.updateFilter(field[0] + dashboard.separator + id, field[1], values, condition);
             drawAll();
         });
 
@@ -275,7 +288,7 @@ var Dashboard = function(element) {
             console.log('field : ' + field);
             console.log('value : ' + $('#value-1' + id).val());
             console.log('condition : ' + $('#filter-panel' + id).find('.condition').val());
-            NocFilter.deleteFilter(field[0]);
+            NocFilter.deleteFilter(field[0] + dashboard.separator + id);
             drawAll();
         });
 
@@ -296,7 +309,7 @@ var Dashboard = function(element) {
     };
 
     this.createFieldSelector = function(container, datasource) {
-        var fieldSelector = '<div class="row">\n    <div class="col-md-12">\n        <div id="field-selector" class="chart-wrapper">\n            <div class="chart-title">\n                <div class="title-left">Field Selector</div>\n                <div class="title-right collapsed"></div>\n                <div style="clear:both;"></div>\n            </div>\n            <div class="chart-stage collapse" aria-expanded="false">\n                <div class="row">\n                    <form class="form-horizontal">\n                        <div class="form-group">\n                            <label class="col-md-1 col-md-offset-1">List of fields:</label>\n                            <div class="col-md-6">\n                                <select id="fields"></select>\n                            </div>\n                        </div>\n                    </form>\n                </div>\n                <div class="filters-by-field" style="margin: 0 10px 5px 10px;"></div>\n                <a href="#" class="btn btn-default pull-right" style="margin: -3px 10px 3px;">Save</a>\n            </div>\n            <div class="chart-notes">Field Selector</div>\n        </div>\n    </div>\n</div>\n';
+        var fieldSelector = '<div class="row">\n    <div class="col-md-12">\n        <div id="field-selector" class="chart-wrapper">\n            <div class="chart-title">\n                <div class="title-left">Field Selector</div>\n                <div class="title-right collapsed"></div>\n                <div style="clear:both;"></div>\n            </div>\n            <div class="chart-stage collapse" aria-expanded="false">\n                <div class="row">\n                    <form class="form-horizontal">\n                        <div class="form-group">\n                            <label class="col-md-1 col-md-offset-1">List of fields:</label>\n                            <div class="col-md-6">\n                                <select id="fields"></select>\n                            </div>\n                        </div>\n                    </form>\n                </div>\n                <div class="filters-by-field" style="margin: 0 10px 5px 10px;"></div>\n                <!--<a href="#" class="btn btn-default pull-right" style="margin: -3px 10px 3px;">Save</a>-->\n            </div>\n            <div class="chart-notes">Field Selector</div>\n        </div>\n    </div>\n</div>\n';
 
         addCollapsed(fieldSelector, '#field-selector', container);
 
@@ -373,7 +386,7 @@ var Dashboard = function(element) {
 
         selectBtn.click(function() {
             console.log('selected : ' + startDate + ',' + endDate);
-            NocFilter.setStartCondition([startDate, endDate]);
+            NocFilter.setStartDateCondition([startDate, endDate]);
             downChevron();
             drawAll();
         });
@@ -460,7 +473,7 @@ var Dashboard = function(element) {
 
         NocFilter.init({
             widgets: dashboard.widgets,
-            startCondition: [new Date('2016-01-01'), new Date('2017-01-01')]
+            startDateCondition: [new Date('2016-01-01'), new Date('2017-01-01')]
         });
         drawAll();
     };
@@ -601,7 +614,7 @@ var Dashboard = function(element) {
     };
 
     var reductionName = function(element) {
-        var name = element.split('.')[1];
+        var name = element.split(dashboard.separator)[1];
 
         if(name && name.length > 10) {
             return name.substr(0, 10) + "...";
@@ -627,12 +640,11 @@ var Dashboard = function(element) {
         spinnerHide(chart);
     };
 
-    var filterToggle = function(widget, field, value, text) {
+    var filterToggle = function(widget, field, value, text, type, condition) {
         var chart = widget.chart;
         var el = chart.anchor();
         var resets = $(el).closest(".chart-wrapper").find(".reset");
         var filters = $(el).closest(".chart-wrapper").find(".filter");
-        var filterDate = NocFilter.getDate();
 
         if(value) {
             resets.each(function() {
@@ -646,14 +658,7 @@ var Dashboard = function(element) {
             });
         }
 
-        if(filterDate && field === 'date' && value) {
-            if(value[0].getTime() === filterDate[0].getTime() &&
-                value[1].getTime() === filterDate[1].getTime()) {
-                return;
-            }
-        }
-
-        NocFilter.updateFilter(field, dashboard.fieldsType[field].type, chart.filters(), '$eq');
+        NocFilter.updateFilter(field + dashboard.separator + widget.chart.anchorName(), type, chart.filters(), condition);
 
         if(value) {
             // redraw other
@@ -823,7 +828,9 @@ var Dashboard = function(element) {
                 .on('filtered', function(chart, filter) {
                     console.log('filtered : ' + filter);
                     spinnerShow(chart);
-                    filterToggle(widget, 'date', filter, filter ? dashboard.dateToString(filter[0]) + " - " + dashboard.dateToString(filter[1]) : '');
+                    filterToggle(widget, 'date', filter,
+                        filter ? dashboard.dateToString(filter[0]) + " - " + dashboard.dateToString(filter[1]) : '',
+                        'Date', 'interval');
                 })
                 .on('pretransition', spinnerShow)
                 .on('renderlet', onRenderLet);
@@ -853,7 +860,7 @@ var Dashboard = function(element) {
                     var day = d.day;
                     var name = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
-                    return day + '.' + name[day - 1];
+                    return day + dashboard.separator + name[day - 1];
                 });
                 var values = dayOfWeek
                 .group()
@@ -876,15 +883,17 @@ var Dashboard = function(element) {
                 .dimension(dayOfWeek)
                 .on('filtered', function(chart, filter) {
                     console.log('filtered : ' + filter);
-                    filterToggle(widget, 'toDayOfWeek(date)', filter, chart.filters().map(function(element) {
-                        return element.split('.')[1];
-                    }).join());
+                    filterToggle(widget, 'toDayOfWeek(date)', filter,
+                        chart.filters().map(function(element) {
+                            return element.split(dashboard.separator)[1];
+                        }).join(),
+                        'UInt64', 'in.or');
                 })
                 .on('pretransition', spinnerShow)
                 .on('renderlet', onRenderLet)
                 .ordinalColors(['#3182bd', '#6baed6', '#9ecae1', '#c6dbef', '#dadaeb'])
                 .label(function(d) {
-                    return d.key.split('.')[1];
+                    return d.key.split(dashboard.separator)[1];
                 })
                 .title(function(d) {
                     return d.value;
@@ -946,18 +955,20 @@ var Dashboard = function(element) {
                     .legendWidth(legendWidth)
                     .itemWidth(legendWidth - 5)
                     .legendText(function(d) {
-                        return d.name.split('.')[1];
+                        return d.name.split(dashboard.separator)[1];
                     })
                 )
                 .cx(120)
                 // .title(function(d) {
-                //     return d.key.split('.')[1] + " :\n" + d.value + " reboot(s)";
+                //     return d.key.split(dashboard.separator)[1] + " :\n" + d.value + " reboot(s)";
                 // })
                 .on('filtered', function(chart, filter) {
                     console.log('filtered : ' + filter);
-                    filterToggle(widget, field, filter, chart.filters().map(function(element) {
-                        return reductionName(element);
-                    }).join());
+                    filterToggle(widget, field,
+                        filter, chart.filters().map(function(element) {
+                            return reductionName(element);
+                        }).join(),
+                        'UInt64', 'in');
                 })
                 .on('pretransition', function(chart) {
                     spinnerShow(chart);

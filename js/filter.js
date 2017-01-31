@@ -5,7 +5,7 @@ var NocFilter = (function() {
 
     // private methods for make filter Object
     function eqValue(name, value) {
-        return conditionValue('$eq', name, value);
+        return conditionValue(name, value, null, '$eq');
     }
 
     function conditionValue(name, value, type, condition) {
@@ -29,10 +29,16 @@ var NocFilter = (function() {
         return eqValue(name, value);
     }
 
-    function orValues(values) {
+    function orValuesArray(values) {
         return [{
             $or: values
         }];
+    }
+
+    function orValues(values) {
+        return {
+            $or: values
+        };
     }
 
     function andValues(values) {
@@ -41,8 +47,28 @@ var NocFilter = (function() {
         };
     }
 
+    function inCondition(name, value, type) {
+        if(value) {
+            return [{
+                $in: [
+                    {
+                        $field: name
+                    },
+                    value
+                ]
+            }]
+        }
+    }
+
+    function inToOr(name, values) {
+        return orValuesArray(values.map(function(value) {
+            return orValues(eqValue(name, "" + value));
+        }))
+    }
+
     function interval(name, value, type) {
         var from, to;
+
         if('Date' === type) {
             from = toDate(value[0]);
             to = toDate(value[1]);
@@ -94,14 +120,33 @@ var NocFilter = (function() {
         return andValues(
             flat(keys.map(function(name) {
                     var key = filter[name];
+
+                    if('startDate' === name) name = 'date';
+                    name = name.split('.')[0];
                     if('interval' === key.condition) {
                         return interval(name, key.values, key.type);
+                    }
+                    if('periodic.interval' === key.condition) {
+                        var hours = key.values.map(function(value) {
+                            return value.split(':')[0]
+                        });
+                        var minutes = key.values.map(function(value) {
+                            return value.split(':')[1]
+                        });
+
+                        return andValues(flat([interval('toHour(' + name + ')', hours, 'periodic'), interval('toMinute(' + name + ')', minutes, 'periodic')]));
+                    }
+                    if('in' === key.condition) {
+                        return inCondition(name, key.values, key.type);
+                    }
+                    if('in.or' === key.condition) {
+                        return inToOr(name, key.values);
                     } else {
                         var values = key.values.map(function(value) {
                             return conditionValue(name, value, key.type, key.condition);
                         });
                         if(values.length > 0) {
-                            return orValues(values);
+                            return orValuesArray(values);
                         } else {
                             return [];
                         }
@@ -124,22 +169,29 @@ var NocFilter = (function() {
         init: function(args) {
             filter = {};
             if('widgets' in args) widgets = args.widgets;
-            if('startCondition' in args) {
-                this.setStartCondition(args.startCondition);
+            if(args.hasOwnProperty('startDateCondition')) {
+                this.setStartDateCondition(args.startDateCondition);
             }
         },
         updateFilter: function(name, type, values, condition) {
-            filter[name] = {
-                values: flat(values.map(function(value) {
-                    if('string' === typeof value) {
-                        return value.split('.')[0];
-                    } else {
-                        return value;
-                    }
-                })),
-                type: type,
-                condition: condition
-            };
+            if(!values || values.length === 0) {
+                this.deleteFilter(name);
+            } else {
+                filter[name] = {
+                    values: flat(values.map(function(value) {
+                        if('string' === typeof value) {
+                            if('UInt64' === type) {
+                                return Number(value.split('.')[0]);
+                            }
+                            return value.split('.')[0];
+                        } else {
+                            return value;
+                        }
+                    })),
+                    type: type,
+                    condition: condition
+                };
+            }
             updateWidgets(makeFilter());
         },
         deleteFilter: function(name) {
@@ -152,10 +204,9 @@ var NocFilter = (function() {
             if('date' in filter) return filter.date;
             return undefined;
         },
-        setStartCondition: function(interval) {
-            filter.date = interval;
+        setStartDateCondition: function(interval) {
             dashboard.setSelectorInterval(interval[0], interval[1]);
-            this.updateFilter('date', 'Date', [filter.date], 'interval');
+            this.updateFilter('startDate', 'Date', [interval], 'interval');
         },
         getFilter: function() {
             return filter;
