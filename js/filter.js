@@ -127,14 +127,14 @@ var NocFilter = (function() {
                         return interval(name, key.values, key.type);
                     }
                     if('periodic.interval' === key.condition) {
-                        var hours = key.values.map(function(value) {
-                            return value.split(':')[0]
-                        });
-                        var minutes = key.values.map(function(value) {
-                            return value.split(':')[1]
+                        var toSeconds = function(param) {
+                            return Number(param.split(":")[0]) * 3600 + Number(param.split(":")[1]) * 60 + 86400
+                        };
+                        var values = key.values.map(function(value) {
+                            return toSeconds(value)
                         });
 
-                        return andValues(flat([interval('toHour(' + name + ')', hours, 'periodic'), interval('toMinute(' + name + ')', minutes, 'periodic')]));
+                        return andValues(flat(interval('toInt32(toTime(' + name + '))', values, 'periodic')));
                     }
                     if('in' === key.condition) {
                         return inCondition(name, key.values, key.type);
