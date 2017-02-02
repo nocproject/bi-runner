@@ -106,6 +106,44 @@ var Dashboard = function(element) {
         ];
         var value1 = 'value-1' + id;
         var value2 = 'value-2' + id;
+        var setDataTimeField = function() {
+            $('#' + value1).replaceWith('<input type="text" id="' + value1 + '" class="form-control values pikaday" readonly>');
+            $('#' + value2).replaceWith('<input type="text" id="' + value2 + '" class="form-control values pikaday" readonly>');
+
+            $('#' + value1).pikaday({
+                incrementMinuteBy: 10,
+                theme: 'pikaday-theme',
+                use24hour: true,
+                format: 'YYYY-MM-DDThh:mm:00',
+                showSeconds: false
+            });
+            $('#' + value2).pikaday({
+                incrementMinuteBy: 10,
+                theme: 'pikaday-theme',
+                format: 'YYYY-MM-DDThh:mm:00',
+                use24hour: true,
+                showSeconds: false
+            });
+        };
+        var setDataField = function() {
+            $('#' + value1).replaceWith('<input type="text" id="' + value1 + '" class="form-control values pikaday" readonly>');
+            $('#' + value2).replaceWith('<input type="text" id="' + value2 + '" class="form-control values pikaday" readonly>');
+
+            $('#' + value1).pikaday({
+                theme: 'pikaday-theme',
+                format: 'YYYY-MM-DD',
+                showTime: false,
+                showMinutes: false,
+                showSeconds: false
+            });
+            $('#' + value2).pikaday({
+                theme: 'pikaday-theme',
+                format: 'YYYY-MM-DD',
+                showTime: false,
+                showMinutes: false,
+                showSeconds: false
+            });
+        };
 
         filterByField = filterByField.replace(/{id}/g, id);
 
@@ -161,44 +199,12 @@ var Dashboard = function(element) {
                 }
             });
         } else if('DateTime' === field[1]) {
-            $('#' + value1).replaceWith('<input type="text" id="' + value1 + '" class="form-control values" readonly>');
-            $('#' + value2).replaceWith('<input type="text" id="' + value2 + '" class="form-control values" readonly>');
-
-            $('#' + value1).pikaday({
-                incrementMinuteBy: 10,
-                theme: 'pikaday-theme',
-                use24hour: true,
-                format: 'YYYY-MM-DDThh:mm:00',
-                showSeconds: false
-            });
-            $('#' + value2).pikaday({
-                incrementMinuteBy: 10,
-                theme: 'pikaday-theme',
-                format: 'YYYY-MM-DDThh:mm:00',
-                use24hour: true,
-                showSeconds: false
-            });
+            setDataTimeField();
             conditionOptions.push(
                 {id: 'periodic.interval', text: 'periodic interval'}
             );
         } else if('Date' === field[1]) {
-            $('#' + value1).replaceWith('<input type="text" id="' + value1 + '" class="form-control values" readonly>');
-            $('#' + value2).replaceWith('<input type="text" id="' + value2 + '" class="form-control values" readonly>');
-
-            $('#' + value1).pikaday({
-                theme: 'pikaday-theme',
-                format: 'YYYY-MM-DD',
-                showTime: false,
-                showMinutes: false,
-                showSeconds: false
-            });
-            $('#' + value2).pikaday({
-                theme: 'pikaday-theme',
-                format: 'YYYY-MM-DD',
-                showTime: false,
-                showMinutes: false,
-                showSeconds: false
-            });
+            setDataField();
         }
 
         $('#filter-panel' + id).find('.condition')
@@ -227,14 +233,16 @@ var Dashboard = function(element) {
 
         $('#filter-panel' + id).find('.values.chart-fields').select2(this.fieldsSelectConfig());
 
-        $('#filter-panel' + id).find('.close-panel').on('click', function() {
+        $('#filter-panel' + id).find('.close-panel')
+        .on('click', function() {
             console.log(field + ' (' + id + ')  closing...');
             $(this).parents('.panel').remove();
             NocFilter.deleteFilter(field[0]);
             drawAll();
         });
 
-        $('#filter-panel' + id).find('.condition').on('change', function() {
+        $('#filter-panel' + id).find('.condition')
+        .on('change', null, field, function(e) {
             if(!$('#filter-panel' + id).find('.second-value').hasClass('hidden')) {
                 $('#filter-panel' + id).find('.second-value').addClass('hidden');
             }
@@ -245,11 +253,17 @@ var Dashboard = function(element) {
                 $('#filter-panel' + id).find('.second-value').removeClass('hidden');
                 $('#' + value1).replaceWith('<input type="text" class="form-control" id="' + value1 + '" placeholder="Value">');
                 $('#' + value2).replaceWith('<input type="text" class="form-control" id="' + value2 + '" placeholder="Value">');
+            } else {
+                if(!$('#' + value1).hasClass('pikaday') && 'DateTime' === e.data[1]) {
+                    setDataTimeField();
+                }
             }
             console.log('condition changed to : ' + $(this).val());
+            console.log('field type is : ' + e.data);
         });
 
-        $('#filter-panel' + id).find('.apply-filter').on('click', function() {
+        $('#filter-panel' + id).find('.apply-filter')
+        .on('click', function() {
             var value1Id = $('#value-1' + id).val();
             var value1 = $('#value-1' + id).text();
             var value2Id = $('#value-2' + id).val();
@@ -415,7 +429,8 @@ var Dashboard = function(element) {
                 var blob = new Blob([toCsv(data.result.result, data.result.fields, '"', ';')], {type: "text/plain;charset=utf-8"});
                 saveAs(blob, 'export.csv');
 
-                $('#export-btn').on("click", "", function() {
+                $('#export-btn')
+                .on("click", "", function() {
                     dashboard.export();
                     $('#export-btn').find('.spinner').show();
                 });
@@ -432,7 +447,8 @@ var Dashboard = function(element) {
         var rowPosition = undefined;
         var currentRow;
 
-        $('#export-btn').on("click", "", function(e) {
+        $('#export-btn')
+        .on("click", "", function(e) {
             dashboard.export();
             $('#export-btn').find('.spinner').show();
         });
