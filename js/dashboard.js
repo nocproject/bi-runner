@@ -1,5 +1,6 @@
 var Dashboard = function(element) {
     //public properties
+    this.datasource;
     this.element = element;
     this.fieldsType = {};
     this.separator = '.';
@@ -86,7 +87,7 @@ var Dashboard = function(element) {
         }
     };
 
-    this.filterByFieldPanel = function(fieldValue, datasource) {
+    this.filterByFieldPanel = function(fieldValue) {
         var type;
         var filterByField = '<div id="filter-panel{id}" class="panel panel-default" style="margin-bottom: 10px">\n    <div class="panel-heading">\n        <div>\n            <div class="title-left">Field name: <b>{name}</b>, {type}</div>\n            <div style="cursor: pointer;cursor: hand;float: right;" class="close-panel">\n                <i class="fa fa-times-circle" aria-hidden="true"></i>\n            </div>\n            <div style="clear:both;"></div>\n        </div>\n    </div>\n    <div class="panel-body" style="padding-bottom: 0px;">\n        <form class="form-horizontal">\n            <div class="form-group">\n                <label class="control-label col-md-1 col-md-offset-1">Condition:</label>\n                <div class="col-md-2">\n                    <select class="form-control values condition"></select>\n                </div>\n                <div class="first-value">\n                    <label class="control-label col-md-2" for="value-1{id}">Value:</label>\n                    <div class="col-md-6">\n                        <input type="text" class="form-control" id="value-1{id}" placeholder="Value">\n                    </div>\n                </div>\n            </div>\n            <div class="form-group second-value hidden">\n                <label class="control-label col-md-6" for="value-2{id}">To Value:</label>\n                <div class="col-md-6">\n                    <input type="text" class="form-control" id="value-2{id}" placeholder="To Value">\n                </div>\n            </div>\n            <!--<hr style="margin-top: 10px;margin-bottom: 10px;">-->\n            <!--<div class="form-group" style="margin-bottom: 10px;">-->\n            <!--<label class="col-md-1 control-label">Show chart:</label>-->\n            <!--<div class="col-md-2">-->\n            <!--<input type="checkbox" value="1" name="" class="form-control show-chart"/>-->\n            <!--</div>-->\n            <!--<label class="control-label col-md-1">Chart type:</label>-->\n            <!--<div class="col-md-1">-->\n            <!--<select class="form-control values chart-type" disabled></select>-->\n            <!--</div>-->\n            <!--<label class="control-label col-md-1">Field:</label>-->\n            <!--<div class="col-md-3">-->\n            <!--<select class="form-control values chart-fields" disabled> </select>-->\n            <!--</div>-->\n            <!--<label class="control-label col-md-1">Function:</label>-->\n            <!--<div class="col-md-2">-->\n            <!--<select class="form-control values chart-func" disabled></select>-->\n            <!--</div>-->\n            <!--</div>-->\n            <div class="form-group" style="margin-bottom: 10px;">\n                <!--<div class="col-md-offset-1 pull-left">-->\n                <!--<a href="#" class="btn btn-default pull-left chart-show btn-sm" disabled>Show Chart</a>-->\n                <!--</div>-->\n                <div class="pull-right" style="margin-right: 10px;">\n                    <a href="#" class="btn btn-default clear-filter btn-sm">Clear</a>\n                    <a href="#" class="btn btn-default apply-filter btn-sm">Apply</a>\n                </div>\n            </div>\n        </form>\n    </div>\n</div>';
         var id = new Date().getTime();
@@ -180,7 +181,7 @@ var Dashboard = function(element) {
                     dataType: 'json',
                     delay: 250,
                     data: function(params) {
-                        return JSON.stringify(valuesListQuery(field[0], field[2], params.term, datasource));
+                        return JSON.stringify(valuesListQuery(field[0], field[2], params.term));
                     },
                     processResults: function(data) {
                         if(data.result) {
@@ -439,7 +440,7 @@ var Dashboard = function(element) {
         });
     };
 
-    this.createFieldSelector = function(container, datasource) {
+    this.createFieldSelector = function(container) {
         var fieldSelector = '<div class="row">\n    <div class="col-md-12">\n        <div id="field-selector" class="chart-wrapper">\n            <div class="chart-title">\n                <div class="title-left">Field Selector</div>\n                <div class="title-right collapsed"></div>\n                <div style="clear:both;"></div>\n            </div>\n            <div class="chart-stage collapse" aria-expanded="false">\n                <div class="row">\n                    <form class="form-horizontal">\n                        <div class="form-group">\n                            <label class="col-md-1 col-md-offset-1">List of fields:</label>\n                            <div class="col-md-6">\n                                <select id="fields"></select>\n                            </div>\n                        </div>\n                    </form>\n                </div>\n                <div class="filters-by-field" style="margin: 0 10px 5px 10px;"></div>\n                <!--<a href="#" class="btn btn-default pull-right" style="margin: -3px 10px 3px;">Save</a>-->\n            </div>\n            <div class="chart-notes">Field Selector</div>\n        </div>\n    </div>\n</div>\n';
 
         addCollapsed(fieldSelector, '#field-selector', container);
@@ -449,7 +450,7 @@ var Dashboard = function(element) {
         .on('change', function() {
             console.log("changed  to : ", $(this).val());
             if($(this).val()) {
-                dashboard.filterByFieldPanel($(this).val(), datasource);
+                dashboard.filterByFieldPanel($(this).val());
                 $(this).val(null).trigger('change');
             }
         })
@@ -526,7 +527,7 @@ var Dashboard = function(element) {
     this.export = function() {
 
         if(!dashboard.exportQuery) {
-            console.log('export query is null, you must define query into board definition');
+            console.warn('export query is null, you must define query into board definition');
             return;
         }
 
@@ -556,7 +557,7 @@ var Dashboard = function(element) {
             })
     };
 
-    var drawBoard = function(datasource) {
+    var drawBoard = function() {
         var container = $("<div class='container-fluid'></div>").appendTo($(element));
         var sortedByRows = dashboardJSON.layout.cells.sort(function(a, b) {
             return a.row - b.row
@@ -573,7 +574,7 @@ var Dashboard = function(element) {
         $('#report-name').text(dashboardJSON.title);
         // selectors
         dashboard.createTimeSelector(container);
-        dashboard.createFieldSelector(container, datasource);
+        dashboard.createFieldSelector(container);
 
         $.each(sortedByRows, function(index, obj) {
             if(rowPosition !== obj.row) {
@@ -602,6 +603,33 @@ var Dashboard = function(element) {
                 draw: dashboard[widget.type]
             };
             return dashboard[widget.cell];
+        });
+
+        // dashboard['qty-rows'] = {
+        //     draw: dashboard.counter
+        // };
+        dashboard.widgets.push({
+            draw: dashboard.counter,
+            chart: {
+                anchorName: function() {
+                    return 'qty-rows'
+                }
+            },
+            query: {
+                params: [
+                    {
+                        fields: [
+                            {
+                                expr: 'count()',
+                                alias: 'qty'
+                            }
+                        ],
+                        datasource: dashboard.datasource
+                    }
+                ],
+                id: 0,
+                method: 'query'
+            }
         });
 
         NocFilter.init({
@@ -649,7 +677,8 @@ var Dashboard = function(element) {
                         });
 
                         dashboard.clear();
-                        drawBoard(this.dashboardJSON.datasource);
+                        dashboard.datasource = dashboardJSON.datasource;
+                        drawBoard();
                     });
             });
     };
@@ -685,7 +714,7 @@ var Dashboard = function(element) {
         });
     };
 
-    var valuesListQuery = function(field, dict, filterPattern, datasource) {
+    var valuesListQuery = function(field, dict, filterPattern) {
         var query = {
             params: [
                 {
@@ -708,7 +737,7 @@ var Dashboard = function(element) {
                         }
                     ],
                     limit: 500,
-                    datasource: datasource
+                    datasource: dashboard.datasource
                 }
             ],
             id: 0,
@@ -1246,6 +1275,35 @@ var Dashboard = function(element) {
                 .on('pretransition', spinnerShow);
 
                 chart.render();
+            }
+        );
+    };
+
+    this.counter = function(widget) {
+        var chart = widget.chart;
+        var formatter = function (number) {
+            var a = Number(number).toFixed(0).split('.');
+
+            a[0] = a[0]
+            .split('').reverse().join('')
+            .replace(/\d{3}(?=\d)/g, '$& ')
+            .split('').reverse().join('');
+
+            return a.join('.');
+        };
+
+        d3.json('/api/bi/')
+        .header("Content-Type", "application/json")
+        .post(
+            JSON.stringify(widget.query),
+            function(error, data) {
+                if(error)
+                    throw new Error(error);
+
+                if(failResult(chart.anchorName(), data)) return;
+
+                const qty = data.result.result[0];
+                $('#qty-rows').text((qty ? formatter(qty) : '-'));
             }
         );
     };
