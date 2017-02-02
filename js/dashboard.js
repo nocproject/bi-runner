@@ -88,7 +88,7 @@ var Dashboard = function(element) {
 
     this.filterByFieldPanel = function(fieldValue, datasource) {
         var type;
-        var filterByField = '<div id="filter-panel{id}" class="panel panel-default" style="margin-bottom: 10px">\n    <div class="panel-heading">\n        <div>\n            <div class="title-left">Field name: <b>{name}</b>, {type}</div>\n            <div style="cursor: pointer;cursor: hand;float: right;" class="close-panel">\n                <i class="fa fa-times-circle" aria-hidden="true"></i>\n            </div>\n            <div style="clear:both;"></div>\n        </div>\n    </div>\n    <div class="panel-body" style="padding-bottom: 0px;">\n        <form class="form-horizontal">\n            <div class="form-group">\n                <label class="control-label col-md-1 col-md-offset-1">Condition:</label>\n                <div class="col-md-2">\n                    <select class="form-control values condition"></select>\n                </div>\n                <label class="control-label col-md-2" for="value-1{id}">Value:</label>\n                <div class="col-md-6">\n                    <input type="text" class="form-control" id="value-1{id}" placeholder="Value">\n                </div>\n            </div>\n            <div class="form-group second-value hidden">\n                <label class="control-label col-md-6" for="value-2{id}">To Value:</label>\n                <div class="col-md-6">\n                    <input type="text" class="form-control" id="value-2{id}" placeholder="To Value">\n                </div>\n            </div>\n            <!--<hr style="margin-top: 10px;margin-bottom: 10px;">-->\n            <!--<div class="form-group" style="margin-bottom: 10px;">-->\n                <!--<label class="col-md-1 control-label">Show chart:</label>-->\n                <!--<div class="col-md-2">-->\n                    <!--<input type="checkbox" value="1" name="" class="form-control show-chart"/>-->\n                <!--</div>-->\n                <!--<label class="control-label col-md-1">Chart type:</label>-->\n                <!--<div class="col-md-1">-->\n                    <!--<select class="form-control values chart-type" disabled></select>-->\n                <!--</div>-->\n                <!--<label class="control-label col-md-1">Field:</label>-->\n                <!--<div class="col-md-3">-->\n                    <!--<select class="form-control values chart-fields" disabled> </select>-->\n                <!--</div>-->\n                <!--<label class="control-label col-md-1">Function:</label>-->\n                <!--<div class="col-md-2">-->\n                    <!--<select class="form-control values chart-func" disabled></select>-->\n                <!--</div>-->\n            <!--</div>-->\n            <div class="form-group" style="margin-bottom: 10px;">\n                <!--<div class="col-md-offset-1 pull-left">-->\n                    <!--<a href="#" class="btn btn-default pull-left chart-show btn-sm" disabled>Show Chart</a>-->\n                <!--</div>-->\n                <div class="pull-right" style="margin-right: 10px;">\n                    <a href="#" class="btn btn-default clear-filter btn-sm">Clear</a>\n                    <a href="#" class="btn btn-default apply-filter btn-sm">Apply</a>\n                </div>\n            </div>\n        </form>\n    </div>\n</div>';
+        var filterByField = '<div id="filter-panel{id}" class="panel panel-default" style="margin-bottom: 10px">\n    <div class="panel-heading">\n        <div>\n            <div class="title-left">Field name: <b>{name}</b>, {type}</div>\n            <div style="cursor: pointer;cursor: hand;float: right;" class="close-panel">\n                <i class="fa fa-times-circle" aria-hidden="true"></i>\n            </div>\n            <div style="clear:both;"></div>\n        </div>\n    </div>\n    <div class="panel-body" style="padding-bottom: 0px;">\n        <form class="form-horizontal">\n            <div class="form-group">\n                <label class="control-label col-md-1 col-md-offset-1">Condition:</label>\n                <div class="col-md-2">\n                    <select class="form-control values condition"></select>\n                </div>\n                <div class="first-value">\n                    <label class="control-label col-md-2" for="value-1{id}">Value:</label>\n                    <div class="col-md-6">\n                        <input type="text" class="form-control" id="value-1{id}" placeholder="Value">\n                    </div>\n                </div>\n            </div>\n            <div class="form-group second-value hidden">\n                <label class="control-label col-md-6" for="value-2{id}">To Value:</label>\n                <div class="col-md-6">\n                    <input type="text" class="form-control" id="value-2{id}" placeholder="To Value">\n                </div>\n            </div>\n            <!--<hr style="margin-top: 10px;margin-bottom: 10px;">-->\n            <!--<div class="form-group" style="margin-bottom: 10px;">-->\n            <!--<label class="col-md-1 control-label">Show chart:</label>-->\n            <!--<div class="col-md-2">-->\n            <!--<input type="checkbox" value="1" name="" class="form-control show-chart"/>-->\n            <!--</div>-->\n            <!--<label class="control-label col-md-1">Chart type:</label>-->\n            <!--<div class="col-md-1">-->\n            <!--<select class="form-control values chart-type" disabled></select>-->\n            <!--</div>-->\n            <!--<label class="control-label col-md-1">Field:</label>-->\n            <!--<div class="col-md-3">-->\n            <!--<select class="form-control values chart-fields" disabled> </select>-->\n            <!--</div>-->\n            <!--<label class="control-label col-md-1">Function:</label>-->\n            <!--<div class="col-md-2">-->\n            <!--<select class="form-control values chart-func" disabled></select>-->\n            <!--</div>-->\n            <!--</div>-->\n            <div class="form-group" style="margin-bottom: 10px;">\n                <!--<div class="col-md-offset-1 pull-left">-->\n                <!--<a href="#" class="btn btn-default pull-left chart-show btn-sm" disabled>Show Chart</a>-->\n                <!--</div>-->\n                <div class="pull-right" style="margin-right: 10px;">\n                    <a href="#" class="btn btn-default clear-filter btn-sm">Clear</a>\n                    <a href="#" class="btn btn-default apply-filter btn-sm">Apply</a>\n                </div>\n            </div>\n        </form>\n    </div>\n</div>';
         var id = new Date().getTime();
         var field = fieldValue.split(',');
         var conditionOptions = [
@@ -237,12 +237,12 @@ var Dashboard = function(element) {
         .on('click', function() {
             console.log(field + ' (' + id + ')  closing...');
             $(this).parents('.panel').remove();
-            NocFilter.deleteFilter(field[0]);
+            NocFilter.deleteFilter(field[0] + dashboard.separator + id);
             drawAll();
         });
 
         $('#filter-panel' + id).find('.condition')
-        .on('change', null, field, function(e) {
+        .on('change', function(e) {
             if(!$('#filter-panel' + id).find('.second-value').hasClass('hidden')) {
                 $('#filter-panel' + id).find('.second-value').addClass('hidden');
             }
@@ -251,16 +251,133 @@ var Dashboard = function(element) {
             }
             if('periodic.interval' === $(this).val()) {
                 $('#filter-panel' + id).find('.second-value').removeClass('hidden');
-                $('#' + value1).replaceWith('<input type="text" class="form-control" id="' + value1 + '" placeholder="Value">');
-                $('#' + value2).replaceWith('<input type="text" class="form-control" id="' + value2 + '" placeholder="Value">');
+                $('#' + value1).replaceWith('<input type="text" class="form-control values" id="' + value1 + '" placeholder="hh:mm" maxlength="5">');
+                $('#' + value2).replaceWith('<input type="text" class="form-control values" id="' + value2 + '" placeholder="hh:mm" maxlength="5">');
             } else {
-                if(!$('#' + value1).hasClass('pikaday') && 'DateTime' === e.data[1]) {
+                if(!$('#' + value1).hasClass('pikaday') && 'DateTime' === field[1]) {
                     setDataTimeField();
                 }
             }
             console.log('condition changed to : ' + $(this).val());
-            console.log('field type is : ' + e.data);
         });
+
+        function notValidate(values, type, condition) {
+            var toScreen = function(which, message) {
+                $('#filter-panel' + id).find('.' + which + '-value>div>.help-block').remove();
+                $('#filter-panel' + id).find('.' + which + '-value').addClass('has-error');
+                $('#filter-panel' + id).find('.' + which + '-value').find('div')
+                .append($('<span class="help-block">' + message.join(', ') + '</span>'));
+            };
+
+            function showErrors(message1, message2) {
+                console.log('from value : ' + message1.join(', '));
+                console.log('to   value : ' + message2.join(', '));
+                if(message1.length > 0) {
+                    toScreen('first', message1);
+                } else {
+                    $('#filter-panel' + id).find('.first-value').removeClass('has-error');
+                    $('#filter-panel' + id).find('.first-value>div>.help-block').remove();
+                }
+                if(message2.length > 0) {
+                    toScreen('second', message2);
+                } else {
+                    $('#filter-panel' + id).find('.second-value>div>.help-block').remove();
+                    $('#filter-panel' + id).find('.second-value').removeClass('has-error');
+                }
+            }
+
+            if(!values[0]) {
+                showErrors(['empty value'], []);
+                return true;
+            }
+            if(!$('#filter-panel' + id).find('.second-value').hasClass('hidden') && !values[1]) {
+                showErrors([], ['empty value']);
+                return true;
+            }
+
+            if('periodic.interval' === condition) {
+                var message1 = [], message2 = [];
+                var hourStart, hourEnd, minuteStart, minuteEnd;
+
+                if(values[0].indexOf(':') !== 2) {
+                    message1.push('format error, must be hh:mm');
+                }
+                if(values[1].indexOf(':') !== 2) {
+                    message2.push('format error, must be hh:mm');
+                }
+
+                showErrors(message1, message2);
+                if(message1.length !== 0 || message2.length !== 0) {
+                    return true;
+                }
+
+                hourStart = Number(values[0].split(':')[0]);
+                if(isNaN(hourStart)) {
+                    message1.push('hour is not number');
+                }
+                hourEnd = Number(values[1].split(':')[0]);
+                if(isNaN(hourEnd)) {
+                    message2.push('hour is not number');
+                }
+                minuteStart = Number(values[0].split(':')[1]);
+                if(isNaN(minuteStart)) {
+                    message1.push('minute is not number');
+                }
+                minuteEnd = Number(values[1].split(':')[1]);
+                if(isNaN(minuteEnd)) {
+                    message2.push('minute is not number');
+                }
+
+                showErrors(message1, message2);
+                if(message1.length !== 0 || message2.length !== 0) {
+                    return true;
+                }
+
+                if(!(hourStart >= 0 && hourStart < 24)) {
+                    message1.push('hour is not in range 0-23');
+                }
+                if(!(hourEnd >= 0 && hourEnd < 24)) {
+                    message2.push('hour is not in range 0-23');
+                }
+
+                if(!(minuteStart >= 0 && minuteStart < 60)) {
+                    message1.push('minute is not in range 0-59');
+                }
+                if(!(minuteEnd >= 0 && minuteEnd < 60)) {
+                    message2.push('hour is not in range 0-59');
+                }
+
+                showErrors(message1, message2);
+                if(message1.length !== 0 || message2.length !== 0) {
+                    return true;
+                }
+
+                if(hourStart * 3600 + minuteStart * 60 >= hourEnd * 3600 + minuteEnd * 60) {
+                    console.log('bad interval');
+                    showErrors([], ['bad interval']);
+                    return true;
+                }
+            }
+
+            if(type.match(/int|float/i)) {
+                var val = Number(values[0]);
+
+                if(isNaN(val)) {
+                    showErrors(['value is not number'], []);
+                    return true;
+                }
+
+                val = Number(values[1]);
+                if(!$('#filter-panel' + id).find('.second-value').hasClass('hidden')) {
+                    if(!val || isNaN(val)) {
+                        showErrors([], ['value is not number']);
+                        return true;
+                    }
+                }
+            }
+            showErrors([], []);
+            return false;
+        }
 
         $('#filter-panel' + id).find('.apply-filter')
         .on('click', function() {
@@ -277,7 +394,6 @@ var Dashboard = function(element) {
                     value2Id = d3.time.format(pattern).parse(value2Id);
                     values.push(value2Id);
                 }
-
                 return values;
             };
 
@@ -291,6 +407,7 @@ var Dashboard = function(element) {
                     values.push(value2Id + dashboard.separator + value2);
                 }
             }
+            if(notValidate([value1Id, value2Id], field[1], condition)) return;
             NocFilter.updateFilter(field[0] + dashboard.separator + id, field[1], values, condition);
             drawAll();
         });

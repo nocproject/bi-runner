@@ -128,7 +128,7 @@ var NocFilter = (function() {
                     }
                     if('periodic.interval' === key.condition) {
                         var toSeconds = function(param) {
-                            return Number(param.split(":")[0]) * 3600 + Number(param.split(":")[1]) * 60 + 86400
+                            return Number(param.split(':')[0]) * 3600 + Number(param.split(':')[1]) * 60 + 86400
                         };
                         var values = key.values.map(function(value) {
                             return toSeconds(value)
