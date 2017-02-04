@@ -48,7 +48,8 @@ var LIBS_FILES = [
     './node_modules/dc/dc.js',
     './node_modules/file-saver/FileSaver.js',
     './node_modules/select2/dist/js/select2.js',
-    './node_modules/bootstrap-checkbox/dist/js/bootstrap-checkbox.js'
+    './node_modules/bootstrap-checkbox/dist/js/bootstrap-checkbox.js',
+    './node_modules/jquery-mask-plugin/dist/jquery.mask.js'
 ];
 
 var CSS_FILES = [

@@ -231,6 +231,8 @@ var Dashboard = function(element) {
             );
         } else if('IPv4' === field[1]) {
             console.log('setting mask for ip, change placeholder to xxx.xxx.xxx.xxx');
+            $('#' + value1).mask('099.099.099.099').attr('placeholder', 'xxx.xxx.xxx.xxx');
+            $('#' + value2).mask('099.099.099.099').attr('placeholder', 'xxx.xxx.xxx.xxx');
             conditionOptions.push(
                 {id: 'interval', text: 'interval'},
                 {id: '$lt', text: '<'},
@@ -290,8 +292,8 @@ var Dashboard = function(element) {
             }
             if('periodic.interval' === $(this).val()) {
                 $('#filter-panel' + id).find('.second-value').removeClass('hidden');
-                $('#' + value1).replaceWith('<input type="text" class="form-control values" id="' + value1 + '" placeholder="hh:mm" maxlength="5">');
-                $('#' + value2).replaceWith('<input type="text" class="form-control values" id="' + value2 + '" placeholder="hh:mm" maxlength="5">');
+                $('#' + value1).replaceWith('<input type="text" class="form-control values" id="' + value1 + '" placeholder="hh:mm">').mask('00:00');
+                $('#' + value2).replaceWith('<input type="text" class="form-control values" id="' + value2 + '" placeholder="hh:mm">').mask('00:00');
             } else {
                 if(!$('#' + value1).hasClass('pikaday') && 'DateTime' === field[1]) {
                     setDataTimeField();
