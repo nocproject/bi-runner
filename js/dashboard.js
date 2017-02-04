@@ -3,7 +3,16 @@ var Dashboard = function(element) {
     this.datasource;
     this.element = element;
     this.fieldsType = {};
-    this.separator = '.';
+    this.fiedlNameSeparator = '.';
+
+    function BI_Value(id, text) {
+        this.id = id;
+        this.text = text;
+    }
+
+    BI_Value.prototype.valueOf = function() {
+        return this.id;
+    };
 
     // public methods
     this.reset = function(widget) {
@@ -25,28 +34,24 @@ var Dashboard = function(element) {
 
     this.timeSelector = function(arg) {
         var start, end;
-
-        var command = arg.split(dashboard.separator);
         var format = "%Y-%m-%d";
         var now = new Date;
 
-        if(command.length === 2) {
-            if('cur' === command[0]) {
-                now = new Date;
-            }
-
-            if('prev' === command[0]) {
-                now = d3.time[command[1]].offset(now, -1);
-            }
-
-            start = d3.time[command[1]](now);
-            end = d3.time[command[1]].ceil(now);
-
-            console.log(dashboard.dateToString(start, format), dashboard.dateToString(end, format));
-            NocFilter.setStartDateCondition([start, end]);
-            downChevron();
-            drawAll();
+        if('cur' === arg.period) {
+            now = new Date;
         }
+
+        if('prev' === arg.period) {
+            now = d3.time[arg.value].offset(now, -1);
+        }
+
+        start = d3.time[arg.value](now);
+        end = d3.time[arg.value].ceil(now);
+
+        console.log(dashboard.dateToString(start, format), dashboard.dateToString(end, format));
+        NocFilter.setStartDateCondition([start, end]);
+        downChevron();
+        drawAll();
     };
 
     this.clear = function() {
@@ -55,6 +60,19 @@ var Dashboard = function(element) {
     };
 
     this.fieldsSelectConfig = function() {
+        var determinateType = function(name, field) {
+
+            if(field.dict) {
+                return 'dict-' + field.dict;
+            }
+
+            if('UInt32' === field.type && 'ip' === name) {
+                return 'IPv4';
+            }
+
+            return field.type;
+        };
+
         return {
             theme: 'bootstrap',
             placeholder: 'Select a field',
@@ -75,10 +93,10 @@ var Dashboard = function(element) {
             data: Object.getOwnPropertyNames(dashboard.fieldsType).map(function(name) {
                 var field = dashboard.fieldsType[name];
                 var text = field.description ? field.description : name;
-                var type = (field.dict) ? 'dict-' + field.dict : field.type;
+                var type = determinateType(name, field);
 
                 return {
-                    id: [name, field.type, field.dict].filter(function(e) {
+                    id: [name, type, field.dict].filter(function(e) {
                         return e
                     }).join(','),
                     text: text + "," + type
@@ -150,24 +168,17 @@ var Dashboard = function(element) {
 
         filterByField = filterByField.replace('{name}', field[0]);
 
-        if(field.length === 3) {
+        if(field[1].startsWith('dict-')) {
             type = 'dictionary: <b>' + field[2] + '</b>';
         } else {
             type = 'type: <b>' + field[1] + '</b>';
-            conditionOptions.push(
-                {id: 'interval', text: 'interval'},
-                {id: '$lt', text: '<'},
-                {id: '$le', text: '<='},
-                {id: '$gt', text: '>'},
-                {id: '$ge', text: '>='}
-            );
         }
 
         filterByField = filterByField.replace('{type}', type);
 
         $('.filters-by-field').append($(filterByField));
 
-        if(field.length === 3) {
+        if(field[1].startsWith('dict-')) {
             $('#' + value1).replaceWith('<select id="' + value1 + '" class="form-control values"></select>');
             // $('#' + value1).replaceWith('<select id="' + value1 + '" class="form-control values" multiple></select>');
             $('#' + value1).select2({
@@ -202,10 +213,37 @@ var Dashboard = function(element) {
         } else if('DateTime' === field[1]) {
             setDataTimeField();
             conditionOptions.push(
-                {id: 'periodic.interval', text: 'periodic interval'}
+                {id: 'interval', text: 'interval'},
+                {id: 'periodic.interval', text: 'periodic interval'},
+                {id: '$lt', text: '<'},
+                {id: '$le', text: '<='},
+                {id: '$gt', text: '>'},
+                {id: '$ge', text: '>='}
             );
         } else if('Date' === field[1]) {
             setDataField();
+            conditionOptions.push(
+                {id: 'interval', text: 'interval'},
+                {id: '$lt', text: '<'},
+                {id: '$le', text: '<='},
+                {id: '$gt', text: '>'},
+                {id: '$ge', text: '>='}
+            );
+        } else if('IPv4' === field[1]) {
+            console.log('setting mask for ip, change placeholder to xxx.xxx.xxx.xxx');
+            conditionOptions.push(
+                {id: 'interval', text: 'interval'},
+                {id: '$lt', text: '<'},
+                {id: '$gt', text: '>'}
+            );
+        } else {
+            conditionOptions.push(
+                {id: 'interval', text: 'interval'},
+                {id: '$lt', text: '<'},
+                {id: '$le', text: '<='},
+                {id: '$gt', text: '>'},
+                {id: '$ge', text: '>='}
+            );
         }
 
         $('#filter-panel' + id).find('.condition')
@@ -238,7 +276,7 @@ var Dashboard = function(element) {
         .on('click', function() {
             console.log(field + ' (' + id + ')  closing...');
             $(this).parents('.panel').remove();
-            NocFilter.deleteFilter(field[0] + dashboard.separator + id);
+            NocFilter.deleteFilter(field[0] + dashboard.fiedlNameSeparator + id);
             drawAll();
         });
 
@@ -376,6 +414,26 @@ var Dashboard = function(element) {
                     }
                 }
             }
+
+            if('IPv4' === type) {
+                var tokenLen = function(value) {
+                    return value.split('.').filter(function(e) {
+                        return Number(e) < 255;
+                    }).length;
+                };
+
+                if(tokenLen(values[0]) !== 4) {
+                    showErrors(['is not ip address'], []);
+                    return true;
+                }
+
+                if(!$('#filter-panel' + id).find('.second-value').hasClass('hidden')) {
+                    if(tokenLen(values[1]) !== 4) {
+                        showErrors([], ['is not ip address']);
+                        return true;
+                    }
+                }
+            }
             showErrors([], []);
             return false;
         }
@@ -389,11 +447,10 @@ var Dashboard = function(element) {
             var condition = $('#filter-panel' + id).find('.condition').val();
             var values;
             var intervalDate = function(pattern) {
-                var values = [d3.time.format(pattern).parse(value1Id)];
+                var values = [new BI_Value(d3.time.format(pattern).parse(value1Id))];
 
                 if('interval' === condition) {
-                    value2Id = d3.time.format(pattern).parse(value2Id);
-                    values.push(value2Id);
+                    values.push(new BI_Value(d3.time.format(pattern).parse(value2Id)));
                 }
                 return values;
             };
@@ -403,13 +460,13 @@ var Dashboard = function(element) {
             } else if('DateTime' === field[1] && 'periodic.interval' !== condition) {
                 values = intervalDate('%Y-%m-%dT%H:%M:00');
             } else {
-                values = [value1Id + dashboard.separator + value1];
+                values = [new BI_Value(value1Id, value1)];
                 if('interval' === condition || 'periodic.interval' === condition) {
-                    values.push(value2Id + dashboard.separator + value2);
+                    values.push(new BI_Value(value2Id, value2));
                 }
             }
             if(notValidate([value1Id, value2Id], field[1], condition)) return;
-            NocFilter.updateFilter(field[0] + dashboard.separator + id, field[1], values, condition);
+            NocFilter.updateFilter(field[0] + dashboard.fiedlNameSeparator + id, field[1], values, condition);
             drawAll();
         });
 
@@ -420,7 +477,7 @@ var Dashboard = function(element) {
             console.log('field : ' + field);
             console.log('value : ' + $('#value-1' + id).val());
             console.log('condition : ' + $('#filter-panel' + id).find('.condition').val());
-            NocFilter.deleteFilter(field[0] + dashboard.separator + id);
+            NocFilter.deleteFilter(field[0] + dashboard.fiedlNameSeparator + id);
             drawAll();
         });
 
@@ -458,7 +515,7 @@ var Dashboard = function(element) {
     };
 
     this.createTimeSelector = function(container) {
-        var timeSelector = '<div class="row">\n    <div class="col-md-12">\n        <div id="time-selector" class="chart-wrapper">\n            <div class="chart-title">\n                <div class="title-left">{title}</div>\n                <div class="title-right collapsed"></div>\n                <div style="clear:both;"></div>\n            </div>\n            <div class="chart-stage collapse" aria-expanded="false">\n                <div class="row">\n                    <div class="btn-group-vertical nav-stack col-md-2 col-md-offset-1" style="padding-top: 30px;">\n                        <a onclick="dashboard.timeSelector(\'cur.day\')" class="btn btn-default"\n                           style="margin-bottom: 10px;">Today</a>\n                        <a onclick="dashboard.timeSelector(\'cur.monday\')" class="btn btn-default"\n                           style="margin-bottom: 10px;">This week</a>\n                        <a onclick="dashboard.timeSelector(\'cur.month\')" class="btn btn-default"\n                           style="margin-bottom: 10px;">This month</a>\n                        <a onclick="dashboard.timeSelector(\'cur.year\')" class="btn btn-default"\n                           style="margin-bottom: 10px;">This year</a>\n                    </div>\n                    <div class="btn-group-vertical nav-stack col-md-2" style="padding-top: 30px;">\n                        <a onclick="dashboard.timeSelector(\'prev.day\')" class="btn btn-default"\n                           style="margin-bottom: 10px;">Yesterday</a>\n                        <a onclick="dashboard.timeSelector(\'prev.monday\')" class="btn btn-default"\n                           style="margin-bottom: 10px;">Previous week </a>\n                        <a onclick="dashboard.timeSelector(\'prev.month\')" class="btn btn-default"\n                           style="margin-bottom: 10px;">Previous month </a>\n                        <a onclick="dashboard.timeSelector(\'prev.year\')" class="btn btn-default"\n                           style="margin-bottom: 10px;">Previous year </a>\n                    </div>\n                    <div class="col-md-5 col-md-offset-1" style="padding-bottom: 10px;">\n                        <div class="pull-left">\n                            <input id="startInterval" type="text" style="display: none;"/>\n                            <div id="startIntervalContainer"></div>\n                        </div>\n                        <div class="pull-left">\n                            <input id="endInterval" type="text" style="display: none;"/>\n                            <div id="endIntervalContainer"></div>\n                            <a href="#" id="selectBtn" class="btn btn-default pull-right"\n                               style="width: 100px" disabled="disabled">Select</a>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div class="chart-notes">Time Selector</div>\n        </div>\n    </div>\n</div>\n';
+        var timeSelector = '<div class="row">\n    <div class="col-md-12">\n        <div id="time-selector" class="chart-wrapper">\n            <div class="chart-title">\n                <div class="title-left">{title}</div>\n                <div class="title-right collapsed"></div>\n                <div style="clear:both;"></div>\n            </div>\n            <div class="chart-stage collapse" aria-expanded="false">\n                <div class="row">\n                    <div class="btn-group-vertical nav-stack col-md-2 col-md-offset-1" style="padding-top: 30px;">\n                        <a onclick="dashboard.timeSelector({\'period\': \'cur\', \'value\': \'day\'})" class="btn btn-default"\n                           style="margin-bottom: 10px;">Today</a>\n                        <a onclick="dashboard.timeSelector({\'period\': \'cur\', \'value\': \'monday\'})" class="btn btn-default"\n                           style="margin-bottom: 10px;">This week</a>\n                        <a onclick="dashboard.timeSelector({\'period\': \'cur\', \'value\': \'month\'})" class="btn btn-default"\n                           style="margin-bottom: 10px;">This month</a>\n                        <a onclick="dashboard.timeSelector({\'period\': \'cur\', \'value\': \'year\'})" class="btn btn-default"\n                           style="margin-bottom: 10px;">This year</a>\n                    </div>\n                    <div class="btn-group-vertical nav-stack col-md-2" style="padding-top: 30px;">\n                        <a onclick="dashboard.timeSelector({\'period\': \'prev\', \'value\': \'day\'})" class="btn btn-default"\n                           style="margin-bottom: 10px;">Yesterday</a>\n                        <a onclick="dashboard.timeSelector({\'period\': \'prev\', \'value\': \'monday\'})" class="btn btn-default"\n                           style="margin-bottom: 10px;">Previous week </a>\n                        <a onclick="dashboard.timeSelector({\'period\': \'prev\', \'value\': \'month\'})" class="btn btn-default"\n                           style="margin-bottom: 10px;">Previous month </a>\n                        <a onclick="dashboard.timeSelector({\'period\': \'prev\', \'value\': \'year\'})" class="btn btn-default"\n                           style="margin-bottom: 10px;">Previous year </a>\n                    </div>\n                    <div class="col-md-5 col-md-offset-1" style="padding-bottom: 10px;">\n                        <div class="pull-left">\n                            <input id="startInterval" type="text" style="display: none;"/>\n                            <div id="startIntervalContainer"></div>\n                        </div>\n                        <div class="pull-left">\n                            <input id="endInterval" type="text" style="display: none;"/>\n                            <div id="endIntervalContainer"></div>\n                            <a href="#" id="selectBtn" class="btn btn-default pull-right"\n                               style="width: 100px" disabled="disabled">Select</a>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div class="chart-notes">Time Selector</div>\n        </div>\n    </div>\n</div>\n';
 
         addCollapsed(timeSelector, '#time-selector', container);
 
@@ -605,9 +662,6 @@ var Dashboard = function(element) {
             return dashboard[widget.cell];
         });
 
-        // dashboard['qty-rows'] = {
-        //     draw: dashboard.counter
-        // };
         dashboard.widgets.push({
             draw: dashboard.counter,
             chart: {
@@ -634,6 +688,7 @@ var Dashboard = function(element) {
 
         NocFilter.init({
             widgets: dashboard.widgets,
+            fiedlNameSeparator: dashboard.fiedlNameSeparator,
             startDateCondition: [new Date('2016-01-01'), new Date('2017-01-01')]
         });
         drawAll();
@@ -776,7 +831,7 @@ var Dashboard = function(element) {
     };
 
     var reductionName = function(element) {
-        var name = element.split(dashboard.separator)[1];
+        var name = element.text;
 
         if(name && name.length > 10) {
             return name.substr(0, 10) + "...";
@@ -802,13 +857,13 @@ var Dashboard = function(element) {
         spinnerHide(chart);
     };
 
-    var filterToggle = function(widget, field, value, text, type, condition) {
+    var filterToggle = function(widget, field, lastValue, allValues, text, type, condition) {
         var chart = widget.chart;
         var el = chart.anchor();
         var resets = $(el).closest(".chart-wrapper").find(".reset");
         var filters = $(el).closest(".chart-wrapper").find(".filter");
 
-        if(value) {
+        if(lastValue) {
             resets.each(function() {
                 $(this).show();
             });
@@ -820,9 +875,9 @@ var Dashboard = function(element) {
             });
         }
 
-        NocFilter.updateFilter(field + dashboard.separator + widget.chart.anchorName(), type, chart.filters(), condition);
+        NocFilter.updateFilter(field + dashboard.fiedlNameSeparator + chart.anchorName(), type, allValues, condition);
 
-        if(value) {
+        if(lastValue) {
             // redraw other
             drawExcept(widget.chart.anchorName());
         } else {
@@ -990,9 +1045,16 @@ var Dashboard = function(element) {
                 .on('filtered', function(chart, filter) {
                     console.log('filtered : ' + filter);
                     spinnerShow(chart);
-                    filterToggle(widget, 'date', filter,
+                    filterToggle(
+                        widget,
+                        'date',
+                        filter,
+                        filter ? filter.map(function(element) {
+                                return new BI_Value(element)
+                            }) : [],
                         filter ? dashboard.dateToString(filter[0]) + " - " + dashboard.dateToString(filter[1]) : '',
-                        'Date', 'interval');
+                        'Date',
+                        'interval');
                 })
                 .on('pretransition', spinnerShow)
                 .on('renderlet', onRenderLet);
@@ -1018,14 +1080,15 @@ var Dashboard = function(element) {
 
                 var ndx = zip(data, false);
                 var dayOfWeek = ndx.dimension(function(d) {
-                    // var day = (d.date.getDay() === 0) ? 6 : d.date.getDay() - 1;
                     var day = d.day;
                     var name = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
-                    return day + dashboard.separator + name[day - 1];
+                    return new BI_Value(day, name[day - 1]);
                 });
                 var values = dayOfWeek
-                .group()
+                .group(function(d) {
+                    return d;
+                })
                 .reduceSum(function(d) {
                     return d.cnt;
                 });
@@ -1045,17 +1108,22 @@ var Dashboard = function(element) {
                 .dimension(dayOfWeek)
                 .on('filtered', function(chart, filter) {
                     console.log('filtered : ' + filter);
-                    filterToggle(widget, 'toDayOfWeek(date)', filter,
+                    filterToggle(
+                        widget,
+                        'toDayOfWeek(date)',
+                        filter,
+                        widget.chart.filters(),
                         chart.filters().map(function(element) {
-                            return element.split(dashboard.separator)[1];
+                            return element.text;
                         }).join(),
-                        'UInt64', 'in.or');
+                        'UInt64',
+                        'in.or');
                 })
                 .on('pretransition', spinnerShow)
                 .on('renderlet', onRenderLet)
                 .ordinalColors(['#3182bd', '#6baed6', '#9ecae1', '#c6dbef', '#dadaeb'])
                 .label(function(d) {
-                    return d.key.split(dashboard.separator)[1];
+                    return d.key.text;
                 })
                 .title(function(d) {
                     return d.value;
@@ -1086,7 +1154,7 @@ var Dashboard = function(element) {
 
                 var ndx = zip(data, false);
                 var dimension = ndx.dimension(function(d) {
-                    return d[field] + "." + d.name;
+                    return new BI_Value(d[field], d.name);
                 });
 
                 var values = dimension
@@ -1098,6 +1166,7 @@ var Dashboard = function(element) {
                 var width = $(chart.anchor()).closest(".chart-wrapper").width();
                 var height = $(chart.anchor()).closest(".dc-chart").height();
                 var legendWidth = 330;
+
                 chart
                 .width(width)
                 .height(height)
@@ -1117,7 +1186,7 @@ var Dashboard = function(element) {
                     .legendWidth(legendWidth)
                     .itemWidth(legendWidth - 5)
                     .legendText(function(d) {
-                        return d.name.split(dashboard.separator)[1];
+                        return d.name.text;
                     })
                 )
                 .cx(120)
@@ -1126,11 +1195,16 @@ var Dashboard = function(element) {
                 // })
                 .on('filtered', function(chart, filter) {
                     console.log('filtered : ' + filter);
-                    filterToggle(widget, field,
-                        filter, chart.filters().map(function(element) {
+                    filterToggle(
+                        widget,
+                        field,
+                        filter,
+                        widget.chart.filters(),
+                        chart.filters().map(function(element) {
                             return reductionName(element);
                         }).join(),
-                        'UInt64', 'in');
+                        'UInt64',
+                        'in');
                 })
                 .on('pretransition', function(chart) {
                     spinnerShow(chart);
@@ -1281,7 +1355,7 @@ var Dashboard = function(element) {
 
     this.counter = function(widget) {
         var chart = widget.chart;
-        var formatter = function (number) {
+        var formatter = function(number) {
             var a = Number(number).toFixed(0).split('.');
 
             a[0] = a[0]

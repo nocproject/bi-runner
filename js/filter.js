@@ -2,6 +2,7 @@ var NocFilter = (function() {
     // private var
     var widgets = [];
     var filter = {};
+    var fiedlNameSeparator;
 
     // private methods for make filter Object
     function eqValue(name, value) {
@@ -15,6 +16,8 @@ var NocFilter = (function() {
             value = toDate(value);
         } else if('DateTime' === type) {
             value = toDateTime(value);
+        } else if('IPv4' === type) {
+            value = "IPv4StringToNum('" + value + "')";
         }
 
         if(condition) {
@@ -66,20 +69,23 @@ var NocFilter = (function() {
         }))
     }
 
-    function interval(name, value, type) {
+    function interval(name, values, type) {
         var from, to;
 
         if('Date' === type) {
-            from = toDate(value[0]);
-            to = toDate(value[1]);
+            from = toDate(values[0]);
+            to = toDate(values[1]);
         } else if('DateTime' === type) {
-            from = toDateTime(value[0]);
-            to = toDateTime(value[1]);
+            from = toDateTime(values[0]);
+            to = toDateTime(values[1]);
+        } else if('IPv4' === type) {
+            from = "IPv4StringToNum('" + values[0] + "')";
+            to = "IPv4StringToNum('" + values[1] + "')";
         } else {
-            from = value[0];
-            to = value[1];
+            from = values[0];
+            to = values[1];
         }
-        if(value) {
+        if(values.length === 2) {
             return [{
                 $gte: [{
                     $field: name
@@ -122,7 +128,7 @@ var NocFilter = (function() {
                     var key = filter[name];
 
                     if('startDate' === name) name = 'date';
-                    name = name.split('.')[0];
+                    name = name.split(fiedlNameSeparator)[0];
                     if('interval' === key.condition) {
                         return interval(name, key.values, key.type);
                     }
@@ -168,7 +174,8 @@ var NocFilter = (function() {
     return {
         init: function(args) {
             filter = {};
-            if('widgets' in args) widgets = args.widgets;
+            if(args.hasOwnProperty('fiedlNameSeparator')) fiedlNameSeparator = args.fiedlNameSeparator;
+            if(args.hasOwnProperty('widgets')) widgets = args.widgets;
             if(args.hasOwnProperty('startDateCondition')) {
                 this.setStartDateCondition(args.startDateCondition);
             }
@@ -179,14 +186,8 @@ var NocFilter = (function() {
             } else {
                 filter[name] = {
                     values: flat(values.map(function(value) {
-                        if('string' === typeof value) {
-                            if('UInt64' === type) {
-                                return Number(value.split('.')[0]);
-                            }
-                            return value.split('.')[0];
-                        } else {
-                            return value;
-                        }
+                        if('UInt64' === type) return Number(value.id);
+                        return value.id;
                     })),
                     type: type,
                     condition: condition
@@ -206,7 +207,7 @@ var NocFilter = (function() {
         },
         setStartDateCondition: function(interval) {
             dashboard.setSelectorInterval(interval[0], interval[1]);
-            this.updateFilter('startDate', 'Date', [interval], 'interval');
+            this.updateFilter('startDate', 'Date', [{id: interval[0]}, {id: interval[1]}], 'interval');
         },
         getFilter: function() {
             return filter;
