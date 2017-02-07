@@ -87,14 +87,10 @@ var NocFilter = (function() {
         }
         if(values.length === 2) {
             return [{
-                $gte: [{
+                $between: [{
                     $field: name
                 }, {
                     $field: from
-                }]
-            }, {
-                $lte: [{
-                    $field: name
                 }, {
                     $field: to
                 }]
