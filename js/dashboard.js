@@ -500,7 +500,7 @@ var Dashboard = function(element) {
     };
 
     this.createFieldSelector = function(container) {
-        var fieldSelector = '<div class="row">\n    <div class="col-md-12">\n        <div id="field-selector" class="chart-wrapper">\n            <div class="chart-title">\n                <div class="title-left">Field Selector</div>\n                <div class="title-right collapsed"></div>\n                <div style="clear:both;"></div>\n            </div>\n            <div class="chart-stage collapse" aria-expanded="false">\n                <div class="row">\n                    <form class="form-horizontal">\n                        <div class="form-group">\n                            <label class="col-md-1 col-md-offset-1">List of fields:</label>\n                            <div class="col-md-6">\n                                <select id="fields"></select>\n                            </div>\n                        </div>\n                    </form>\n                </div>\n                <div class="filters-by-field" style="margin: 0 10px 5px 10px;"></div>\n                <!--<a href="#" class="btn btn-default pull-right" style="margin: -3px 10px 3px;">Save</a>-->\n            </div>\n            <div class="chart-notes">Field Selector</div>\n        </div>\n    </div>\n</div>\n';
+        var fieldSelector = '<div class="row">\n    <div class="col-md-12">\n        <div id="field-selector" class="chart-wrapper">\n            <div class="chart-title">\n                <div class="title-left">Filter by Field</div>\n                <div class="title-right collapsed"></div>\n                <div style="clear:both;"></div>\n            </div>\n            <div class="chart-stage collapse" aria-expanded="false">\n                <div class="row">\n                    <form class="form-horizontal">\n                        <div class="form-group">\n                            <label class="col-md-1 col-md-offset-1">List of fields:</label>\n                            <div class="col-md-6">\n                                <select id="fields"></select>\n                            </div>\n                        </div>\n                    </form>\n                </div>\n                <div class="filters-by-field" style="margin: 0 10px 5px 10px;"></div>\n                <!--<a href="#" class="btn btn-default pull-right" style="margin: -3px 10px 3px;">Save</a>-->\n            </div>\n            <div class="chart-notes">Filter</div>\n        </div>\n    </div>\n</div>\n';
 
         addCollapsed(fieldSelector, '#field-selector', container);
 
@@ -514,6 +514,96 @@ var Dashboard = function(element) {
             }
         })
         .val(null).trigger('change');
+    };
+
+    this.aggregateByFieldPanel = function() {
+        var formElement = '<div class="form-group" style="margin-bottom: 10px;">\n    <label class="col-md-3 control-label">{name}:</label>\n    <div class="col-md-2">\n        <input type="checkbox" value="{name}" class="form-control aggregate-field"/>\n    </div>\n</div>';
+        var keys = Object.getOwnPropertyNames(dashboard.fieldsType);
+
+        keys.map(function(fieldName) {
+            if('date' !== fieldName) {
+                $('.aggregate-by-field').append($(formElement.replace(/{name}/g, fieldName)));
+            }
+        });
+
+        dashboard.exportQuery.params[0].fields.map(function(field) {
+            if(field.hasOwnProperty('group')) {
+                $('.aggregate-by-field').find("input[value='" + field.expr + "']")
+                .attr('checked', 'checked');
+            }
+        });
+        $('.aggregate-field').checkboxpicker({
+            offActiveCls: 'btn-default',
+            onActiveCls: 'btn-primary'
+        })
+        .on('change', function() {
+            const field = $(this).val();
+            var isChecked = $(this).is(':checked');
+            var removeField = function(param, name) {
+                dashboard.exportQuery.params[0].fields = dashboard.exportQuery.params[0].fields.filter(function(element) {
+                    return element[param] !== name;
+                })
+            };
+            var maxGroup = function() {
+                return Math.max.apply(Math,
+                    dashboard.exportQuery.params[0].fields
+                    .filter(function(element) {
+                        return element.hasOwnProperty('group');
+                    })
+                    .map(function(element) {
+                        return element.group;
+                    }));
+            };
+
+            console.log($(this).val() + ' is checked : ' + isChecked);
+            if(isChecked) {
+                // add to
+                // check is dictionary
+                const group = maxGroup() + 1;
+                var column = {expr: field, group: group};
+
+                if(dashboard.fieldsType[field].dict) {
+                    var dictionaryColumn = {
+                        expr: {
+                            $lookup: [
+                                dashboard.fieldsType[field].dict,
+                                {
+                                    $field: field
+                                }
+                            ]
+                        },
+                        alias: field + '_text'
+                    };
+
+                    dashboard.exportQuery.params[0].fields.push(dictionaryColumn);
+                }
+                if('ip' === field) {
+                    dashboard.exportQuery.params[0].fields.push({
+                        expr: 'IPv4NumToString(ip)',
+                        alias: 'ip_str'
+                    })
+                }
+                dashboard.exportQuery.params[0].fields.push(column);
+            } else {
+                // remove from
+                if(dashboard.fieldsType[field].dict) {
+                    removeField('alias', field + '_text');
+                }
+                if('ip' === field) {
+                    removeField('alias', 'ip_str');
+                }
+                removeField('expr', field);
+            }
+            dashboard['row-counter'].query.params[0].fields = counterField();
+            dashboard.counter(dashboard['row-counter']);
+        });
+    };
+
+    this.createAggregateSelector = function(container) {
+        var fieldSelector = '<div class="row">\n    <div class="col-md-12">\n        <div id="field-aggregate" class="chart-wrapper">\n            <div class="chart-title">\n                <div class="title-left">Field Aggregate</div>\n                <div class="title-right collapsed"></div>\n                <div style="clear:both;"></div>\n            </div>\n            <div class="chart-stage collapse" aria-expanded="false">\n                <div class="row">\n                    <form class="form-horizontal aggregate-by-field">\n                        <div class="form-group" style="margin-bottom: 10px;">\n                            <label class="col-md-1 col-md-offset-1">List of fields:</label>\n                        </div>\n                    </form>\n                </div>\n                <div class="filters-by-field" style="margin: 0 10px 5px 10px;"></div>\n                <!--<a href="#" class="btn btn-default pull-right" style="margin: -3px 10px 3px;">Save</a>-->\n            </div>\n            <div class="chart-notes">Aggregate</div>\n        </div>\n    </div>\n</div>\n';
+
+        addCollapsed(fieldSelector, '#field-aggregate', container);
+        dashboard.aggregateByFieldPanel();
     };
 
     this.createTimeSelector = function(container) {
@@ -616,6 +706,26 @@ var Dashboard = function(element) {
             })
     };
 
+    var counterField = function() {
+        var groupedFields = function() {
+            return dashboard.exportQuery
+                .params[0].fields
+            .filter(function(field) {
+                return field.hasOwnProperty('group');
+            })
+            .map(function(field) {
+                return field.expr;
+            }).join(',');
+        };
+
+        return [
+            {
+                expr: 'uniq(' + groupedFields() + ')',
+                alias: 'qty'
+            }
+        ]
+    };
+
     var drawBoard = function() {
         var container = $("<div class='container-fluid'></div>").appendTo($(element));
         var sortedByRows = dashboardJSON.layout.cells.sort(function(a, b) {
@@ -631,9 +741,16 @@ var Dashboard = function(element) {
         });
 
         $('#report-name').text(dashboardJSON.title);
+
+        if('export' in dashboardJSON) {
+            dashboard.exportQuery = dashboardJSON.export;
+        } else {
+            dashboard.exportQuery = null;
+        }
         // selectors
         dashboard.createTimeSelector(container);
         dashboard.createFieldSelector(container);
+        dashboard.createAggregateSelector(container);
 
         $.each(sortedByRows, function(index, obj) {
             if(rowPosition !== obj.row) {
@@ -645,12 +762,6 @@ var Dashboard = function(element) {
                 dashboard.reset(obj.name);
             });
         });
-
-        if('export' in dashboardJSON) {
-            dashboard.exportQuery = dashboardJSON.export;
-        } else {
-            dashboard.exportQuery = null;
-        }
 
         dashboard.widgets = dashboardJSON.widgets.map(function(widget) {
             if('dataTable' === widget.type) {
@@ -664,7 +775,7 @@ var Dashboard = function(element) {
             return dashboard[widget.cell];
         });
 
-        dashboard.widgets.push({
+        dashboard['row-counter'] = {
             draw: dashboard.counter,
             chart: {
                 anchorName: function() {
@@ -674,19 +785,15 @@ var Dashboard = function(element) {
             query: {
                 params: [
                     {
-                        fields: [
-                            {
-                                expr: 'count()',
-                                alias: 'qty'
-                            }
-                        ],
+                        fields: counterField(),
                         datasource: dashboard.datasource
                     }
                 ],
                 id: 0,
                 method: 'query'
             }
-        });
+        };
+        dashboard.widgets.push(dashboard['row-counter']);
 
         NocFilter.init({
             widgets: dashboard.widgets,
