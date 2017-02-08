@@ -197,6 +197,29 @@ var NocFilter = (function() {
                 updateWidgets(makeFilter());
             }
         },
+        getDateInterval: function() {
+            var keys = Object.getOwnPropertyNames(filter);
+            var dates = keys.filter(function(name) {
+                return 'startDate' === name || !name.indexOf('date');
+            }).map(function(name) {
+                return filter[name];
+            });
+
+            var minDate = Math.max.apply(Math,
+                dates
+                .map(function(element) {
+                    return element.values[0];
+                }));
+
+            var maxDate = Math.min.apply(Math,
+                dates
+                .map(function(element) {
+                    return element.values[1];
+                }));
+
+            return [new Date(minDate), new Date(maxDate)];
+
+        },
         getDate: function() {
             if('date' in filter) return filter.date;
             return undefined;

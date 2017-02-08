@@ -168,7 +168,7 @@ var Dashboard = function(element) {
 
         filterByField = filterByField.replace('{name}', field[0]);
 
-        if(field[1].startsWith('dict-')) {
+        if(!field[1].indexOf('dict-')) {
             type = 'dictionary: <b>' + field[2] + '</b>';
         } else {
             type = 'type: <b>' + field[1] + '</b>';
@@ -178,7 +178,7 @@ var Dashboard = function(element) {
 
         $('.filters-by-field').append($(filterByField));
 
-        if(field[1].startsWith('dict-')) {
+        if(!field[1].indexOf('dict-')) {
             $('#' + value1).replaceWith('<select id="' + value1 + '" class="form-control values"></select>');
             // $('#' + value1).replaceWith('<select id="' + value1 + '" class="form-control values" multiple></select>');
             $('#' + value1).select2({
@@ -521,9 +521,7 @@ var Dashboard = function(element) {
         var keys = Object.getOwnPropertyNames(dashboard.fieldsType);
 
         keys.map(function(fieldName) {
-            if('date' !== fieldName) {
-                $('.aggregate-by-field').append($(formElement.replace(/{name}/g, fieldName)));
-            }
+            $('.aggregate-by-field').append($(formElement.replace(/{name}/g, fieldName)));
         });
 
         dashboard.exportQuery.params[0].fields.map(function(field) {
@@ -673,6 +671,60 @@ var Dashboard = function(element) {
         });
     };
 
+    var updateDuration = function() {
+        const dateInterval = NocFilter.getDateInterval();
+        var startDate = "toDateTime('" + d3.time.format("%Y-%m-%dT%H:%M:%S")(dateInterval[0]) + "')";
+        var endDate = "toDateTime('" + d3.time.format("%Y-%m-%dT%H:%M:%S")(dateInterval[1]) + "')";
+        var duration = function() {
+            return {
+                expr: {
+                    $sum: [
+                        {
+                            $minus: [
+                                {
+                                    '$?': [
+                                        {
+                                            $gt: [
+                                                {$field: endDate},
+                                                {$field: 'close_ts'}
+                                            ]
+                                        },
+                                        {$field: endDate},
+                                        {$field: 'close_ts'}
+                                    ]
+                                },
+                                {
+                                    '$?': [
+                                        {
+                                            $gt: [
+                                                {$field: 'ts'},
+                                                {$field: startDate}
+                                            ]
+                                        },
+                                        {$field: 'ts'},
+                                        {$field: startDate}
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                alias: 'duration'
+            };
+        };
+
+        if(dashboard.exportQuery.params[0].fields.filter(function(element) {
+                return 'duration' === element.alias
+            }).length > 0) {
+            console.log('updating duration field');
+            // sum(((dateInterval[1] > close_ts) ? close_ts : dateInterval[1]) - ((ts > dateInterval[1]) ? ts : dateInterval[1]))
+            dashboard.exportQuery.params[0].fields = dashboard.exportQuery.params[0].fields.map(function(element) {
+                if(element.hasOwnProperty('alias') && element.alias === 'duration')  return duration(dateInterval);
+                return element;
+            });
+        }
+    };
+
     this.export = function() {
 
         if(!dashboard.exportQuery) {
@@ -681,6 +733,11 @@ var Dashboard = function(element) {
         }
 
         dashboard.exportQuery.params[0].filter = dashboard.widgets[0].query.params[0].filter;
+        const dateInterval = NocFilter.getDateInterval();
+        var filename = dashboard.title.replace(/ /g, '_') + '_' + dashboard.dateToString(dateInterval[0], '%Y%m%d')
+            + '-' + dashboard.dateToString(dateInterval[1], '%Y%m%d') + '.csv';
+        updateDuration();
+        console.log('file for export : ' + filename);
         $("#export-btn").off("click");
 
         d3.json('/api/bi/')
@@ -694,7 +751,7 @@ var Dashboard = function(element) {
                 if(failResult('export', data)) return;
 
                 var blob = new Blob([toCsv(data.result.result, data.result.fields, '"', ';')], {type: "text/plain;charset=utf-8"});
-                saveAs(blob, 'export.csv');
+                saveAs(blob, filename);
 
                 $('#export-btn')
                 .on("click", "", function() {
@@ -795,6 +852,8 @@ var Dashboard = function(element) {
         };
         dashboard.widgets.push(dashboard['row-counter']);
 
+        updateDuration();
+
         NocFilter.init({
             widgets: dashboard.widgets,
             fiedlNameSeparator: dashboard.fiedlNameSeparator,
@@ -833,15 +892,18 @@ var Dashboard = function(element) {
                             return a.name.localeCompare(b.name);
                         })
                         .map(function(field) {
-                            dashboard.fieldsType[field.name] = {
-                                type: field.type,
-                                dict: field.dict,
-                                desc: field.description
-                            };
+                            if('date' !== field.name) {
+                                dashboard.fieldsType[field.name] = {
+                                    type: field.type,
+                                    dict: field.dict,
+                                    desc: field.description
+                                };
+                            }
                         });
 
                         dashboard.clear();
                         dashboard.datasource = dashboardJSON.datasource;
+                        dashboard.title = dashboardJSON.title;
                         drawBoard();
                     });
             });
