@@ -1,0 +1,473 @@
+{
+  "id": "0",
+  "method": "set_dashboard",
+  "params": [
+    {
+      "layoutId": "580e1ba498601c0f96b7e809",
+      "layout": {
+        "uuid": "f2736f99-a568-4820-b746-1e71d48b4374",
+        "cells": [
+          {
+            "md": 6,
+            "name": "c11",
+            "lg": null,
+            "height": 200,
+            "sm": null,
+            "xs": null,
+            "row": 0
+          },
+          {
+            "md": 6,
+            "name": "c12",
+            "lg": null,
+            "height": 200,
+            "sm": null,
+            "xs": null,
+            "row": 0
+          },
+          {
+            "md": 6,
+            "name": "c21",
+            "lg": null,
+            "height": 200,
+            "sm": null,
+            "xs": null,
+            "row": 1
+          },
+          {
+            "md": 6,
+            "name": "c22",
+            "lg": null,
+            "height": 200,
+            "sm": null,
+            "xs": null,
+            "row": 1
+          },
+          {
+            "md": 12,
+            "row": 10,
+            "name": "table1",
+            "height": 200
+          },
+          {
+            "md": 12,
+            "row": 20,
+            "name": "table2",
+            "height": 200
+          },
+          {
+            "md": 6,
+            "row": 4,
+            "name": "c31",
+            "height": 200
+          },
+          {
+            "md": 6,
+            "row": 4,
+            "name": "c32",
+            "height": 200
+          }
+        ],
+        "description": "",
+        "fav_status": false,
+        "is_builtin": false,
+        "id": "580e1ba498601c0f96b7e809",
+        "name": "c2x2"
+      },
+      "description": "описание отчета по авариям",
+      "title": "Alarms",
+      "format": 1,
+      "datasource": "alarms",
+      "widgets": [
+        {
+          "cell": "c11",
+          "note": "__('c11: Cell footer')",
+          "title": "Alarms per Day",
+          "type": "lineChart",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "date",
+                    "group": 0,
+                    "order": 0,
+                    "desc": true
+                  },
+                  {
+                    "expr": "count()",
+                    "alias": "cnt"
+                  }
+                ],
+                "datasource": "alarms"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        },
+        {
+          "cell": "c21",
+          "note": "__('c21: Cell footer')",
+          "title": "Group by Platform, top 10",
+          "type": "pieChart",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "platform",
+                    "group": 0
+                  },
+                  {
+                    "expr": {
+                      "$lookup": [
+                        "platform",
+                        {
+                          "$field": "platform"
+                        }
+                      ]
+                    },
+                    "group": 1,
+                    "alias": "name"
+                  },
+                  {
+                    "expr": "count()",
+                    "alias": "cnt",
+                    "order": 0,
+                    "desc": true
+                  }
+                ],
+                "limit": 10,
+                "datasource": "alarms"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        },
+        {
+          "cell": "c12",
+          "note": "__('c12: Cell footer')",
+          "title": "Alarms by Weekday",
+          "type": "rowChart",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "toDayOfWeek(date)",
+                    "alias": "day",
+                    "group": 0,
+                    "order": 0,
+                    "desc": true
+                  },
+                  {
+                    "expr": "count()",
+                    "alias": "cnt"
+                  }
+                ],
+                "datasource": "alarms"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        },
+        {
+          "note": "note",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "segment",
+                    "group": 0
+                  },
+                  {
+                    "expr": {
+                      "$lookup": [
+                        "networksegment",
+                        {
+                          "$field": "segment"
+                        }
+                      ]
+                    },
+                    "group": 1,
+                    "alias": "name"
+                  },
+                  {
+                    "expr": "count()",
+                    "alias": "cnt",
+                    "order": 0,
+                    "desc": true
+                  }
+                ],
+                "limit": 10,
+                "datasource": "alarms"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          },
+          "cell": "c31",
+          "type": "pieChart",
+          "title": "Group by Segment, top 10"
+        },
+        {
+          "note": "note",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": {
+                      "$lookup": [
+                        "profile",
+                        {
+                          "$field": "profile"
+                        }
+                      ]
+                    },
+                    "alias": "profile_text",
+                    "label": "Profile"
+                  },
+                  {
+                    "expr": {
+                      "$lookup": [
+                        "vendor",
+                        {
+                          "$field": "vendor"
+                        }
+                      ]
+                    },
+                    "alias": "vendor_text",
+                    "label": "Vendor"
+                  },
+                  {
+                    "expr": {
+                      "$lookup": [
+                        "platform",
+                        {
+                          "$field": "platform"
+                        }
+                      ]
+                    },
+                    "alias": "platform_text",
+                    "label": "Platform"
+                  },
+                  {
+                    "expr": {
+                      "$lookup": [
+                        "version",
+                        {
+                          "$field": "version"
+                        }
+                      ]
+                    },
+                    "alias": "version_text",
+                    "label": "Version"
+                  },
+                  {
+                    "expr": "severity",
+                    "label": "Severity",
+                    "alias": "xxx",
+                    "order": 0,
+                    "desc": true
+                  }
+                ],
+                "limit": 10,
+                "datasource": "alarms"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          },
+          "cell": "table2",
+          "type": "dataTable",
+          "title": "Severity, top 10"
+        },
+        {
+          "cell": "table1",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "severity",
+                    "label": "Severity",
+                    "alias": "severity",
+                    "order": 0,
+                    "desc": true
+                  },
+                  {
+                    "expr": {
+                      "$lookup": [
+                        "managedobject",
+                        {
+                          "$field": "managed_object"
+                        }
+                      ]
+                    },
+                    "alias": "managed_object_text",
+                    "label": "Object"
+                  },
+                  {
+                    "expr": "date",
+                    "label": "Starting",
+                    "format": "dateToString"
+                  },
+                  {
+                    "expr": "reopens",
+                    "label": "Reopens"
+                  },
+                  {
+                    "expr": {
+                      "$lookup": [
+                        "container",
+                        {
+                          "$field": "container"
+                        }
+                      ]
+                    },
+                    "alias": "container_text",
+                    "label": "Container"
+                  },
+                  {
+                    "format": "secondsToString",
+                    "expr": {
+                      "$minus": [
+                        {
+                          "$field": "close_ts"
+                        },
+                        {
+                          "$field": "ts"
+                        }
+                      ]
+                    },
+                    "label": "Duration (hour:minute:sec)",
+                    "alias": "xxx",
+                    "order": 0,
+                    "desc": true
+                  }
+                ],
+                "limit": 20,
+                "datasource": "alarms"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          },
+          "note": "note",
+          "type": "dataTable",
+          "title": "Alarms Duration, top 20"
+        },
+        {
+          "cell": "c32",
+          "type": "pieChart",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "profile",
+                    "group": 0
+                  },
+                  {
+                    "expr": {
+                      "$lookup": [
+                        "profile",
+                        {
+                          "$field": "profile"
+                        }
+                      ]
+                    },
+                    "group": 1,
+                    "alias": "name"
+                  },
+                  {
+                    "expr": "count()",
+                    "alias": "cnt",
+                    "order": 0,
+                    "desc": true
+                  }
+                ],
+                "limit": 10,
+                "datasource": "alarms"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          },
+          "note": "note",
+          "title": "Group by Profile, top 10"
+        },
+        {
+          "cell": "c22",
+          "note": "note",
+          "title": "Group by Administrative Domain, top 10",
+          "type": "pieChart",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "administrative_domain",
+                    "group": 0
+                  },
+                  {
+                    "expr": {
+                      "$lookup": [
+                        "administrativedomain",
+                        {
+                          "$field": "administrative_domain"
+                        }
+                      ]
+                    },
+                    "alias": "name"
+                  },
+                  {
+                    "expr": "count()",
+                    "alias": "cnt",
+                    "order": 0,
+                    "desc": true
+                  }
+                ],
+                "limit": 10,
+                "datasource": "alarms"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        }
+      ],
+      "id": "585aec4b98601c5ee7f0559d",
+      "export": {
+        "id": 0,
+        "method": "query",
+        "params": [
+          {
+            "fields": [
+              {
+                "alias": "date",
+                "expr": "date",
+                "group": 0,
+                "format": "dateToString"
+              },
+              {
+                "expr": "count()",
+                "alias": "qty"
+              },
+              {
+                "expr": "sum(close_ts-ts)",
+                "alias": "duration"
+              }
+            ],
+            "datasource": "alarms"
+          }
+        ]
+      }
+    }
+  ]
+}
