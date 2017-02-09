@@ -517,91 +517,13 @@ var Dashboard = function(element) {
     };
 
     this.aggregateByFieldPanel = function() {
-        var formElement = '<div class="form-group" style="margin-bottom: 10px;">\n    <label class="col-md-3 control-label">{name}:</label>\n    <div class="col-md-2">\n        <input type="checkbox" value="{name}" class="form-control aggregate-field"/>\n    </div>\n</div>';
-        var keys = Object.getOwnPropertyNames(dashboard.fieldsType);
-
-        keys.map(function(fieldName) {
-            $('.aggregate-by-field').append($(formElement.replace(/{name}/g, fieldName)));
-        });
-
-        dashboard.exportQuery.params[0].fields.map(function(field) {
-            if(field.hasOwnProperty('group')) {
-                $('.aggregate-by-field').find("input[value='" + field.expr + "']")
-                .attr('checked', 'checked');
-            }
-        });
-        $('.aggregate-field').checkboxpicker({
-            offActiveCls: 'btn-default',
-            onActiveCls: 'btn-primary'
-        })
-        .on('change', function() {
-            const field = $(this).val();
-            var isChecked = $(this).is(':checked');
-            var removeField = function(param, name) {
-                dashboard.exportQuery.params[0].fields = dashboard.exportQuery.params[0].fields.filter(function(element) {
-                    return element[param] !== name;
-                })
-            };
-            var maxGroup = function() {
-                return Math.max.apply(Math,
-                    dashboard.exportQuery.params[0].fields
-                    .filter(function(element) {
-                        return element.hasOwnProperty('group');
-                    })
-                    .map(function(element) {
-                        return element.group;
-                    }));
-            };
-
-            console.log($(this).val() + ' is checked : ' + isChecked);
-            if(isChecked) {
-                // add to
-                // check is dictionary
-                const group = maxGroup() + 1;
-                var column = {expr: field, group: group};
-
-                if(dashboard.fieldsType[field].dict) {
-                    var dictionaryColumn = {
-                        expr: {
-                            $lookup: [
-                                dashboard.fieldsType[field].dict,
-                                {
-                                    $field: field
-                                }
-                            ]
-                        },
-                        alias: field + '_text'
-                    };
-
-                    dashboard.exportQuery.params[0].fields.push(dictionaryColumn);
-                }
-                if('ip' === field) {
-                    dashboard.exportQuery.params[0].fields.push({
-                        expr: 'IPv4NumToString(ip)',
-                        alias: 'ip_str'
-                    })
-                }
-                dashboard.exportQuery.params[0].fields.push(column);
-            } else {
-                // remove from
-                if(dashboard.fieldsType[field].dict) {
-                    removeField('alias', field + '_text');
-                }
-                if('ip' === field) {
-                    removeField('alias', 'ip_str');
-                }
-                removeField('expr', field);
-            }
-            dashboard['row-counter'].query.params[0].fields = counterField();
-            dashboard.counter(dashboard['row-counter']);
-        });
     };
 
     this.createAggregateSelector = function(container) {
         var fieldSelector = '<div class="row">\n    <div class="col-md-12">\n        <div id="field-aggregate" class="chart-wrapper">\n            <div class="chart-title">\n                <div class="title-left">Field Aggregate</div>\n                <div class="title-right collapsed"></div>\n                <div style="clear:both;"></div>\n            </div>\n            <div class="chart-stage collapse" aria-expanded="false">\n                <div class="row">\n                    <form class="form-horizontal aggregate-by-field">\n                        <div class="form-group" style="margin-bottom: 10px;">\n                            <label class="col-md-1 col-md-offset-1">List of fields:</label>\n                        </div>\n                    </form>\n                </div>\n                <div class="filters-by-field" style="margin: 0 10px 5px 10px;"></div>\n                <!--<a href="#" class="btn btn-default pull-right" style="margin: -3px 10px 3px;">Save</a>-->\n            </div>\n            <div class="chart-notes">Aggregate</div>\n        </div>\n    </div>\n</div>\n';
 
         addCollapsed(fieldSelector, '#field-aggregate', container);
-        dashboard.aggregateByFieldPanel();
+        NocAggregatePanel.init(dashboard);
     };
 
     this.createTimeSelector = function(container) {
@@ -763,26 +685,6 @@ var Dashboard = function(element) {
             })
     };
 
-    var counterField = function() {
-        var groupedFields = function() {
-            return dashboard.exportQuery
-                .params[0].fields
-            .filter(function(field) {
-                return field.hasOwnProperty('group');
-            })
-            .map(function(field) {
-                return field.expr;
-            }).join(',');
-        };
-
-        return [
-            {
-                expr: 'uniq(' + groupedFields() + ')',
-                alias: 'qty'
-            }
-        ]
-    };
-
     var drawBoard = function() {
         var container = $("<div class='container-fluid'></div>").appendTo($(element));
         var sortedByRows = dashboardJSON.layout.cells.sort(function(a, b) {
@@ -842,7 +744,7 @@ var Dashboard = function(element) {
             query: {
                 params: [
                     {
-                        fields: counterField(),
+                        fields: NocAggregatePanel.counterField(),
                         datasource: dashboard.datasource
                     }
                 ],
