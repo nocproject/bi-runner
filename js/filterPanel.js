@@ -10,12 +10,11 @@ var NocFilterPanel = (function() {
         .on('change', function() {
             console.log("changed  to : ", $(this).val());
             if($(this).val()) {
-                _addRow($(this).val());
+                _createPanel($(this).val());
                 $(this).val(null).trigger('change');
             }
         })
         .val(null).trigger('change');
-
     };
 
     var _selectConfig = function() {
@@ -106,10 +105,28 @@ var NocFilterPanel = (function() {
         return query
     };
 
-    var _addRow = function(fieldValue) {
-        var type;
-        var filterByField = '<div id="filter-panel{id}" class="panel panel-default" style="margin-bottom: 10px">\n    <div class="panel-heading">\n        <div>\n            <div class="title-left">Field name: <b>{name}</b>, {type}</div>\n            <div style="cursor: pointer;cursor: hand;float: right;" class="close-panel">\n                <i class="fa fa-times-circle" aria-hidden="true"></i>\n            </div>\n            <div style="clear:both;"></div>\n        </div>\n    </div>\n    <div class="panel-body" style="padding-bottom: 0px;">\n        <form class="form-horizontal">\n            <div class="form-group">\n                <label class="control-label col-md-1 col-md-offset-1">Condition:</label>\n                <div class="col-md-2">\n                    <select class="form-control values condition"></select>\n                </div>\n                <div class="first-value">\n                    <label class="control-label col-md-2" for="value-1{id}">Value:</label>\n                    <div class="col-md-6">\n                        <input type="text" class="form-control" id="value-1{id}" placeholder="Value">\n                    </div>\n                </div>\n            </div>\n            <div class="form-group second-value hidden">\n                <label class="control-label col-md-6" for="value-2{id}">To Value:</label>\n                <div class="col-md-6">\n                    <input type="text" class="form-control" id="value-2{id}" placeholder="To Value">\n                </div>\n            </div>\n            <!--<hr style="margin-top: 10px;margin-bottom: 10px;">-->\n            <!--<div class="form-group" style="margin-bottom: 10px;">-->\n            <!--<label class="col-md-1 control-label">Show chart:</label>-->\n            <!--<div class="col-md-2">-->\n            <!--<input type="checkbox" value="1" name="" class="form-control show-chart"/>-->\n            <!--</div>-->\n            <!--<label class="control-label col-md-1">Chart type:</label>-->\n            <!--<div class="col-md-1">-->\n            <!--<select class="form-control values chart-type" disabled></select>-->\n            <!--</div>-->\n            <!--<label class="control-label col-md-1">Field:</label>-->\n            <!--<div class="col-md-3">-->\n            <!--<select class="form-control values chart-fields" disabled> </select>-->\n            <!--</div>-->\n            <!--<label class="control-label col-md-1">Function:</label>-->\n            <!--<div class="col-md-2">-->\n            <!--<select class="form-control values chart-func" disabled></select>-->\n            <!--</div>-->\n            <!--</div>-->\n            <div class="form-group" style="margin-bottom: 10px;">\n                <!--<div class="col-md-offset-1 pull-left">-->\n                <!--<a href="#" class="btn btn-default pull-left chart-show btn-sm" disabled>Show Chart</a>-->\n                <!--</div>-->\n                <div class="pull-right" style="margin-right: 10px;">\n                    <a href="#" class="btn btn-default clear-filter btn-sm">Clear</a>\n                    <a href="#" class="btn btn-default apply-filter btn-sm">Apply</a>\n                </div>\n            </div>\n        </form>\n    </div>\n</div>';
+    var _createPanel = function(fieldValue) {
+        var filterPanel = '<div id="filter-panel{id}" class="panel panel-default" style="margin-bottom: 10px">\n    <div class="panel-heading">\n        <div>\n            <div class="title-left">Field name: <b>{name}</b>, {type}</div>\n            <div style="cursor: pointer;cursor: hand;float: right;" class="close-panel">\n                <i class="fa fa-times-circle" aria-hidden="true"></i>\n            </div>\n            <div style="clear:both;"></div>\n        </div>\n    </div>\n    <div class="panel-body" style="padding-bottom: 0px;">\n        <form class="form-horizontal">\n            <div class="filter-rows{id}">\n            </div>\n            <div class="form-group buttons" style="margin-bottom: 10px;">\n                <!--<div class="col-md-offset-1 pull-left">-->\n                <!--<a href="#" class="btn btn-default pull-left chart-show btn-sm" disabled>Show Chart</a>-->\n                <!--</div>-->\n                <div class="pull-right" style="margin-right: 10px;">\n                    <a href="#" class="btn btn-default clear-filter btn-sm">Clear</a>\n                    <a href="#" class="btn btn-default apply-filter btn-sm">Apply</a>\n                </div>\n            </div>\n        </form>\n    </div>\n</div>';
         var id = new Date().getTime();
+        var field = fieldValue.split(',');
+        var fieldType;
+
+        if(!field[1].indexOf('dict-')) {
+            fieldType = 'dictionary: <b>' + field[2] + '</b>';
+        } else {
+            fieldType = 'type: <b>' + field[1] + '</b>';
+        }
+
+        filterPanel = filterPanel.replace(/{id}/g, id);
+        filterPanel = filterPanel.replace('{name}', field[0]);
+        filterPanel = filterPanel.replace('{type}', fieldType);
+
+        $('.filters-by-field').append($(filterPanel));
+        _addRow(fieldValue, id, '');
+    };
+
+    var _addRow = function(fieldValue, id, prefix) {
+        var rowFilter = '<div class="form-group">\n    <label class="control-label col-md-1 col-md-offset-1">Condition:</label>\n    <div class="col-md-2">\n        <select class="form-control values condition"></select>\n    </div>\n    <div class="first-value">\n        <label class="control-label col-md-2" for="{prefix}value-1{id}">Value:</label>\n        <div class="col-md-6">\n            <input type="text" class="form-control" id="{prefix}value-1{id}" placeholder="Value">\n        </div>\n    </div>\n</div>\n<div class="form-group second-value hidden">\n    <label class="control-label col-md-6" for="{prefix}value-2{id}">To Value:</label>\n    <div class="col-md-6">\n        <input type="text" class="form-control" id="{prefix}value-2{id}" placeholder="To Value">\n    </div>\n</div>\n<!--<hr style="margin-top: 10px;margin-bottom: 10px;">-->\n<!--<div class="form-group" style="margin-bottom: 10px;">-->\n<!--<label class="col-md-1 control-label">Show chart:</label>-->\n<!--<div class="col-md-2">-->\n<!--<input type="checkbox" value="1" name="" class="form-control show-chart"/>-->\n<!--</div>-->\n<!--<label class="control-label col-md-1">Chart type:</label>-->\n<!--<div class="col-md-1">-->\n<!--<select class="form-control values chart-type" disabled></select>-->\n<!--</div>-->\n<!--<label class="control-label col-md-1">Field:</label>-->\n<!--<div class="col-md-3">-->\n<!--<select class="form-control values chart-fields" disabled> </select>-->\n<!--</div>-->\n<!--<label class="control-label col-md-1">Function:</label>-->\n<!--<div class="col-md-2">-->\n<!--<select class="form-control values chart-func" disabled></select>-->\n<!--</div>-->\n<!--</div>-->';
         var field = fieldValue.split(',');
         var conditionOptions = [
             {id: '$eq', text: '=='},
@@ -124,8 +141,8 @@ var NocFilterPanel = (function() {
             {id: '$count', text: 'Count'},
             {id: '$sum', text: 'Sum'}
         ];
-        var value1 = 'value-1' + id;
-        var value2 = 'value-2' + id;
+        var value1 = prefix + 'value-1' + id;
+        var value2 = prefix + 'value-2' + id;
         var setDataTimeField = function() {
             $('#' + value1).replaceWith('<input type="text" id="' + value1 + '" class="form-control values pikaday" readonly>');
             $('#' + value2).replaceWith('<input type="text" id="' + value2 + '" class="form-control values pikaday" readonly>');
@@ -151,19 +168,25 @@ var NocFilterPanel = (function() {
             });
         };
 
-        filterByField = filterByField.replace(/{id}/g, id);
-
-        filterByField = filterByField.replace('{name}', field[0]);
-
-        if(!field[1].indexOf('dict-')) {
-            type = 'dictionary: <b>' + field[2] + '</b>';
-        } else {
-            type = 'type: <b>' + field[1] + '</b>';
+        if('inner-' !== prefix) {
+            rowFilter += '<div class="form-group">\n    <label class="control-label col-md-2">List of fields (OR) :</label>\n    <div class="col-md-6">\n        <select id="inner-fields{id}"></select>\n    </div>\n</div>\n';
         }
 
-        filterByField = filterByField.replace('{type}', type);
+        rowFilter = rowFilter.replace(/{id}/g, id);
+        rowFilter = rowFilter.replace(/{prefix}/g, prefix);
 
-        $('.filters-by-field').append($(filterByField));
+        $('.filter-rows' + id).append($(rowFilter));
+
+        $("#inner-fields" + id)
+        .select2(_selectConfig())
+        .on('change', function() {
+            console.log("inner select changed  to : ", $(this).val());
+            if($(this).val()) {
+                _addRow('inner-' + $(this).val(), id, 'inner-');
+                $(this).val(null).trigger('change');
+            }
+        })
+        .val(null).trigger('change');
 
         if(!field[1].indexOf('dict-')) {
             $('#' + value1).replaceWith('<select id="' + value1 + '" class="form-control values"></select>');
@@ -271,14 +294,14 @@ var NocFilterPanel = (function() {
 
         $('#filter-panel' + id).find('.condition')
         .on('change', function(e) {
-            if(!$('#filter-panel' + id).find('.second-value').hasClass('hidden')) {
-                $('#filter-panel' + id).find('.second-value').addClass('hidden');
+            if(!$('#' + value2).closest('.form-group').hasClass('hidden')) {
+                $('#' + value2).closest('.form-group').addClass('hidden');
             }
             if('interval' === $(this).val()) {
-                $('#filter-panel' + id).find('.second-value').removeClass('hidden');
+                $('#' + value2).closest('.form-group').removeClass('hidden');
             }
             if('periodic.interval' === $(this).val()) {
-                $('#filter-panel' + id).find('.second-value').removeClass('hidden');
+                $('#' + value2).closest('.form-group').removeClass('hidden');
                 $('#' + value1).replaceWith('<input type="text" class="form-control values" id="' + value1 + '" placeholder="hh:mm">').mask('00:00');
                 $('#' + value2).replaceWith('<input type="text" class="form-control values" id="' + value2 + '" placeholder="hh:mm">').mask('00:00');
             } else {
@@ -288,144 +311,6 @@ var NocFilterPanel = (function() {
             }
             console.log('condition changed to : ' + $(this).val());
         });
-
-        function notValidate(values, type, condition) {
-            var toScreen = function(which, message) {
-                $('#filter-panel' + id).find('.' + which + '-value>div>.help-block').remove();
-                $('#filter-panel' + id).find('.' + which + '-value').addClass('has-error');
-                $('#filter-panel' + id).find('.' + which + '-value').find('div')
-                .append($('<span class="help-block">' + message.join(', ') + '</span>'));
-            };
-
-            function showErrors(message1, message2) {
-                console.log('from value : ' + message1.join(', '));
-                console.log('to   value : ' + message2.join(', '));
-                if(message1.length > 0) {
-                    toScreen('first', message1);
-                } else {
-                    $('#filter-panel' + id).find('.first-value').removeClass('has-error');
-                    $('#filter-panel' + id).find('.first-value>div>.help-block').remove();
-                }
-                if(message2.length > 0) {
-                    toScreen('second', message2);
-                } else {
-                    $('#filter-panel' + id).find('.second-value>div>.help-block').remove();
-                    $('#filter-panel' + id).find('.second-value').removeClass('has-error');
-                }
-            }
-
-            if(!values[0]) {
-                showErrors(['empty value'], []);
-                return true;
-            }
-            if(!$('#filter-panel' + id).find('.second-value').hasClass('hidden') && !values[1]) {
-                showErrors([], ['empty value']);
-                return true;
-            }
-
-            if('periodic.interval' === condition) {
-                var message1 = [], message2 = [];
-                var hourStart, hourEnd, minuteStart, minuteEnd;
-
-                if(values[0].indexOf(':') !== 2) {
-                    message1.push('format error, must be hh:mm');
-                }
-                if(values[1].indexOf(':') !== 2) {
-                    message2.push('format error, must be hh:mm');
-                }
-
-                showErrors(message1, message2);
-                if(message1.length !== 0 || message2.length !== 0) {
-                    return true;
-                }
-
-                hourStart = Number(values[0].split(':')[0]);
-                if(isNaN(hourStart)) {
-                    message1.push('hour is not number');
-                }
-                hourEnd = Number(values[1].split(':')[0]);
-                if(isNaN(hourEnd)) {
-                    message2.push('hour is not number');
-                }
-                minuteStart = Number(values[0].split(':')[1]);
-                if(isNaN(minuteStart)) {
-                    message1.push('minute is not number');
-                }
-                minuteEnd = Number(values[1].split(':')[1]);
-                if(isNaN(minuteEnd)) {
-                    message2.push('minute is not number');
-                }
-
-                showErrors(message1, message2);
-                if(message1.length !== 0 || message2.length !== 0) {
-                    return true;
-                }
-
-                if(!(hourStart >= 0 && hourStart < 24)) {
-                    message1.push('hour is not in range 0-23');
-                }
-                if(!(hourEnd >= 0 && hourEnd < 24)) {
-                    message2.push('hour is not in range 0-23');
-                }
-
-                if(!(minuteStart >= 0 && minuteStart < 60)) {
-                    message1.push('minute is not in range 0-59');
-                }
-                if(!(minuteEnd >= 0 && minuteEnd < 60)) {
-                    message2.push('hour is not in range 0-59');
-                }
-
-                showErrors(message1, message2);
-                if(message1.length !== 0 || message2.length !== 0) {
-                    return true;
-                }
-
-                if(hourStart * 3600 + minuteStart * 60 >= hourEnd * 3600 + minuteEnd * 60) {
-                    console.log('bad interval');
-                    showErrors([], ['bad interval']);
-                    return true;
-                }
-            }
-
-            if(type.match(/int|float/i)) {
-                var val = Number(values[0]);
-
-                if(isNaN(val)) {
-                    showErrors(['value is not number'], []);
-                    return true;
-                }
-
-                val = Number(values[1]);
-                if(!$('#filter-panel' + id).find('.second-value').hasClass('hidden')) {
-                    if(!val || isNaN(val)) {
-                        showErrors([], ['value is not number']);
-                        return true;
-                    }
-                }
-            }
-
-            if('IPv4' === type) {
-                var tokenLen = function(value) {
-                    return value.split('.').filter(function(e) {
-                        return Number(e) < 255;
-                    }).length;
-                };
-
-                if(tokenLen(values[0]) !== 4) {
-                    showErrors(['is not ip address'], []);
-                    return true;
-                }
-
-                if(!$('#filter-panel' + id).find('.second-value').hasClass('hidden')) {
-                    if(tokenLen(values[1]) !== 4) {
-                        showErrors([], ['is not ip address']);
-                        return true;
-                    }
-                }
-            }
-            showErrors([], []);
-            return false;
-        }
 
         $('#filter-panel' + id).find('.apply-filter')
         .on('click', function() {
@@ -485,6 +370,145 @@ var NocFilterPanel = (function() {
             $('#filter-panel' + id).find('.chart-func').attr('disabled', isChecked);
         });
     };
+
+    var notValidate = function(values, type, condition) {
+        var toScreen = function(which, message) {
+            $('#filter-panel' + id).find('.' + which + '-value>div>.help-block').remove();
+            $('#filter-panel' + id).find('.' + which + '-value').addClass('has-error');
+            $('#filter-panel' + id).find('.' + which + '-value').find('div')
+            .append($('<span class="help-block">' + message.join(', ') + '</span>'));
+        };
+
+        function showErrors(message1, message2) {
+            console.log('from value : ' + message1.join(', '));
+            console.log('to   value : ' + message2.join(', '));
+            if(message1.length > 0) {
+                toScreen('first', message1);
+            } else {
+                $('#filter-panel' + id).find('.first-value').removeClass('has-error');
+                $('#filter-panel' + id).find('.first-value>div>.help-block').remove();
+            }
+            if(message2.length > 0) {
+                toScreen('second', message2);
+            } else {
+                $('#filter-panel' + id).find('.second-value>div>.help-block').remove();
+                $('#filter-panel' + id).find('.second-value').removeClass('has-error');
+            }
+        }
+
+        if(!values[0]) {
+            showErrors(['empty value'], []);
+            return true;
+        }
+        if(!$('#filter-panel' + id).find('.second-value').hasClass('hidden') && !values[1]) {
+            showErrors([], ['empty value']);
+            return true;
+        }
+
+        if('periodic.interval' === condition) {
+            var message1 = [], message2 = [];
+            var hourStart, hourEnd, minuteStart, minuteEnd;
+
+            if(values[0].indexOf(':') !== 2) {
+                message1.push('format error, must be hh:mm');
+            }
+            if(values[1].indexOf(':') !== 2) {
+                message2.push('format error, must be hh:mm');
+            }
+
+            showErrors(message1, message2);
+            if(message1.length !== 0 || message2.length !== 0) {
+                return true;
+            }
+
+            hourStart = Number(values[0].split(':')[0]);
+            if(isNaN(hourStart)) {
+                message1.push('hour is not number');
+            }
+            hourEnd = Number(values[1].split(':')[0]);
+            if(isNaN(hourEnd)) {
+                message2.push('hour is not number');
+            }
+            minuteStart = Number(values[0].split(':')[1]);
+            if(isNaN(minuteStart)) {
+                message1.push('minute is not number');
+            }
+            minuteEnd = Number(values[1].split(':')[1]);
+            if(isNaN(minuteEnd)) {
+                message2.push('minute is not number');
+            }
+
+            showErrors(message1, message2);
+            if(message1.length !== 0 || message2.length !== 0) {
+                return true;
+            }
+
+            if(!(hourStart >= 0 && hourStart < 24)) {
+                message1.push('hour is not in range 0-23');
+            }
+            if(!(hourEnd >= 0 && hourEnd < 24)) {
+                message2.push('hour is not in range 0-23');
+            }
+
+            if(!(minuteStart >= 0 && minuteStart < 60)) {
+                message1.push('minute is not in range 0-59');
+            }
+            if(!(minuteEnd >= 0 && minuteEnd < 60)) {
+                message2.push('hour is not in range 0-59');
+            }
+
+            showErrors(message1, message2);
+            if(message1.length !== 0 || message2.length !== 0) {
+                return true;
+            }
+
+            if(hourStart * 3600 + minuteStart * 60 >= hourEnd * 3600 + minuteEnd * 60) {
+                console.log('bad interval');
+                showErrors([], ['bad interval']);
+                return true;
+            }
+        }
+
+        if(type.match(/int|float/i)) {
+            var val = Number(values[0]);
+
+            if(isNaN(val)) {
+                showErrors(['value is not number'], []);
+                return true;
+            }
+
+            val = Number(values[1]);
+            if(!$('#filter-panel' + id).find('.second-value').hasClass('hidden')) {
+                if(!val || isNaN(val)) {
+                    showErrors([], ['value is not number']);
+                    return true;
+                }
+            }
+        }
+
+        if('IPv4' === type) {
+            var tokenLen = function(value) {
+                return value.split('.').filter(function(e) {
+                    return Number(e) < 255;
+                }).length;
+            };
+
+            if(tokenLen(values[0]) !== 4) {
+                showErrors(['is not ip address'], []);
+                return true;
+            }
+
+            if(!$('#filter-panel' + id).find('.second-value').hasClass('hidden')) {
+                if(tokenLen(values[1]) !== 4) {
+                    showErrors([], ['is not ip address']);
+                    return true;
+                }
+            }
+        }
+        showErrors([], []);
+        return false;
+    }
+
     // public
     return {
         init: _init
