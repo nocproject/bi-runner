@@ -151,7 +151,7 @@ var NocFilterPanel = (function() {
                 incrementMinuteBy: 10,
                 theme: 'pikaday-theme',
                 use24hour: true,
-                format: 'YYYY-MM-DDThh:mm:00',
+                format: 'YYYY-MM-DDTHH:mm:00',
                 showSeconds: false
             });
         };
