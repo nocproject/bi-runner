@@ -467,7 +467,34 @@
             "datasource": "alarms"
           }
         ]
-      }
+      },
+      "show_fields": [
+        "administrative_domain",
+        "alarm_class",
+        "alarm_id",
+        "close_ts",
+        "container",
+        "direct_services",
+        "direct_subscribers",
+        "duration",
+        "escalation_ts",
+        "escalation_tt",
+        "ip",
+        "managed_object",
+        "platform",
+        "profile",
+        "reopens",
+        "root",
+        "segment",
+        "severity",
+        "total_objects",
+        "total_services",
+        "total_subscribers",
+        "vendor",
+        "version",
+        "x",
+        "y"
+      ]
     }
   ]
 }

@@ -240,7 +240,7 @@ var Dashboard = function(element) {
                             return a.name.localeCompare(b.name);
                         })
                         .map(function(field) {
-                            if('date' !== field.name) {
+                            if(this.dashboardJSON.show_fields.indexOf(field.name) !== -1) {
                                 dashboard.fieldsType[field.name] = {
                                     type: field.type,
                                     dict: field.dict,

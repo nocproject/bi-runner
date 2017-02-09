@@ -99,7 +99,6 @@ var NocFilterPanel = (function() {
                     {
                         $field: "value"
                     },
-                    // $.param('%' + filterPattern + '%')
                     '%' + filterPattern + '%'
                 ]
             }
@@ -131,18 +130,11 @@ var NocFilterPanel = (function() {
             $('#' + value1).replaceWith('<input type="text" id="' + value1 + '" class="form-control values pikaday" readonly>');
             $('#' + value2).replaceWith('<input type="text" id="' + value2 + '" class="form-control values pikaday" readonly>');
 
-            $('#' + value1).pikaday({
+            $('#' + value1 + ',#' + value2).pikaday({
                 incrementMinuteBy: 10,
                 theme: 'pikaday-theme',
                 use24hour: true,
                 format: 'YYYY-MM-DDThh:mm:00',
-                showSeconds: false
-            });
-            $('#' + value2).pikaday({
-                incrementMinuteBy: 10,
-                theme: 'pikaday-theme',
-                format: 'YYYY-MM-DDThh:mm:00',
-                use24hour: true,
                 showSeconds: false
             });
         };
@@ -150,14 +142,7 @@ var NocFilterPanel = (function() {
             $('#' + value1).replaceWith('<input type="text" id="' + value1 + '" class="form-control values pikaday" readonly>');
             $('#' + value2).replaceWith('<input type="text" id="' + value2 + '" class="form-control values pikaday" readonly>');
 
-            $('#' + value1).pikaday({
-                theme: 'pikaday-theme',
-                format: 'YYYY-MM-DD',
-                showTime: false,
-                showMinutes: false,
-                showSeconds: false
-            });
-            $('#' + value2).pikaday({
+            $('#' + value1 + ',#' + value2).pikaday({
                 theme: 'pikaday-theme',
                 format: 'YYYY-MM-DD',
                 showTime: false,
@@ -499,7 +484,6 @@ var NocFilterPanel = (function() {
             $('#filter-panel' + id).find('.chart-show').attr('disabled', isChecked);
             $('#filter-panel' + id).find('.chart-func').attr('disabled', isChecked);
         });
-
     };
     // public
     return {
