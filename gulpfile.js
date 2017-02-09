@@ -23,8 +23,10 @@ var CSS_DEST = APP_DEST + '/css';
 
 var SOURCE_FILES = [
     './js/dashboard.js',
+    './js/bi-value.js',
     './js/filter.js',
     './js/aggregatePanel.js',
+    './js/filterPanel.js',
     './js/export.js'
 ];
 
