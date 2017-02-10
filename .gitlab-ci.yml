@@ -15,7 +15,7 @@ build_npm:
     - apk add --update git 
     - export VERSION_FULL=$(git describe --always --tags)
     - export VERSION_SHORT=$(git describe --tags --abbrev=0 HEAD^)
-    - sed -i s/'NOC BI version 0.0'/'NOC BI version ${VERSION_FULL}'/ index.html
+    - sed -i s/"NOC BI version 0.0"/"NOC BI version ${VERSION_FULL}"/ index.html
     - sed -i s/0.0.0/${VERSION_SHORT}/ make.json
     - sed -i s/0.0.0/${VERSION_SHORT}/ package.json
     - npm install
