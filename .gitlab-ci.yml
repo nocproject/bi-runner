@@ -35,7 +35,7 @@ build:
     - mkdir -p dist2
     - export VERSION_FULL=$(git describe --always --tags)
     - export VERSION_SHORT=$(git describe --tags --abbrev=0 HEAD^)
-    - sed -i s/'NOC BI version 0.0'/'NOC BI version ${VERSION_FULL}'/ dist/index.html
+    - sed -i s/"NOC BI version 0.0"/"NOC BI version ${VERSION_FULL}"/ dist/index.html
     - sed -i s/0.0.0/${VERSION_SHORT}/ make.json
     - ./build.py make.json
   tags:
