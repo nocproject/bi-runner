@@ -28,6 +28,7 @@ build:
     - mkdir -p dist2
     - export VERSION=$(git describe --always --tags)
     - sed -i s/'NOC BI version 0.0'/'NOC BI version ${VERSION}'/ index.html
+    - sed -i s/0.0.0/${VERSION}/ make.json
     - ./build.py make.json
   tags:
     - docker
