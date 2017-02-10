@@ -16,7 +16,6 @@ build_npm:
     - export VERSION_FULL=$(git describe --always --tags)
     - export VERSION_SHORT=$(git describe --tags --abbrev=0 HEAD^)
     - sed -i s/"NOC BI version 0.0.0"/"NOC BI version ${VERSION_FULL}"/ index.html
-    - sed -i s/0.0.0/${VERSION_SHORT}/ make.json
     - sed -i s/0.0.0/${VERSION_SHORT}/ package.json
     - npm install
     - npm run build.prod
@@ -32,6 +31,7 @@ build:
   image: python:2.7-alpine
   script:
     - mkdir -p dist2
+    - sed -i s/0.0.0/${VERSION_SHORT}/ make.json
     - ./build.py make.json
   tags:
     - docker
