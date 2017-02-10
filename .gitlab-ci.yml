@@ -12,6 +12,11 @@ build_npm:
   stage: build
   image: node:6.9-alpine
   script:
+    - apk add --update git 
+    - export VERSION=$(git describe --always --tags)
+    - sed -i s/'NOC BI version 0.0'/'NOC BI version ${VERSION}'/ index.html
+    - sed -i s/0.0.0/${VERSION}/ make.json
+    - sed -i s/0.0.0/${VERSION}/ package.json
     - npm install
     - npm run build.prod
   tags:
@@ -25,9 +30,10 @@ build:
   stage: build_package
   image: python:2.7-alpine
   script:
+    - apk add --update git
     - mkdir -p dist2
     - export VERSION=$(git describe --always --tags)
-    - sed -i s/'NOC BI version 0.0'/'NOC BI version ${VERSION}'/ index.html
+    - sed -i s/'NOC BI version 0.0'/'NOC BI version ${VERSION}'/ dist/index.html
     - sed -i s/0.0.0/${VERSION}/ make.json
     - ./build.py make.json
   tags:
