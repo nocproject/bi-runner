@@ -13,10 +13,11 @@ build_npm:
   image: node:6.9-alpine
   script:
     - apk add --update git 
-    - export VERSION=$(git describe --always --tags)
-    - sed -i s/'NOC BI version 0.0'/'NOC BI version ${VERSION}'/ index.html
-    - sed -i s/0.0.0/${VERSION}/ make.json
-    - sed -i s/0.0.0/${VERSION}/ package.json
+    - export VERSION_FULL=$(git describe --always --tags)
+    - export VERSION_SHORT=$(git describe --tags --abbrev=0 HEAD^)
+    - sed -i s/'NOC BI version 0.0'/'NOC BI version ${VERSION_FULL}'/ index.html
+    - sed -i s/0.0.0/${VERSION_SHORT}/ make.json
+    - sed -i s/0.0.0/${VERSION_SHORT}/ package.json
     - npm install
     - npm run build.prod
   tags:
@@ -32,9 +33,10 @@ build:
   script:
     - apk add --update git
     - mkdir -p dist2
-    - export VERSION=$(git describe --always --tags)
-    - sed -i s/'NOC BI version 0.0'/'NOC BI version ${VERSION}'/ dist/index.html
-    - sed -i s/0.0.0/${VERSION}/ make.json
+    - export VERSION_FULL=$(git describe --always --tags)
+    - export VERSION_SHORT=$(git describe --tags --abbrev=0 HEAD^)
+    - sed -i s/'NOC BI version 0.0'/'NOC BI version ${VERSION_FULL}'/ dist/index.html
+    - sed -i s/0.0.0/${VERSION_SHORT}/ make.json
     - ./build.py make.json
   tags:
     - docker
