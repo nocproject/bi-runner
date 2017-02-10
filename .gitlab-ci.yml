@@ -26,6 +26,8 @@ build:
   image: python:2.7-alpine
   script:
     - mkdir -p dist2
+    - export VERSION=$(git describe --always --tags)
+    - sed -i s/'NOC BI version 0.0'/'NOC BI version ${VERSION}'/ index.html
     - ./build.py make.json
   tags:
     - docker
