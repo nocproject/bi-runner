@@ -1,9 +1,8 @@
 var Dashboard = function(element) {
     //public properties
-    this.datasource;
     this.element = element;
     this.fieldsType = {};
-    this.fiedlNameSeparator = '.';
+    this.fieldNameSeparator = '.';
 
     // public methods
     this.reset = function(widget) {
@@ -20,7 +19,7 @@ var Dashboard = function(element) {
     };
 
     this.setSelectorInterval = function(start, end) {
-        $("#time-selector > .chart-title > .title-left").text(dashboard.dateToString(start) + " - " + dashboard.dateToString(end));
+        $('#time-selector').find('.chart-title>.title-left').text(dashboard.dateToString(start) + " - " + dashboard.dateToString(end));
     };
 
     this.timeSelector = function(arg) {
@@ -58,7 +57,7 @@ var Dashboard = function(element) {
     };
 
     this.createAggregateSelector = function(container) {
-        var fieldSelector = '<div class="row">\n    <div class="col-md-12">\n        <div id="field-aggregate" class="chart-wrapper">\n            <div class="chart-title">\n                <div class="title-left">Field Aggregate</div>\n                <div class="title-right collapsed"></div>\n                <div style="clear:both;"></div>\n            </div>\n            <div class="chart-stage collapse" aria-expanded="false">\n                <div class="row">\n                    <form class="form-horizontal aggregate-by-field">\n                        <div class="form-group" style="margin-bottom: 10px;">\n                            <label class="col-md-1 col-md-offset-1">List of fields:</label>\n                        </div>\n                    </form>\n                </div>\n                <div class="filters-by-field" style="margin: 0 10px 5px 10px;"></div>\n                <!--<a href="#" class="btn btn-default pull-right" style="margin: -3px 10px 3px;">Save</a>-->\n            </div>\n            <div class="chart-notes">Aggregate</div>\n        </div>\n    </div>\n</div>\n';
+        var fieldSelector = '<div class="row">\n    <div class="col-md-12">\n        <div id="field-aggregate" class="chart-wrapper">\n            <div class="chart-title">\n                <div class="title-left">Field Aggregate</div>\n                <div class="title-right collapsed"></div>\n                <div style="clear:both;"></div>\n            </div>\n            <div class="chart-stage collapse" aria-expanded="false">\n                <div class="row">\n                    <form class="form-horizontal aggregate-by-field">\n                        <div class="form-group" style="margin-bottom: 10px;">\n                            <label class="col-md-1 col-md-offset-1">List of fields:</label>\n                        </div>\n                    </form>\n                </div>\n            </div>\n            <div class="chart-notes">Aggregate</div>\n        </div>\n    </div>\n</div>\n';
 
         addCollapsed(fieldSelector, '#field-aggregate', container);
         NocAggregatePanel.init(dashboard);
@@ -131,6 +130,18 @@ var Dashboard = function(element) {
         });
     };
 
+    this.toDate = function(value) {
+        return "toDate('" + d3.time.format("%Y-%m-%d")(value) + "')";
+    };
+
+    this.toDateTime = function(value) {
+        return "toDateTime('" + d3.time.format("%Y-%m-%dT%H:%M:%S")(value) + "')";
+    };
+
+    this.parseDate = function(value, pattern) {
+        return d3.time.format(pattern).parse(value);
+    };
+
     var drawBoard = function() {
         var container = $("<div class='container-fluid'></div>").appendTo($(element));
         var sortedByRows = dashboardJSON.layout.cells.sort(function(a, b) {
@@ -140,7 +151,7 @@ var Dashboard = function(element) {
         var currentRow;
 
         $('#export-btn')
-        .on("click", "", function(e) {
+        .on("click", "", function() {
             NocExport.export();
             $('#export-btn').find('.spinner').show();
         });
@@ -204,7 +215,7 @@ var Dashboard = function(element) {
 
         NocFilter.init({
             widgets: dashboard.widgets,
-            fiedlNameSeparator: dashboard.fiedlNameSeparator,
+            fieldNameSeparator: dashboard.fieldNameSeparator,
             startDateCondition: [new Date('2016-01-01'), new Date('2017-01-01')]
         });
         dashboard.drawAll();
@@ -240,7 +251,7 @@ var Dashboard = function(element) {
                             return a.name.localeCompare(b.name);
                         })
                         .map(function(field) {
-                            if(this.dashboardJSON.show_fields.indexOf(field.name) !== -1) {
+                            if(dashboardJSON.show_fields.indexOf(field.name) !== -1) {
                                 dashboard.fieldsType[field.name] = {
                                     type: field.type,
                                     dict: field.dict,
@@ -317,9 +328,10 @@ var Dashboard = function(element) {
     };
 
     var downChevron = function() {
-        $('#time-selector>.chart-title').next().collapse('hide');
-        $('#time-selector>.chart-title>.title-right').removeClass('expanded');
-        $('#time-selector>.chart-title>.title-right').addClass('collapsed');
+        var $time = $('#time-selector');
+        $time.find('>.chart-title').next().collapse('hide');
+        $time.find('.chart-title>.title-right').removeClass('expanded');
+        $time.find('.chart-title>.title-right').addClass('collapsed');
     };
 
     var spinnerHide = function(chart) {
@@ -352,7 +364,7 @@ var Dashboard = function(element) {
             });
         }
 
-        NocFilter.updateFilter(field + dashboard.fiedlNameSeparator + chart.anchorName(), type, allValues, condition);
+        NocFilter.updateFilter(field + dashboard.fieldNameSeparator + chart.anchorName(), type, allValues, condition);
 
         if(lastValue) {
             // redraw other
@@ -376,7 +388,7 @@ var Dashboard = function(element) {
     };
 
     var propName = function(element) {
-        return element.replace(/({|})/g, '');
+        return element.replace(/([{}])/g, '');
     };
 
     var objToCell = function(obj) {
@@ -464,8 +476,8 @@ var Dashboard = function(element) {
                         'date',
                         filter,
                         filter ? filter.map(function(element) {
-                                return new BI_Value(element)
-                            }) : [],
+                            return new BI_Value(element)
+                        }) : [],
                         filter ? dashboard.dateToString(filter[0]) + " - " + dashboard.dateToString(filter[1]) : '',
                         'Date',
                         'interval');
