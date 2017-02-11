@@ -10,28 +10,30 @@ var NocFilterPanel = (function() {
         .on('change', function() {
             console.log("changed  to : ", $(this).val());
             if($(this).val()) {
-                _addRow($(this).val());
+                _createPanel($(this));
                 $(this).val(null).trigger('change');
             }
         })
         .val(null).trigger('change');
 
+        $('.periodic').mask('00:00');
+        $('.ipv4').mask('099.099.099.099');
+    };
+
+    var determinateType = function(name, field) {
+
+        if(field.dict) {
+            return 'dict-' + field.dict;
+        }
+
+        if('UInt32' === field.type && 'ip' === name) {
+            return 'IPv4';
+        }
+
+        return field.type;
     };
 
     var _selectConfig = function() {
-        var determinateType = function(name, field) {
-
-            if(field.dict) {
-                return 'dict-' + field.dict;
-            }
-
-            if('UInt32' === field.type && 'ip' === name) {
-                return 'IPv4';
-            }
-
-            return field.type;
-        };
-
         return {
             theme: 'bootstrap',
             placeholder: 'Select a field',
@@ -106,71 +108,121 @@ var NocFilterPanel = (function() {
         return query
     };
 
-    var _addRow = function(fieldValue) {
-        var type;
-        var filterByField = '<div id="filter-panel{id}" class="panel panel-default" style="margin-bottom: 10px">\n    <div class="panel-heading">\n        <div>\n            <div class="title-left">Field name: <b>{name}</b>, {type}</div>\n            <div style="cursor: pointer;cursor: hand;float: right;" class="close-panel">\n                <i class="fa fa-times-circle" aria-hidden="true"></i>\n            </div>\n            <div style="clear:both;"></div>\n        </div>\n    </div>\n    <div class="panel-body" style="padding-bottom: 0px;">\n        <form class="form-horizontal">\n            <div class="form-group">\n                <label class="control-label col-md-1 col-md-offset-1">Condition:</label>\n                <div class="col-md-2">\n                    <select class="form-control values condition"></select>\n                </div>\n                <div class="first-value">\n                    <label class="control-label col-md-2" for="value-1{id}">Value:</label>\n                    <div class="col-md-6">\n                        <input type="text" class="form-control" id="value-1{id}" placeholder="Value">\n                    </div>\n                </div>\n            </div>\n            <div class="form-group second-value hidden">\n                <label class="control-label col-md-6" for="value-2{id}">To Value:</label>\n                <div class="col-md-6">\n                    <input type="text" class="form-control" id="value-2{id}" placeholder="To Value">\n                </div>\n            </div>\n            <!--<hr style="margin-top: 10px;margin-bottom: 10px;">-->\n            <!--<div class="form-group" style="margin-bottom: 10px;">-->\n            <!--<label class="col-md-1 control-label">Show chart:</label>-->\n            <!--<div class="col-md-2">-->\n            <!--<input type="checkbox" value="1" name="" class="form-control show-chart"/>-->\n            <!--</div>-->\n            <!--<label class="control-label col-md-1">Chart type:</label>-->\n            <!--<div class="col-md-1">-->\n            <!--<select class="form-control values chart-type" disabled></select>-->\n            <!--</div>-->\n            <!--<label class="control-label col-md-1">Field:</label>-->\n            <!--<div class="col-md-3">-->\n            <!--<select class="form-control values chart-fields" disabled> </select>-->\n            <!--</div>-->\n            <!--<label class="control-label col-md-1">Function:</label>-->\n            <!--<div class="col-md-2">-->\n            <!--<select class="form-control values chart-func" disabled></select>-->\n            <!--</div>-->\n            <!--</div>-->\n            <div class="form-group" style="margin-bottom: 10px;">\n                <!--<div class="col-md-offset-1 pull-left">-->\n                <!--<a href="#" class="btn btn-default pull-left chart-show btn-sm" disabled>Show Chart</a>-->\n                <!--</div>-->\n                <div class="pull-right" style="margin-right: 10px;">\n                    <a href="#" class="btn btn-default clear-filter btn-sm">Clear</a>\n                    <a href="#" class="btn btn-default apply-filter btn-sm">Apply</a>\n                </div>\n            </div>\n        </form>\n    </div>\n</div>';
+    var _parseFieldValue = function(element) {
+        var value = element.val().split(',');
+
+        return {
+            name: value[0],
+            type: value[1],
+            dict: value[2],
+            description: element.find(':selected').text().split(',')[0]
+        }
+    };
+
+    var _createPanel = function(element) {
+        var filterPanel = '<div class="panel panel-default" style="margin-bottom: 10px">\n    <div class="panel-heading">\n        <div>\n            <div class="title-left">Field name: <b>{name}</b>, {type}</div>\n            <div style="float: right;" class="close-panel hand">\n                <i class="fa fa-times-circle" aria-hidden="true"></i>\n            </div>\n            <div style="clear:both;"></div>\n        </div>\n    </div>\n    <div class="panel-body" style="padding-bottom: 0;">\n        <form class="form-horizontal">\n            <div class="filter-rows">\n            </div>\n            <div class="form-group buttons" style="margin-bottom: 10px;">\n                <!--<div class="col-md-offset-1 pull-left">-->\n                <!--<a href="#" class="btn btn-default pull-left chart-show btn-sm" disabled>Show Chart</a>-->\n                <!--</div>-->\n                <div class="pull-right" style="margin-right: 10px;">\n                    <a class="btn btn-default clean-filter btn-sm">Clear</a>\n                    <a class="btn btn-default apply-filter btn-sm">Apply</a>\n                </div>\n            </div>\n        </form>\n    </div>\n</div>';
+        var field = _parseFieldValue(element);
         var id = new Date().getTime();
-        var field = fieldValue.split(',');
-        var conditionOptions = [
-            {id: '$eq', text: '=='},
-            {id: '$ne', text: '<>'}
-        ];
-        var chartTypes = [
-            {id: 'bar', text: 'Bar'},
-            {id: 'pie', text: 'Pie'},
-            {id: 'line', text: 'Line'}
-        ];
-        var chartFunction = [
-            {id: '$count', text: 'Count'},
-            {id: '$sum', text: 'Sum'}
-        ];
-        var value1 = 'value-1' + id;
-        var value2 = 'value-2' + id;
-        var setDataTimeField = function() {
-            $('#' + value1).replaceWith('<input type="text" id="' + value1 + '" class="form-control values pikaday" readonly>');
-            $('#' + value2).replaceWith('<input type="text" id="' + value2 + '" class="form-control values pikaday" readonly>');
+        var $panel, typeText;
 
-            $('#' + value1 + ',#' + value2).pikaday({
-                incrementMinuteBy: 10,
-                theme: 'pikaday-theme',
-                use24hour: true,
-                format: 'YYYY-MM-DDTHH:mm:00',
-                showSeconds: false
-            });
-        };
-        var setDataField = function() {
-            $('#' + value1).replaceWith('<input type="text" id="' + value1 + '" class="form-control values pikaday" readonly>');
-            $('#' + value2).replaceWith('<input type="text" id="' + value2 + '" class="form-control values pikaday" readonly>');
-
-            $('#' + value1 + ',#' + value2).pikaday({
-                theme: 'pikaday-theme',
-                format: 'YYYY-MM-DD',
-                showTime: false,
-                showMinutes: false,
-                showSeconds: false
-            });
-        };
-
-        filterByField = filterByField.replace(/{id}/g, id);
-
-        filterByField = filterByField.replace('{name}', field[0]);
-
-        if(!field[1].indexOf('dict-')) {
-            type = 'dictionary: <b>' + field[2] + '</b>';
+        if(!field.type.indexOf('dict-')) {
+            typeText = 'dictionary: <b>' + field.dict + '</b>';
         } else {
-            type = 'type: <b>' + field[1] + '</b>';
+            typeText = 'type: <b>' + field.type + '</b>';
         }
 
-        filterByField = filterByField.replace('{type}', type);
+        filterPanel = filterPanel.replace(/{name}/g, field.name);
+        filterPanel = filterPanel.replace(/{type}/g, typeText);
 
-        $('.filters-by-field').append($(filterByField));
+        $panel = $(filterPanel);
+        $('.filters-by-field').append($panel);
+        _addRow(element, $panel);
 
-        if(!field[1].indexOf('dict-')) {
-            $('#' + value1).replaceWith('<select id="' + value1 + '" class="form-control values"></select>');
-            // $('#' + value1).replaceWith('<select id="' + value1 + '" class="form-control values" multiple></select>');
-            $('#' + value1).select2({
+        $panel.find('.apply-filter')
+        .on('click', function() {
+            var values = [];
+
+            console.log('press apply');
+            $panel.find('.first-value').each(function() {
+                var element = $(this).find('.values');
+                var condition = $(this).parent().find('.condition').val();
+                var name = element.attr('name');
+                var value = element.val();
+                var type = determinateType(name, dashboard.fieldsType[name]);
+                var pattern, value2;
+
+                console.log('condition : ' + condition + ',' + name + '=' + value);
+
+                _validate(this, type, condition);
+
+                if(condition.match(/interval/i)) {
+                    value2 = $(this).parent().next().find('.values').val();
+                }
+
+                if('periodic.interval' === condition) {
+                    value = [value, value2];
+                } else if('DateTime' === type) {
+                    pattern = '%Y-%m-%dT%H:%M:00';
+                    value = [dashboard.parseDate(value, pattern)];
+
+                    if('interval' === condition) {
+                        value.push(dashboard.parseDate(value2, pattern));
+                    }
+                } else if('Date' === type) {
+                    pattern = '%Y-%m-%d';
+                    value = [dashboard.parseDate(value, pattern)];
+
+                    if('interval' === condition) {
+                        value2 = $(this).parent().next().find('.values').val();
+
+                        value.push(dashboard.parseDate(value2, pattern));
+                    }
+                } else if('interval' === condition) {
+                    value = [value, value2];
+                } else {
+                    value = [value];
+                }
+
+                values.push({
+                    name: name,
+                    values: value,
+                    type: type,
+                    condition: condition
+                });
+            });
+            if($panel.find('.has-error').size() > 0) return;
+
+            NocFilter.updateFilter(id, field.type, values, 'orForAnd');
+            dashboard.drawAll();
+            console.log('filter applied');
+        });
+
+        $panel.find('.clean-filter')
+        .on('click', function() {
+            console.log('clean filter');
+            console.log('panel id : filter-panel' + id);
+            NocFilter.deleteFilter(id);
+            dashboard.drawAll();
+        });
+
+        $panel.find('.close-panel')
+        .on('click', function() {
+            console.log(field + ' panel closing...');
+            $(this).parents('.panel').remove();
+            NocFilter.deleteFilter(id);
+            dashboard.drawAll();
+        });
+    };
+
+    var _replaceInput = function(field, $row, conditionOptions) {
+        if(!field.type.indexOf('dict-')) {
+            $row.find('input').first() // add multiple attr for multiple select
+            .replaceWith('<select name="' + field.name + '" class="form-control values"></select>');
+
+            $row.find('.first-value>div>select')
+            .select2({
                 theme: 'bootstrap',
-                placeholder: 'Select from ' + field[2],
+                placeholder: 'Select from ' + field.dict,
                 // minimumInputLength: 2,
                 ajax: {
                     url: '/api/bi/',
@@ -179,7 +231,7 @@ var NocFilterPanel = (function() {
                     dataType: 'json',
                     delay: 250,
                     data: function(params) {
-                        return JSON.stringify(_valuesListQuery(field[0], field[2], params.term));
+                        return JSON.stringify(_valuesListQuery(field.name, field.dict, params.term));
                     },
                     processResults: function(data) {
                         if(data.result) {
@@ -197,8 +249,8 @@ var NocFilterPanel = (function() {
                     cache: true
                 }
             });
-        } else if('DateTime' === field[1]) {
-            setDataTimeField();
+        } else if('DateTime' === field.type) {
+            _setDateTimeField($row, field);
             conditionOptions.push(
                 {id: 'interval', text: 'interval'},
                 {id: 'periodic.interval', text: 'periodic interval'},
@@ -207,8 +259,8 @@ var NocFilterPanel = (function() {
                 {id: '$gt', text: '>'},
                 {id: '$ge', text: '>='}
             );
-        } else if('Date' === field[1]) {
-            setDataField();
+        } else if('Date' === field.type) {
+            _setDateField($row, field);
             conditionOptions.push(
                 {id: 'interval', text: 'interval'},
                 {id: '$lt', text: '<'},
@@ -216,10 +268,9 @@ var NocFilterPanel = (function() {
                 {id: '$gt', text: '>'},
                 {id: '$ge', text: '>='}
             );
-        } else if('IPv4' === field[1]) {
+        } else if('IPv4' === field.type) {
             console.log('setting mask for ip, change placeholder to xxx.xxx.xxx.xxx');
-            $('#' + value1).mask('099.099.099.099').attr('placeholder', 'xxx.xxx.xxx.xxx');
-            $('#' + value2).mask('099.099.099.099').attr('placeholder', 'xxx.xxx.xxx.xxx');
+            $row.find('input').attr('placeholder', 'xxx.xxx.xxx.xxx').addClass('ipv4');
             conditionOptions.push(
                 {id: 'interval', text: 'interval'},
                 {id: '$lt', text: '<'},
@@ -234,8 +285,51 @@ var NocFilterPanel = (function() {
                 {id: '$ge', text: '>='}
             );
         }
+    };
 
-        $('#filter-panel' + id).find('.condition')
+    var _addRow = function(element, $panel, prefix) {
+        var rowFilter;
+        var field = _parseFieldValue(element);
+        var conditionOptions = [
+            {id: '$eq', text: '=='},
+            {id: '$ne', text: '<>'}
+        ];
+
+        if('inner-' !== prefix) {
+            rowFilter = '<div class="form-group">\n    <label class="control-label col-md-1 col-md-offset-1">Condition:</label>\n    <div class="col-md-2">\n        <select class="form-control condition"></select>\n    </div>\n    <div class="first-value">\n        <label class="control-label col-md-2">Value:</label>\n        <div class="col-md-6">\n            <input type="text" class="form-control values" name="{name}" placeholder="Value">\n        </div>\n    </div>\n</div>\n<div class="form-group second-value hidden">\n    <label class="control-label col-md-6">To Value:</label>\n    <div class="col-md-6">\n        <input type="text" class="form-control values" name="{name}" placeholder="To Value">\n    </div>\n</div>\n<div class="form-group">\n    <label class="control-label col-md-2">List of fields (OR) :</label>\n    <div class="col-md-6">\n        <select id="inner-fields"></select>\n    </div>\n</div>';
+        } else {
+            rowFilter = '<div class="form-group">\n    <label class="control-label col-md-2 remove-inner-row">\n        <i class="fa fa-times hand" aria-hidden="true" style="padding-right: 10px;"></i>{description}</label>\n    <label class="control-label col-md-1">Condition:</label>\n    <div class="col-md-2">\n        <select class="form-control condition"></select>\n    </div>\n    <div class="first-value">\n        <label class="control-label col-md-1">Value:</label>\n        <div class="col-md-6">\n            <input type="text" class="form-control values" name="{name}" placeholder="Value">\n        </div>\n    </div>\n</div>\n<div class="form-group second-value hidden">\n    <label class="control-label col-md-6">To Value:</label>\n    <div class="col-md-6">\n        <input type="text" class="form-control values" name="{name}" placeholder="To Value">\n    </div>\n</div>'
+        }
+
+        rowFilter = rowFilter.replace(/{name}/g, field.name);
+        rowFilter = rowFilter.replace(/{description}/g, field.description);
+        rowFilter = rowFilter.replace(/{prefix}/g, prefix);
+
+        const $row = $(rowFilter);
+        $panel.find('.filter-rows').append($row);
+
+        if('inner-' !== prefix) {
+            $row.find('#inner-fields')
+            .select2(_selectConfig())
+            .on('change', function() {
+                console.log("inner select changed  to : ", $(this).val());
+                if($(this).val()) {
+                    _addRow($(this), $panel, 'inner-');
+                    $(this).val(null).trigger('change');
+                }
+            })
+            .val(null).trigger('change');
+        } else {
+            $row.find('.hand')
+            .on('click', function() {
+                console.log('remove inner row');
+                $row.remove();
+            })
+        }
+
+        _replaceInput(field, $row, conditionOptions);
+
+        $row.find('.condition')
         .select2({
             theme: 'bootstrap',
             placeholder: 'Select a condition',
@@ -243,248 +337,205 @@ var NocFilterPanel = (function() {
             data: conditionOptions
         });
 
-        $('#filter-panel' + id).find('.chart-type')
-        .select2({
-            theme: 'bootstrap',
-            placeholder: 'Select a condition',
-            minimumResultsForSearch: Infinity,
-            data: chartTypes
-        });
-        $('#filter-panel' + id).find('.chart-func')
-        .select2({
-            theme: 'bootstrap',
-            placeholder: 'Select a condition',
-            minimumResultsForSearch: Infinity,
-            data: chartFunction
-        });
-
-
-        $('#filter-panel' + id).find('.values.chart-fields').select2(_selectConfig());
-
-        $('#filter-panel' + id).find('.close-panel')
-        .on('click', function() {
-            console.log(field + ' (' + id + ')  closing...');
-            $(this).parents('.panel').remove();
-            NocFilter.deleteFilter(field[0] + dashboard.fiedlNameSeparator + id);
-            dashboard.drawAll();
-        });
-
-        $('#filter-panel' + id).find('.condition')
-        .on('change', function(e) {
-            if(!$('#filter-panel' + id).find('.second-value').hasClass('hidden')) {
-                $('#filter-panel' + id).find('.second-value').addClass('hidden');
+        $row.find('.condition')
+        .on('change', function() {
+            if(!$row.filter('.second-value').hasClass('hidden')) {
+                $row.filter('.second-value').addClass('hidden');
             }
             if('interval' === $(this).val()) {
-                $('#filter-panel' + id).find('.second-value').removeClass('hidden');
+                $row.filter('.second-value').removeClass('hidden');
             }
             if('periodic.interval' === $(this).val()) {
-                $('#filter-panel' + id).find('.second-value').removeClass('hidden');
-                $('#' + value1).replaceWith('<input type="text" class="form-control values" id="' + value1 + '" placeholder="hh:mm">').mask('00:00');
-                $('#' + value2).replaceWith('<input type="text" class="form-control values" id="' + value2 + '" placeholder="hh:mm">').mask('00:00');
+                $row.filter('.second-value').removeClass('hidden');
+                $row.find('input').replaceWith('<input type="text" class="form-control values periodic" name="' + field.name + '" placeholder="HH:mm">');
             } else {
-                if(!$('#' + value1).hasClass('pikaday') && 'DateTime' === field[1]) {
-                    setDataTimeField();
+                if(!$row.filter('.second-value').hasClass('pikaday') && 'DateTime' === field.type) {
+                    _setDateTimeField($row, field);
                 }
             }
             console.log('condition changed to : ' + $(this).val());
         });
+    };
 
-        function notValidate(values, type, condition) {
-            var toScreen = function(which, message) {
-                $('#filter-panel' + id).find('.' + which + '-value>div>.help-block').remove();
-                $('#filter-panel' + id).find('.' + which + '-value').addClass('has-error');
-                $('#filter-panel' + id).find('.' + which + '-value').find('div')
-                .append($('<span class="help-block">' + message.join(', ') + '</span>'));
-            };
-
-            function showErrors(message1, message2) {
-                console.log('from value : ' + message1.join(', '));
-                console.log('to   value : ' + message2.join(', '));
-                if(message1.length > 0) {
-                    toScreen('first', message1);
-                } else {
-                    $('#filter-panel' + id).find('.first-value').removeClass('has-error');
-                    $('#filter-panel' + id).find('.first-value>div>.help-block').remove();
-                }
-                if(message2.length > 0) {
-                    toScreen('second', message2);
-                } else {
-                    $('#filter-panel' + id).find('.second-value>div>.help-block').remove();
-                    $('#filter-panel' + id).find('.second-value').removeClass('has-error');
-                }
+    var _validate = function(firstRow, type, condition) {
+        var secondRow = $(firstRow).parent().next();
+        var firstValue = $(firstRow).find('.values').val();
+        var secondValue = $(secondRow).find('.values').val();
+        var toScreen = function(which, message) {
+            $(which).find('div>.help-block').remove();
+            $(which).addClass('has-error');
+            $(which).find('div')
+            .append($('<span class="help-block">' + message.join(', ') + '</span>'));
+        };
+        var showErrors = function(message1, message2) {
+            if(message1.length > 0) {
+                toScreen(firstRow, message1);
+            } else {
+                $(firstRow).removeClass('has-error');
+                $(firstRow).find('div>.help-block').remove();
             }
-
-            if(!values[0]) {
-                showErrors(['empty value'], []);
-                return true;
+            if(message2.length > 0) {
+                toScreen(secondRow, message2);
+            } else {
+                $(secondRow).find('div>.help-block').remove();
+                $(secondRow).removeClass('has-error');
             }
-            if(!$('#filter-panel' + id).find('.second-value').hasClass('hidden') && !values[1]) {
-                showErrors([], ['empty value']);
-                return true;
-            }
+        };
+        var ipStringToNum = function(str) {
+            var d = str.split('.');
 
-            if('periodic.interval' === condition) {
-                var message1 = [], message2 = [];
-                var hourStart, hourEnd, minuteStart, minuteEnd;
+            return ((((((+d[0]) * 256) + (+d[1])) * 256) + (+d[2])) * 256) + (+d[3]);
+        };
 
-                if(values[0].indexOf(':') !== 2) {
-                    message1.push('format error, must be hh:mm');
-                }
-                if(values[1].indexOf(':') !== 2) {
-                    message2.push('format error, must be hh:mm');
-                }
-
-                showErrors(message1, message2);
-                if(message1.length !== 0 || message2.length !== 0) {
-                    return true;
-                }
-
-                hourStart = Number(values[0].split(':')[0]);
-                if(isNaN(hourStart)) {
-                    message1.push('hour is not number');
-                }
-                hourEnd = Number(values[1].split(':')[0]);
-                if(isNaN(hourEnd)) {
-                    message2.push('hour is not number');
-                }
-                minuteStart = Number(values[0].split(':')[1]);
-                if(isNaN(minuteStart)) {
-                    message1.push('minute is not number');
-                }
-                minuteEnd = Number(values[1].split(':')[1]);
-                if(isNaN(minuteEnd)) {
-                    message2.push('minute is not number');
-                }
-
-                showErrors(message1, message2);
-                if(message1.length !== 0 || message2.length !== 0) {
-                    return true;
-                }
-
-                if(!(hourStart >= 0 && hourStart < 24)) {
-                    message1.push('hour is not in range 0-23');
-                }
-                if(!(hourEnd >= 0 && hourEnd < 24)) {
-                    message2.push('hour is not in range 0-23');
-                }
-
-                if(!(minuteStart >= 0 && minuteStart < 60)) {
-                    message1.push('minute is not in range 0-59');
-                }
-                if(!(minuteEnd >= 0 && minuteEnd < 60)) {
-                    message2.push('hour is not in range 0-59');
-                }
-
-                showErrors(message1, message2);
-                if(message1.length !== 0 || message2.length !== 0) {
-                    return true;
-                }
-
-                if(hourStart * 3600 + minuteStart * 60 >= hourEnd * 3600 + minuteEnd * 60) {
-                    console.log('bad interval');
-                    showErrors([], ['bad interval']);
-                    return true;
-                }
-            }
-
-            if(type.match(/int|float/i)) {
-                var val = Number(values[0]);
-
-                if(isNaN(val)) {
-                    showErrors(['value is not number'], []);
-                    return true;
-                }
-
-                val = Number(values[1]);
-                if(!$('#filter-panel' + id).find('.second-value').hasClass('hidden')) {
-                    if(!val || isNaN(val)) {
-                        showErrors([], ['value is not number']);
-                        return true;
-                    }
-                }
-            }
-
-            if('IPv4' === type) {
-                var tokenLen = function(value) {
-                    return value.split('.').filter(function(e) {
-                        return Number(e) < 255;
-                    }).length;
-                };
-
-                if(tokenLen(values[0]) !== 4) {
-                    showErrors(['is not ip address'], []);
-                    return true;
-                }
-
-                if(!$('#filter-panel' + id).find('.second-value').hasClass('hidden')) {
-                    if(tokenLen(values[1]) !== 4) {
-                        showErrors([], ['is not ip address']);
-                        return true;
-                    }
-                }
-            }
-            showErrors([], []);
-            return false;
+        if(!firstValue) {
+            showErrors(['empty value'], []);
+            return;
         }
 
-        $('#filter-panel' + id).find('.apply-filter')
-        .on('click', function() {
-            var value1Id = $('#value-1' + id).val();
-            var value1 = $('#value-1' + id).text();
-            var value2Id = $('#value-2' + id).val();
-            var value2 = $('#value-2' + id).text();
-            var condition = $('#filter-panel' + id).find('.condition').val();
-            var values;
-            var intervalDate = function(pattern) {
-                var values = [new BI_Value(d3.time.format(pattern).parse(value1Id))];
+        if(!$(secondRow).hasClass('hidden') && !secondValue) {
+            showErrors([], ['empty value']);
+            return;
+        }
 
-                if('interval' === condition) {
-                    values.push(new BI_Value(d3.time.format(pattern).parse(value2Id)));
-                }
-                return values;
-            };
+        if('periodic.interval' === condition) {
+            var message1 = [], message2 = [];
+            var hourStart, hourEnd, minuteStart, minuteEnd;
 
-            if('Date' === field[1]) {
-                values = intervalDate('%Y-%m-%d');
-            } else if('DateTime' === field[1] && 'periodic.interval' !== condition) {
-                values = intervalDate('%Y-%m-%dT%H:%M:00');
-            } else {
-                values = [new BI_Value(value1Id, value1)];
-                if('interval' === condition || 'periodic.interval' === condition) {
-                    values.push(new BI_Value(value2Id, value2));
+            hourStart = Number(firstValue.split(':')[0]);
+            if(isNaN(hourStart)) {
+                message1.push('hour is not number');
+            }
+            hourEnd = Number(secondValue.split(':')[0]);
+            if(isNaN(hourEnd)) {
+                message2.push('hour is not number');
+            }
+            minuteStart = Number(firstValue.split(':')[1]);
+            if(isNaN(minuteStart)) {
+                message1.push('minute is not number');
+            }
+            minuteEnd = Number(secondValue.split(':')[1]);
+            if(isNaN(minuteEnd)) {
+                message2.push('minute is not number');
+            }
+
+            showErrors(message1, message2);
+            if(message1.length !== 0 || message2.length !== 0) {
+                return;
+            }
+
+            if(!(hourStart >= 0 && hourStart < 24)) {
+                message1.push('hour is not in range 0-23');
+            }
+            if(!(hourEnd >= 0 && hourEnd < 24)) {
+                message2.push('hour is not in range 0-23');
+            }
+
+            if(!(minuteStart >= 0 && minuteStart < 60)) {
+                message1.push('minute is not in range 0-59');
+            }
+            if(!(minuteEnd >= 0 && minuteEnd < 60)) {
+                message2.push('hour is not in range 0-59');
+            }
+
+            showErrors(message1, message2);
+            if(message1.length !== 0 || message2.length !== 0) {
+                return;
+            }
+
+            if(hourStart * 3600 + minuteStart * 60 >= hourEnd * 3600 + minuteEnd * 60) {
+                showErrors([], ['bad interval']);
+                return;
+            }
+        }
+
+        if(type.match(/int|float/i)) {
+            var val1 = Number(firstValue);
+
+            if(isNaN(val1)) {
+                showErrors(['value is not number'], []);
+                return;
+            }
+
+            var val2 = Number(secondValue);
+            if(!$(secondRow).hasClass('hidden')) {
+                if(!val2 || isNaN(val2)) {
+                    showErrors([], ['value is not number']);
+                    return;
                 }
             }
-            if(notValidate([value1Id, value2Id], field[1], condition)) return;
-            NocFilter.updateFilter(field[0] + dashboard.fiedlNameSeparator + id, field[1], values, condition);
-            dashboard.drawAll();
-        });
 
-        $('#filter-panel' + id).find('.clear-filter')
-        .on('click', function() {
-            console.log('clear filter');
-            console.log('panel id : filter-panel' + id);
-            console.log('field : ' + field);
-            console.log('value : ' + $('#value-1' + id).val());
-            console.log('condition : ' + $('#filter-panel' + id).find('.condition').val());
-            NocFilter.deleteFilter(field[0] + dashboard.fiedlNameSeparator + id);
-            dashboard.drawAll();
-        });
+            if('interval' === condition && val1 >= val2) {
+                showErrors([], ['bad interval']);
+                return;
+            }
+        }
 
-        $('#filter-panel' + id).find('.show-chart')
-        .checkboxpicker({
-            offActiveCls: 'btn-default',
-            onActiveCls: 'btn-primary'
-        })
-        .on('change', function() {
-            var isChecked = !($(this).is(':checked'));
+        if(type.match(/date/i) && 'interval' === condition) {
+            if(Date.parse(firstValue) >= Date.parse(secondValue)) {
+                showErrors([], ['bad interval']);
+                return;
+            }
+        }
 
-            console.log('show chart : ' + isChecked);
-            $('#filter-panel' + id).find('.chart-type').attr('disabled', isChecked);
-            $('#filter-panel' + id).find('.chart-fields').attr('disabled', isChecked);
-            $('#filter-panel' + id).find('.chart-show').attr('disabled', isChecked);
-            $('#filter-panel' + id).find('.chart-func').attr('disabled', isChecked);
+        if('IPv4' === type) {
+            var tokenLen = function(value) {
+                return value.split('.').filter(function(e) {
+                    return Number(e) < 255;
+                }).length;
+            };
+
+            if(tokenLen(firstValue) !== 4) {
+                showErrors(['is not ip address'], []);
+                return;
+            }
+
+            if(!$(secondRow).hasClass('hidden')) {
+                if(tokenLen(secondValue) !== 4) {
+                    showErrors([], ['is not ip address']);
+                    return;
+                }
+            }
+
+            if('interval' === condition) {
+                if(ipStringToNum(firstValue) >= ipStringToNum(secondValue)) {
+                    showErrors([], ['bad interval']);
+                    return;
+                }
+            }
+        }
+        showErrors([], []);
+    };
+
+    var _setDateTimeField = function($row, field) {
+        $row.find('input')
+        .addClass('pikaday')
+        .attr('name', field.name)
+        .attr('readonly', 'true');
+
+        $row.find('input').pikaday({
+            incrementMinuteBy: 10,
+            theme: 'pikaday-theme',
+            use24hour: true,
+            format: 'YYYY-MM-DDTHH:mm:00',
+            showSeconds: false
         });
     };
+
+    var _setDateField = function($row, field) {
+        $row.find('input')
+        .addClass('pikaday')
+        .attr('name', field.name)
+        .attr('readonly', 'true');
+
+        $row.find('input').pikaday({
+            theme: 'pikaday-theme',
+            format: 'YYYY-MM-DD',
+            showTime: false,
+            showMinutes: false,
+            showSeconds: false
+        });
+    };
+
     // public
     return {
         init: _init
