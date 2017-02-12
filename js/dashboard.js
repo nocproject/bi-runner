@@ -800,9 +800,14 @@ var Dashboard = function(element) {
                 if(error)
                     throw new Error(error);
 
-                if(failResult(chart.anchorName(), data)) return;
+                var qty;
 
-                const qty = data.result.result[0];
+                if(failResult(chart.anchorName(), data)){
+                    qty = 0;
+                } else {
+                    qty = data.result.result[0];
+                }
+
                 $('#qty-rows').text((qty ? formatter(qty) : '-'));
             }
         );
