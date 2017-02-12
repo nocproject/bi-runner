@@ -1,14 +1,19 @@
 var NocAggregatePanel = (function() {
     // private var
-    var formElement = '<div class="form-group" style="margin-bottom: 10px;">\n    <label class="col-md-3 control-label">{name}:</label>\n    <div class="col-md-2">\n        <input type="checkbox" value="{name}" class="form-control aggregate-field"/>\n    </div>\n</div>';
+    var formElementOdd = '<div class="form-group" style="margin-bottom: 10px;">\n    <label class="col-md-3 control-label">{name}:</label>\n    <div class="col-md-2">\n        <input type="checkbox" value="{name}" class="form-control aggregate-field"/>\n    </div>\n</div>';
 
     var _init = function() {
-
         var keys = Object.getOwnPropertyNames(dashboard.fieldsType);
+        var qtyGroup = parseInt((keys.length + 1) / 2);
 
-        keys.map(function(fieldName) {
-            $('.aggregate-by-field').append($(formElement.replace(/{name}/g, fieldName)));
-        });
+        for(var i = 0; i < qtyGroup; i++) {
+            var $element = $(formElementOdd.replace(/{name}/g, keys[i]));
+
+            if((qtyGroup + i) < keys.length) {
+                $element.append('<label class="col-md-3 control-label">{name}:</label>\n<div class="col-md-2"><input type="checkbox" value="{name}" class="form-control aggregate-field"/></div>'.replace(/{name}/g, keys[qtyGroup + i]));
+            }
+            $('.aggregate-by-field').append($element);
+        }
 
         dashboard.exportQuery.params[0].fields.map(function(field) {
             if(field.hasOwnProperty('group')) {
@@ -16,6 +21,7 @@ var NocAggregatePanel = (function() {
                 .attr('checked', 'checked');
             }
         });
+
         $('.aggregate-field').checkboxpicker({
             offActiveCls: 'btn-default',
             onActiveCls: 'btn-primary'
