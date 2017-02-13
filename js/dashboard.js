@@ -50,23 +50,61 @@ var Dashboard = function(element) {
     };
 
     this.createFieldSelector = function(container) {
-        var fieldSelector = '<div class="row">\n    <div class="col-md-12">\n        <div id="field-selector" class="chart-wrapper">\n            <div class="chart-title">\n                <div class="title-left">Filter by Field</div>\n                <div class="title-right collapsed"></div>\n                <div style="clear:both;"></div>\n            </div>\n            <div class="chart-stage collapse" aria-expanded="false">\n                <div class="row">\n                    <form class="form-horizontal">\n                        <div class="form-group">\n                            <label class="control-label col-md-2">List of fields (AND) :</label>\n                            <div class="col-md-6">\n                                <select id="fields"></select>\n                            </div>\n                        </div>\n                    </form>\n                </div>\n                <div class="filters-by-field" style="margin: 0 10px 5px 10px;"></div>\n                <!--<a href="#" class="btn btn-default pull-right" style="margin: -3px 10px 3px;">Save</a>-->\n            </div>\n            <div class="chart-notes">Filter</div>\n        </div>\n    </div>\n</div>\n';
+        var $fieldSelector = $('<div class="row">\n    <div class="col-md-12">\n        <div id="field-selector" class="chart-wrapper">\n            <div class="chart-title">\n                <div class="title-left">Filter by Field</div>\n                <div class="title-right collapsed"></div>\n                <div style="clear:both;"></div>\n            </div>\n            <div class="chart-stage collapse" aria-expanded="false">\n                <div class="row">\n                    <form class="form-horizontal">\n                        <div class="form-group">\n                            <label class="control-label col-md-2">List of fields (AND) :</label>\n                            <div class="col-md-6">\n                                <select id="fields"></select>\n                            </div>\n                        </div>\n                    </form>\n                </div>\n                <div class="filters-by-field" style="margin: 0 10px 5px 10px;"></div>\n                <!--<a class="btn btn-default pull-right save" style="margin: -3px 10px 3px;">Save</a>-->\n            </div>\n            <div class="chart-notes">Filter</div>\n        </div>\n    </div>\n</div>\n');
 
-        addCollapsed(fieldSelector, '#field-selector', container);
+        addCollapsed($fieldSelector, '#field-selector', container);
+        $fieldSelector.find('a.save').on('click', function() {
+            if(!dashboardJSON.hasOwnProperty('filter')) {
+                dashboardJSON.filter = {};
+            }
+            var keys = Object.getOwnPropertyNames(NocFilter.getFilter()).filter(function(e) {
+                return $.isNumeric(e); // get only filter panel
+            });
+
+            var savedKeys = Object.getOwnPropertyNames(dashboardJSON.filter).filter(function(e) {
+                return $.isNumeric(e);
+            });
+
+            savedKeys.map(function(name) {
+                delete dashboardJSON.filter[name];
+            });
+            keys.map(function(name) {
+                dashboardJSON.filter[name] = NocFilter.getFilter(name);
+            });
+            saveBoard();
+        });
         NocFilterPanel.init(dashboard);
     };
 
     this.createAggregateSelector = function(container) {
-        var fieldSelector = '<div class="row">\n    <div class="col-md-12">\n        <div id="field-aggregate" class="chart-wrapper">\n            <div class="chart-title">\n                <div class="title-left">Field Aggregate</div>\n                <div class="title-right collapsed"></div>\n                <div style="clear:both;"></div>\n            </div>\n            <div class="chart-stage collapse" aria-expanded="false">\n                <div class="row">\n                    <form class="form-horizontal aggregate-by-field">\n                        <div class="form-group" style="margin-bottom: 10px;">\n                            <label class="col-md-1 col-md-offset-1">List of fields:</label>\n                        </div>\n                    </form>\n                </div>\n            </div>\n            <div class="chart-notes">Aggregate</div>\n        </div>\n    </div>\n</div>\n';
+        var $agvSelector = $('<div class="row">\n    <div class="col-md-12">\n        <div id="field-aggregate" class="chart-wrapper">\n            <div class="chart-title">\n                <div class="title-left">Field Aggregate</div>\n                <div class="title-right collapsed"></div>\n                <div style="clear:both;"></div>\n            </div>\n            <div class="chart-stage collapse" aria-expanded="false">\n                <div class="row">\n                    <form class="form-horizontal aggregate-by-field">\n                        <div class="form-group" style="margin-bottom: 10px;">\n                            <label class="col-md-1 col-md-offset-1">List of fields:</label>\n                        </div>\n                    </form>\n                </div>\n                <!--<a class="btn btn-default pull-right save" style="margin: -3px 10px 3px;">Save</a>-->\n            </div>\n            <div class="chart-notes">Aggregate</div>\n        </div>\n    </div>\n</div>\n');
 
-        addCollapsed(fieldSelector, '#field-aggregate', container);
+        addCollapsed($agvSelector, '#field-aggregate', container);
+        $agvSelector.find('a.save').on('click', function() {
+            if(!dashboardJSON.hasOwnProperty('filter')) {
+                dashboardJSON.filter = {};
+            }
+            dashboardJSON.export = dashboard.exportQuery;
+            saveBoard();
+        });
         NocAggregatePanel.init(dashboard);
     };
 
     this.createTimeSelector = function(container) {
-        var timeSelector = '<div class="row">\n    <div class="col-md-12">\n        <div id="time-selector" class="chart-wrapper">\n            <div class="chart-title">\n                <div class="title-left">{title}</div>\n                <div class="title-right collapsed"></div>\n                <div style="clear:both;"></div>\n            </div>\n            <div class="chart-stage collapse" aria-expanded="false">\n                <div class="row">\n                    <div class="btn-group-vertical nav-stack col-md-2 col-md-offset-1" style="padding-top: 30px;">\n                        <a onclick="dashboard.timeSelector({\'period\': \'cur\', \'value\': \'day\'})" class="btn btn-default"\n                           style="margin-bottom: 10px;">Today</a>\n                        <a onclick="dashboard.timeSelector({\'period\': \'cur\', \'value\': \'monday\'})" class="btn btn-default"\n                           style="margin-bottom: 10px;">This week</a>\n                        <a onclick="dashboard.timeSelector({\'period\': \'cur\', \'value\': \'month\'})" class="btn btn-default"\n                           style="margin-bottom: 10px;">This month</a>\n                        <a onclick="dashboard.timeSelector({\'period\': \'cur\', \'value\': \'year\'})" class="btn btn-default"\n                           style="margin-bottom: 10px;">This year</a>\n                    </div>\n                    <div class="btn-group-vertical nav-stack col-md-2" style="padding-top: 30px;">\n                        <a onclick="dashboard.timeSelector({\'period\': \'prev\', \'value\': \'day\'})" class="btn btn-default"\n                           style="margin-bottom: 10px;">Yesterday</a>\n                        <a onclick="dashboard.timeSelector({\'period\': \'prev\', \'value\': \'monday\'})" class="btn btn-default"\n                           style="margin-bottom: 10px;">Previous week </a>\n                        <a onclick="dashboard.timeSelector({\'period\': \'prev\', \'value\': \'month\'})" class="btn btn-default"\n                           style="margin-bottom: 10px;">Previous month </a>\n                        <a onclick="dashboard.timeSelector({\'period\': \'prev\', \'value\': \'year\'})" class="btn btn-default"\n                           style="margin-bottom: 10px;">Previous year </a>\n                    </div>\n                    <div class="col-md-5 col-md-offset-1" style="padding-bottom: 10px;">\n                        <div class="pull-left">\n                            <input id="startInterval" type="text" style="display: none;"/>\n                            <div id="startIntervalContainer"></div>\n                        </div>\n                        <div class="pull-left">\n                            <input id="endInterval" type="text" style="display: none;"/>\n                            <div id="endIntervalContainer"></div>\n                            <a href="#" id="selectBtn" class="btn btn-default pull-right"\n                               style="width: 100px" disabled="disabled">Select</a>\n                        </div>\n                    </div>\n                </div>\n            </div>\n            <div class="chart-notes">Time Selector</div>\n        </div>\n    </div>\n</div>\n';
+        var $timeSelector = $('<div class="row">\n    <div class="col-md-12">\n        <div id="time-selector" class="chart-wrapper">\n            <div class="chart-title">\n                <div class="title-left">{title}</div>\n                <div class="title-right collapsed"></div>\n                <div style="clear:both;"></div>\n            </div>\n            <div class="chart-stage collapse" aria-expanded="false">\n                <div class="row">\n                    <div class="btn-group-vertical nav-stack col-md-2 col-md-offset-1" style="padding-top: 30px;">\n                        <a onclick="dashboard.timeSelector({\'period\': \'cur\', \'value\': \'day\'})" class="btn btn-default"\n                           style="margin-bottom: 10px;">Today</a>\n                        <a onclick="dashboard.timeSelector({\'period\': \'cur\', \'value\': \'monday\'})" class="btn btn-default"\n                           style="margin-bottom: 10px;">This week</a>\n                        <a onclick="dashboard.timeSelector({\'period\': \'cur\', \'value\': \'month\'})" class="btn btn-default"\n                           style="margin-bottom: 10px;">This month</a>\n                        <a onclick="dashboard.timeSelector({\'period\': \'cur\', \'value\': \'year\'})" class="btn btn-default"\n                           style="margin-bottom: 10px;">This year</a>\n                    </div>\n                    <div class="btn-group-vertical nav-stack col-md-2" style="padding-top: 30px;">\n                        <a onclick="dashboard.timeSelector({\'period\': \'prev\', \'value\': \'day\'})" class="btn btn-default"\n                           style="margin-bottom: 10px;">Yesterday</a>\n                        <a onclick="dashboard.timeSelector({\'period\': \'prev\', \'value\': \'monday\'})" class="btn btn-default"\n                           style="margin-bottom: 10px;">Previous week </a>\n                        <a onclick="dashboard.timeSelector({\'period\': \'prev\', \'value\': \'month\'})" class="btn btn-default"\n                           style="margin-bottom: 10px;">Previous month </a>\n                        <a onclick="dashboard.timeSelector({\'period\': \'prev\', \'value\': \'year\'})" class="btn btn-default"\n                           style="margin-bottom: 10px;">Previous year </a>\n                    </div>\n                    <div class="col-md-5 col-md-offset-1" style="padding-bottom: 10px;">\n                        <div class="pull-left">\n                            <input id="startInterval" type="text" style="display: none;"/>\n                            <div id="startIntervalContainer"></div>\n                        </div>\n                        <div class="pull-left">\n                            <input id="endInterval" type="text" style="display: none;"/>\n                            <div id="endIntervalContainer"></div>\n                            <a href="#" id="selectBtn" class="btn btn-default pull-right"\n                               style="width: 100px" disabled="disabled">Select</a>\n                        </div>\n                    </div>\n                </div>\n                <!--<a class="btn btn-default pull-right save" style="margin: -3px 10px 3px;">Save</a>-->\n            </div>\n            <div class="chart-notes">Time Selector</div>\n        </div>\n    </div>\n</div>\n');
 
-        addCollapsed(timeSelector, '#time-selector', container);
+        addCollapsed($timeSelector, '#time-selector', container);
+        $timeSelector.find('a.save').on('click', function() {
+            var filter = NocFilter.getFilter();
+
+            if(filter.hasOwnProperty('startDate')) {
+                if(!dashboardJSON.hasOwnProperty('filter')) {
+                    dashboardJSON.filter = {};
+                }
+                dashboardJSON.filter.startDate = filter.startDate;
+                saveBoard();
+            }
+        });
 
         var startDate,
             endDate,
@@ -213,11 +251,22 @@ var Dashboard = function(element) {
 
         NocExport.updateDuration();
 
+        var sDate = new Date('2016-01-01');
+        var eDate = new Date('2017-01-01');
+
+        if(dashboardJSON.hasOwnProperty('filter') && dashboardJSON.filter.hasOwnProperty('startDate')) {
+            sDate = new Date(dashboardJSON.filter.startDate.values[0]);
+            eDate = new Date(dashboardJSON.filter.startDate.values[1]);
+        }
+
         NocFilter.init({
             widgets: dashboard.widgets,
             fieldNameSeparator: dashboard.fieldNameSeparator,
-            startDateCondition: [new Date('2016-01-01'), new Date('2017-01-01')]
+            startDateCondition: [sDate, eDate]
         });
+
+        NocFilterPanel.setFilter(dashboardJSON.filter);
+
         dashboard.drawAll();
     };
 
@@ -284,8 +333,8 @@ var Dashboard = function(element) {
     };
 
     // utils
-    var addCollapsed = function(panel, anchorName, container) {
-        $(panel).appendTo(container);
+    var addCollapsed = function($panel, anchorName, container) {
+        $panel.appendTo(container);
         $(anchorName + '>.chart-title').click(function() {
             var $selector = $(this).next(null);
 
@@ -420,6 +469,22 @@ var Dashboard = function(element) {
             }
         });
         $('#' + widget.cell).replaceWith(tableTpl + '</tr></thead></table>');
+    };
+
+    var saveBoard = function() {
+        var request = {
+            id: 0,
+            method: 'set_dashboard',
+            params: [dashboardJSON]
+        };
+
+        d3.json('/api/bi/')
+        .header("Content-Type", "application/json")
+        .post(
+            JSON.stringify(request),
+            function(error) {
+                console.log('save board - done, error : ' + error);
+            });
     };
 
     // draw charts
@@ -800,11 +865,9 @@ var Dashboard = function(element) {
                 if(error)
                     throw new Error(error);
 
-                var qty;
+                var qty = 0;
 
-                if(failResult(chart.anchorName(), data)){
-                    qty = 0;
-                } else {
+                if(!failResult(chart.anchorName(), data)) {
                     qty = data.result.result[0];
                 }
 

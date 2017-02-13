@@ -176,12 +176,9 @@ var NocFilter = (function() {
     // public
     return {
         init: function(args) {
-            filter = {};
             if(args.hasOwnProperty('fieldNameSeparator')) fieldNameSeparator = args.fieldNameSeparator;
             if(args.hasOwnProperty('widgets')) widgets = args.widgets;
-            if(args.hasOwnProperty('startDateCondition')) {
-                this.setStartDateCondition(args.startDateCondition);
-            }
+            if(args.hasOwnProperty('startDateCondition')) this.setStartDateCondition(args.startDateCondition);
         },
         updateFilter: function(name, type, values, condition) {
             if(!values || values.length === 0) {
@@ -242,7 +239,10 @@ var NocFilter = (function() {
             dashboard.setSelectorInterval(interval[0], interval[1]);
             this.updateFilter('startDate', 'Date', [{id: interval[0]}, {id: interval[1]}], 'interval');
         },
-        getFilter: function() {
+        getFilter: function(name) {
+            if(name) {
+                return filter[name];
+            }
             return filter;
         }
     };

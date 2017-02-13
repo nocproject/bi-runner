@@ -8,9 +8,11 @@ var NocFilterPanel = (function() {
         $("#fields")
         .select2(_selectConfig())
         .on('change', function() {
+            var id = new Date().getTime();
+
             console.log("changed  to : ", $(this).val());
             if($(this).val()) {
-                _createPanel($(this));
+                _createPanel(id, _parseFieldValue($(this)));
                 $(this).val(null).trigger('change');
             }
         })
@@ -108,6 +110,32 @@ var NocFilterPanel = (function() {
         return query
     };
 
+    var _textByIdQuery = function(dict, id) {
+        return {
+            params: [
+                {
+                    fields: [
+                        {
+                            expr: {
+                                $lookup: [
+                                    dict,
+                                    {
+                                        $field: 'toUInt64(' + id + ')'
+                                    }
+                                ]
+                            },
+                            alias: "value",
+                            group: "0"
+                        }
+                    ],
+                    datasource: dashboard.datasource
+                }
+            ],
+            id: 0,
+            method: "query"
+        }
+    };
+
     var _parseFieldValue = function(element) {
         var value = element.val().split(',');
 
@@ -119,16 +147,13 @@ var NocFilterPanel = (function() {
         }
     };
 
-    var _createPanel = function(element) {
+    var _createPanel = function(id, field) {
         var filterPanel = '<div class="panel" style="margin-bottom: 10px">\n    <div class="panel-heading" style="border-color: #ddd;">\n        <div>\n            <div class="title-left">Field name: <b>{name}</b>, {type}</div>\n            <div style="float: right;" class="close-panel hand">\n                <i class="fa fa-times-circle" aria-hidden="true"></i>\n            </div>\n            <div style="clear:both;"></div>\n        </div>\n    </div>\n    <div class="panel-body" style="padding-bottom: 0;">\n        <form class="form-horizontal">\n            <div class="filter-rows">\n            </div>\n            <div class="form-group buttons" style="margin-bottom: 10px;">\n                <!--<div class="col-md-offset-1 pull-left">-->\n                <!--<a href="#" class="btn btn-default pull-left chart-show btn-sm" disabled>Show Chart</a>-->\n                <!--</div>-->\n                <div class="pull-right" style="margin-right: 10px;">\n                    <a class="btn btn-default clean-filter btn-sm">Clear</a>\n                    <a class="btn btn-default apply-filter btn-sm">Apply</a>\n                </div>\n            </div>\n        </form>\n    </div>\n</div>';
-        var field = _parseFieldValue(element);
-        var id = new Date().getTime();
-        var $panel, typeText;
+        var typeText = 'type: <b>' + field.type + '</b>';
+        var $panel;
 
         if(!field.type.indexOf('dict-')) {
             typeText = 'dictionary: <b>' + field.dict + '</b>';
-        } else {
-            typeText = 'type: <b>' + field.type + '</b>';
         }
 
         filterPanel = filterPanel.replace(/{name}/g, field.name);
@@ -136,7 +161,7 @@ var NocFilterPanel = (function() {
 
         $panel = $(filterPanel);
         $('.filters-by-field').append($panel);
-        _addRow(element, $panel);
+        _addRow(id, field, $panel);
 
         $panel.find('.apply-filter')
         .on('click', function() {
@@ -212,17 +237,21 @@ var NocFilterPanel = (function() {
             NocFilter.deleteFilter(id);
             dashboard.drawAll();
         });
+
+        return $panel;
     };
 
     var _replaceInput = function(field, $row, conditionOptions) {
         if(!field.type.indexOf('dict-')) {
-            $row.find('input').first() // add multiple attr for multiple select
+            $row.find('input').first() // add 'multiple' attr for multiple select
             .replaceWith('<select name="' + field.name + '" class="form-control values"></select>');
 
             $row.find('.first-value>div>select')
             .select2({
                 theme: 'bootstrap',
                 placeholder: 'Select from ' + field.dict,
+                dropdownAutoWidth: true,
+                width: 'auto',
                 // minimumInputLength: 2,
                 ajax: {
                     url: '/api/bi/',
@@ -287,17 +316,14 @@ var NocFilterPanel = (function() {
         }
     };
 
-    var _addRow = function(element, $panel, prefix) {
-        var rowFilter;
-        var field = _parseFieldValue(element);
+    var _addRow = function(id, field, $panel, prefix) {
+        var rowFilter = '<div class="form-group">\n    <label class="control-label col-md-1 col-md-offset-1">Condition:</label>\n    <div class="col-md-2">\n        <select class="form-control condition"></select>\n    </div>\n    <div class="first-value">\n        <label class="control-label col-md-2">Value:</label>\n        <div class="col-md-6">\n            <input type="text" class="form-control values" name="{name}" placeholder="Value">\n        </div>\n    </div>\n</div>\n<div class="form-group second-value hidden">\n    <label class="control-label col-md-6">To Value:</label>\n    <div class="col-md-6">\n        <input type="text" class="form-control values" name="{name}" placeholder="To Value">\n    </div>\n</div>\n<div class="form-group">\n    <label class="control-label col-md-2">List of fields (OR) :</label>\n    <div class="col-md-6">\n        <select id="inner-fields"></select>\n    </div>\n</div>';
         var conditionOptions = [
             {id: '$eq', text: '=='},
             {id: '$ne', text: '<>'}
         ];
 
-        if('inner-' !== prefix) {
-            rowFilter = '<div class="form-group">\n    <label class="control-label col-md-1 col-md-offset-1">Condition:</label>\n    <div class="col-md-2">\n        <select class="form-control condition"></select>\n    </div>\n    <div class="first-value">\n        <label class="control-label col-md-2">Value:</label>\n        <div class="col-md-6">\n            <input type="text" class="form-control values" name="{name}" placeholder="Value">\n        </div>\n    </div>\n</div>\n<div class="form-group second-value hidden">\n    <label class="control-label col-md-6">To Value:</label>\n    <div class="col-md-6">\n        <input type="text" class="form-control values" name="{name}" placeholder="To Value">\n    </div>\n</div>\n<div class="form-group">\n    <label class="control-label col-md-2">List of fields (OR) :</label>\n    <div class="col-md-6">\n        <select id="inner-fields"></select>\n    </div>\n</div>';
-        } else {
+        if('inner-' === prefix) {
             rowFilter = '<div class="form-group">\n    <label class="control-label col-md-2 remove-inner-row">\n        <i class="fa fa-times hand" aria-hidden="true" style="padding-right: 10px;"></i>{description}</label>\n    <label class="control-label col-md-1">Condition:</label>\n    <div class="col-md-2">\n        <select class="form-control condition"></select>\n    </div>\n    <div class="first-value">\n        <label class="control-label col-md-1">Value:</label>\n        <div class="col-md-6">\n            <input type="text" class="form-control values" name="{name}" placeholder="Value">\n        </div>\n    </div>\n</div>\n<div class="form-group second-value hidden">\n    <label class="control-label col-md-6">To Value:</label>\n    <div class="col-md-6">\n        <input type="text" class="form-control values" name="{name}" placeholder="To Value">\n    </div>\n</div>'
         }
 
@@ -314,7 +340,7 @@ var NocFilterPanel = (function() {
             .on('change', function() {
                 console.log("inner select changed  to : ", $(this).val());
                 if($(this).val()) {
-                    _addRow($(this), $panel, 'inner-');
+                    _addRow(id, _parseFieldValue($(this)), $panel, 'inner-');
                     $(this).val(null).trigger('change');
                 }
             })
@@ -334,6 +360,8 @@ var NocFilterPanel = (function() {
             theme: 'bootstrap',
             placeholder: 'Select a condition',
             minimumResultsForSearch: Infinity,
+            dropdownAutoWidth: true,
+            width: 'auto',
             data: conditionOptions
         });
 
@@ -355,6 +383,40 @@ var NocFilterPanel = (function() {
             }
             console.log('condition changed to : ' + $(this).val());
         });
+
+        if(field.condition) {
+            $row.find('.condition').val(field.condition).trigger('change');
+        }
+
+        if(field.values) {
+            var val1 = field.values[0];
+            var val2 = field.values[1];
+
+            if(!field.type.indexOf('dict-')) {
+                $.ajax({
+                    url: '/api/bi/',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    data: JSON.stringify(_textByIdQuery(field.dict, val1))
+                }).then(function(data) {
+                    $row.find('.first-value').find('.values').append(new Option(data.result.result[0], val1, true, true));
+                    $row.find('.first-value').find('.values').trigger('change');
+                });
+            } else {
+
+                if('DateTime' === field.type) {
+                    val1 = d3.time.format("%Y-%m-%dT%H:%M:%S")(new Date(Date.parse(val1)));
+                    val2 = d3.time.format("%Y-%m-%dT%H:%M:%S")(new Date(Date.parse(val2)));
+                } else if('Date' === field.type) {
+                    val1 = d3.time.format("%Y-%m-%d")(new Date(Date.parse(val1)));
+                    val2 = d3.time.format("%Y-%m-%d")(new Date(Date.parse(val2)));
+                }
+
+                $row.find('.first-value').find('.values').val(val1).trigger('change');
+                $row.filter('.second-value').find('.values').val(val2).trigger('change');
+            }
+        }
     };
 
     var _validate = function(firstRow, type, condition) {
@@ -536,8 +598,42 @@ var NocFilterPanel = (function() {
         });
     };
 
+    var _setFilter = function(filter) {
+        if(filter) {
+            var keys = Object.getOwnPropertyNames(filter).filter(function(e) {
+                return $.isNumeric(e); // get only filter panel
+            });
+
+            keys.map(function(name) {
+                var vals = filter[name].values;
+                var $panel = _createPanel(name,
+                    {
+                        name: vals[0].name,
+                        type: vals[0].type,
+                        dict: vals[0].type.replace('dict-', ''),
+                        condition: vals[0].condition,
+                        values: vals[0].values,
+                        description: vals[0].name
+                    });
+                for(var i = 1; i < vals.length; i++) {
+                    var dict = (vals[i].type) ? vals[i].type.replace('dict-', '') : null;
+                    _addRow(name,
+                        {
+                            name: vals[i].name,
+                            type: vals[i].type,
+                            dict: dict,
+                            condition: vals[i].condition,
+                            values: vals[i].values,
+                            description: vals[i].name
+                        }, $panel, 'inner-');
+                }
+            });
+        }
+    };
+
     // public
     return {
-        init: _init
+        init: _init,
+        setFilter: _setFilter
     }
 })();

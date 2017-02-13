@@ -34,8 +34,8 @@ var NocAggregatePanel = (function() {
                     return element[param] !== name;
                 })
             };
-            var maxGroup = function() {
-                return Math.max.apply(Math,
+            var _maxGroup = function() {
+                var maxGroup = Math.max.apply(Math,
                     dashboard.exportQuery.params[0].fields
                     .filter(function(element) {
                         return element.hasOwnProperty('group');
@@ -43,14 +43,14 @@ var NocAggregatePanel = (function() {
                     .map(function(element) {
                         return element.group;
                     }));
+                return (maxGroup === -Infinity || isNaN(maxGroup)) ? 0 : maxGroup;
             };
 
             console.log($(this).val() + ' is checked : ' + isChecked);
             if(isChecked) {
                 // add to
                 // check is dictionary
-                const group = maxGroup() + 1;
-                var column = {expr: field, group: group};
+                var column = {expr: field, group: _maxGroup() + 1};
 
                 if(dashboard.fieldsType[field].dict) {
                     var dictionaryColumn = {
