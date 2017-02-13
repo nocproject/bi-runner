@@ -173,12 +173,67 @@ var NocFilter = (function() {
         );
     }
 
+    function restoreFilter(savedFilter) {
+        var convert = function(name, field) {
+            var values = [];
+            var val1 = field.values[0];
+            var val2 = field.values[1];
+
+            if('DateTime' === field.type) {
+                val1 = new Date(Date.parse(val1));
+                val2 = new Date(Date.parse(val2));
+            } else if('Date' === field.type) {
+                val1 = new Date(Date.parse(val1));
+                val2 = new Date(Date.parse(val2));
+            }
+
+            values.push(val1);
+
+            if(field.condition.match(/interval/i)) {
+                values.push(val2);
+            }
+
+            if('startDate' === name) {
+                dashboard.setSelectorInterval(values[0], values[1]);
+                return {
+                    values: values,
+                    type: 'Date',
+                    condition: 'interval'
+                }
+            }
+
+            return {
+                name: field.name,
+                values: values,
+                type: field.type,
+                condition: field.condition
+            }
+        };
+
+        if(savedFilter) {
+            Object.getOwnPropertyNames(savedFilter).map(function(name) {
+                if('orForAnd' === savedFilter[name].condition) {
+                    filter[name] = {
+                        values: savedFilter[name].values.map(function(val) {
+                            return convert(name, val);
+                        }),
+                        condition: 'orForAnd'
+                    }
+                } else {
+                    filter[name] = convert(name, savedFilter[name]);
+                }
+            });
+
+            updateWidgets(makeFilter());
+        }
+    }
+
     // public
     return {
         init: function(args) {
             if(args.hasOwnProperty('fieldNameSeparator')) fieldNameSeparator = args.fieldNameSeparator;
             if(args.hasOwnProperty('widgets')) widgets = args.widgets;
-            if(args.hasOwnProperty('startDateCondition')) this.setStartDateCondition(args.startDateCondition);
+            if(args.hasOwnProperty('filter')) restoreFilter(args.filter);
         },
         updateFilter: function(name, type, values, condition) {
             if(!values || values.length === 0) {
