@@ -31,6 +31,7 @@ build:
   image: python:2.7-alpine
   script:
     - mkdir -p dist2
+    - export VERSION_SHORT=$(git describe --tags --abbrev=0 HEAD^)
     - sed -i s/0.0.0/${VERSION_SHORT}/ make.json
     - ./build.py make.json
   tags:
