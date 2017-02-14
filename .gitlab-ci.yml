@@ -1,7 +1,7 @@
 variables:
-  REG_NAME: registry.getnoc.com
   S3_BASE: https://s3.getnoc.com
   S3_BUCKET: $CI_PROJECT_NAMESPACE
+  TEST: $(git describe --always --tags)
 
 stages:
   - build
@@ -12,6 +12,7 @@ build_npm:
   stage: build
   image: node:6.9-alpine
   script:
+    - echo $TEST
     - apk add --update git 
     - export VERSION_FULL=$(git describe --always --tags)
     - export VERSION_SHORT=$(git describe --tags --abbrev=0 HEAD^)
@@ -41,6 +42,8 @@ build:
     paths:
       - dist2/
     expire_in: 3 min
+  only:
+    - tags
 
 upload:
   stage: upload
@@ -49,3 +52,5 @@ upload:
     /tmp/mc -q cp dist2/* cdn/$S3_BUCKET/
   tags:
     - docker
+  only:
+    - tags
