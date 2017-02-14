@@ -148,7 +148,7 @@ var NocFilterPanel = (function() {
     };
 
     var _createPanel = function(id, field) {
-        var filterPanel = '<div class="panel" style="margin-bottom: 10px">\n    <div class="panel-heading" style="border-color: #ddd;">\n        <div>\n            <div class="title-left">Field name: <b>{name}</b>, {type}</div>\n            <div style="float: right;" class="close-panel hand">\n                <i class="fa fa-times-circle" aria-hidden="true"></i>\n            </div>\n            <div style="clear:both;"></div>\n        </div>\n    </div>\n    <div class="panel-body" style="padding-bottom: 0;">\n        <form class="form-horizontal">\n            <div class="filter-rows">\n            </div>\n            <div class="form-group buttons" style="margin-bottom: 10px;">\n                <!--<div class="col-md-offset-1 pull-left">-->\n                <!--<a href="#" class="btn btn-default pull-left chart-show btn-sm" disabled>Show Chart</a>-->\n                <!--</div>-->\n                <div class="pull-right" style="margin-right: 10px;">\n                    <a class="btn btn-default clean-filter btn-sm">Clear</a>\n                    <a class="btn btn-default apply-filter btn-sm">Apply</a>\n                </div>\n            </div>\n        </form>\n    </div>\n</div>';
+        var filterPanel = { gulp_inject: './templates/filter-panel.html' };
         var typeText = 'type: <b>' + field.type + '</b>';
         var $panel;
 
@@ -317,14 +317,14 @@ var NocFilterPanel = (function() {
     };
 
     var _addRow = function(id, field, $panel, prefix) {
-        var rowFilter = '<div class="form-group">\n    <label class="control-label col-md-1 col-md-offset-1">Condition:</label>\n    <div class="col-md-2">\n        <select class="form-control condition"></select>\n    </div>\n    <div class="first-value">\n        <label class="control-label col-md-2">Value:</label>\n        <div class="col-md-6">\n            <input type="text" class="form-control values" name="{name}" placeholder="Value">\n        </div>\n    </div>\n</div>\n<div class="form-group second-value hidden">\n    <label class="control-label col-md-6">To Value:</label>\n    <div class="col-md-6">\n        <input type="text" class="form-control values" name="{name}" placeholder="To Value">\n    </div>\n</div>\n<div class="form-group">\n    <label class="control-label col-md-2">List of fields (OR) :</label>\n    <div class="col-md-6">\n        <select id="inner-fields"></select>\n    </div>\n</div>';
+        var rowFilter = { gulp_inject: './templates/filter-row.html' };
         var conditionOptions = [
             {id: '$eq', text: '=='},
             {id: '$ne', text: '<>'}
         ];
 
         if('inner-' === prefix) {
-            rowFilter = '<div class="form-group">\n    <label class="control-label col-md-2 remove-inner-row">\n        <i class="fa fa-times hand" aria-hidden="true" style="padding-right: 10px;"></i>{description}</label>\n    <label class="control-label col-md-1">Condition:</label>\n    <div class="col-md-2">\n        <select class="form-control condition"></select>\n    </div>\n    <div class="first-value">\n        <label class="control-label col-md-1">Value:</label>\n        <div class="col-md-6">\n            <input type="text" class="form-control values" name="{name}" placeholder="Value">\n        </div>\n    </div>\n</div>\n<div class="form-group second-value hidden">\n    <label class="control-label col-md-6">To Value:</label>\n    <div class="col-md-6">\n        <input type="text" class="form-control values" name="{name}" placeholder="To Value">\n    </div>\n</div>'
+            rowFilter = { gulp_inject: './templates/filter-row-inner.html'};
         }
 
         rowFilter = rowFilter.replace(/{name}/g, field.name);

@@ -1,6 +1,6 @@
 var NocAggregatePanel = (function() {
     // private var
-    var formElementOdd = '<div class="form-group" style="margin-bottom: 10px;">\n    <label class="col-md-3 control-label">{name}:</label>\n    <div class="col-md-2">\n        <input type="checkbox" value="{name}" class="form-control aggregate-field"/>\n    </div>\n</div>';
+    var formElementOdd = { gulp_inject: './templates/aggregate-element-odd.html' };
 
     var _init = function() {
         var keys = Object.getOwnPropertyNames(dashboard.fieldsType);

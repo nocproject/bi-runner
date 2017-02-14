@@ -9,6 +9,7 @@ var uglyfly = require('gulp-uglyfly');
 var cssnano = require('gulp-cssnano');
 var sourcemaps = require('gulp-sourcemaps');
 var sass = require('gulp-sass');
+var injectHtml = require('gulp-inject-stringified-html');
 
 var APP_JS = 'bi.js';
 var APP_CSS = 'bi.css';
@@ -70,6 +71,7 @@ gulp.task('clean', function() {
 
 gulp.task('app.scrips.dev', function() {
     return gulp.src(SOURCE_FILES)
+    .pipe(injectHtml())
     .pipe(concat(APP_JS))
     .pipe(gulp.dest(APP_DEST))
 });
@@ -137,6 +139,7 @@ gulp.task('build.dev', ['clean'], gulp_sync_task(
 gulp.task('app.scripts.prod', function() {
     return gulp.src(SOURCE_FILES)
     .pipe(sourcemaps.init())
+    .pipe(injectHtml())
     .pipe(concat(APP_JS))
     .pipe(uglyfly())
     .pipe(sourcemaps.write('./'))
