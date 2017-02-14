@@ -54,15 +54,17 @@ var Dashboard = function(element) {
 
         addCollapsed($fieldSelector, '#field-selector', container);
         $fieldSelector.find('a.save').on('click', function() {
+            var filter = NocFilter.getFilter();
+
             if(!dashboardJSON.hasOwnProperty('filter')) {
                 dashboardJSON.filter = {};
             }
-            var keys = Object.getOwnPropertyNames(NocFilter.getFilter()).filter(function(e) {
-                return $.isNumeric(e); // get only filter panel
+            var keys = Object.getOwnPropertyNames(filter).filter(function(e) {
+                return 'orForAnd' === filter[e].condition; // get only filter panel
             });
 
             var savedKeys = Object.getOwnPropertyNames(dashboardJSON.filter).filter(function(e) {
-                return $.isNumeric(e);
+                return 'orForAnd' === dashboardJSON.filter[e].condition;
             });
 
             savedKeys.map(function(name) {
@@ -251,18 +253,10 @@ var Dashboard = function(element) {
 
         NocExport.updateDuration();
 
-        var sDate = new Date('2016-01-01');
-        var eDate = new Date('2017-01-01');
-
-        if(dashboardJSON.hasOwnProperty('filter') && dashboardJSON.filter.hasOwnProperty('startDate')) {
-            sDate = new Date(dashboardJSON.filter.startDate.values[0]);
-            eDate = new Date(dashboardJSON.filter.startDate.values[1]);
-        }
-
         NocFilter.init({
             widgets: dashboard.widgets,
             fieldNameSeparator: dashboard.fieldNameSeparator,
-            startDateCondition: [sDate, eDate]
+            filter: dashboardJSON.filter
         });
 
         NocFilterPanel.setFilter(dashboardJSON.filter);

@@ -406,11 +406,11 @@ var NocFilterPanel = (function() {
             } else {
 
                 if('DateTime' === field.type) {
-                    val1 = d3.time.format("%Y-%m-%dT%H:%M:%S")(new Date(Date.parse(val1)));
-                    val2 = d3.time.format("%Y-%m-%dT%H:%M:%S")(new Date(Date.parse(val2)));
+                    val1 = dashboard.dateToString(new Date(Date.parse(val1)), "%Y-%m-%dT%H:%M:%S");
+                    val2 = dashboard.dateToString(new Date(Date.parse(val2)), "%Y-%m-%dT%H:%M:%S");
                 } else if('Date' === field.type) {
-                    val1 = d3.time.format("%Y-%m-%d")(new Date(Date.parse(val1)));
-                    val2 = d3.time.format("%Y-%m-%d")(new Date(Date.parse(val2)));
+                    val1 = dashboard.dateToString(new Date(Date.parse(val1)), "%Y-%m-%d");
+                    val2 = dashboard.dateToString(new Date(Date.parse(val2)), "%Y-%m-%d");
                 }
 
                 $row.find('.first-value').find('.values').val(val1).trigger('change');
@@ -601,7 +601,7 @@ var NocFilterPanel = (function() {
     var _setFilter = function(filter) {
         if(filter) {
             var keys = Object.getOwnPropertyNames(filter).filter(function(e) {
-                return $.isNumeric(e); // get only filter panel
+                return 'orForAnd' === dashboardJSON.filter[e].condition; // get only filter panel
             });
 
             keys.map(function(name) {
