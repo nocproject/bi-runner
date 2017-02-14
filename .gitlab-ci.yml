@@ -1,7 +1,6 @@
 variables:
   S3_BASE: https://s3.getnoc.com
   S3_BUCKET: $CI_PROJECT_NAMESPACE
-  TEST: $(git describe --always --tags)
 
 stages:
   - build
@@ -11,6 +10,8 @@ stages:
 build_npm:
   stage: build
   image: node:6.9-alpine
+  before_script:
+    - export TEST=$(git describe --always --tags)
   script:
     - echo $TEST
     - apk add --update git 
