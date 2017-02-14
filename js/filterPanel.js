@@ -406,11 +406,11 @@ var NocFilterPanel = (function() {
             } else {
 
                 if('DateTime' === field.type) {
-                    val1 = dashboard.parseDate(new Date(Date.parse(val1)), "%Y-%m-%dT%H:%M:%S");
-                    val2 = dashboard.parseDate(new Date(Date.parse(val2)), "%Y-%m-%dT%H:%M:%S");
+                    val1 = dashboard.dateToString(new Date(Date.parse(val1)), "%Y-%m-%dT%H:%M:%S");
+                    val2 = dashboard.dateToString(new Date(Date.parse(val2)), "%Y-%m-%dT%H:%M:%S");
                 } else if('Date' === field.type) {
-                    val1 = dashboard.parseDate(new Date(Date.parse(val1)), "%Y-%m-%d");
-                    val2 = dashboard.parseDate(new Date(Date.parse(val2)), "%Y-%m-%d");
+                    val1 = dashboard.dateToString(new Date(Date.parse(val1)), "%Y-%m-%d");
+                    val2 = dashboard.dateToString(new Date(Date.parse(val2)), "%Y-%m-%d");
                 }
 
                 $row.find('.first-value').find('.values').val(val1).trigger('change');

@@ -54,11 +54,13 @@ var Dashboard = function(element) {
 
         addCollapsed($fieldSelector, '#field-selector', container);
         $fieldSelector.find('a.save').on('click', function() {
+            var filter = NocFilter.getFilter();
+
             if(!dashboardJSON.hasOwnProperty('filter')) {
                 dashboardJSON.filter = {};
             }
-            var keys = Object.getOwnPropertyNames(NocFilter.getFilter()).filter(function(e) {
-                return 'orForAnd' === dashboardJSON.filter[e].condition; // get only filter panel
+            var keys = Object.getOwnPropertyNames(filter).filter(function(e) {
+                return 'orForAnd' === filter[e].condition; // get only filter panel
             });
 
             var savedKeys = Object.getOwnPropertyNames(dashboardJSON.filter).filter(function(e) {
