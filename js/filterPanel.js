@@ -181,12 +181,12 @@ var NocFilterPanel = (function() {
                 _validate(this, type, condition);
 
                 if(condition.match(/interval/i)) {
-                    value.push($(this).parent().next().find('.values').val())
+                    value = [value, $(this).parent().next().find('.values').val()];
                 } else {
                     value = [value];
                 }
 
-                if(!type.indexOf('Date')) {
+                if(!type.indexOf('Date') && !condition.match(/periodic/i)) {
                     if('DateTime' === type) {
                         pattern = '%Y-%m-%dT%H:%M:00';
                     } else if('Date' === type) {
@@ -275,6 +275,7 @@ var NocFilterPanel = (function() {
                 {id: 'interval', text: 'interval'},
                 {id: 'not.interval', text: 'not into interval'},
                 {id: 'periodic.interval', text: 'periodic interval'},
+                {id: 'not.periodic.interval', text: 'not into periodic'},
                 {id: '$lt', text: '<'},
                 {id: '$le', text: '<='},
                 {id: '$gt', text: '>'},
@@ -378,12 +379,12 @@ var NocFilterPanel = (function() {
             if(value.match(/interval/i)) {
                 $row.filter('.second-value').removeClass('hidden');
             }
-            if('DateTime' === field.type) {
+            if('DateTime' === field.type && !value.match(/periodic/i)) {
                 _setDateTimeField($row, field);
             } else if('Date' === field.type) {
                 _setDateField($row, field);
             }
-            if('periodic.interval' === value) {
+            if(value.match(/periodic/i)) {
                 $row.find('input').replaceWith('<input type="text" class="form-control values periodic" name="' + field.name + '" placeholder="HH:mm">');
             }
             console.log('condition changed to : ' + value);
@@ -410,7 +411,7 @@ var NocFilterPanel = (function() {
                 });
             } else {
 
-                if('DateTime' === field.type) {
+                if('DateTime' === field.type && !field.condition.match(/periodic/i)) {
                     val1 = dashboard.dateToString(new Date(Date.parse(val1)), "%Y-%m-%dT%H:%M:%S");
                     val2 = dashboard.dateToString(new Date(Date.parse(val2)), "%Y-%m-%dT%H:%M:%S");
                 } else if('Date' === field.type) {
@@ -465,7 +466,7 @@ var NocFilterPanel = (function() {
                 return;
             }
 
-            if('periodic.interval' === condition) {
+            if(condition.match(/periodic/i)) {
                 var message1 = [], message2 = [];
                 var hourStart, hourEnd, minuteStart, minuteEnd;
 

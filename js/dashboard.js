@@ -50,63 +50,23 @@ var Dashboard = function(element) {
     };
 
     this.createFieldSelector = function(container) {
-        var $fieldSelector = $({ gulp_inject: './templates/filter-wrapper.html' });
+        var $fieldSelector = $({gulp_inject: './templates/filter-wrapper.html'});
 
         addCollapsed($fieldSelector, '#field-selector', container);
-        $fieldSelector.find('a.save').on('click', function() {
-            var filter = NocFilter.getFilter();
-
-            if(!dashboardJSON.hasOwnProperty('filter')) {
-                dashboardJSON.filter = {};
-            }
-            var keys = Object.getOwnPropertyNames(filter).filter(function(e) {
-                return 'orForAnd' === filter[e].condition; // get only filter panel
-            });
-
-            var savedKeys = Object.getOwnPropertyNames(dashboardJSON.filter).filter(function(e) {
-                return 'orForAnd' === dashboardJSON.filter[e].condition;
-            });
-
-            savedKeys.map(function(name) {
-                delete dashboardJSON.filter[name];
-            });
-            keys.map(function(name) {
-                dashboardJSON.filter[name] = NocFilter.getFilter(name);
-            });
-            saveBoard();
-        });
         NocFilterPanel.init(dashboard);
     };
 
     this.createAggregateSelector = function(container) {
-        var $agvSelector = $({ gulp_inject: './templates/aggregate-wrapper.html' });
+        var $agvSelector = $({gulp_inject: './templates/aggregate-wrapper.html'});
 
         addCollapsed($agvSelector, '#field-aggregate', container);
-        $agvSelector.find('a.save').on('click', function() {
-            if(!dashboardJSON.hasOwnProperty('filter')) {
-                dashboardJSON.filter = {};
-            }
-            dashboardJSON.export = dashboard.exportQuery;
-            saveBoard();
-        });
         NocAggregatePanel.init(dashboard);
     };
 
     this.createTimeSelector = function(container) {
-        var $timeSelector = $({ gulp_inject: './templates/time-wrapper.html' });
+        var $timeSelector = $({gulp_inject: './templates/time-wrapper.html'});
 
         addCollapsed($timeSelector, '#time-selector', container);
-        $timeSelector.find('a.save').on('click', function() {
-            var filter = NocFilter.getFilter();
-
-            if(filter.hasOwnProperty('startDate')) {
-                if(!dashboardJSON.hasOwnProperty('filter')) {
-                    dashboardJSON.filter = {};
-                }
-                dashboardJSON.filter.startDate = filter.startDate;
-                saveBoard();
-            }
-        });
 
         var startDate,
             endDate,
@@ -194,6 +154,11 @@ var Dashboard = function(element) {
         .on("click", "", function() {
             NocExport.export();
             $('#export-btn').find('.spinner').show();
+        });
+
+        $('#save-btn')
+        .on("click", "", function() {
+            saveBoard();
         });
 
         $('#report-name').text(dashboardJSON.title);
@@ -389,23 +354,26 @@ var Dashboard = function(element) {
         spinnerHide(chart);
     };
 
-    var filterToggle = function(widget, field, lastValue, allValues, text, type, condition) {
-        var chart = widget.chart;
-        var el = chart.anchor();
-        var resets = $(el).closest(".chart-wrapper").find(".reset");
-        var filters = $(el).closest(".chart-wrapper").find(".filter");
+    var updateWidgetTitle = function(chart, lastValue, text) {
+        var $el = $(chart);
+        var $resets = $el.closest(".chart-wrapper").find(".reset");
+        var $filters = $el.closest(".chart-wrapper").find(".filter");
+
+        if(!text) {
+            $resets.hide();
+            return;
+        }
 
         if(lastValue) {
-            resets.each(function() {
-                $(this).show();
-            });
-            filters.show();
-            filters.text(text);
-        } else {
-            resets.each(function() {
-                $(this).hide();
-            });
+            $resets.show();
+            $filters.show().text(text);
         }
+    };
+
+    var filterToggle = function(widget, field, lastValue, allValues, text, type, condition) {
+        var chart = widget.chart;
+
+        updateWidgetTitle(chart.anchor(), lastValue, text);
 
         NocFilter.updateFilter(field + dashboard.fieldNameSeparator + chart.anchorName(), type, allValues, condition);
 
@@ -435,7 +403,7 @@ var Dashboard = function(element) {
     };
 
     var objToCell = function(obj) {
-        var cellTpl = { gulp_inject: './templates/cell-tpl.html' };
+        var cellTpl = {gulp_inject: './templates/cell-tpl.html'};
 
         cellTpl.match(/{(\w+)}/g).map(function(element) {
             if('{class}' === element) {
@@ -466,16 +434,46 @@ var Dashboard = function(element) {
     };
 
     var saveBoard = function() {
-        var request = {
-            id: 0,
-            method: 'set_dashboard',
-            params: [dashboardJSON]
-        };
+        var filter = NocFilter.getFilter();
+
+        if(!dashboardJSON.hasOwnProperty('filter')) {
+            dashboardJSON.filter = {};
+        }
+
+        var keys = Object.getOwnPropertyNames(filter)
+            .filter(function(e) {
+                return 'orForAnd' === filter[e].condition; // get only filter panel
+            })
+        ;
+
+        var savedKeys = Object.getOwnPropertyNames(dashboardJSON.filter);
+
+        savedKeys.map(function(name) {
+            delete dashboardJSON.filter[name];
+        });
+
+        keys.map(function(name) {
+            dashboardJSON.filter[name] = NocFilter.getFilter(name);
+        });
+        dashboardJSON.filter.startDate = filter.startDate;
+        savedKeys = Object.getOwnPropertyNames(dashboardJSON.filter);
+        // add suffix for widget filters
+        Object.getOwnPropertyNames(filter)
+        .filter(function(element) {
+            return savedKeys.indexOf(element) === -1;
+        }).map(function(name) {
+            dashboardJSON.filter[name + dashboard.fieldNameSeparator + 'sav'] = filter[name];
+        });
+        dashboardJSON.export = dashboard.exportQuery;
 
         d3.json('/api/bi/')
         .header("Content-Type", "application/json")
         .post(
-            JSON.stringify(request),
+            JSON.stringify({
+                id: 0,
+                method: 'set_dashboard',
+                params: [dashboardJSON]
+            }),
             function(error) {
                 console.log('save board - done, error : ' + error);
             });
@@ -543,7 +541,9 @@ var Dashboard = function(element) {
                 })
                 .on('pretransition', spinnerShow)
                 .on('renderlet', onRenderLet);
-                // $(chart.anchor()).closest(".chart-wrapper").find("img").remove();
+
+                restoreWidgets(chart.anchorName(), true);
+                $(chart.anchor()).closest(".chart-wrapper").find("img").remove();
                 chart.render();
             }
         );
@@ -579,6 +579,7 @@ var Dashboard = function(element) {
                 });
 
                 const height = $(chart.anchor()).closest(".dc-chart").height();
+
                 chart
                 .width($(chart.anchor()).closest(".chart-wrapper").width() - 10)
                 .height(height)
@@ -616,6 +617,8 @@ var Dashboard = function(element) {
                 .elasticX(true)
                 .xAxis()
                 .ticks(4);
+
+                restoreWidgets(chart.anchorName(), false);
                 $(chart.anchor()).closest(".chart-wrapper").find("img").remove();
                 chart.render();
             }
@@ -695,11 +698,43 @@ var Dashboard = function(element) {
                     spinnerShow(chart);
                 })
                 .on('renderlet', onRenderLet);
+
+                restoreWidgets(chart.anchorName(), false);
                 $(chart.anchor()).closest(".chart-wrapper").find("img").remove();
                 chart.render();
             }
         );
     };
+
+    function restoreWidgets(cellName, isDate) {
+        var savedFilterName = Object.getOwnPropertyNames(dashboardJSON.filter).filter(function(element) {
+            return element.split(dashboard.fieldNameSeparator).length === 3;
+        }).filter(function(element) {
+            return element.split(dashboard.fieldNameSeparator)[1] === cellName;
+        });
+
+        if(savedFilterName.length > 0) {
+            if(isDate) {
+                dashboard[cellName].chart.filter([
+                    new Date(Date.parse(dashboardJSON.filter[savedFilterName[0]].values[0])),
+                    new Date(Date.parse(dashboardJSON.filter[savedFilterName[0]].values[1]))
+                ]);
+            } else {
+                var values = dashboard[cellName].chart.data().filter(function(element) {
+                    return dashboardJSON.filter[savedFilterName[0]].values.indexOf(Number(element.key.id)) >= 0;
+                });
+                var text = values.map(function(element) {
+                    return reductionName(element.key);
+                }).join(',');
+
+                values.map(function(element) {
+                    dashboard[cellName].chart.filter(element.key);
+                });
+                updateWidgetTitle('#' + cellName, true, text);
+            }
+            delete dashboardJSON.filter[savedFilterName[0]];
+        }
+    }
 
     this.dataTable = function(widget) {
         var chart = widget.chart;
