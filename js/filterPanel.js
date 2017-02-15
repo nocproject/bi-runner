@@ -148,7 +148,7 @@ var NocFilterPanel = (function() {
     };
 
     var _createPanel = function(id, field) {
-        var filterPanel = { gulp_inject: './templates/filter-panel.html' };
+        var filterPanel = {gulp_inject: './templates/filter-panel.html'};
         var typeText = 'type: <b>' + field.type + '</b>';
         var $panel;
 
@@ -174,38 +174,29 @@ var NocFilterPanel = (function() {
                 var name = element.attr('name');
                 var value = element.val();
                 var type = determinateType(name, dashboard.fieldsType[name]);
-                var pattern, value2;
+                var pattern;
 
                 console.log('condition : ' + condition + ',' + name + '=' + value);
 
                 _validate(this, type, condition);
 
                 if(condition.match(/interval/i)) {
-                    value2 = $(this).parent().next().find('.values').val();
-                }
-
-                if('periodic.interval' === condition) {
-                    value = [value, value2];
-                } else if('DateTime' === type) {
-                    pattern = '%Y-%m-%dT%H:%M:00';
-                    value = [dashboard.parseDate(value, pattern)];
-
-                    if('interval' === condition) {
-                        value.push(dashboard.parseDate(value2, pattern));
-                    }
-                } else if('Date' === type) {
-                    pattern = '%Y-%m-%d';
-                    value = [dashboard.parseDate(value, pattern)];
-
-                    if('interval' === condition) {
-                        value2 = $(this).parent().next().find('.values').val();
-
-                        value.push(dashboard.parseDate(value2, pattern));
-                    }
-                } else if('interval' === condition) {
-                    value = [value, value2];
+                    value.push($(this).parent().next().find('.values').val())
                 } else {
                     value = [value];
+                }
+
+                if(!type.indexOf('Date')) {
+                    if('DateTime' === type) {
+                        pattern = '%Y-%m-%dT%H:%M:00';
+                    } else if('Date' === type) {
+                        pattern = '%Y-%m-%d';
+                    }
+                    if(pattern) {
+                        value = value.map(function(v) {
+                            return dashboard.parseDate(v, pattern);
+                        });
+                    }
                 }
 
                 values.push({
@@ -282,6 +273,7 @@ var NocFilterPanel = (function() {
             _setDateTimeField($row, field);
             conditionOptions.push(
                 {id: 'interval', text: 'interval'},
+                {id: 'not.interval', text: 'not into interval'},
                 {id: 'periodic.interval', text: 'periodic interval'},
                 {id: '$lt', text: '<'},
                 {id: '$le', text: '<='},
@@ -292,6 +284,7 @@ var NocFilterPanel = (function() {
             _setDateField($row, field);
             conditionOptions.push(
                 {id: 'interval', text: 'interval'},
+                {id: 'not.interval', text: 'not into interval'},
                 {id: '$lt', text: '<'},
                 {id: '$le', text: '<='},
                 {id: '$gt', text: '>'},
@@ -302,12 +295,20 @@ var NocFilterPanel = (function() {
             $row.find('input').attr('placeholder', 'xxx.xxx.xxx.xxx').addClass('ipv4');
             conditionOptions.push(
                 {id: 'interval', text: 'interval'},
+                {id: 'not.interval', text: 'not into interval'},
                 {id: '$lt', text: '<'},
                 {id: '$gt', text: '>'}
+            );
+        } else if('String' === field.type) {
+            conditionOptions.push(
+                {id: 'empty', text: 'empty'},
+                {id: 'not.empty', text: 'not empty'},
+                {id: '$like', text: 'like'}
             );
         } else {
             conditionOptions.push(
                 {id: 'interval', text: 'interval'},
+                {id: 'not.interval', text: 'not into interval'},
                 {id: '$lt', text: '<'},
                 {id: '$le', text: '<='},
                 {id: '$gt', text: '>'},
@@ -317,14 +318,14 @@ var NocFilterPanel = (function() {
     };
 
     var _addRow = function(id, field, $panel, prefix) {
-        var rowFilter = { gulp_inject: './templates/filter-row.html' };
+        var rowFilter = {gulp_inject: './templates/filter-row.html'};
         var conditionOptions = [
             {id: '$eq', text: '=='},
             {id: '$ne', text: '<>'}
         ];
 
         if('inner-' === prefix) {
-            rowFilter = { gulp_inject: './templates/filter-row-inner.html'};
+            rowFilter = {gulp_inject: './templates/filter-row-inner.html'};
         }
 
         rowFilter = rowFilter.replace(/{name}/g, field.name);
@@ -367,21 +368,25 @@ var NocFilterPanel = (function() {
 
         $row.find('.condition')
         .on('change', function() {
-            if(!$row.filter('.second-value').hasClass('hidden')) {
-                $row.filter('.second-value').addClass('hidden');
+            var value = $(this).val();
+
+            $row.find('.first-value').addClass('hidden');
+            $row.filter('.second-value').addClass('hidden');
+            if(!value.match(/empty/i)) {
+                $row.find('.first-value').removeClass('hidden');
             }
-            if('interval' === $(this).val()) {
+            if(value.match(/interval/i)) {
                 $row.filter('.second-value').removeClass('hidden');
             }
-            if('periodic.interval' === $(this).val()) {
-                $row.filter('.second-value').removeClass('hidden');
+            if('DateTime' === field.type) {
+                _setDateTimeField($row, field);
+            } else if('Date' === field.type) {
+                _setDateField($row, field);
+            }
+            if('periodic.interval' === value) {
                 $row.find('input').replaceWith('<input type="text" class="form-control values periodic" name="' + field.name + '" placeholder="HH:mm">');
-            } else {
-                if(!$row.filter('.second-value').hasClass('pikaday') && 'DateTime' === field.type) {
-                    _setDateTimeField($row, field);
-                }
             }
-            console.log('condition changed to : ' + $(this).val());
+            console.log('condition changed to : ' + value);
         });
 
         if(field.condition) {
@@ -449,119 +454,121 @@ var NocFilterPanel = (function() {
             return ((((((+d[0]) * 256) + (+d[1])) * 256) + (+d[2])) * 256) + (+d[3]);
         };
 
-        if(!firstValue) {
-            showErrors(['empty value'], []);
-            return;
-        }
-
-        if(!$(secondRow).hasClass('hidden') && !secondValue) {
-            showErrors([], ['empty value']);
-            return;
-        }
-
-        if('periodic.interval' === condition) {
-            var message1 = [], message2 = [];
-            var hourStart, hourEnd, minuteStart, minuteEnd;
-
-            hourStart = Number(firstValue.split(':')[0]);
-            if(isNaN(hourStart)) {
-                message1.push('hour is not number');
-            }
-            hourEnd = Number(secondValue.split(':')[0]);
-            if(isNaN(hourEnd)) {
-                message2.push('hour is not number');
-            }
-            minuteStart = Number(firstValue.split(':')[1]);
-            if(isNaN(minuteStart)) {
-                message1.push('minute is not number');
-            }
-            minuteEnd = Number(secondValue.split(':')[1]);
-            if(isNaN(minuteEnd)) {
-                message2.push('minute is not number');
-            }
-
-            showErrors(message1, message2);
-            if(message1.length !== 0 || message2.length !== 0) {
+        if(!$(firstRow).hasClass('hidden')) {
+            if(!firstValue) {
+                showErrors(['empty value'], []);
                 return;
             }
 
-            if(!(hourStart >= 0 && hourStart < 24)) {
-                message1.push('hour is not in range 0-23');
-            }
-            if(!(hourEnd >= 0 && hourEnd < 24)) {
-                message2.push('hour is not in range 0-23');
-            }
-
-            if(!(minuteStart >= 0 && minuteStart < 60)) {
-                message1.push('minute is not in range 0-59');
-            }
-            if(!(minuteEnd >= 0 && minuteEnd < 60)) {
-                message2.push('hour is not in range 0-59');
-            }
-
-            showErrors(message1, message2);
-            if(message1.length !== 0 || message2.length !== 0) {
+            if(!$(secondRow).hasClass('hidden') && !secondValue) {
+                showErrors([], ['empty value']);
                 return;
             }
 
-            if(hourStart * 3600 + minuteStart * 60 >= hourEnd * 3600 + minuteEnd * 60) {
-                showErrors([], ['bad interval']);
-                return;
-            }
-        }
+            if('periodic.interval' === condition) {
+                var message1 = [], message2 = [];
+                var hourStart, hourEnd, minuteStart, minuteEnd;
 
-        if(type.match(/int|float/i)) {
-            var val1 = Number(firstValue);
+                hourStart = Number(firstValue.split(':')[0]);
+                if(isNaN(hourStart)) {
+                    message1.push('hour is not number');
+                }
+                hourEnd = Number(secondValue.split(':')[0]);
+                if(isNaN(hourEnd)) {
+                    message2.push('hour is not number');
+                }
+                minuteStart = Number(firstValue.split(':')[1]);
+                if(isNaN(minuteStart)) {
+                    message1.push('minute is not number');
+                }
+                minuteEnd = Number(secondValue.split(':')[1]);
+                if(isNaN(minuteEnd)) {
+                    message2.push('minute is not number');
+                }
 
-            if(isNaN(val1)) {
-                showErrors(['value is not number'], []);
-                return;
-            }
-
-            var val2 = Number(secondValue);
-            if(!$(secondRow).hasClass('hidden')) {
-                if(!val2 || isNaN(val2)) {
-                    showErrors([], ['value is not number']);
+                showErrors(message1, message2);
+                if(message1.length !== 0 || message2.length !== 0) {
                     return;
                 }
-            }
 
-            if('interval' === condition && val1 >= val2) {
-                showErrors([], ['bad interval']);
-                return;
-            }
-        }
+                if(!(hourStart >= 0 && hourStart < 24)) {
+                    message1.push('hour is not in range 0-23');
+                }
+                if(!(hourEnd >= 0 && hourEnd < 24)) {
+                    message2.push('hour is not in range 0-23');
+                }
 
-        if(type.match(/date/i) && 'interval' === condition) {
-            if(Date.parse(firstValue) >= Date.parse(secondValue)) {
-                showErrors([], ['bad interval']);
-                return;
-            }
-        }
+                if(!(minuteStart >= 0 && minuteStart < 60)) {
+                    message1.push('minute is not in range 0-59');
+                }
+                if(!(minuteEnd >= 0 && minuteEnd < 60)) {
+                    message2.push('hour is not in range 0-59');
+                }
 
-        if('IPv4' === type) {
-            var tokenLen = function(value) {
-                return value.split('.').filter(function(e) {
-                    return Number(e) < 255;
-                }).length;
-            };
-
-            if(tokenLen(firstValue) !== 4) {
-                showErrors(['is not ip address'], []);
-                return;
-            }
-
-            if(!$(secondRow).hasClass('hidden')) {
-                if(tokenLen(secondValue) !== 4) {
-                    showErrors([], ['is not ip address']);
+                showErrors(message1, message2);
+                if(message1.length !== 0 || message2.length !== 0) {
                     return;
                 }
-            }
 
-            if('interval' === condition) {
-                if(ipStringToNum(firstValue) >= ipStringToNum(secondValue)) {
+                if(hourStart * 3600 + minuteStart * 60 >= hourEnd * 3600 + minuteEnd * 60) {
                     showErrors([], ['bad interval']);
                     return;
+                }
+            }
+
+            if(type.match(/int|float/i)) {
+                var val1 = Number(firstValue);
+
+                if(isNaN(val1)) {
+                    showErrors(['value is not number'], []);
+                    return;
+                }
+
+                var val2 = Number(secondValue);
+                if(!$(secondRow).hasClass('hidden')) {
+                    if(!val2 || isNaN(val2)) {
+                        showErrors([], ['value is not number']);
+                        return;
+                    }
+                }
+
+                if(condition.match(/interval/i) && val1 >= val2) {
+                    showErrors([], ['bad interval']);
+                    return;
+                }
+            }
+
+            if(type.match(/date/i) && condition.match(/interval/i)) {
+                if(Date.parse(firstValue) >= Date.parse(secondValue)) {
+                    showErrors([], ['bad interval']);
+                    return;
+                }
+            }
+
+            if('IPv4' === type) {
+                var tokenLen = function(value) {
+                    return value.split('.').filter(function(e) {
+                        return Number(e) < 255;
+                    }).length;
+                };
+
+                if(tokenLen(firstValue) !== 4) {
+                    showErrors(['is not ip address'], []);
+                    return;
+                }
+
+                if(!$(secondRow).hasClass('hidden')) {
+                    if(tokenLen(secondValue) !== 4) {
+                        showErrors([], ['is not ip address']);
+                        return;
+                    }
+                }
+
+                if(condition.match(/interval/i)) {
+                    if(ipStringToNum(firstValue) >= ipStringToNum(secondValue)) {
+                        showErrors([], ['bad interval']);
+                        return;
+                    }
                 }
             }
         }
@@ -572,6 +579,7 @@ var NocFilterPanel = (function() {
         $row.find('input')
         .addClass('pikaday')
         .attr('name', field.name)
+        .attr('placeholder', 'YYYY-MM-DDTHH:mm:00')
         .attr('readonly', 'true');
 
         $row.find('input').pikaday({
@@ -587,6 +595,7 @@ var NocFilterPanel = (function() {
         $row.find('input')
         .addClass('pikaday')
         .attr('name', field.name)
+        .attr('placeholder', 'YYYY-MM-DD')
         .attr('readonly', 'true');
 
         $row.find('input').pikaday({

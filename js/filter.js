@@ -22,10 +22,16 @@ var NocFilter = (function() {
                 return toSeconds(value)
             });
             return interval('toInt32(toTime(' + name + '))', values, 'periodic');
+        } else if('not.interval' === condition) {
+            return not(interval(name, values, type));
         } else if('in' === condition) {
             return inCondition(name, values, type);
         } else if('in.or' === condition) {
             return inToOr(name, values, type);
+        } else if('empty' === condition) {
+            return empty(name);
+        } else if('not.empty' === condition) {
+            return notEmpty(name);
         } else {
             var expression = {};
 
@@ -58,6 +64,29 @@ var NocFilter = (function() {
 
             return eqValue(name, values);
         }
+    }
+
+    function not(value) {
+        return {
+            $not: value
+        };
+    }
+
+    function empty(value) {
+        return {
+            "$empty": {
+                "$field": value
+            }
+        };
+
+    }
+
+    function notEmpty(value) {
+        return {
+            "$notEmpty": {
+                "$field": value
+            }
+        };
     }
 
     function orValuesArray(values) {
