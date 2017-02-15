@@ -101,9 +101,13 @@ var NocFilterPanel = (function() {
             query.params[0].filter = {
                 $like: [
                     {
-                        $field: "value"
+                        $lower: {
+                            $field: "value"
+                        }
                     },
-                    '%' + filterPattern + '%'
+                    {
+                        $lower: '%' + filterPattern + '%'
+                    }
                 ]
             }
         }
