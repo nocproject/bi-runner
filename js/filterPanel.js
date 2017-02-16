@@ -161,6 +161,7 @@ var NocFilterPanel = (function() {
         }
 
         filterPanel = filterPanel.replace(/{name}/g, field.name);
+        filterPanel = filterPanel.replace(/{description}/g, field.description);
         filterPanel = filterPanel.replace(/{type}/g, typeText);
 
         $panel = $(filterPanel);
@@ -619,26 +620,26 @@ var NocFilterPanel = (function() {
             });
 
             keys.map(function(name) {
-                var vals = filter[name].values;
+                var savedFilter = filter[name].values;
                 var $panel = _createPanel(name,
                     {
-                        name: vals[0].name,
-                        type: vals[0].type,
-                        dict: vals[0].type.replace('dict-', ''),
-                        condition: vals[0].condition,
-                        values: vals[0].values,
-                        description: vals[0].name
+                        name: savedFilter[0].name,
+                        type: savedFilter[0].type,
+                        dict: savedFilter[0].type.replace('dict-', ''),
+                        condition: savedFilter[0].condition,
+                        values: savedFilter[0].values,
+                        description: dashboard.fieldsType[savedFilter[0].name].description ? dashboard.fieldsType[savedFilter[0].name].description : savedFilter[0].name
                     });
-                for(var i = 1; i < vals.length; i++) {
-                    var dict = (vals[i].type) ? vals[i].type.replace('dict-', '') : null;
+                for(var i = 1; i < savedFilter.length; i++) {
+                    var dict = (savedFilter[i].type) ? savedFilter[i].type.replace('dict-', '') : null;
                     _addRow(name,
                         {
-                            name: vals[i].name,
-                            type: vals[i].type,
+                            name: savedFilter[i].name,
+                            type: savedFilter[i].type,
                             dict: dict,
-                            condition: vals[i].condition,
-                            values: vals[i].values,
-                            description: vals[i].name
+                            condition: savedFilter[i].condition,
+                            values: savedFilter[i].values,
+                            description: savedFilter[i].name
                         }, $panel, 'inner-');
                 }
             });

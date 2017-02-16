@@ -3,7 +3,9 @@ var NocAggregatePanel = (function() {
     var formElementOdd = { gulp_inject: './templates/aggregate-element-odd.html' };
 
     var _init = function() {
-        var keys = Object.getOwnPropertyNames(dashboard.fieldsType);
+        var keys = Object.getOwnPropertyNames(dashboard.fieldsType).map(function(element) {
+            return dashboard.fieldsType[element].description ? dashboard.fieldsType[element].description : element;
+        });
         var qtyGroup = parseInt((keys.length + 1) / 2);
 
         for(var i = 0; i < qtyGroup; i++) {

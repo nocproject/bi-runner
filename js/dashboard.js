@@ -263,7 +263,7 @@ var Dashboard = function(element) {
                                 dashboard.fieldsType[field.name] = {
                                     type: field.type,
                                     dict: field.dict,
-                                    desc: field.description
+                                    description: field.description
                                 };
                             }
                         });
