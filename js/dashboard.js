@@ -256,7 +256,10 @@ var Dashboard = function(element) {
 
                         data.result.fields
                         .sort(function(a, b) {
-                            return a.name.localeCompare(b.name);
+                            var desc1 = a.description ? a.description : 'z';
+                            var desc2 = b.description ? b.description : 'z';
+
+                            return desc1.localeCompare(desc2);
                         })
                         .map(function(field) {
                             if(dashboardJSON.show_fields.indexOf(field.name) !== -1) {
