@@ -22,10 +22,21 @@ var NocFilter = (function() {
                 return toSeconds(value)
             });
             return interval('toInt32(toTime(' + name + '))', values, 'periodic');
+        } else if('not.periodic.interval' === condition) {
+            values = values.map(function(value) {
+                return toSeconds(value)
+            });
+            return not(interval('toInt32(toTime(' + name + '))', values, 'periodic'));
+        } else if('not.interval' === condition) {
+            return not(interval(name, values, type));
         } else if('in' === condition) {
             return inCondition(name, values, type);
         } else if('in.or' === condition) {
             return inToOr(name, values, type);
+        } else if('empty' === condition) {
+            return empty(name);
+        } else if('not.empty' === condition) {
+            return notEmpty(name);
         } else {
             var expression = {};
 
@@ -58,6 +69,29 @@ var NocFilter = (function() {
 
             return eqValue(name, values);
         }
+    }
+
+    function not(value) {
+        return {
+            $not: value
+        };
+    }
+
+    function empty(value) {
+        return {
+            "$empty": {
+                "$field": value
+            }
+        };
+
+    }
+
+    function notEmpty(value) {
+        return {
+            "$notEmpty": {
+                "$field": value
+            }
+        };
     }
 
     function orValuesArray(values) {
@@ -175,23 +209,12 @@ var NocFilter = (function() {
 
     function restoreFilter(savedFilter) {
         var convert = function(name, field) {
-            var values = [];
-            var val1 = field.values[0];
-            var val2 = field.values[1];
-
-            if('DateTime' === field.type) {
-                val1 = new Date(Date.parse(val1));
-                val2 = new Date(Date.parse(val2));
-            } else if('Date' === field.type) {
-                val1 = new Date(Date.parse(val1));
-                val2 = new Date(Date.parse(val2));
-            }
-
-            values.push(val1);
-
-            if(field.condition.match(/interval/i)) {
-                values.push(val2);
-            }
+            var values = field.values.map(function(val) {
+                if(!field.type.indexOf('Date') && !field.condition.match(/periodic/i)) {
+                    return new Date(Date.parse(val));
+                }
+                return val;
+            });
 
             if('startDate' === name) {
                 dashboard.setSelectorInterval(values[0], values[1]);
@@ -203,7 +226,7 @@ var NocFilter = (function() {
             }
 
             return {
-                name: field.name,
+                name: (field.name) ? field.name : name,
                 values: values,
                 type: field.type,
                 condition: field.condition
@@ -212,15 +235,17 @@ var NocFilter = (function() {
 
         if(savedFilter) {
             Object.getOwnPropertyNames(savedFilter).map(function(name) {
-                if('orForAnd' === savedFilter[name].condition) {
-                    filter[name] = {
-                        values: savedFilter[name].values.map(function(val) {
-                            return convert(name, val);
-                        }),
-                        condition: 'orForAnd'
+                if(name.split(fieldNameSeparator).length < 3) {
+                    if('orForAnd' === savedFilter[name].condition) {
+                        filter[name] = {
+                            values: savedFilter[name].values.map(function(val) {
+                                return convert(name, val);
+                            }),
+                            condition: 'orForAnd'
+                        }
+                    } else {
+                        filter[name] = convert(name, savedFilter[name]);
                     }
-                } else {
-                    filter[name] = convert(name, savedFilter[name]);
                 }
             });
 
@@ -299,6 +324,13 @@ var NocFilter = (function() {
                 return filter[name];
             }
             return filter;
+        },
+        getByCellName: function(name) {
+            var key = Object.getOwnPropertyNames(filter).filter(function(element) {
+                var tags = element.split(fieldNameSeparator);
+                return name === tags[1] && tags.length > 2;
+            })[0];
+            return filter[key];
         }
     };
 })();
