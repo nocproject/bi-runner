@@ -653,20 +653,22 @@ var Dashboard = function(element) {
 
                 var width = $(chart.anchor()).closest(".chart-wrapper").width();
                 var height = $(chart.anchor()).closest(".dc-chart").height();
-                var legendWidth = 330;
+                var legendWidth = width - height;
+                var offset = 30;
 
                 chart
                 .width(width)
                 .height(height)
                 .controlsUseVisibility(true)
-                .innerRadius(30)
+                .innerRadius(offset)
                 .dimension(dimension)
                 .group(values)
                 .label(function(d) {
                     return reductionName(d.key);
                 })
                 .legend(dc.legend()
-                    .x(width - legendWidth)
+                    // .x(width / 2 + offset / 2) // legend right
+                    .x(offset) // legend left
                     .y(10)
                     .itemHeight(13)
                     .gap(5)
@@ -677,7 +679,8 @@ var Dashboard = function(element) {
                         return d.name.text;
                     })
                 )
-                .cx(120)
+                // .cx((width - height - offset) / 2) // pie left
+                .cx(width - height / 2 - offset) // pie right
                 // .title(function(d) {
                 //     return d.key.split(dashboard.separator)[1] + " :\n" + d.value + " reboot(s)";
                 // })
