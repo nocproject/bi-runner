@@ -25,6 +25,9 @@ var NocFilterPanel = (function() {
     var determinateType = function(name, field) {
 
         if(field.dict) {
+            // if('administrative_domain' === name) {
+            //     return 'tree-' + field.dict;
+            // }
             return 'dict-' + field.dict;
         }
 
@@ -185,7 +188,9 @@ var NocFilterPanel = (function() {
 
                 _validate(this, type, condition);
 
-                if(condition.match(/interval/i)) {
+                if('in' === condition || 'not.in' === condition) {
+                    value = value.split(',');
+                } else if(condition.match(/interval/i)) {
                     value = [value, $(this).parent().next().find('.values').val()];
                 } else {
                     value = [value];
@@ -239,7 +244,7 @@ var NocFilterPanel = (function() {
 
     var _replaceInput = function(field, $row, conditionOptions) {
         if(!field.type.indexOf('dict-')) {
-            $row.find('input').first() // add 'multiple' attr for multiple select
+            $row.find('input').first()                      // add 'multiple' attr for multiple select
             .replaceWith('<select name="' + field.name + '" class="form-control values"></select>');
 
             $row.find('.first-value>div>select')
@@ -274,6 +279,20 @@ var NocFilterPanel = (function() {
                     cache: true
                 }
             });
+        } else if(!field.type.indexOf('tree-')) {
+            $row.find('input')
+            .focusin(function() {
+                console.log('focus in');
+                $("#myModal").modal('show');
+            });
+            // .attr('readonly', 'true');
+            while(conditionOptions.length > 0) {
+                conditionOptions.pop();
+            }
+            conditionOptions.push(
+                {id: 'in', text: '=='},
+                {id: 'not.in', text: '<>'}
+            );
         } else if('DateTime' === field.type) {
             _setDateTimeField($row, field);
             conditionOptions.push(
@@ -411,11 +430,17 @@ var NocFilterPanel = (function() {
                     dataType: 'json',
                     data: JSON.stringify(_textByIdQuery(field.dict, val1))
                 }).then(function(data) {
-                    $row.find('.first-value').find('.values').append(new Option(data.result.result[0], val1, true, true));
-                    $row.find('.first-value').find('.values').trigger('change');
+                    if(data.result.result[0]) {
+                        $row.find('.first-value').find('.values').append(new Option(data.result.result[0], val1, true, true));
+                        $row.find('.first-value').find('.values').trigger('change');
+                    } else {
+                        $row.remove();
+                    }
                 });
+            }
+            if(!field.type.indexOf('tree-')) {
+                $row.find('.first-value').find('.values').val(field.values.join(','));
             } else {
-
                 if('DateTime' === field.type && !field.condition.match(/periodic/i)) {
                     val1 = dashboard.dateToString(new Date(Date.parse(val1)), "%Y-%m-%dT%H:%M:%S");
                     val2 = dashboard.dateToString(new Date(Date.parse(val2)), "%Y-%m-%dT%H:%M:%S");

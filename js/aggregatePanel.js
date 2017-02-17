@@ -3,16 +3,20 @@ var NocAggregatePanel = (function() {
     var formElementOdd = { gulp_inject: './templates/aggregate-element-odd.html' };
 
     var _init = function() {
-        var keys = Object.getOwnPropertyNames(dashboard.fieldsType).map(function(element) {
-            return dashboard.fieldsType[element].description ? dashboard.fieldsType[element].description : element;
-        });
+        var keys = Object.getOwnPropertyNames(dashboard.fieldsType);
         var qtyGroup = parseInt((keys.length + 1) / 2);
 
         for(var i = 0; i < qtyGroup; i++) {
-            var $element = $(formElementOdd.replace(/{name}/g, keys[i]));
+            var $element = $(formElementOdd
+                .replace(/{name}/g, keys[i])
+                .replace(/{description}/g, dashboard.fieldsType[keys[i]].description ? dashboard.fieldsType[keys[i]].description : keys[i])
+            );
 
             if((qtyGroup + i) < keys.length) {
-                $element.append('<label class="col-md-3 control-label">{name}:</label>\n<div class="col-md-2"><input type="checkbox" value="{name}" class="form-control aggregate-field"/></div>'.replace(/{name}/g, keys[qtyGroup + i]));
+                $element.append('<label class="col-md-3 control-label">{description}:</label>\n<div class="col-md-2"><input type="checkbox" value="{name}" class="form-control aggregate-field"/></div>'
+                .replace(/{name}/g, keys[qtyGroup + i])
+                .replace(/{description}/g, dashboard.fieldsType[keys[qtyGroup + i]].description ? dashboard.fieldsType[keys[qtyGroup + i]].description : keys[qtyGroup + i])
+                );
             }
             $('.aggregate-by-field').append($element);
         }
