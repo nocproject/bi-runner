@@ -266,7 +266,7 @@ var Dashboard = function(element) {
                                 dashboard.fieldsType[field.name] = {
                                     type: field.type,
                                     dict: field.dict,
-                                    description: field.description
+                                    description: (field.description) ? field.description : field.name
                                 };
                             }
                         });

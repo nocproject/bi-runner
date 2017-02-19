@@ -9,13 +9,13 @@ var NocAggregatePanel = (function() {
         for(var i = 0; i < qtyGroup; i++) {
             var $element = $(formElementOdd
                 .replace(/{name}/g, keys[i])
-                .replace(/{description}/g, dashboard.fieldsType[keys[i]].description ? dashboard.fieldsType[keys[i]].description : keys[i])
+                .replace(/{description}/g, dashboard.fieldsType[keys[i]].description)
             );
 
             if((qtyGroup + i) < keys.length) {
                 $element.append('<label class="col-md-3 control-label">{description}:</label>\n<div class="col-md-2"><input type="checkbox" value="{name}" class="form-control aggregate-field"/></div>'
                 .replace(/{name}/g, keys[qtyGroup + i])
-                .replace(/{description}/g, dashboard.fieldsType[keys[qtyGroup + i]].description ? dashboard.fieldsType[keys[qtyGroup + i]].description : keys[qtyGroup + i])
+                .replace(/{description}/g, dashboard.fieldsType[keys[qtyGroup + i]].description)
                 );
             }
             $('.aggregate-by-field').append($element);

@@ -653,7 +653,7 @@ var NocFilterPanel = (function() {
                         dict: savedFilter[0].type.replace('dict-', ''),
                         condition: savedFilter[0].condition,
                         values: savedFilter[0].values,
-                        description: dashboard.fieldsType[savedFilter[0].name].description ? dashboard.fieldsType[savedFilter[0].name].description : savedFilter[0].name
+                        description: dashboard.fieldsType[savedFilter[0].name].description
                     });
                 for(var i = 1; i < savedFilter.length; i++) {
                     var dict = (savedFilter[i].type) ? savedFilter[i].type.replace('dict-', '') : null;
