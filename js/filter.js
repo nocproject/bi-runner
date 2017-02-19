@@ -31,6 +31,8 @@ var NocFilter = (function() {
             return not(interval(name, values, type));
         } else if('in' === condition) {
             return inCondition(name, values, type);
+        } else if('not.in' === condition) {
+            return not(inCondition(name, values, type));
         } else if('in.or' === condition) {
             return inToOr(name, values, type);
         } else if('empty' === condition) {
@@ -54,7 +56,7 @@ var NocFilter = (function() {
                 };
             } else if('String' === type) {
                 values = values[0];
-            } else if(type && (!type.indexOf('dict-') || type.match(/int|float/i))) {
+            } else if(type && (!type.indexOf('tree-') || !type.indexOf('dict-') || type.match(/int|float/i))) {
                 values = {
                     $field: values
                 };
@@ -112,16 +114,21 @@ var NocFilter = (function() {
         };
     }
 
-    function inCondition(name, value) {
-        if(value) {
-            return [{
+    function inCondition(name, values, type) {
+        if(values) {
+            return {
                 $in: [
                     {
                         $field: name
                     },
-                    value
+                    flat(values.map(function(value) {
+                        if(!type.indexOf('tree-') || !type.indexOf('dict-') || type.match(/int|float/i)) {
+                            return Number(value);
+                        }
+                        return value;
+                    }))
                 ]
-            }]
+            }
         }
     }
 
@@ -272,7 +279,6 @@ var NocFilter = (function() {
                 } else {
                     filter[name] = {
                         values: flat(values.map(function(value) {
-                            if('UInt64' === type) return Number(value.id);
                             return value.id;
                         })),
                         type: type,

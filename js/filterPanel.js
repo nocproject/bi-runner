@@ -25,6 +25,9 @@ var NocFilterPanel = (function() {
     var determinateType = function(name, field) {
 
         if(field.dict) {
+            // if('administrative_domain' === name) {
+            //     return 'tree-' + field.dict;
+            // }
             return 'dict-' + field.dict;
         }
 
@@ -161,6 +164,7 @@ var NocFilterPanel = (function() {
         }
 
         filterPanel = filterPanel.replace(/{name}/g, field.name);
+        filterPanel = filterPanel.replace(/{description}/g, field.description);
         filterPanel = filterPanel.replace(/{type}/g, typeText);
 
         $panel = $(filterPanel);
@@ -184,7 +188,9 @@ var NocFilterPanel = (function() {
 
                 _validate(this, type, condition);
 
-                if(condition.match(/interval/i)) {
+                if('in' === condition || 'not.in' === condition) {
+                    value = value.split(',');
+                } else if(condition.match(/interval/i)) {
                     value = [value, $(this).parent().next().find('.values').val()];
                 } else {
                     value = [value];
@@ -238,7 +244,7 @@ var NocFilterPanel = (function() {
 
     var _replaceInput = function(field, $row, conditionOptions) {
         if(!field.type.indexOf('dict-')) {
-            $row.find('input').first() // add 'multiple' attr for multiple select
+            $row.find('input').first()                      // add 'multiple' attr for multiple select
             .replaceWith('<select name="' + field.name + '" class="form-control values"></select>');
 
             $row.find('.first-value>div>select')
@@ -273,6 +279,20 @@ var NocFilterPanel = (function() {
                     cache: true
                 }
             });
+        } else if(!field.type.indexOf('tree-')) {
+            $row.find('input')
+            .focusin(function() {
+                console.log('focus in');
+                $("#myModal").modal('show');
+            });
+            // .attr('readonly', 'true');
+            while(conditionOptions.length > 0) {
+                conditionOptions.pop();
+            }
+            conditionOptions.push(
+                {id: 'in', text: '=='},
+                {id: 'not.in', text: '<>'}
+            );
         } else if('DateTime' === field.type) {
             _setDateTimeField($row, field);
             conditionOptions.push(
@@ -410,11 +430,17 @@ var NocFilterPanel = (function() {
                     dataType: 'json',
                     data: JSON.stringify(_textByIdQuery(field.dict, val1))
                 }).then(function(data) {
-                    $row.find('.first-value').find('.values').append(new Option(data.result.result[0], val1, true, true));
-                    $row.find('.first-value').find('.values').trigger('change');
+                    if(data.result.result[0]) {
+                        $row.find('.first-value').find('.values').append(new Option(data.result.result[0], val1, true, true));
+                        $row.find('.first-value').find('.values').trigger('change');
+                    } else {
+                        $row.remove();
+                    }
                 });
+            }
+            if(!field.type.indexOf('tree-')) {
+                $row.find('.first-value').find('.values').val(field.values.join(','));
             } else {
-
                 if('DateTime' === field.type && !field.condition.match(/periodic/i)) {
                     val1 = dashboard.dateToString(new Date(Date.parse(val1)), "%Y-%m-%dT%H:%M:%S");
                     val2 = dashboard.dateToString(new Date(Date.parse(val2)), "%Y-%m-%dT%H:%M:%S");
@@ -619,26 +645,26 @@ var NocFilterPanel = (function() {
             });
 
             keys.map(function(name) {
-                var vals = filter[name].values;
+                var savedFilter = filter[name].values;
                 var $panel = _createPanel(name,
                     {
-                        name: vals[0].name,
-                        type: vals[0].type,
-                        dict: vals[0].type.replace('dict-', ''),
-                        condition: vals[0].condition,
-                        values: vals[0].values,
-                        description: vals[0].name
+                        name: savedFilter[0].name,
+                        type: savedFilter[0].type,
+                        dict: savedFilter[0].type.replace('dict-', ''),
+                        condition: savedFilter[0].condition,
+                        values: savedFilter[0].values,
+                        description: dashboard.fieldsType[savedFilter[0].name].description
                     });
-                for(var i = 1; i < vals.length; i++) {
-                    var dict = (vals[i].type) ? vals[i].type.replace('dict-', '') : null;
+                for(var i = 1; i < savedFilter.length; i++) {
+                    var dict = (savedFilter[i].type) ? savedFilter[i].type.replace('dict-', '') : null;
                     _addRow(name,
                         {
-                            name: vals[i].name,
-                            type: vals[i].type,
+                            name: savedFilter[i].name,
+                            type: savedFilter[i].type,
                             dict: dict,
-                            condition: vals[i].condition,
-                            values: vals[i].values,
-                            description: vals[i].name
+                            condition: savedFilter[i].condition,
+                            values: savedFilter[i].values,
+                            description: savedFilter[i].name
                         }, $panel, 'inner-');
                 }
             });

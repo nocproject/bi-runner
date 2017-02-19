@@ -256,14 +256,17 @@ var Dashboard = function(element) {
 
                         data.result.fields
                         .sort(function(a, b) {
-                            return a.name.localeCompare(b.name);
+                            var desc1 = a.description ? a.description : 'z';
+                            var desc2 = b.description ? b.description : 'z';
+
+                            return desc1.localeCompare(desc2);
                         })
                         .map(function(field) {
                             if(dashboardJSON.show_fields.indexOf(field.name) !== -1) {
                                 dashboard.fieldsType[field.name] = {
                                     type: field.type,
                                     dict: field.dict,
-                                    desc: field.description
+                                    description: (field.description) ? field.description : field.name
                                 };
                             }
                         });
@@ -709,36 +712,6 @@ var Dashboard = function(element) {
         );
     };
 
-    function restoreWidgets(cellName, isDate) {
-        var savedFilterName = Object.getOwnPropertyNames(dashboardJSON.filter).filter(function(element) {
-            return element.split(dashboard.fieldNameSeparator).length === 3;
-        }).filter(function(element) {
-            return element.split(dashboard.fieldNameSeparator)[1] === cellName;
-        });
-
-        if(savedFilterName.length > 0) {
-            if(isDate) {
-                dashboard[cellName].chart.filter([
-                    new Date(Date.parse(dashboardJSON.filter[savedFilterName[0]].values[0])),
-                    new Date(Date.parse(dashboardJSON.filter[savedFilterName[0]].values[1]))
-                ]);
-            } else {
-                var values = dashboard[cellName].chart.data().filter(function(element) {
-                    return dashboardJSON.filter[savedFilterName[0]].values.indexOf(Number(element.key.id)) >= 0;
-                });
-                var text = values.map(function(element) {
-                    return reductionName(element.key);
-                }).join(',');
-
-                values.map(function(element) {
-                    dashboard[cellName].chart.filter(element.key);
-                });
-                updateWidgetTitle('#' + cellName, true, text);
-            }
-            delete dashboardJSON.filter[savedFilterName[0]];
-        }
-    }
-
     this.dataTable = function(widget) {
         var chart = widget.chart;
 
@@ -912,6 +885,36 @@ var Dashboard = function(element) {
         dashboard.widgets.map(function(widget) {
             widget.draw(widget);
         });
+    };
+
+    var restoreWidgets = function (cellName, isDate) {
+        var savedFilterName = Object.getOwnPropertyNames(dashboardJSON.filter).filter(function(element) {
+            return element.split(dashboard.fieldNameSeparator).length === 3;
+        }).filter(function(element) {
+            return element.split(dashboard.fieldNameSeparator)[1] === cellName;
+        });
+
+        if(savedFilterName.length > 0) {
+            if(isDate) {
+                dashboard[cellName].chart.filter([
+                    new Date(Date.parse(dashboardJSON.filter[savedFilterName[0]].values[0])),
+                    new Date(Date.parse(dashboardJSON.filter[savedFilterName[0]].values[1]))
+                ]);
+            } else {
+                var values = dashboard[cellName].chart.data().filter(function(element) {
+                    return dashboardJSON.filter[savedFilterName[0]].values.indexOf(Number(element.key.id)) >= 0;
+                });
+                var text = values.map(function(element) {
+                    return reductionName(element.key);
+                }).join(',');
+
+                values.map(function(element) {
+                    dashboard[cellName].chart.filter(element.key);
+                });
+                updateWidgetTitle('#' + cellName, true, text);
+            }
+            delete dashboardJSON.filter[savedFilterName[0]];
+        }
     };
 
     var drawExcept = function(skippedWidgetName) {
