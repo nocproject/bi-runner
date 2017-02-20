@@ -200,7 +200,7 @@ var NocFilter = (function() {
             flat(keys.map(function(name) {
                     var key = filter[name];
 
-                    if('startDate' === name) name = 'date';
+                    if('startDate' === name) name = 'ts';
                     name = name.split(fieldNameSeparator)[0];
                     if('orForAnd' === key.condition) {
                         return orValues(key.values.map(function(v) {
@@ -227,7 +227,7 @@ var NocFilter = (function() {
                 dashboard.setSelectorInterval(values[0], values[1]);
                 return {
                     values: values,
-                    type: 'Date',
+                    type: 'DateTime',
                     condition: 'interval'
                 }
             }
@@ -296,10 +296,11 @@ var NocFilter = (function() {
         },
         getDateInterval: function() {
             var keys = Object.getOwnPropertyNames(filter);
-            var dates = keys.filter(function(name) {
-                return 'startDate' === name || !name.indexOf('date');
-            }).map(function(name) {
-                return filter[name];
+            var dates = flat(keys.map(function(name) {
+                if('orForAnd' === filter[name].condition) return filter[name].values;
+                if('startDate' === name) return filter[name];
+            })).filter(function(element) {
+                return 'DateTime' === element.type
             });
 
             var minDate = Math.max.apply(Math,
@@ -323,7 +324,7 @@ var NocFilter = (function() {
         },
         setStartDateCondition: function(interval) {
             dashboard.setSelectorInterval(interval[0], interval[1]);
-            this.updateFilter('startDate', 'Date', [{id: interval[0]}, {id: interval[1]}], 'interval');
+            this.updateFilter('startDate', 'DateTime', [{id: interval[0]}, {id: interval[1]}], 'interval');
         },
         getFilter: function(name) {
             if(name) {

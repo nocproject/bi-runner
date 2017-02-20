@@ -642,8 +642,10 @@ var NocFilterPanel = (function() {
         .attr('readonly', 'true');
 
         $row.find('input').pikaday({
-            incrementMinuteBy: 10,
             theme: 'pikaday-theme',
+            minDate: new Date(2014, 1, 1),
+            maxDate: new Date(),
+            incrementMinuteBy: 10,
             use24hour: true,
             format: 'YYYY-MM-DDTHH:mm:00',
             showSeconds: false
@@ -659,6 +661,8 @@ var NocFilterPanel = (function() {
 
         $row.find('input').pikaday({
             theme: 'pikaday-theme',
+            minDate: new Date(2014, 1, 1),
+            maxDate: new Date(),
             format: 'YYYY-MM-DD',
             showTime: false,
             showMinutes: false,

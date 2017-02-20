@@ -40,6 +40,12 @@ var Dashboard = function(element) {
 
         console.log(dashboard.dateToString(start, format), dashboard.dateToString(end, format));
         NocFilter.setStartDateCondition([start, end]);
+        $('#startInterval').eq(0).pikaday('setDate');
+        $('#endInterval').eq(0).pikaday('setDate');
+        $("#selectBtn")
+        .attr('disabled', true)
+        .removeClass('btn-primary')
+        .addClass('btn-default');
         downChevron();
         dashboard.drawAll();
     };
@@ -71,60 +77,70 @@ var Dashboard = function(element) {
         var startDate,
             endDate,
             updateStartDate = function() {
-                dashboard.startPicker.setStartRange(startDate);
-                dashboard.endPicker.setStartRange(startDate);
-                dashboard.endPicker.setMinDate(startDate);
+                $('#startInterval').eq(0).pikaday('setStartRange', startDate);
+                $('#endInterval').eq(0)
+                .pikaday('setStartRange', startDate)
+                .pikaday('setMinDate', startDate);
+                if(startDate && endDate) {
+                    $("#selectBtn")
+                    .attr('disabled', false)
+                    .removeClass('btn-primary')
+                    .addClass('btn-default');
+                }
             },
             updateEndDate = function() {
-                dashboard.startPicker.setEndRange(endDate);
-                dashboard.startPicker.setMaxDate(endDate);
-                dashboard.endPicker.setEndRange(endDate);
-            },
-            selectBtn = $("#selectBtn");
+                $('#endInterval').eq(0).pikaday('setEndRange', endDate);
+                $('#startInterval').eq(0)
+                .pikaday('setEndRange', endDate)
+                .pikaday('setMaxDate', endDate);
+                if(startDate && endDate) {
+                    $("#selectBtn")
+                    .attr('disabled', false)
+                    .removeClass('btn-primary')
+                    .addClass('btn-default');
+                }
+            };
 
-        dashboard.startPicker = new Pikaday({
-            field: document.getElementById('startInterval'),
+        $('#startInterval').pikaday({
             container: document.getElementById('startIntervalContainer'),
             bound: false,
             minDate: new Date(2014, 1, 1),
             maxDate: new Date(),
             theme: 'pikaday-theme',
             firstDay: 1,
-            showTime: false,
-            showMinutes: false,
+            incrementMinuteBy: 10,
+            use24hour: true,
+            format: 'YYYY-MM-DDTHH:mm:00',
             showSeconds: false,
             onSelect: function() {
                 startDate = this.getDate();
                 updateStartDate();
-                if(startDate && endDate) {
-                    selectBtn.attr('disabled', false);
-                }
             }
         });
 
-        dashboard.endPicker = new Pikaday({
-            field: document.getElementById('endInterval'),
+        $('#endInterval').pikaday({
             container: document.getElementById('endIntervalContainer'),
             bound: false,
             theme: 'pikaday-theme',
             minDate: new Date(2014, 1, 1),
             maxDate: new Date(),
             firstDay: 1,
-            showTime: false,
-            showMinutes: false,
+            incrementMinuteBy: 10,
+            use24hour: true,
+            format: 'YYYY-MM-DDTHH:mm:00',
             showSeconds: false,
             onSelect: function() {
                 endDate = this.getDate();
                 updateEndDate();
-                if(startDate && endDate) {
-                    selectBtn.attr('disabled', false);
-                }
             }
         });
 
-        selectBtn.click(function() {
+        $("#selectBtn").click(function() {
             console.log('selected : ' + startDate + ',' + endDate);
             NocFilter.setStartDateCondition([startDate, endDate]);
+            $("#selectBtn")
+            .removeClass('btn-default')
+            .addClass('btn-primary');
             downChevron();
             dashboard.drawAll();
         });
@@ -282,7 +298,7 @@ var Dashboard = function(element) {
 
     // format functions
     this.dateToString = function(date, format) {
-        format = typeof format !== 'undefined' ? format : '%d.%b.%y';
+        format = typeof format !== 'undefined' ? format : '%d.%b.%y %H:%M';
         return d3.time.format(format)(date);
     };
 
@@ -508,9 +524,6 @@ var Dashboard = function(element) {
                 } else {
                     minDate = maxDate = new Date;
                 }
-                // ToDo make query without start filter!
-                // dashboard.startPicker.setMinDate(minDate);
-                // dashboard.endPicker.setMinDate(minDate);
                 var dim = dateDimension
                 .group()
                 .reduceSum(function(d) {
@@ -538,7 +551,7 @@ var Dashboard = function(element) {
                         filter ? filter.map(function(element) {
                             return new BI_Value(element)
                         }) : [],
-                        filter ? dashboard.dateToString(filter[0]) + " - " + dashboard.dateToString(filter[1]) : '',
+                        filter ? dashboard.dateToString(filter[0], '%d.%b.%y') + " - " + dashboard.dateToString(filter[1], '%d.%b.%y') : '',
                         'Date',
                         'interval');
                 })
@@ -887,7 +900,7 @@ var Dashboard = function(element) {
         });
     };
 
-    var restoreWidgets = function (cellName, isDate) {
+    var restoreWidgets = function(cellName, isDate) {
         var savedFilterName = Object.getOwnPropertyNames(dashboardJSON.filter).filter(function(element) {
             return element.split(dashboard.fieldNameSeparator).length === 3;
         }).filter(function(element) {
