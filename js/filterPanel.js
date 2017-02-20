@@ -25,9 +25,9 @@ var NocFilterPanel = (function() {
     var determinateType = function(name, field) {
 
         if(field.dict) {
-            // if('administrative_domain' === name) {
-            //     return 'tree-' + field.dict;
-            // }
+            if('administrative_domain' === name) {
+                return 'tree-' + field.dict;
+            }
             return 'dict-' + field.dict;
         }
 
@@ -143,6 +143,20 @@ var NocFilterPanel = (function() {
         }
     };
 
+    var _getTreeQuery = function(datasource, field_name, dict_name) {
+        return {
+            "params": [
+                {
+                    "datasource": datasource,
+                    "field_name": field_name,
+                    "dic_name": dict_name
+                }
+            ],
+            "id": "0",
+            "method": "get_hierarchy"
+        }
+    };
+
     var _parseFieldValue = function(element) {
         var value = element.val().split(',');
 
@@ -159,7 +173,7 @@ var NocFilterPanel = (function() {
         var typeText = 'type: <b>' + field.type + '</b>';
         var $panel;
 
-        if(!field.type.indexOf('dict-')) {
+        if(!field.type.indexOf('dict-') || !field.type.indexOf('tree-')) {
             typeText = 'dictionary: <b>' + field.dict + '</b>';
         }
 
@@ -280,12 +294,26 @@ var NocFilterPanel = (function() {
                 }
             });
         } else if(!field.type.indexOf('tree-')) {
-            $row.find('input')
-            .focusin(function() {
-                console.log('focus in');
-                $("#myModal").modal('show');
-            });
+            $row.find('input').first()                      // add 'multiple' attr for multiple select
+            .replaceWith('<select name="' + field.name + '" class="form-control values"></select>');
             // .attr('readonly', 'true');
+            $.ajax({
+                url: '/api/bi/',
+                type: 'POST',
+                contentType: 'application/json',
+                dataType: 'json',
+                data: JSON.stringify(_getTreeQuery(dashboard.datasource, field.name, field.dict))
+            }).then(function(data) {
+                if(!data.error) {
+                    // <option value="12" parent="1">12</option>
+                    console.log('************** : ' + data.result.length);
+                    // $row.find('.first-value').find('.values').append(new Option(data.result.result[0], val1, true, true));
+                    // $row.find('.first-value').find('.values').trigger('change');
+                } else {
+                    $row.remove();
+                }
+            });
+
             while(conditionOptions.length > 0) {
                 conditionOptions.pop();
             }
@@ -650,13 +678,13 @@ var NocFilterPanel = (function() {
                     {
                         name: savedFilter[0].name,
                         type: savedFilter[0].type,
-                        dict: savedFilter[0].type.replace('dict-', ''),
+                        dict: savedFilter[0].type.replace(/(dict-)|(tree-)/, ''),
                         condition: savedFilter[0].condition,
                         values: savedFilter[0].values,
                         description: dashboard.fieldsType[savedFilter[0].name].description
                     });
                 for(var i = 1; i < savedFilter.length; i++) {
-                    var dict = (savedFilter[i].type) ? savedFilter[i].type.replace('dict-', '') : null;
+                    var dict = (savedFilter[i].type) ? savedFilter[i].type.replace(/(dict-)|(tree-)/, '') : null;
                     _addRow(name,
                         {
                             name: savedFilter[i].name,
