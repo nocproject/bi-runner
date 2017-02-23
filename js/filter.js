@@ -103,9 +103,11 @@ var NocFilter = (function() {
     }
 
     function orValues(values) {
-        return {
-            $or: values
-        };
+        if(values.length > 0) {
+            return {
+                $or: values
+            };
+        }
     }
 
     function andValues(values) {
@@ -203,12 +205,19 @@ var NocFilter = (function() {
                     if('startDate' === name) name = 'ts';
                     name = name.split(fieldNameSeparator)[0];
                     if('orForAnd' === key.condition) {
-                        return orValues(key.values.map(function(v) {
+                        return orValues(key.values
+                        .filter(function(v) {
+                            return dashboard.durationIntervalName !== v.name;
+                        })
+                        .map(function(v) {
                             return conditionValue(v.name, v.values, v.type, v.condition);
                         }));
                     } else {
                         return conditionValue(name, key.values, key.type, key.condition);
                     }
+                })
+                .filter(function(v) {
+                    return v;
                 })
             )
         );
@@ -242,7 +251,9 @@ var NocFilter = (function() {
 
         if(savedFilter) {
             Object.getOwnPropertyNames(savedFilter).map(function(name) {
-                if(name.split(fieldNameSeparator).length < 3) {
+                if(dashboard.durationIntervalName === savedFilter[name].values[0].name) {
+                    NocExport.updateDurationZebra(savedFilter[name].values);
+                } else if(name.split(fieldNameSeparator).length < 3) {
                     if('orForAnd' === savedFilter[name].condition) {
                         filter[name] = {
                             values: savedFilter[name].values.map(function(val) {
@@ -257,6 +268,7 @@ var NocFilter = (function() {
             });
 
             updateWidgets(makeFilter());
+            dashboard.setPikaBounds();
         }
     }
 

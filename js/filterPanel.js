@@ -229,12 +229,16 @@ var NocFilterPanel = (function() {
                     type: type,
                     condition: condition
                 });
-                _selectedBtn($panel.find('.apply-filter'));
             });
             if($panel.find('.has-error').size() > 0) return;
 
+            _selectedBtn($panel.find('.apply-filter'));
             NocFilter.updateFilter(id, field.type, values, 'orForAnd');
-            dashboard.drawAll();
+            if(dashboard.durationIntervalName === field.name) {
+                NocExport.updateDurationZebra(NocFilter.getFilter(id).values);
+            } else {
+                dashboard.drawAll();
+            }
             console.log('filter applied');
         });
 
@@ -325,16 +329,27 @@ var NocFilterPanel = (function() {
             );
         } else if('DateTime' === field.type) {
             _setDateTimeField($row, field);
-            conditionOptions.push(
-                {id: 'interval', text: 'interval'},
-                {id: 'not.interval', text: 'not into interval'},
-                {id: 'periodic.interval', text: 'periodic interval'},
-                {id: 'not.periodic.interval', text: 'not into periodic'},
-                {id: '$lt', text: '<'},
-                {id: '$le', text: '<='},
-                {id: '$gt', text: '>'},
-                {id: '$ge', text: '>='}
-            );
+            if(dashboard.durationIntervalName === field.name) {
+                while(conditionOptions.length > 0) {
+                    conditionOptions.pop();
+                }
+                conditionOptions.push(
+                    {id: 'interval', text: 'interval'},
+                    {id: 'not.interval', text: 'not into interval'}
+                );
+                $row.filter('.second-value').removeClass('hidden');
+            } else {
+                conditionOptions.push(
+                    {id: 'interval', text: 'interval'},
+                    {id: 'not.interval', text: 'not into interval'},
+                    {id: 'periodic.interval', text: 'periodic interval'},
+                    {id: 'not.periodic.interval', text: 'not into periodic'},
+                    {id: '$lt', text: '<'},
+                    {id: '$le', text: '<='},
+                    {id: '$gt', text: '>'},
+                    {id: '$ge', text: '>='}
+                );
+            }
         } else if('Date' === field.type) {
             _setDateField($row, field);
             conditionOptions.push(
@@ -391,13 +406,25 @@ var NocFilterPanel = (function() {
         $panel.find('.filter-rows').append($row);
 
         if('inner-' !== prefix) {
+            var options = _selectConfig();
+
+            if(dashboard.durationIntervalName === field.name) {
+                options.data = options.data.filter(function(element) {
+                    return !element.id.indexOf(dashboard.durationIntervalName);
+                });
+            } else {
+                options.data = options.data.filter(function(element) {
+                    return element.id.indexOf(dashboard.durationIntervalName);
+                });
+            }
             $row.find('#inner-fields')
-            .select2(_selectConfig())
+            .select2(options)
             .on('change', function() {
                 console.log("inner select changed  to : ", $(this).val());
                 if($(this).val()) {
                     _addRow(id, _parseFieldValue($(this)), $panel, 'inner-');
                     $(this).val(null).trigger('change');
+                    _unSelectedBtn($panel.find('.apply-filter'));
                 }
             })
             .val(null).trigger('change');
@@ -654,13 +681,12 @@ var NocFilterPanel = (function() {
 
         $row.find('input').pikaday({
             theme: 'pikaday-theme',
-            minDate: new Date(2014, 1, 1),
-            maxDate: new Date(),
             incrementMinuteBy: 10,
             use24hour: true,
             format: 'YYYY-MM-DDTHH:mm:00',
             showSeconds: false
         });
+        dashboard.setPikaBounds();
     };
 
     var _setDateField = function($row, field) {
@@ -672,13 +698,12 @@ var NocFilterPanel = (function() {
 
         $row.find('input').pikaday({
             theme: 'pikaday-theme',
-            minDate: new Date(2014, 1, 1),
-            maxDate: new Date(),
             format: 'YYYY-MM-DD',
             showTime: false,
             showMinutes: false,
             showSeconds: false
         });
+        dashboard.setPikaBounds();
     };
 
     var _setFilter = function(filter) {

@@ -3,6 +3,7 @@ var Dashboard = function(element) {
     this.element = element;
     this.fieldsType = {};
     this.fieldNameSeparator = '.';
+    this.durationIntervalName = 'duration_intervals';
 
     // public methods
     this.reset = function(widget) {
@@ -190,12 +191,14 @@ var Dashboard = function(element) {
         dashboard.createAggregateSelector(container);
 
         $.each(sortedByRows, function(index, obj) {
+            var pattern = '.reset .' + obj.name;
+
             if(rowPosition !== obj.row) {
                 rowPosition = obj.row;
                 currentRow = $('<div class="row"></div>').appendTo(container);
             }
             $(objToCell(obj)).appendTo(currentRow);
-            $('.reset .' + obj.name).click(function() {
+            $(pattern).click(function() {
                 dashboard.reset(obj.name);
             });
         });
@@ -243,6 +246,12 @@ var Dashboard = function(element) {
         dashboard.drawAll();
     };
 
+    this.setPikaBounds = function() {
+        $('.values.pikaday')
+        .pikaday('setMinDate', NocFilter.getDateInterval()[0])
+        .pikaday('setMaxDate', NocFilter.getDateInterval()[1]);
+    };
+
     this.run = function(id) { //public
         d3.json('/api/bi/')
         .header("Content-Type", "application/json")
@@ -267,6 +276,10 @@ var Dashboard = function(element) {
                     function(error, data) {
                         if(error)
                             throw new Error(error);
+
+                        if(dashboardJSON.show_fields.indexOf(dashboard.durationIntervalName) !== -1){
+                            data.result.fields.push({dict: null, type: 'DateTime', name: dashboard.durationIntervalName, description: 'Duration Intervals'});
+                        }
 
                         data.result.fields
                         .sort(function(a, b) {
@@ -893,6 +906,7 @@ var Dashboard = function(element) {
     };
 
     this.drawAll = function() {
+        dashboard.setPikaBounds();
         dashboard.widgets.map(function(widget) {
             widget.draw(widget);
         });

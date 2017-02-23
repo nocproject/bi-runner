@@ -105,8 +105,12 @@ var NocExport = (function() {
         return output;
     };
 
+    var _updateDurationZebra = function(field) {
+        console.log(field);
+    };
+
     var _updateDuration = function() {
-        const dateInterval = NocFilter.getDateInterval();
+        var dateInterval = NocFilter.getDateInterval();
         var startDate = "toDateTime('" + d3.time.format("%Y-%m-%dT%H:%M:%S")(dateInterval[0]) + "')";
         var endDate = "toDateTime('" + d3.time.format("%Y-%m-%dT%H:%M:%S")(dateInterval[1]) + "')";
         var duration = function() {
@@ -162,6 +166,7 @@ var NocExport = (function() {
     return {
         init: _init,
         export: _export,
-        updateDuration: _updateDuration
+        updateDuration: _updateDuration,
+        updateDurationZebra: _updateDurationZebra
     }
 })();
