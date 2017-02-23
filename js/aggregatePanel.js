@@ -76,7 +76,7 @@ var NocAggregatePanel = (function() {
                 if('ip' === field) {
                     dashboard.exportQuery.params[0].fields.push({
                         expr: 'IPv4NumToString(ip)',
-                        alias: 'ip_str'
+                        alias: 'ip_text'
                     })
                 }
                 dashboard.exportQuery.params[0].fields.push(column);
@@ -86,7 +86,7 @@ var NocAggregatePanel = (function() {
                     removeField('alias', field + '_text');
                 }
                 if('ip' === field) {
-                    removeField('alias', 'ip_str');
+                    removeField('alias', 'ip_text');
                 }
                 removeField('expr', field);
             }

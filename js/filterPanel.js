@@ -229,6 +229,7 @@ var NocFilterPanel = (function() {
                     type: type,
                     condition: condition
                 });
+                _selectedBtn($panel.find('.apply-filter'));
             });
             if($panel.find('.has-error').size() > 0) return;
 
@@ -241,6 +242,7 @@ var NocFilterPanel = (function() {
         .on('click', function() {
             console.log('clean filter');
             console.log('panel id : filter-panel' + id);
+            _unSelectedBtn($panel.find('.apply-filter'));
             NocFilter.deleteFilter(id);
             dashboard.drawAll();
         });
@@ -439,7 +441,13 @@ var NocFilterPanel = (function() {
             if(value.match(/periodic/i)) {
                 $row.find('input').replaceWith('<input type="text" class="form-control values periodic" name="' + field.name + '" placeholder="HH:mm">');
             }
+            _unSelectedBtn($panel.find('.apply-filter'));
             console.log('condition changed to : ' + value);
+        });
+
+        $row.find('.values')
+        .on('change', function() {
+            _unSelectedBtn($panel.find('.apply-filter'));
         });
 
         if(field.condition) {
@@ -461,6 +469,7 @@ var NocFilterPanel = (function() {
                     if(data.result.result[0]) {
                         $row.find('.first-value').find('.values').append(new Option(data.result.result[0], val1, true, true));
                         $row.find('.first-value').find('.values').trigger('change');
+                        _selectedBtn($panel.find('.apply-filter'));
                     } else {
                         $row.remove();
                     }
@@ -468,6 +477,7 @@ var NocFilterPanel = (function() {
             }
             if(!field.type.indexOf('tree-')) {
                 $row.find('.first-value').find('.values').val(field.values.join(','));
+                _selectedBtn($panel.find('.apply-filter'));
             } else {
                 if('DateTime' === field.type && !field.condition.match(/periodic/i)) {
                     val1 = dashboard.dateToString(new Date(Date.parse(val1)), "%Y-%m-%dT%H:%M:%S");
@@ -479,6 +489,7 @@ var NocFilterPanel = (function() {
 
                 $row.find('.first-value').find('.values').val(val1).trigger('change');
                 $row.filter('.second-value').find('.values').val(val2).trigger('change');
+                _selectedBtn($panel.find('.apply-filter'));
             }
         }
     };
@@ -701,6 +712,20 @@ var NocFilterPanel = (function() {
                 }
             });
         }
+    };
+
+    var _selectedBtn = function(button) {
+        console.log('select btn :', button);
+        button
+        .addClass('btn-primary')
+        .removeClass('btn-default');
+    };
+
+    var _unSelectedBtn = function(button) {
+        console.log('unselect btn :', button);
+        button
+        .removeClass('btn-primary')
+        .addClass('btn-default');
     };
 
     // public

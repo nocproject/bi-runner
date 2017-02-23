@@ -123,8 +123,8 @@ var NocExport = (function() {
                                                 {$field: 'close_ts'}
                                             ]
                                         },
-                                        {$field: endDate},
-                                        {$field: 'close_ts'}
+                                        {$field: 'close_ts'},
+                                        {$field: endDate}
                                     ]
                                 },
                                 {

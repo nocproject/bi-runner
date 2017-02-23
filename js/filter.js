@@ -295,28 +295,31 @@ var NocFilter = (function() {
             }
         },
         getDateInterval: function() {
-            var keys = Object.getOwnPropertyNames(filter);
-            var dates = flat(keys.map(function(name) {
-                if('orForAnd' === filter[name].condition) return filter[name].values;
-                if('startDate' === name) return filter[name];
-            })).filter(function(element) {
-                return 'DateTime' === element.type
-            });
+            // var keys = Object.getOwnPropertyNames(filter);
+            // var dates = flat(keys.filter(function(name) {
+            //     return ('startDate' === name) || ('orForAnd' === filter[name].condition)
+            // }).map(function(name) {
+            //     if('orForAnd' === filter[name].condition) return filter[name].values;
+            //     if('startDate' === name) return filter[name];
+            // }))
+            // .filter(function(element) {
+            //     return 'DateTime' === element.type
+            // });
+            //
+            // var minDate = Math.max.apply(Math,
+            //     dates
+            //     .map(function(element) {
+            //         return element.values[0];
+            //     }));
+            //
+            // var maxDate = Math.min.apply(Math,
+            //     dates
+            //     .map(function(element) {
+            //         return element.values[1];
+            //     }));
 
-            var minDate = Math.max.apply(Math,
-                dates
-                .map(function(element) {
-                    return element.values[0];
-                }));
-
-            var maxDate = Math.min.apply(Math,
-                dates
-                .map(function(element) {
-                    return element.values[1];
-                }));
-
-            return [new Date(minDate), new Date(maxDate)];
-
+            // return [new Date(minDate), new Date(maxDate)];
+            return filter['startDate'].values;
         },
         getDate: function() {
             if('date' in filter) return filter.date;

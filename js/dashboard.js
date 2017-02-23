@@ -232,8 +232,6 @@ var Dashboard = function(element) {
         };
         dashboard.widgets.push(dashboard['row-counter']);
 
-        NocExport.updateDuration();
-
         NocFilter.init({
             widgets: dashboard.widgets,
             fieldNameSeparator: dashboard.fieldNameSeparator,
