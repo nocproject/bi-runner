@@ -109,16 +109,18 @@ var NocExport = (function() {
     var _updateDurationZebra = function(filters) {
         if(typeof (filters) === "undefined" || filters === null) {
             filters = NocFilter.getDurationIntervals();
-            if(!filters){
+            if(!filters) {
                 var fields = dashboard.exportQuery.params[0].fields.filter(function(e) {
                     return 'duration_val' !== e.alias
                 });
                 var dur_se = jQuery.extend(true, {}, dashboard.exportQuery.params[0].fields.filter(function(e) {
                     return 'duration_se' === e.alias
-                })[0]);
+                }));
 
-                dur_se.alias = 'duration_val';
-                fields.push(dur_se);
+                if(dur_se.length > 0) {
+                    dur_se[0].alias = 'duration_val';
+                    fields.push(dur_se[0]);
+                }
                 dashboard.exportQuery.params[0].fields = fields;
 
                 return;
@@ -209,7 +211,9 @@ var NocExport = (function() {
             return 'duration_se' !== element.alias
         });
 
-        fields.push(duration(dateInterval));
+        if(Object.getOwnPropertyNames(dashboard.fieldsType).indexOf('duration') !== -1) {
+            fields.push(duration(dateInterval));
+        }
 
         console.log('updating duration field');
         dashboard.exportQuery.params[0].fields = fields;

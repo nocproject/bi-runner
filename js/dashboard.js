@@ -295,7 +295,7 @@ var Dashboard = function(element) {
                         if(error)
                             throw new Error(error);
 
-                        if(dashboardJSON.show_fields.indexOf(dashboard.durationIntervalName) !== -1) {
+                        if(dashboardJSON.filter_fields.indexOf(dashboard.durationIntervalName) !== -1) {
                             data.result.fields.push({
                                 dict: null,
                                 type: 'DateTime',
@@ -312,7 +312,7 @@ var Dashboard = function(element) {
                             return desc1.localeCompare(desc2);
                         })
                         .map(function(field) {
-                            if(dashboardJSON.show_fields.indexOf(field.name) !== -1) {
+                            if(dashboardJSON.filter_fields.indexOf(field.name) !== -1) {
                                 dashboard.fieldsType[field.name] = {
                                     type: field.type,
                                     dict: field.dict,
@@ -324,6 +324,7 @@ var Dashboard = function(element) {
                         dashboard.clear();
                         dashboard.datasource = dashboardJSON.datasource;
                         dashboard.title = dashboardJSON.title;
+                        dashboard.agv_fields = dashboardJSON.agv_fields;
                         NocExport.init(dashboard);
                         drawBoard();
                     });

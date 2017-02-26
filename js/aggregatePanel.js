@@ -3,7 +3,9 @@ var NocAggregatePanel = (function() {
     var formElementOdd = { gulp_inject: './templates/aggregate-element-odd.html' };
 
     var _init = function() {
-        var keys = Object.getOwnPropertyNames(dashboard.fieldsType);
+        var keys = Object.getOwnPropertyNames(dashboard.fieldsType).filter(function(name) {
+            return dashboard.agv_fields.indexOf(name) !== -1;
+        });
         var qtyGroup = parseInt((keys.length + 1) / 2);
 
         for(var i = 0; i < qtyGroup; i++) {
@@ -70,7 +72,7 @@ var NocAggregatePanel = (function() {
                         },
                         alias: field + '_text'
                     };
-
+                    column.hide = 'yes';
                     dashboard.exportQuery.params[0].fields.push(dictionaryColumn);
                 }
                 if('ip' === field) {
