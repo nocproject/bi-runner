@@ -25,9 +25,9 @@ var NocFilterPanel = (function() {
     var determinateType = function(name, field) {
 
         if(field.dict) {
-            if('administrative_domain' === name) {
-                return 'tree-' + field.dict;
-            }
+            // if('administrative_domain' === name) {
+            //     return 'tree-' + field.dict;
+            // }
             return 'dict-' + field.dict;
         }
 
@@ -200,7 +200,7 @@ var NocFilterPanel = (function() {
 
                 console.log('condition : ' + condition + ',' + name + '=' + value);
 
-                _validate(this, type, condition);
+                _validate($panel, this, type, condition);
 
                 if('in' === condition || 'not.in' === condition) {
                     value = value.split(',');
@@ -334,8 +334,7 @@ var NocFilterPanel = (function() {
                     conditionOptions.pop();
                 }
                 conditionOptions.push(
-                    {id: 'interval', text: 'interval'},
-                    {id: 'not.interval', text: 'not into interval'}
+                    {id: 'interval', text: 'interval'}
                 );
                 $row.filter('.second-value').removeClass('hidden');
             } else {
@@ -521,7 +520,8 @@ var NocFilterPanel = (function() {
         }
     };
 
-    var _validate = function(firstRow, type, condition) {
+    var _validate = function(panel, firstRow, type, condition) {
+        var name = $(firstRow).find('.values').attr('name');
         var secondRow = $(firstRow).parent().next();
         var firstValue = $(firstRow).find('.values').val();
         var secondValue = $(secondRow).find('.values').val();
@@ -555,11 +555,15 @@ var NocFilterPanel = (function() {
             if(!firstValue) {
                 showErrors(['empty value'], []);
                 return;
+            } else {
+                showErrors([], []);
             }
 
             if(!$(secondRow).hasClass('hidden') && !secondValue) {
                 showErrors([], ['empty value']);
                 return;
+            } else {
+                showErrors([], []);
             }
 
             if(condition.match(/periodic/i)) {
@@ -611,6 +615,7 @@ var NocFilterPanel = (function() {
                     showErrors([], ['bad interval']);
                     return;
                 }
+                showErrors([], []);
             }
 
             if(type.match(/int|float/i)) {
@@ -633,11 +638,38 @@ var NocFilterPanel = (function() {
                     showErrors([], ['bad interval']);
                     return;
                 }
+                showErrors([], []);
             }
 
             if(type.match(/date/i) && condition.match(/interval/i)) {
                 if(Date.parse(firstValue) >= Date.parse(secondValue)) {
                     showErrors([], ['bad interval']);
+                    return;
+                } else {
+                    showErrors([], []);
+                }
+            }
+
+            if(dashboard.durationIntervalName === name) {
+                if($(panel).find('.first-value').each(
+                        function() {
+                            if(this !== firstRow) {
+                                var comparedFirstRow = $(this);
+                                var comparedSecondRow = $(comparedFirstRow).parent().next();
+
+                                var comparedFirstSec = new Date(Date.parse($(comparedFirstRow).find('.values').val())).getTime();
+                                var comparedSecondSec = new Date(Date.parse($(comparedSecondRow).find('.values').val())).getTime();
+                                var firstSec = new Date(Date.parse(firstValue)).getTime();
+                                var secondSec = new Date(Date.parse(secondValue)).getTime();
+
+                                if((comparedSecondSec < firstSec) || (secondSec < comparedFirstSec)) {
+                                    showErrors([], []);
+                                } else {
+                                    showErrors(['interval intersected'], []);
+                                    return false;
+                                }
+                            }
+                        })) {
                     return;
                 }
             }
@@ -667,9 +699,9 @@ var NocFilterPanel = (function() {
                         return;
                     }
                 }
+                showErrors([], []);
             }
         }
-        showErrors([], []);
     };
 
     var _setDateTimeField = function($row, field) {
@@ -756,6 +788,7 @@ var NocFilterPanel = (function() {
     // public
     return {
         init: _init,
-        setFilter: _setFilter
+        setFilter: _setFilter,
+        unselectedBtn: _unSelectedBtn
     }
 })();

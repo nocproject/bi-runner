@@ -223,6 +223,17 @@ var NocFilter = (function() {
         );
     }
 
+    function valuesToDate(values) {
+        return values.map(function(e) {
+            return {
+                condition: e.condition,
+                name: e.name,
+                type: e.type,
+                values: [new Date(e.values[0]), new Date(e.values[1])]
+            }
+        })
+    }
+
     function restoreFilter(savedFilter) {
         var convert = function(name, field) {
             var values = field.values.map(function(val) {
@@ -250,9 +261,12 @@ var NocFilter = (function() {
         };
 
         if(savedFilter) {
+            if(savedFilter.hasOwnProperty('startDate')) {
+                filter['startDate'] = convert('startDate', savedFilter['startDate']);
+            }
             Object.getOwnPropertyNames(savedFilter).map(function(name) {
                 if(dashboard.durationIntervalName === savedFilter[name].values[0].name) {
-                    NocExport.updateDurationZebra(savedFilter[name].values);
+                    NocExport.updateDurationZebra(valuesToDate(savedFilter[name].values));
                 } else if(name.split(fieldNameSeparator).length < 3) {
                     if('orForAnd' === savedFilter[name].condition) {
                         filter[name] = {
@@ -307,30 +321,6 @@ var NocFilter = (function() {
             }
         },
         getDateInterval: function() {
-            // var keys = Object.getOwnPropertyNames(filter);
-            // var dates = flat(keys.filter(function(name) {
-            //     return ('startDate' === name) || ('orForAnd' === filter[name].condition)
-            // }).map(function(name) {
-            //     if('orForAnd' === filter[name].condition) return filter[name].values;
-            //     if('startDate' === name) return filter[name];
-            // }))
-            // .filter(function(element) {
-            //     return 'DateTime' === element.type
-            // });
-            //
-            // var minDate = Math.max.apply(Math,
-            //     dates
-            //     .map(function(element) {
-            //         return element.values[0];
-            //     }));
-            //
-            // var maxDate = Math.min.apply(Math,
-            //     dates
-            //     .map(function(element) {
-            //         return element.values[1];
-            //     }));
-
-            // return [new Date(minDate), new Date(maxDate)];
             return filter['startDate'].values;
         },
         getDate: function() {
@@ -350,9 +340,21 @@ var NocFilter = (function() {
         getByCellName: function(name) {
             var key = Object.getOwnPropertyNames(filter).filter(function(element) {
                 var tags = element.split(fieldNameSeparator);
+
                 return name === tags[1] && tags.length > 2;
             })[0];
             return filter[key];
+        },
+        getDurationIntervals: function() {
+            var key = Object.getOwnPropertyNames(filter).filter(function(name) {
+                return dashboard.durationIntervalName === filter[name].values[0].name
+            });
+
+            if(key.length > 0) {
+                return filter[key[0]].values;
+            }
+
+            return undefined;
         }
     };
 })();

@@ -21,6 +21,9 @@ var Dashboard = function(element) {
 
     this.setSelectorInterval = function(start, end) {
         $('#time-selector').find('.chart-title>.title-left').text(dashboard.dateToString(start) + " - " + dashboard.dateToString(end));
+        $('#startInterval').val(dashboard.dateToString(start, "%Y-%m-%dT%H:%M:%S"));
+        $('#endInterval').val(dashboard.dateToString(end, "%Y-%m-%dT%H:%M:%S"));
+
     };
 
     this.timeSelector = function(arg) {
@@ -41,8 +44,9 @@ var Dashboard = function(element) {
 
         console.log(dashboard.dateToString(start, format), dashboard.dateToString(end, format));
         NocFilter.setStartDateCondition([start, end]);
-        $('#startInterval').eq(0).pikaday('setDate');
-        $('#endInterval').eq(0).pikaday('setDate');
+        $('.apply-filter').each(function() {
+            $(this).click();
+        });
         $("#selectBtn")
         .attr('disabled', true)
         .removeClass('btn-primary')
@@ -75,32 +79,31 @@ var Dashboard = function(element) {
 
         addCollapsed($timeSelector, '#time-selector', container);
 
-        var startDate,
-            endDate,
-            updateStartDate = function() {
-                $('#startInterval').eq(0).pikaday('setStartRange', startDate);
-                $('#endInterval').eq(0)
-                .pikaday('setStartRange', startDate)
-                .pikaday('setMinDate', startDate);
-                if(startDate && endDate) {
-                    $("#selectBtn")
-                    .attr('disabled', false)
-                    .removeClass('btn-primary')
-                    .addClass('btn-default');
-                }
-            },
-            updateEndDate = function() {
-                $('#endInterval').eq(0).pikaday('setEndRange', endDate);
-                $('#startInterval').eq(0)
-                .pikaday('setEndRange', endDate)
-                .pikaday('setMaxDate', endDate);
-                if(startDate && endDate) {
-                    $("#selectBtn")
-                    .attr('disabled', false)
-                    .removeClass('btn-primary')
-                    .addClass('btn-default');
-                }
-            };
+        var startDate, endDate;
+        var updateStartDate = function() {
+            $('#startInterval').eq(0).pikaday('setStartRange', startDate);
+            $('#endInterval').eq(0)
+            .pikaday('setStartRange', startDate)
+            .pikaday('setMinDate', startDate);
+            if(startDate && endDate) {
+                $("#selectBtn")
+                .attr('disabled', false)
+                .removeClass('btn-primary')
+                .addClass('btn-default');
+            }
+        };
+        var updateEndDate = function() {
+            $('#endInterval').eq(0).pikaday('setEndRange', endDate);
+            $('#startInterval').eq(0)
+            .pikaday('setEndRange', endDate)
+            .pikaday('setMaxDate', endDate);
+            if(startDate && endDate) {
+                $("#selectBtn")
+                .attr('disabled', false)
+                .removeClass('btn-primary')
+                .addClass('btn-default');
+            }
+        };
 
         $('#startInterval').pikaday({
             container: document.getElementById('startIntervalContainer'),
@@ -115,6 +118,7 @@ var Dashboard = function(element) {
             showSeconds: false,
             onSelect: function() {
                 startDate = this.getDate();
+                console.log('***** startInterval : ' + startDate);
                 updateStartDate();
             }
         });
@@ -132,6 +136,7 @@ var Dashboard = function(element) {
             showSeconds: false,
             onSelect: function() {
                 endDate = this.getDate();
+                console.log('***** endInterval : ' + endDate);
                 updateEndDate();
             }
         });
@@ -139,6 +144,10 @@ var Dashboard = function(element) {
         $("#selectBtn").click(function() {
             console.log('selected : ' + startDate + ',' + endDate);
             NocFilter.setStartDateCondition([startDate, endDate]);
+            console.log('after set filter : ', NocFilter.getDateInterval());
+            $('.apply-filter').each(function() {
+                $(this).click();
+            });
             $("#selectBtn")
             .removeClass('btn-default')
             .addClass('btn-primary');
@@ -246,10 +255,19 @@ var Dashboard = function(element) {
         dashboard.drawAll();
     };
 
-    this.setPikaBounds = function() {
+    this.setPikaBounds = function(minDate, maxDate) {
+        if(!minDate || !maxDate) {
+            minDate = new Date($('#startInterval').val());
+            maxDate = new Date($('#endInterval').val());
+        }
+
+        // $('.values.pikaday').each(function() {
+        //     $(this).pikaday('setMinDate', minDate)
+        //         .pikaday('setMaxDate', maxDate);
+        // });
         $('.values.pikaday')
-        .pikaday('setMinDate', NocFilter.getDateInterval()[0])
-        .pikaday('setMaxDate', NocFilter.getDateInterval()[1]);
+        .pikaday('setMinDate', minDate)
+        .pikaday('setMaxDate', maxDate);
     };
 
     this.run = function(id) { //public
@@ -277,8 +295,13 @@ var Dashboard = function(element) {
                         if(error)
                             throw new Error(error);
 
-                        if(dashboardJSON.show_fields.indexOf(dashboard.durationIntervalName) !== -1){
-                            data.result.fields.push({dict: null, type: 'DateTime', name: dashboard.durationIntervalName, description: 'Duration Intervals'});
+                        if(dashboardJSON.show_fields.indexOf(dashboard.durationIntervalName) !== -1) {
+                            data.result.fields.push({
+                                dict: null,
+                                type: 'DateTime',
+                                name: dashboard.durationIntervalName,
+                                description: 'Duration Intervals'
+                            });
                         }
 
                         data.result.fields
