@@ -103,9 +103,11 @@ var NocFilter = (function() {
     }
 
     function orValues(values) {
-        return {
-            $or: values
-        };
+        if(values.length > 0) {
+            return {
+                $or: values
+            };
+        }
     }
 
     function andValues(values) {
@@ -200,18 +202,36 @@ var NocFilter = (function() {
             flat(keys.map(function(name) {
                     var key = filter[name];
 
-                    if('startDate' === name) name = 'date';
+                    if('startDate' === name) name = 'ts';
                     name = name.split(fieldNameSeparator)[0];
                     if('orForAnd' === key.condition) {
-                        return orValues(key.values.map(function(v) {
+                        return orValues(key.values
+                        .filter(function(v) {
+                            return dashboard.durationIntervalName !== v.name;
+                        })
+                        .map(function(v) {
                             return conditionValue(v.name, v.values, v.type, v.condition);
                         }));
                     } else {
                         return conditionValue(name, key.values, key.type, key.condition);
                     }
                 })
+                .filter(function(v) {
+                    return v;
+                })
             )
         );
+    }
+
+    function valuesToDate(values) {
+        return values.map(function(e) {
+            return {
+                condition: e.condition,
+                name: e.name,
+                type: e.type,
+                values: [new Date(e.values[0]), new Date(e.values[1])]
+            }
+        })
     }
 
     function restoreFilter(savedFilter) {
@@ -227,7 +247,7 @@ var NocFilter = (function() {
                 dashboard.setSelectorInterval(values[0], values[1]);
                 return {
                     values: values,
-                    type: 'Date',
+                    type: 'DateTime',
                     condition: 'interval'
                 }
             }
@@ -241,8 +261,13 @@ var NocFilter = (function() {
         };
 
         if(savedFilter) {
+            if(savedFilter.hasOwnProperty('startDate')) {
+                filter['startDate'] = convert('startDate', savedFilter['startDate']);
+            }
             Object.getOwnPropertyNames(savedFilter).map(function(name) {
-                if(name.split(fieldNameSeparator).length < 3) {
+                if(dashboard.durationIntervalName === savedFilter[name].values[0].name) {
+                    NocExport.updateDurationZebra(valuesToDate(savedFilter[name].values));
+                } else if(name.split(fieldNameSeparator).length < 3) {
                     if('orForAnd' === savedFilter[name].condition) {
                         filter[name] = {
                             values: savedFilter[name].values.map(function(val) {
@@ -257,6 +282,7 @@ var NocFilter = (function() {
             });
 
             updateWidgets(makeFilter());
+            dashboard.setPikaBounds();
         }
     }
 
@@ -295,27 +321,7 @@ var NocFilter = (function() {
             }
         },
         getDateInterval: function() {
-            var keys = Object.getOwnPropertyNames(filter);
-            var dates = keys.filter(function(name) {
-                return 'startDate' === name || !name.indexOf('date');
-            }).map(function(name) {
-                return filter[name];
-            });
-
-            var minDate = Math.max.apply(Math,
-                dates
-                .map(function(element) {
-                    return element.values[0];
-                }));
-
-            var maxDate = Math.min.apply(Math,
-                dates
-                .map(function(element) {
-                    return element.values[1];
-                }));
-
-            return [new Date(minDate), new Date(maxDate)];
-
+            return filter['startDate'].values;
         },
         getDate: function() {
             if('date' in filter) return filter.date;
@@ -323,7 +329,7 @@ var NocFilter = (function() {
         },
         setStartDateCondition: function(interval) {
             dashboard.setSelectorInterval(interval[0], interval[1]);
-            this.updateFilter('startDate', 'Date', [{id: interval[0]}, {id: interval[1]}], 'interval');
+            this.updateFilter('startDate', 'DateTime', [{id: interval[0]}, {id: interval[1]}], 'interval');
         },
         getFilter: function(name) {
             if(name) {
@@ -334,9 +340,21 @@ var NocFilter = (function() {
         getByCellName: function(name) {
             var key = Object.getOwnPropertyNames(filter).filter(function(element) {
                 var tags = element.split(fieldNameSeparator);
+
                 return name === tags[1] && tags.length > 2;
             })[0];
             return filter[key];
+        },
+        getDurationIntervals: function() {
+            var key = Object.getOwnPropertyNames(filter).filter(function(name) {
+                return dashboard.durationIntervalName === filter[name].values[0].name
+            });
+
+            if(key.length > 0) {
+                return filter[key[0]].values;
+            }
+
+            return undefined;
         }
     };
 })();

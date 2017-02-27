@@ -25,9 +25,9 @@ var NocFilterPanel = (function() {
     var determinateType = function(name, field) {
 
         if(field.dict) {
-            if('administrative_domain' === name) {
-                return 'tree-' + field.dict;
-            }
+            // if('administrative_domain' === name) {
+            //     return 'tree-' + field.dict;
+            // }
             return 'dict-' + field.dict;
         }
 
@@ -200,7 +200,7 @@ var NocFilterPanel = (function() {
 
                 console.log('condition : ' + condition + ',' + name + '=' + value);
 
-                _validate(this, type, condition);
+                _validate($panel, this, type, condition);
 
                 if('in' === condition || 'not.in' === condition) {
                     value = value.split(',');
@@ -232,8 +232,15 @@ var NocFilterPanel = (function() {
             });
             if($panel.find('.has-error').size() > 0) return;
 
+            _selectedBtn($panel.find('.apply-filter'));
             NocFilter.updateFilter(id, field.type, values, 'orForAnd');
-            dashboard.drawAll();
+            if(dashboard.durationIntervalName === field.name) {
+                if(!NocExport.updateDurationZebra(NocFilter.getFilter(id).values)){
+                    _unSelectedBtn($panel.find('.apply-filter'));
+                }
+            } else {
+                dashboard.drawAll();
+            }
             console.log('filter applied');
         });
 
@@ -241,6 +248,7 @@ var NocFilterPanel = (function() {
         .on('click', function() {
             console.log('clean filter');
             console.log('panel id : filter-panel' + id);
+            _unSelectedBtn($panel.find('.apply-filter'));
             NocFilter.deleteFilter(id);
             dashboard.drawAll();
         });
@@ -323,16 +331,26 @@ var NocFilterPanel = (function() {
             );
         } else if('DateTime' === field.type) {
             _setDateTimeField($row, field);
-            conditionOptions.push(
-                {id: 'interval', text: 'interval'},
-                {id: 'not.interval', text: 'not into interval'},
-                {id: 'periodic.interval', text: 'periodic interval'},
-                {id: 'not.periodic.interval', text: 'not into periodic'},
-                {id: '$lt', text: '<'},
-                {id: '$le', text: '<='},
-                {id: '$gt', text: '>'},
-                {id: '$ge', text: '>='}
-            );
+            if(dashboard.durationIntervalName === field.name) {
+                while(conditionOptions.length > 0) {
+                    conditionOptions.pop();
+                }
+                conditionOptions.push(
+                    {id: 'interval', text: 'interval'}
+                );
+                $row.filter('.second-value').removeClass('hidden');
+            } else {
+                conditionOptions.push(
+                    {id: 'interval', text: 'interval'},
+                    {id: 'not.interval', text: 'not into interval'},
+                    {id: 'periodic.interval', text: 'periodic interval'},
+                    {id: 'not.periodic.interval', text: 'not into periodic'},
+                    {id: '$lt', text: '<'},
+                    {id: '$le', text: '<='},
+                    {id: '$gt', text: '>'},
+                    {id: '$ge', text: '>='}
+                );
+            }
         } else if('Date' === field.type) {
             _setDateField($row, field);
             conditionOptions.push(
@@ -389,13 +407,25 @@ var NocFilterPanel = (function() {
         $panel.find('.filter-rows').append($row);
 
         if('inner-' !== prefix) {
+            var options = _selectConfig();
+
+            if(dashboard.durationIntervalName === field.name) {
+                options.data = options.data.filter(function(element) {
+                    return !element.id.indexOf(dashboard.durationIntervalName);
+                });
+            } else {
+                options.data = options.data.filter(function(element) {
+                    return element.id.indexOf(dashboard.durationIntervalName);
+                });
+            }
             $row.find('#inner-fields')
-            .select2(_selectConfig())
+            .select2(options)
             .on('change', function() {
                 console.log("inner select changed  to : ", $(this).val());
                 if($(this).val()) {
                     _addRow(id, _parseFieldValue($(this)), $panel, 'inner-');
                     $(this).val(null).trigger('change');
+                    _unSelectedBtn($panel.find('.apply-filter'));
                 }
             })
             .val(null).trigger('change');
@@ -439,7 +469,13 @@ var NocFilterPanel = (function() {
             if(value.match(/periodic/i)) {
                 $row.find('input').replaceWith('<input type="text" class="form-control values periodic" name="' + field.name + '" placeholder="HH:mm">');
             }
+            _unSelectedBtn($panel.find('.apply-filter'));
             console.log('condition changed to : ' + value);
+        });
+
+        $row.find('.values')
+        .on('change', function() {
+            _unSelectedBtn($panel.find('.apply-filter'));
         });
 
         if(field.condition) {
@@ -461,6 +497,7 @@ var NocFilterPanel = (function() {
                     if(data.result.result[0]) {
                         $row.find('.first-value').find('.values').append(new Option(data.result.result[0], val1, true, true));
                         $row.find('.first-value').find('.values').trigger('change');
+                        _selectedBtn($panel.find('.apply-filter'));
                     } else {
                         $row.remove();
                     }
@@ -468,6 +505,7 @@ var NocFilterPanel = (function() {
             }
             if(!field.type.indexOf('tree-')) {
                 $row.find('.first-value').find('.values').val(field.values.join(','));
+                _selectedBtn($panel.find('.apply-filter'));
             } else {
                 if('DateTime' === field.type && !field.condition.match(/periodic/i)) {
                     val1 = dashboard.dateToString(new Date(Date.parse(val1)), "%Y-%m-%dT%H:%M:%S");
@@ -479,11 +517,13 @@ var NocFilterPanel = (function() {
 
                 $row.find('.first-value').find('.values').val(val1).trigger('change');
                 $row.filter('.second-value').find('.values').val(val2).trigger('change');
+                _selectedBtn($panel.find('.apply-filter'));
             }
         }
     };
 
-    var _validate = function(firstRow, type, condition) {
+    var _validate = function(panel, firstRow, type, condition) {
+        var name = $(firstRow).find('.values').attr('name');
         var secondRow = $(firstRow).parent().next();
         var firstValue = $(firstRow).find('.values').val();
         var secondValue = $(secondRow).find('.values').val();
@@ -517,11 +557,15 @@ var NocFilterPanel = (function() {
             if(!firstValue) {
                 showErrors(['empty value'], []);
                 return;
+            } else {
+                showErrors([], []);
             }
 
             if(!$(secondRow).hasClass('hidden') && !secondValue) {
                 showErrors([], ['empty value']);
                 return;
+            } else {
+                showErrors([], []);
             }
 
             if(condition.match(/periodic/i)) {
@@ -573,6 +617,7 @@ var NocFilterPanel = (function() {
                     showErrors([], ['bad interval']);
                     return;
                 }
+                showErrors([], []);
             }
 
             if(type.match(/int|float/i)) {
@@ -595,11 +640,38 @@ var NocFilterPanel = (function() {
                     showErrors([], ['bad interval']);
                     return;
                 }
+                showErrors([], []);
             }
 
             if(type.match(/date/i) && condition.match(/interval/i)) {
                 if(Date.parse(firstValue) >= Date.parse(secondValue)) {
                     showErrors([], ['bad interval']);
+                    return;
+                } else {
+                    showErrors([], []);
+                }
+            }
+
+            if(dashboard.durationIntervalName === name) {
+                if($(panel).find('.first-value').each(
+                        function() {
+                            if(this !== firstRow) {
+                                var comparedFirstRow = $(this);
+                                var comparedSecondRow = $(comparedFirstRow).parent().next();
+
+                                var comparedFirstSec = new Date(Date.parse($(comparedFirstRow).find('.values').val())).getTime();
+                                var comparedSecondSec = new Date(Date.parse($(comparedSecondRow).find('.values').val())).getTime();
+                                var firstSec = new Date(Date.parse(firstValue)).getTime();
+                                var secondSec = new Date(Date.parse(secondValue)).getTime();
+
+                                if((comparedSecondSec < firstSec) || (secondSec < comparedFirstSec)) {
+                                    showErrors([], []);
+                                } else {
+                                    showErrors(['interval intersected'], []);
+                                    return false;
+                                }
+                            }
+                        })) {
                     return;
                 }
             }
@@ -629,9 +701,9 @@ var NocFilterPanel = (function() {
                         return;
                     }
                 }
+                showErrors([], []);
             }
         }
-        showErrors([], []);
     };
 
     var _setDateTimeField = function($row, field) {
@@ -642,12 +714,13 @@ var NocFilterPanel = (function() {
         .attr('readonly', 'true');
 
         $row.find('input').pikaday({
-            incrementMinuteBy: 10,
             theme: 'pikaday-theme',
+            incrementMinuteBy: 10,
             use24hour: true,
             format: 'YYYY-MM-DDTHH:mm:00',
             showSeconds: false
         });
+        dashboard.setPikaBounds();
     };
 
     var _setDateField = function($row, field) {
@@ -664,6 +737,7 @@ var NocFilterPanel = (function() {
             showMinutes: false,
             showSeconds: false
         });
+        dashboard.setPikaBounds();
     };
 
     var _setFilter = function(filter) {
@@ -699,9 +773,24 @@ var NocFilterPanel = (function() {
         }
     };
 
+    var _selectedBtn = function(button) {
+        console.log('select btn :', button);
+        button
+        .addClass('btn-primary')
+        .removeClass('btn-default');
+    };
+
+    var _unSelectedBtn = function(button) {
+        console.log('unselect btn :', button);
+        button
+        .removeClass('btn-primary')
+        .addClass('btn-default');
+    };
+
     // public
     return {
         init: _init,
-        setFilter: _setFilter
+        setFilter: _setFilter,
+        unselectedBtn: _unSelectedBtn
     }
 })();

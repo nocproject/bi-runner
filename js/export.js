@@ -15,6 +15,7 @@ var NocExport = (function() {
         var filename = dashboard.title.replace(/ /g, '_') + '_' + dashboard.dateToString(dateInterval[0], '%Y%m%d')
             + '-' + dashboard.dateToString(dateInterval[1], '%Y%m%d') + '.csv';
         _updateDuration();
+        _updateDurationZebra();
         console.log('file for export : ' + filename);
         $("#export-btn").off("click");
 
@@ -105,8 +106,57 @@ var NocExport = (function() {
         return output;
     };
 
+    var _updateDurationZebra = function(filters) {
+        var dateInterval = NocFilter.getDateInterval();
+        if(typeof (filters) === "undefined" || filters === null) {
+            filters = NocFilter.getDurationIntervals();
+            if(!filters) {
+                _durationFields([[dateInterval[0], dateInterval[1]]]);
+                return true;
+            }
+        }
+        var result = [];
+        var sorted = filters.sort(function(e1, e2) {
+            return e1.values[0] - e2.values[0];
+        });
+        var firstDate = sorted[0].values[0];
+        var lastDate = sorted[sorted.length - 1].values[1];
+
+
+        if(dateInterval[0] <= firstDate && lastDate <= dateInterval[1]) {
+            var dates = [];
+
+            dates = dates.concat([].concat.apply([], (sorted.map(function(e) {
+                return e.values
+            }))));
+
+            if(dateInterval[0].getTime() !== firstDate.getTime()) {
+                dates.unshift(dateInterval[0]);
+            } else {
+                dates.shift();
+            }
+
+            if(lastDate.getTime() !== dateInterval[1].getTime()) {
+                dates.push(dateInterval[1]);
+            } else {
+                dates.pop();
+            }
+
+            for(var i = 0; i < dates.length; i += 2) {
+                result.push([dates[i], dates[i + 1]]);
+            }
+        }
+        if(result.length === 0){
+            console.log('duration intervals more than time selector interval!');
+            return false;
+        }
+        console.log(result);
+        _durationFields(result);
+        return true;
+    };
+
     var _updateDuration = function() {
-        const dateInterval = NocFilter.getDateInterval();
+        var dateInterval = NocFilter.getDateInterval();
         var startDate = "toDateTime('" + d3.time.format("%Y-%m-%dT%H:%M:%S")(dateInterval[0]) + "')";
         var endDate = "toDateTime('" + d3.time.format("%Y-%m-%dT%H:%M:%S")(dateInterval[1]) + "')";
         var duration = function() {
@@ -123,8 +173,8 @@ var NocExport = (function() {
                                                 {$field: 'close_ts'}
                                             ]
                                         },
-                                        {$field: endDate},
-                                        {$field: 'close_ts'}
+                                        {$field: 'close_ts'},
+                                        {$field: endDate}
                                     ]
                                 },
                                 {
@@ -143,25 +193,46 @@ var NocExport = (function() {
                         }
                     ]
                 },
-                alias: 'duration'
+                alias: 'duration_se'
             };
         };
 
-        if(dashboard.exportQuery.params[0].fields.filter(function(element) {
-                return 'duration' === element.alias
-            }).length > 0) {
-            console.log('updating duration field');
-            // sum(((dateInterval[1] > close_ts) ? close_ts : dateInterval[1]) - ((ts > dateInterval[1]) ? ts : dateInterval[1]))
-            dashboard.exportQuery.params[0].fields = dashboard.exportQuery.params[0].fields.map(function(element) {
-                if(element.hasOwnProperty('alias') && element.alias === 'duration')  return duration(dateInterval);
-                return element;
-            });
+        var fields = dashboard.exportQuery.params[0].fields.filter(function(element) {
+            return 'duration_se' !== element.alias
+        });
+
+        if(Object.getOwnPropertyNames(dashboard.fieldsType).indexOf('duration') !== -1) {
+            fields.push(duration(dateInterval));
         }
+
+        console.log('updating duration field');
+        dashboard.exportQuery.params[0].fields = fields;
+    };
+
+    var _durationFields = function(values) {
+        var field = function(values) {
+            return {
+                "expr": {
+                    "$duration": values.map(function(e) {
+                        return '[' + dashboard.toDateTime(e[0]) + ',' + dashboard.toDateTime(e[1]) + ']';
+                    })
+                },
+                "alias": "duration_val"
+            }
+        };
+
+        var fields = dashboard.exportQuery.params[0].fields.filter(function(e) {
+            return 'duration_val' !== e.alias
+        });
+
+        fields.push(field(values));
+        dashboard.exportQuery.params[0].fields = fields;
     };
 
     return {
         init: _init,
         export: _export,
-        updateDuration: _updateDuration
+        updateDuration: _updateDuration,
+        updateDurationZebra: _updateDurationZebra
     }
 })();
