@@ -22,6 +22,20 @@ var FONTS_DEST = APP_DEST + '/fonts';
 var LIBS_DEST = APP_DEST + '/libs';
 var CSS_DEST = APP_DEST + '/css';
 
+var rep = [
+    {
+        search: /(%__\(:)(.*)(:\)__%)/g,
+        replacement: '" + __(\'$2\')+ "'
+    }
+    // {
+    //     search: /(%__\(\\')/g,
+    //     replacement: '" + __(\''
+    // },
+    // {
+    //     search: /(\\'\)__%)/g,
+    //     replacement: '\'\) + "'
+    // }
+];
 
 var SOURCE_FILES = [
     './js/dashboard.js',
@@ -73,13 +87,7 @@ gulp.task('clean', function() {
 gulp.task('app.scrips.dev', function() {
     return gulp.src(SOURCE_FILES)
     .pipe(injectHtml())
-    .pipe(replace([
-            {
-                search:/%__\(\\"(.*)\\"\)%/g,
-                replacement: '" + __(\"$1\") + "'
-            }
-        ])
-    )
+    .pipe(replace(rep))
     .pipe(concat(APP_JS))
     .pipe(gulp.dest(APP_DEST))
 });
@@ -148,6 +156,7 @@ gulp.task('app.scripts.prod', function() {
     return gulp.src(SOURCE_FILES)
     .pipe(sourcemaps.init())
     .pipe(injectHtml())
+    .pipe(replace(rep))
     .pipe(concat(APP_JS))
     .pipe(uglyfly())
     .pipe(sourcemaps.write('./'))
