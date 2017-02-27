@@ -10,6 +10,7 @@ var cssnano = require('gulp-cssnano');
 var sourcemaps = require('gulp-sourcemaps');
 var sass = require('gulp-sass');
 var injectHtml = require('gulp-inject-stringified-html');
+var replace = require('gulp-just-replace');
 
 var APP_JS = 'bi.js';
 var APP_CSS = 'bi.css';
@@ -72,6 +73,13 @@ gulp.task('clean', function() {
 gulp.task('app.scrips.dev', function() {
     return gulp.src(SOURCE_FILES)
     .pipe(injectHtml())
+    .pipe(replace([
+            {
+                search:/%__\(\\"(.*)\\"\)%/g,
+                replacement: '" + __(\"$1\") + "'
+            }
+        ])
+    )
     .pipe(concat(APP_JS))
     .pipe(gulp.dest(APP_DEST))
 });
