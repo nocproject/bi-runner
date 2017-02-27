@@ -107,23 +107,12 @@ var NocExport = (function() {
     };
 
     var _updateDurationZebra = function(filters) {
+        var dateInterval = NocFilter.getDateInterval();
         if(typeof (filters) === "undefined" || filters === null) {
             filters = NocFilter.getDurationIntervals();
             if(!filters) {
-                var fields = dashboard.exportQuery.params[0].fields.filter(function(e) {
-                    return 'duration_val' !== e.alias
-                });
-                var dur_se = jQuery.extend(true, {}, dashboard.exportQuery.params[0].fields.filter(function(e) {
-                    return 'duration_se' === e.alias
-                }));
-
-                if(dur_se.length > 0) {
-                    dur_se[0].alias = 'duration_val';
-                    fields.push(dur_se[0]);
-                }
-                dashboard.exportQuery.params[0].fields = fields;
-
-                return;
+                _durationFields([[dateInterval[0], dateInterval[1]]]);
+                return true;
             }
         }
         var result = [];
@@ -132,7 +121,6 @@ var NocExport = (function() {
         });
         var firstDate = sorted[0].values[0];
         var lastDate = sorted[sorted.length - 1].values[1];
-        var dateInterval = NocFilter.getDateInterval();
 
 
         if(dateInterval[0] <= firstDate && lastDate <= dateInterval[1]) {
@@ -158,11 +146,13 @@ var NocExport = (function() {
                 result.push([dates[i], dates[i + 1]]);
             }
         }
-        // if(result.length === 0){
-        //     result = [dateInterval[0], dateInterval[1]]
-        // }
+        if(result.length === 0){
+            console.log('duration intervals more than time selector interval!');
+            return false;
+        }
         console.log(result);
         _durationFields(result);
+        return true;
     };
 
     var _updateDuration = function() {

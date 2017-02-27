@@ -235,7 +235,9 @@ var NocFilterPanel = (function() {
             _selectedBtn($panel.find('.apply-filter'));
             NocFilter.updateFilter(id, field.type, values, 'orForAnd');
             if(dashboard.durationIntervalName === field.name) {
-                NocExport.updateDurationZebra(NocFilter.getFilter(id).values);
+                if(!NocExport.updateDurationZebra(NocFilter.getFilter(id).values)){
+                    _unSelectedBtn($panel.find('.apply-filter'));
+                }
             } else {
                 dashboard.drawAll();
             }
