@@ -107,52 +107,55 @@ var NocExport = (function() {
     };
 
     var _updateDurationZebra = function(filters) {
-        var dateInterval = NocFilter.getDateInterval();
-        if(typeof (filters) === "undefined" || filters === null) {
-            filters = NocFilter.getDurationIntervals();
-            if(!filters) {
-                _durationFields([[dateInterval[0], dateInterval[1]]]);
-                return true;
+        if(Object.getOwnPropertyNames(dashboard.fieldsType).indexOf(dashboard.durationIntervalName) !== -1) {
+            var dateInterval = NocFilter.getDateInterval();
+            if(typeof (filters) === "undefined" || filters === null) {
+                filters = NocFilter.getDurationIntervals();
+                if(!filters) {
+                    _durationFields([[dateInterval[0], dateInterval[1]]]);
+                    return true;
+                }
             }
+            var result = [];
+            var sorted = filters.sort(function(e1, e2) {
+                return e1.values[0] - e2.values[0];
+            });
+            var firstDate = sorted[0].values[0];
+            var lastDate = sorted[sorted.length - 1].values[1];
+
+
+            if(dateInterval[0] <= firstDate && lastDate <= dateInterval[1]) {
+                var dates = [];
+
+                dates = dates.concat([].concat.apply([], (sorted.map(function(e) {
+                    return e.values
+                }))));
+
+                if(dateInterval[0].getTime() !== firstDate.getTime()) {
+                    dates.unshift(dateInterval[0]);
+                } else {
+                    dates.shift();
+                }
+
+                if(lastDate.getTime() !== dateInterval[1].getTime()) {
+                    dates.push(dateInterval[1]);
+                } else {
+                    dates.pop();
+                }
+
+                for(var i = 0; i < dates.length; i += 2) {
+                    result.push([dates[i], dates[i + 1]]);
+                }
+            }
+            if(result.length === 0) {
+                console.log('duration intervals more than time selector interval!');
+                return false;
+            }
+            console.log(result);
+            _durationFields(result);
+            return true;
         }
-        var result = [];
-        var sorted = filters.sort(function(e1, e2) {
-            return e1.values[0] - e2.values[0];
-        });
-        var firstDate = sorted[0].values[0];
-        var lastDate = sorted[sorted.length - 1].values[1];
-
-
-        if(dateInterval[0] <= firstDate && lastDate <= dateInterval[1]) {
-            var dates = [];
-
-            dates = dates.concat([].concat.apply([], (sorted.map(function(e) {
-                return e.values
-            }))));
-
-            if(dateInterval[0].getTime() !== firstDate.getTime()) {
-                dates.unshift(dateInterval[0]);
-            } else {
-                dates.shift();
-            }
-
-            if(lastDate.getTime() !== dateInterval[1].getTime()) {
-                dates.push(dateInterval[1]);
-            } else {
-                dates.pop();
-            }
-
-            for(var i = 0; i < dates.length; i += 2) {
-                result.push([dates[i], dates[i + 1]]);
-            }
-        }
-        if(result.length === 0){
-            console.log('duration intervals more than time selector interval!');
-            return false;
-        }
-        console.log(result);
-        _durationFields(result);
-        return true;
+        return false;
     };
 
     var _updateDuration = function() {
@@ -201,7 +204,7 @@ var NocExport = (function() {
             return 'duration_se' !== element.alias
         });
 
-        if(Object.getOwnPropertyNames(dashboard.fieldsType).indexOf('duration') !== -1) {
+        if(Object.getOwnPropertyNames(dashboard.fieldsType).indexOf(dashboard.durationIntervalName) !== -1) {
             fields.push(duration(dateInterval));
         }
 
@@ -220,7 +223,6 @@ var NocExport = (function() {
                 "alias": "duration_val"
             }
         };
-
         var fields = dashboard.exportQuery.params[0].fields.filter(function(e) {
             return 'duration_val' !== e.alias
         });
