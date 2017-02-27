@@ -124,7 +124,7 @@
         if('id' in params) {
             $('#report-name').closest('li')
 //            .after('<li><a id="edit-btn" href="#" onclick="$(location).attr(\'pathname\',\'ui/bi/editor/board\');"> Edit</a></li>')
-            .after('<li><a id="save-btn" href="#"> Save</a></li>')
+//            .after('<li><a id="save-btn" href="#"> Save</a></li>')
             .after('<li><a id="export-btn" href="#"><span class="spinner" style="display: none;"><i class="fa fa-spinner fa-spin fa-fw"></i></span> Export <span id="qty-rows" class = "badge"></span></a></li>');
             dashboard.run(params.id);
         }
