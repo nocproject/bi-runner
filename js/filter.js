@@ -33,8 +33,6 @@ var NocFilter = (function() {
             return inCondition(name, values, type);
         } else if('not.in' === condition) {
             return not(inCondition(name, values, type));
-        } else if('in.or' === condition) {
-            return inToOr(name, values, type);
         } else if('empty' === condition) {
             return empty(name);
         } else if('not.empty' === condition) {
@@ -117,7 +115,7 @@ var NocFilter = (function() {
     }
 
     function inCondition(name, values, type) {
-        if(values) {
+        if(values.length > 1) {
             return {
                 $in: [
                     {
@@ -131,13 +129,9 @@ var NocFilter = (function() {
                     }))
                 ]
             }
+        } else {
+            return conditionValue(name, values[0], type, '$eq');
         }
-    }
-
-    function inToOr(name, values, type) {
-        return orValuesArray(values.map(function(value) {
-            return orValues(conditionValue(name, '' + value, type, '$eq'));
-        }))
     }
 
     function interval(name, values, type) {
@@ -278,6 +272,10 @@ var NocFilter = (function() {
                     } else {
                         filter[name] = convert(name, savedFilter[name]);
                     }
+                } else {
+                    var n = name.replace('.sav', '');
+
+                    filter[n] = convert(n, savedFilter[name]);
                 }
             });
 

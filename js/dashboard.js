@@ -6,13 +6,13 @@ var Dashboard = function(element) {
     this.durationIntervalName = 'duration_intervals';
 
     this.pikaday_i18n = {
-        previousMonth : __('Previous Month'),
-        nextMonth     : __('Next Month'),
-        months        : [__('January'),__('February'),__('March'),__('April'),__('May'),__('June'),__('July'),__('August'),__('September'),__('October'),__('November'),__('December')],
-        weekdays      : [__('Sunday'),__('Monday'),__('Tuesday'),__('Wednesday'),__('Thursday'),__('Friday'),__('Saturday')],
-        weekdaysShort : [__('Sun'),__('Mon'),__('Tue'),__('Wed'),__('Thu'),__('Fri'),__('Sat')],
-        midnight      : __('Midnight'),
-        noon          : __('Noon')
+        previousMonth: __('Previous Month'),
+        nextMonth: __('Next Month'),
+        months: [__('January'), __('February'), __('March'), __('April'), __('May'), __('June'), __('July'), __('August'), __('September'), __('October'), __('November'), __('December')],
+        weekdays: [__('Sunday'), __('Monday'), __('Tuesday'), __('Wednesday'), __('Thursday'), __('Friday'), __('Saturday')],
+        weekdaysShort: [__('Sun'), __('Mon'), __('Tue'), __('Wed'), __('Thu'), __('Fri'), __('Sat')],
+        midnight: __('Midnight'),
+        noon: __('Noon')
     };
 
     // public methods
@@ -666,7 +666,7 @@ var Dashboard = function(element) {
                             return element.text;
                         }).join(),
                         'UInt64',
-                        'in.or');
+                        'in');
                 })
                 .on('pretransition', spinnerShow)
                 .on('renderlet', onRenderLet)
@@ -705,7 +705,7 @@ var Dashboard = function(element) {
 
                 var ndx = zip(data, false);
                 var dimension = ndx.dimension(function(d) {
-                    return new BI_Value(d[field], d.name);
+                    return new BI_Value(d[Object.keys(d)[0]], d.name);
                 });
 
                 var values = dimension
@@ -963,7 +963,7 @@ var Dashboard = function(element) {
                 ]);
             } else {
                 var values = dashboard[cellName].chart.data().filter(function(element) {
-                    return dashboardJSON.filter[savedFilterName[0]].values.indexOf(Number(element.key.id)) >= 0;
+                    return dashboardJSON.filter[savedFilterName[0]].values.indexOf(element.key.id) >= 0;
                 });
                 var text = values.map(function(element) {
                     return reductionName(element.key);

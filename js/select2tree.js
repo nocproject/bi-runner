@@ -1,7 +1,6 @@
 (function($) {
     $.fn.select2tree = function(options) {
         var defaults = {
-            language: "zh-CN",
             theme: "bootstrap"
         };
         var opts = $.extend(defaults, options);

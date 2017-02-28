@@ -235,7 +235,7 @@ var NocFilterPanel = (function() {
             _selectedBtn($panel.find('.apply-filter'));
             NocFilter.updateFilter(id, field.type, values, 'orForAnd');
             if(dashboard.durationIntervalName === field.name) {
-                if(!NocExport.updateDurationZebra(NocFilter.getFilter(id).values)){
+                if(!NocExport.updateDurationZebra(NocFilter.getFilter(id).values)) {
                     _unSelectedBtn($panel.find('.apply-filter'));
                 }
             } else {
@@ -304,7 +304,23 @@ var NocFilterPanel = (function() {
         } else if(!field.type.indexOf('tree-')) {
             $row.find('input').first()                      // add 'multiple' attr for multiple select
             .replaceWith('<select name="' + field.name + '" class="form-control values"></select>');
-            // .attr('readonly', 'true');
+            // $row.find('.first-value').find('.values').append($('<option value="12" parent="1">12</option>'));
+            // $row.find('.first-value').find('.values').append($('<option value="1">1</option>'));
+            // $row.find('.first-value').find('.values').append($('<option value="13" parent="1">13</option>'));
+            // $row.find('.first-value').find('.values').append($('<option value="11" parent="1">11</option>'));
+            // $row.find('.first-value').find('.values').append($('<option value="131" parent="13">131</option>'));
+            // $row.find('.first-value').find('.values').append($('<option value="132" parent="13">132</option>'));
+            // $row.find('.first-value').find('.values').append($('<option value="2">2</option>'));
+            // $row.find('.first-value').find('.values').append($('<option value="21" parent="2">21</option>'));
+            // $row.find('.first-value').find('.values').append($('<option value="32" parent="3">32</option>'));
+            // $row.find('.first-value').find('.values').append($('<option value="33" parent="3">33</option>'));
+            // $row.find('.first-value').find('.values').append($('<option value="3">3</option>'));
+            // $row.find('.first-value').find('.values').append($('<option value="31" parent="3">31</option>'));
+            // $row.find('.first-value').find('.values').append($('<option value="22" parent="2">22</option>'));
+            // $row.find('.first-value').find('.values').append($('<option value="133" parent="13">133</option>'));
+            // $row.find('.first-value').find('.values').append($('<option value="23" parent="2">23</option>'));
+            // $row.find('.first-value').find('.values').select2tree();
+
             $.ajax({
                 url: '/api/bi/',
                 type: 'POST',
@@ -313,13 +329,23 @@ var NocFilterPanel = (function() {
                 data: JSON.stringify(_getTreeQuery(dashboard.datasource, field.name, field.dict))
             }).then(function(data) {
                 if(!data.error) {
-                    // <option value="12" parent="1">12</option>
                     console.log('************** : ' + data.result.length);
+                    var i, len;
+                    for(i = 0, len = data.result.length; i < len; i += 1) {
+                        var row = data.result[i];
+                        var $option = $('<option value="' + row.id + '">' + row.name + '</option>');
+
+                        if(row.p_id) {
+                            $option.attr('parent', row.p_id);
+                        }
+                        $row.find('.first-value').find('.values').append($option);
+                    }
                     // $row.find('.first-value').find('.values').append(new Option(data.result.result[0], val1, true, true));
                     // $row.find('.first-value').find('.values').trigger('change');
                 } else {
                     $row.remove();
                 }
+                $row.find('.first-value').find('.values').select2tree();
             });
 
             while(conditionOptions.length > 0) {
