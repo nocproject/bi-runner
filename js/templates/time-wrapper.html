@@ -10,23 +10,23 @@
                 <div class="row">
                     <div class="btn-group-vertical nav-stack col-md-2 col-md-offset-1" style="padding-top: 30px;">
                         <a onclick="dashboard.timeSelector({'period': 'cur', 'value': 'day'})" class="btn btn-default"
-                           style="margin-bottom: 10px;">%__(:Today:)__%</a>
+                           style="margin-bottom: 10px;">%__('Today')__%</a>
                         <a onclick="dashboard.timeSelector({'period': 'cur', 'value': 'monday'})" class="btn btn-default"
-                           style="margin-bottom: 10px;">This week</a>
+                           style="margin-bottom: 10px;">%__('This week')__%</a>
                         <a onclick="dashboard.timeSelector({'period': 'cur', 'value': 'month'})" class="btn btn-default"
-                           style="margin-bottom: 10px;">This month</a>
+                           style="margin-bottom: 10px;">%__('This month')__%</a>
                         <a onclick="dashboard.timeSelector({'period': 'cur', 'value': 'year'})" class="btn btn-default"
-                           style="margin-bottom: 10px;">This year</a>
+                           style="margin-bottom: 10px;">%__('This year')__%</a>
                     </div>
                     <div class="btn-group-vertical nav-stack col-md-2" style="padding-top: 30px;">
                         <a onclick="dashboard.timeSelector({'period': 'prev', 'value': 'day'})" class="btn btn-default"
-                           style="margin-bottom: 10px;">Yesterday</a>
+                           style="margin-bottom: 10px;">%__('Yesterday')__%</a>
                         <a onclick="dashboard.timeSelector({'period': 'prev', 'value': 'monday'})" class="btn btn-default"
-                           style="margin-bottom: 10px;">Previous week</a>
+                           style="margin-bottom: 10px;">%__('Previous week')__%</a>
                         <a onclick="dashboard.timeSelector({'period': 'prev', 'value': 'month'})" class="btn btn-default"
-                           style="margin-bottom: 10px;">Previous month</a>
+                           style="margin-bottom: 10px;">%__('Previous month')__%</a>
                         <a onclick="dashboard.timeSelector({'period': 'prev', 'value': 'year'})" class="btn btn-default"
-                           style="margin-bottom: 10px;">Previous year</a>
+                           style="margin-bottom: 10px;">%__('Previous year')__%</a>
                     </div>
                     <div class="col-md-5 col-md-offset-1" style="padding-bottom: 10px;">
                         <div class="pull-left">
@@ -37,12 +37,12 @@
                             <input id="endInterval" type="text" style="display: none;"/>
                             <div id="endIntervalContainer"></div>
                             <a href="#" id="selectBtn" class="btn btn-default pull-right"
-                               style="width: 100px" disabled="disabled">Select</a>
+                               style="width: 100px" disabled="disabled">%__('Select')__%</a>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="chart-notes">Time Selector</div>
+            <div class="chart-notes">%__('Time Selector')__%</div>
         </div>
     </div>
 </div>

@@ -41,7 +41,7 @@ var NocFilterPanel = (function() {
     var _selectConfig = function() {
         return {
             theme: 'bootstrap',
-            placeholder: 'Select a field',
+            placeholder: __('Select a field'),
             minimumResultsForSearch: Infinity,
             dropdownAutoWidth: true,
             width: 'auto',
@@ -170,11 +170,11 @@ var NocFilterPanel = (function() {
 
     var _createPanel = function(id, field) {
         var filterPanel = {gulp_inject: './templates/filter-panel.html'};
-        var typeText = 'type: <b>' + field.type + '</b>';
+        var typeText = __('type:') + '<b>' + field.type + '</b>';
         var $panel;
 
         if(!field.type.indexOf('dict-') || !field.type.indexOf('tree-')) {
-            typeText = 'dictionary: <b>' + field.dict + '</b>';
+            typeText = __('dictionary:') + '<b>' + field.dict + '</b>';
         }
 
         filterPanel = filterPanel.replace(/{name}/g, field.name);
@@ -442,7 +442,7 @@ var NocFilterPanel = (function() {
         $row.find('.condition')
         .select2({
             theme: 'bootstrap',
-            placeholder: 'Select a condition',
+            placeholder: __('Select a condition'),
             minimumResultsForSearch: Infinity,
             dropdownAutoWidth: true,
             width: 'auto',
@@ -716,6 +716,8 @@ var NocFilterPanel = (function() {
         $row.find('input').pikaday({
             theme: 'pikaday-theme',
             incrementMinuteBy: 10,
+            firstDay: 1,
+            i18n: dashboard.pikaday_i18n,
             use24hour: true,
             format: 'YYYY-MM-DDTHH:mm:00',
             showSeconds: false
@@ -732,6 +734,8 @@ var NocFilterPanel = (function() {
 
         $row.find('input').pikaday({
             theme: 'pikaday-theme',
+            firstDay: 1,
+            i18n: dashboard.pikaday_i18n,
             format: 'YYYY-MM-DD',
             showTime: false,
             showMinutes: false,

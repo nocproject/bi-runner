@@ -24,17 +24,13 @@ var CSS_DEST = APP_DEST + '/css';
 
 var rep = [
     {
-        search: /(%__\(:)(.*)(:\)__%)/g,
-        replacement: '" + __(\'$2\')+ "'
+        search: /(%__\(\\')/g,
+        replacement: '" + __("'
+    },
+    {
+        search: /(\\'\)__%)/g,
+        replacement: '") + "'
     }
-    // {
-    //     search: /(%__\(\\')/g,
-    //     replacement: '" + __(\''
-    // },
-    // {
-    //     search: /(\\'\)__%)/g,
-    //     replacement: '\'\) + "'
-    // }
 ];
 
 var SOURCE_FILES = [

@@ -5,6 +5,16 @@ var Dashboard = function(element) {
     this.fieldNameSeparator = '.';
     this.durationIntervalName = 'duration_intervals';
 
+    this.pikaday_i18n = {
+        previousMonth : __('Previous Month'),
+        nextMonth     : __('Next Month'),
+        months        : [__('January'),__('February'),__('March'),__('April'),__('May'),__('June'),__('July'),__('August'),__('September'),__('October'),__('November'),__('December')],
+        weekdays      : [__('Sunday'),__('Monday'),__('Tuesday'),__('Wednesday'),__('Thursday'),__('Friday'),__('Saturday')],
+        weekdaysShort : [__('Sun'),__('Mon'),__('Tue'),__('Wed'),__('Thu'),__('Fri'),__('Sat')],
+        midnight      : __('Midnight'),
+        noon          : __('Noon')
+    };
+
     // public methods
     this.reset = function(widget) {
         console.log('reset :', widget);
@@ -112,6 +122,7 @@ var Dashboard = function(element) {
             maxDate: new Date(),
             theme: 'pikaday-theme',
             firstDay: 1,
+            // i18n: dashboard.pikaday_i18n,
             incrementMinuteBy: 10,
             use24hour: true,
             format: 'YYYY-MM-DDTHH:mm:00',
@@ -130,6 +141,7 @@ var Dashboard = function(element) {
             minDate: new Date(2014, 1, 1),
             maxDate: new Date(),
             firstDay: 1,
+            i18n: dashboard.pikaday_i18n,
             incrementMinuteBy: 10,
             use24hour: true,
             format: 'YYYY-MM-DDTHH:mm:00',
@@ -300,7 +312,7 @@ var Dashboard = function(element) {
                                 dict: null,
                                 type: 'DateTime',
                                 name: dashboard.durationIntervalName,
-                                description: 'Duration Intervals'
+                                description: __('Duration Intervals')
                             });
                         }
 
@@ -333,7 +345,7 @@ var Dashboard = function(element) {
 
     // format functions
     this.dateToString = function(date, format) {
-        format = typeof format !== 'undefined' ? format : '%d.%b.%y %H:%M';
+        format = typeof format !== 'undefined' ? format : '%d.%m.%y %H:%M';
         return d3.time.format(format)(date);
     };
 
@@ -617,7 +629,7 @@ var Dashboard = function(element) {
                 var ndx = zip(data, false);
                 var dayOfWeek = ndx.dimension(function(d) {
                     var day = d.day;
-                    var name = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                    var name = [__('Mon'), __('Tue'), __('Wed'), __('Thu'), __('Fri'), __('Sat'), __('Sun')];
 
                     return new BI_Value(day, name[day - 1]);
                 });
