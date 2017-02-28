@@ -122,7 +122,7 @@ var Dashboard = function(element) {
             maxDate: new Date(),
             theme: 'pikaday-theme',
             firstDay: 1,
-            // i18n: dashboard.pikaday_i18n,
+            i18n: dashboard.pikaday_i18n,
             incrementMinuteBy: 10,
             use24hour: true,
             format: 'YYYY-MM-DDTHH:mm:00',

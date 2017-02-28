@@ -170,11 +170,11 @@ var NocFilterPanel = (function() {
 
     var _createPanel = function(id, field) {
         var filterPanel = {gulp_inject: './templates/filter-panel.html'};
-        var typeText = __('type:') + '<b>' + field.type + '</b>';
+        var typeText = __('type') + ':<b>' + field.type + '</b>';
         var $panel;
 
         if(!field.type.indexOf('dict-') || !field.type.indexOf('tree-')) {
-            typeText = __('dictionary:') + '<b>' + field.dict + '</b>';
+            typeText = __('dictionary') + ':<b>' + field.dict + '</b>';
         }
 
         filterPanel = filterPanel.replace(/{name}/g, field.name);
@@ -272,7 +272,7 @@ var NocFilterPanel = (function() {
             $row.find('.first-value>div>select')
             .select2({
                 theme: 'bootstrap',
-                placeholder: 'Select from ' + field.dict,
+                placeholder: __('Select from') + ' ' + field.dict,
                 dropdownAutoWidth: true,
                 width: 'auto',
                 // minimumInputLength: 2,
