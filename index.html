@@ -35,7 +35,7 @@
             <ul class="nav navbar-nav">
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="false">__('Reports')<span class="caret"></span></a>
+                       aria-expanded="false">Reports<span class="caret"></span></a>
                     <ul id="reports-list" class="dropdown-menu">
                         <!--<li>-->
                             <!--<a onclick="$(location).attr('href', $(location).attr('protocol') + '//' + $(location).attr('host') + $(location).attr('port').length > 0 ? ':' + $(location).attr('port') : '' + '/ui/bi/editor');">-->
@@ -50,11 +50,11 @@
                        aria-haspopup="true"
                        aria-expanded="false"></a>
                     <ul class="dropdown-menu">
-                        <li><a href="#about" data-toggle="modal"><i class="fa fa-question-circle"
-                                                                    aria-hidden="true"></i>__('About')</a></li>
+                        <li><a href="#about" data-toggle="modal"><i class="fa fa-question-circle" style="margin-right: 5px"
+                                                                    aria-hidden="true"></i>About</a></li>
                         <!--<li><a href="#"><i class="fa fa-cog" aria-hidden="true"></i> Setting</a></li>-->
                         <li role="separator" class="divider"></li>
-                        <li><a href="/api/login/logout/"><i class="fa fa-sign-out" aria-hidden="true"></i>__('Logout')</a>
+                        <li><a href="/api/login/logout/"><i class="fa fa-sign-out" style="margin-right: 5px" aria-hidden="true"></i>Logout</a>
                         </li>
                     </ul>
                 </li>
@@ -73,11 +73,11 @@
                 <h4 class="modal-title">About NOC BI</h4>
             </div>
             <div class="modal-body">
-                <p id="version">NOC BI __('version') 0.0.0</p>
-                <small>__('Copyright © 2007-2016, The NOC Project')</small>
+                <p id="version">NOC BI version 0.0.0</p>
+                <small>Copyright © 2007-2016, The NOC Project</small>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">__('Close')</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -101,7 +101,7 @@
         if(displayName.length === 0) {
             displayName.push(settings.username);
         }
-        $("<i class='fa fa-user' aria-hidden='true'></i> " + displayName.join(" ") + "<span class='caret'></span>").appendTo("#userBtn");
+        $("<i class='fa fa-user' style='margin-right: 5px;' aria-hidden='true'></i> " + displayName.join(" ") + "<span class='caret'></span>").appendTo("#userBtn");
     });
 
     $.post("/api/bi/",
@@ -124,8 +124,8 @@
         if('id' in params) {
             $('#report-name').closest('li')
 //            .after('<li><a id="edit-btn" href="#" onclick="$(location).attr(\'pathname\',\'ui/bi/editor/board\');"> Edit</a></li>')
-//            .after('<li><a id="save-btn" href="#">__('Save')</a></li>')
-            .after('<li><a id="export-btn" href="#"><span class="spinner" style="display: none;"><i class="fa fa-spinner fa-spin fa-fw"></i></span>__("Export")<span id="qty-rows" class = "badge"></span></a></li>');
+//            .after('<li><a id="save-btn" href="#">Save</a></li>')
+            .after('<li><a id="export-btn" href="#"><span class="spinner" style="display: none;"><i class="fa fa-spinner fa-spin fa-fw"></i></span>Export<span id="qty-rows" class = "badge"></span></a></li>');
             dashboard.run(params.id);
         }
     }
