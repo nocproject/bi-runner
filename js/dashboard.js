@@ -603,7 +603,12 @@ var Dashboard = function(element) {
                         'interval');
                 })
                 .on('pretransition', spinnerShow)
-                .on('renderlet', onRenderLet);
+                .on('renderlet', onRenderLet)
+                .xAxis().tickFormat(
+                    function(v) {
+                        return d3.time.format("%d.%m")(v);
+                    })
+                ;
 
                 restoreWidgets(chart.anchorName(), true);
                 $(chart.anchor()).closest(".chart-wrapper").find("img").remove();
