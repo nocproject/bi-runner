@@ -30,7 +30,7 @@ var Dashboard = function(element) {
     };
 
     this.setSelectorInterval = function(start, end) {
-        $('#time-selector').find('.chart-title>.title-left').text(dashboard.dateToString(start) + " - " + dashboard.dateToString(end));
+        $('#time-selector').find('.chart-title>.title-left').text(dashboard.dateToString(start, "%Y-%m-%dT%H:%M") + " - " + dashboard.dateToString(end, "%Y-%m-%dT%H:%M"));
         $('#startInterval').val(dashboard.dateToString(start, "%Y-%m-%dT%H:%M:%S"));
         $('#endInterval').val(dashboard.dateToString(end, "%Y-%m-%dT%H:%M:%S"));
 
@@ -345,7 +345,7 @@ var Dashboard = function(element) {
 
     // format functions
     this.dateToString = function(date, format) {
-        format = typeof format !== 'undefined' ? format : '%d.%m.%y %H:%M';
+        format = typeof format !== 'undefined' ? format : '%d.%m.%y';
         return d3.time.format(format)(date);
     };
 
