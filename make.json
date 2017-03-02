@@ -19,6 +19,7 @@
 	"bi.js",
 	"libs/libs.js",
 	"css/libs.css",
-	"css/bi.css"
+	"css/bi.css",
+	"translations/ru.json"
   ]
 }

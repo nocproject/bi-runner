@@ -42,6 +42,10 @@ var SOURCE_FILES = [
     './js/export.js'
 ];
 
+var LANGUAGE_FILES = [
+    './translations/ru.json'
+];
+
 var APP_CSS_FILES = [
     './css/bi.css'
 ];
@@ -94,6 +98,12 @@ gulp.task('index-dev.copy', function() {
     .pipe(gulp.dest(APP_DEST))
 });
 
+gulp.task('translations.copy', function() {
+    return gulp.src(LANGUAGE_FILES)
+    .pipe(gulp.dest(APP_DEST + '/translations'))
+});
+
+
 gulp.task('index-stage.copy', function() {
     return gulp.src('index.html')
     .pipe(rename('index.html'))
@@ -140,6 +150,7 @@ gulp.task('build.sass', function() {
 gulp.task('build.dev', ['clean'], gulp_sync_task(
     'fonts',
     'index-stage.copy',
+    'translations.copy',
     'app.scrips.dev',
     'lib.scrips.dev',
     'lib.css.dev',
@@ -183,6 +194,7 @@ gulp.task('lib.css.prod', function() {
 gulp.task('build.prod', ['clean'], gulp_sync_task(
     'fonts',
     'index-stage.copy',
+    'translations.copy',
     'app.scripts.prod',
     'lib.scrips.prod',
     'lib.css.prod',
