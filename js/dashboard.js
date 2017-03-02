@@ -30,7 +30,7 @@ var Dashboard = function(element) {
     };
 
     this.setSelectorInterval = function(start, end) {
-        $('#time-selector').find('.chart-title>.title-left').text(dashboard.dateToString(start, "%Y-%m-%dT%H:%M") + " - " + dashboard.dateToString(end, "%Y-%m-%dT%H:%M"));
+        $('#time-selector').find('.chart-title>.title-left').text(dashboard.dateToString(start, "%Y-%m-%d %H:%M") + " - " + dashboard.dateToString(end, "%Y-%m-%d %H:%M"));
         $('#startInterval').val(dashboard.dateToString(start, "%Y-%m-%dT%H:%M:%S"));
         $('#endInterval').val(dashboard.dateToString(end, "%Y-%m-%dT%H:%M:%S"));
 
