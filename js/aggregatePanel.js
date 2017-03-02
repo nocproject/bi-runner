@@ -32,7 +32,9 @@ var NocAggregatePanel = (function() {
 
         $('.aggregate-field').checkboxpicker({
             offActiveCls: 'btn-default',
-            onActiveCls: 'btn-primary'
+            offLabel: __('No'),
+            onActiveCls: 'btn-primary',
+            onLabel: __('Yes')
         })
         .on('change', function() {
             const field = $(this).val();
