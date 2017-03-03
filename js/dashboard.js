@@ -4,6 +4,7 @@ var Dashboard = function(element) {
     this.fieldsType = {};
     this.fieldNameSeparator = '.';
     this.durationIntervalName = 'duration_intervals';
+    this.yLabelOffset = 20;
 
     this.pikaday_i18n = {
         previousMonth: __('Previous Month'),
@@ -581,17 +582,18 @@ var Dashboard = function(element) {
                 .reduceSum(function(d) {
                     return d.cnt;
                 });
+                var height = $(chart.anchor()).closest(".dc-chart").height();
+                var width = $(chart.anchor()).closest(".chart-wrapper").width();
 
-                const height = $(chart.anchor()).closest(".dc-chart").height();
                 chart
-                .width($(chart.anchor()).closest(".chart-wrapper").width())
+                .width(width)
                 .height(height)
                 .controlsUseVisibility(true)
                 .elasticY(true)
                 .renderHorizontalGridLines(true)
                 .dimension(dateDimension)
                 .x(d3.time.scale().domain([minDate, maxDate]))
-                .yAxisLabel(null, 15)
+                .yAxisLabel(null, dashboard.yLabelOffset)
                 .group(dim)
                 .on('filtered', function(chart, filter) {
                     console.log('filtered : ' + filter);
@@ -615,7 +617,7 @@ var Dashboard = function(element) {
                     })
                 ;
 
-                restoreWidgets(chart.anchorName(), true);
+                restoreWidgets(chart.anchorName(), 'date', 'interval');
                 $(chart.anchor()).closest(".chart-wrapper").find("img").remove();
                 chart.render();
             }
@@ -691,7 +693,7 @@ var Dashboard = function(element) {
                 .xAxis()
                 .ticks(4);
 
-                restoreWidgets(chart.anchorName(), false);
+                restoreWidgets(chart.anchorName(), 'UInt64', 'in');
                 $(chart.anchor()).closest(".chart-wrapper").find("img").remove();
                 chart.render();
             }
@@ -775,7 +777,7 @@ var Dashboard = function(element) {
                 })
                 .on('renderlet', onRenderLet);
 
-                restoreWidgets(chart.anchorName(), false);
+                restoreWidgets(chart.anchorName(), 'UInt64', 'in');
                 $(chart.anchor()).closest(".chart-wrapper").find("img").remove();
                 chart.render();
             }
@@ -919,6 +921,68 @@ var Dashboard = function(element) {
         );
     };
 
+    this.barChart = function(widget) {
+        var chart = widget.chart;
+
+        spinnerShow(chart);
+        d3.json('/api/bi/')
+        .header("Content-Type", "application/json")
+        .post(
+            JSON.stringify(widget.query),
+            function(error, data) {
+                if(error)
+                    throw new Error(error);
+
+                if(failResult(chart.anchorName(), data)) return;
+
+
+                var ndx = zip(data, false);
+                var dimension = ndx.dimension(function(d) {
+                    return new BI_Value(d[Object.keys(d)[0]], d.name);
+                });
+                var values = dimension
+                .group()
+                .reduceSum(function(d) {
+                    return d.cnt;
+                });
+                var height = $(chart.anchor()).closest(".dc-chart").height();
+                var width = $(chart.anchor()).closest(".chart-wrapper").width();
+
+                chart
+                .width(width)
+                .height(height)
+                .yAxisLabel(null, dashboard.yLabelOffset)
+                .elasticY(true)
+                .controlsUseVisibility(true)
+                .renderHorizontalGridLines(true)
+                .dimension(dimension)
+                .group(values)
+                .x(d3.scale.linear().domain([0, 24]))
+                .on('filtered', function(chart, filter) {
+                    console.log('filtered : ' + filter);
+                    spinnerShow(chart);
+                    filterToggle(
+                        widget,
+                        'toHour(ts)',
+                        filter,
+                        filter ? filter.map(function(element) {
+                            return new BI_Value(Math.ceil(element))
+                        }) : [],
+                        filter ? Math.ceil(filter[0]) + " - " + Math.ceil(filter[1]) : '',
+                        'UInt8',
+                        'interval');
+                })
+                .on('pretransition', spinnerShow)
+                .on('renderlet', onRenderLet)
+                ;
+
+                restoreWidgets(chart.anchorName(), 'UInt8', 'interval');
+                $(chart.anchor()).closest(".chart-wrapper").find("img").remove();
+                chart.render();
+            }
+        );
+    };
+
     this.counter = function(widget) {
         var chart = widget.chart;
         var formatter = function(number) {
@@ -958,7 +1022,7 @@ var Dashboard = function(element) {
         });
     };
 
-    var restoreWidgets = function(cellName, isDate) {
+    var restoreWidgets = function(cellName, type, condition) {
         var savedFilterName = Object.getOwnPropertyNames(dashboardJSON.filter).filter(function(element) {
             return element.split(dashboard.fieldNameSeparator).length === 3;
         }).filter(function(element) {
@@ -966,11 +1030,18 @@ var Dashboard = function(element) {
         });
 
         if(savedFilterName.length > 0) {
-            if(isDate) {
-                dashboard[cellName].chart.filter([
-                    new Date(Date.parse(dashboardJSON.filter[savedFilterName[0]].values[0])),
-                    new Date(Date.parse(dashboardJSON.filter[savedFilterName[0]].values[1]))
-                ]);
+            if('interval' === condition) {
+                if(type.match(/date/i)) {
+                    dashboard[cellName].chart.filter([
+                        new Date(Date.parse(dashboardJSON.filter[savedFilterName[0]].values[0])),
+                        new Date(Date.parse(dashboardJSON.filter[savedFilterName[0]].values[1]))
+                    ]);
+                } else if(type.match(/int/i)) {
+                    dashboard[cellName].chart.filter([
+                        dashboardJSON.filter[savedFilterName[0]].values[0],
+                        dashboardJSON.filter[savedFilterName[0]].values[1]
+                    ]);
+                }
             } else {
                 var values = dashboard[cellName].chart.data().filter(function(element) {
                     return dashboardJSON.filter[savedFilterName[0]].values.indexOf(element.key.id) >= 0;
