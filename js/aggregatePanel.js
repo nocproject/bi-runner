@@ -1,26 +1,69 @@
 var NocAggregatePanel = (function() {
     // private var
-    var formElementOdd = { gulp_inject: './templates/aggregate-element-odd.html' };
+    var formElementOdd = {gulp_inject: './templates/aggregate-element-odd.html'};
 
     var _init = function() {
+        var i, len, qtyGroup;
         var keys = Object.getOwnPropertyNames(dashboard.fieldsType).filter(function(name) {
-            return dashboard.agv_fields.indexOf(name) !== -1;
+            return dashboard.agv_fields.filter(function(element) {
+                    return element.name === name;
+                }).length > 0;
         });
-        var qtyGroup = parseInt((keys.length + 1) / 2);
+        var fields = keys.map(function(key) {
+            var field = dashboard.agv_fields.filter(function(element) {
+                return element.name === key;
+            })[0];
 
-        for(var i = 0; i < qtyGroup; i++) {
-            var $element = $(formElementOdd
-                .replace(/{name}/g, keys[i])
-                .replace(/{description}/g, dashboard.fieldsType[keys[i]].description)
-            );
+            field['description'] = dashboard.fieldsType[key].description;
 
-            if((qtyGroup + i) < keys.length) {
-                $element.append('<label class="col-md-3 control-label">{description}:</label>\n<div class="col-md-2"><input type="checkbox" value="{name}" class="form-control aggregate-field"/></div>'
-                .replace(/{name}/g, keys[qtyGroup + i])
-                .replace(/{description}/g, dashboard.fieldsType[keys[qtyGroup + i]].description)
+            return field;
+        })
+        .sort(function(a, b) {
+            var desc1 = a.group + a.description ? a.group + a.description : a.group + 'z';
+            var desc2 = b.group + b.description ? b.group + b.description : b.group + 'z';
+
+            return desc1.localeCompare(desc2);
+        });
+        var $aggregate = $('.aggregate-by-field');
+        var insertIdx = [];
+
+        // insert hr
+        len = fields.length;
+        for(i = 1; i < len; i += 2) {
+            if(fields[i - 1].group !== fields[i].group) {
+                insertIdx.push(i);
+            }
+        }
+        len = insertIdx.length;
+        for(i = 0; i < len; i++) {
+            fields.splice(i + insertIdx[i], 0, {name: 'hr'});
+        }
+
+        qtyGroup = parseInt((fields.length + 1) / 2);
+
+        for(i = 0; i < qtyGroup; i++) {
+            var $element;
+
+            if('hr' === fields[i].name) {
+                $element = $('<div class="form-group" style="margin-bottom: 10px;"><div class="col-md-5"></div></div>');
+            } else {
+                $element = $(formElementOdd
+                    .replace(/{name}/g, fields[i].name)
+                    .replace(/{description}/g, fields[i].description)
                 );
             }
-            $('.aggregate-by-field').append($element);
+
+            if((qtyGroup + i) < fields.length) {
+                if('hr' === fields[qtyGroup + i].name) {
+                    $element.append('<div class="col-md-5"></div>');
+                } else {
+                    $element.append('<label class="col-md-3 control-label">{description}:</label>\n<div class="col-md-2"><input type="checkbox" value="{name}" class="form-control aggregate-field"/></div>'
+                        .replace(/{name}/g, fields[qtyGroup + i].name)
+                        .replace(/{description}/g, fields[qtyGroup + i].description)
+                    );
+                }
+            }
+            $aggregate.append($element);
         }
 
         dashboard.exportQuery.params[0].fields.map(function(field) {

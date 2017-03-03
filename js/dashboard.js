@@ -283,6 +283,11 @@ var Dashboard = function(element) {
     };
 
     this.run = function(id) { //public
+        var isDisplay = function(name) {
+            return dashboardJSON.filter_fields.filter(function(element) {
+                    return element.name === name;
+                }).length > 0;
+        };
         d3.json('/api/bi/')
         .header("Content-Type", "application/json")
         .post(
@@ -307,7 +312,7 @@ var Dashboard = function(element) {
                         if(error)
                             throw new Error(error);
 
-                        if(dashboardJSON.filter_fields.indexOf(dashboard.durationIntervalName) !== -1) {
+                        if(isDisplay(dashboard.durationIntervalName)) {
                             data.result.fields.push({
                                 dict: null,
                                 type: 'DateTime',
@@ -324,7 +329,7 @@ var Dashboard = function(element) {
                             return desc1.localeCompare(desc2);
                         })
                         .map(function(field) {
-                            if(dashboardJSON.filter_fields.indexOf(field.name) !== -1) {
+                            if(isDisplay(field.name)) {
                                 dashboard.fieldsType[field.name] = {
                                     type: field.type,
                                     dict: field.dict,
