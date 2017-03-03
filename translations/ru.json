@@ -321,5 +321,9 @@
     "value is not number": [
         null,
         "значение не число"
+    ],
+    "reset": [
+        null,
+        "сбросить"
     ]
 }

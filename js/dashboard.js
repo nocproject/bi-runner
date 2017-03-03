@@ -605,7 +605,7 @@ var Dashboard = function(element) {
                         filter ? filter.map(function(element) {
                             return new BI_Value(element)
                         }) : [],
-                        filter ? dashboard.dateToString(filter[0], '%d.%b.%y') + " - " + dashboard.dateToString(filter[1], '%d.%b.%y') : '',
+                        filter ? dashboard.dateToString(filter[0], '%d.%m.%y') + " - " + dashboard.dateToString(filter[1], '%d.%m.%y') : '',
                         'Date',
                         'interval');
                 })
@@ -687,7 +687,7 @@ var Dashboard = function(element) {
                     return d.key.text;
                 })
                 .title(function(d) {
-                    return d.value;
+                    return d.key.text + ' : ' + d.value;
                 })
                 .elasticX(true)
                 .xAxis()
@@ -756,9 +756,9 @@ var Dashboard = function(element) {
                 )
                 // .cx((width - height - offset) / 2) // pie left
                 .cx(width - height / 2 - offset) // pie right
-                // .title(function(d) {
-                //     return d.key.split(dashboard.separator)[1] + " :\n" + d.value + " reboot(s)";
-                // })
+                .title(function(d) {
+                    return d.key.text + ' : ' + d.value;
+                })
                 .on('filtered', function(chart, filter) {
                     console.log('filtered : ' + filter);
                     filterToggle(
