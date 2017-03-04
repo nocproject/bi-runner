@@ -34,7 +34,9 @@ var NocExport = (function() {
                 var blob = new Blob([
                     _toCsv(
                         data.result.result,
+                        // get description
                         data.result.fields
+                        // lookup label from query
                         .map(function(name) {
                             var label = dashboard.exportQuery.params[0].fields
                             .filter(function(e) {
@@ -44,7 +46,8 @@ var NocExport = (function() {
                             return label ? label : name;
                         })
                         .map(function(name) {
-                            var field = dashboard.fieldsType[name];
+                            var field = dashboard.fieldsType[name.replace('_text', '')];
+
                             return field ?
                                 field.description ? field.description : name
                                 : name
