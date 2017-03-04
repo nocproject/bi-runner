@@ -325,5 +325,13 @@
     "reset": [
         null,
         "сбросить"
+    ],
+    "Duration by Report": [
+        null,
+        "Длительность по Отчету"
+    ],
+    "EI Duration": [
+        null,
+        "ИП Длительность"
     ]
 }

@@ -36,7 +36,10 @@ var NocExport = (function() {
                         data.result.result,
                         data.result.fields
                         .map(function(name) {
-                            var label = dashboard.exportQuery.params[0].fields.filter(function(e) {return e.expr === name || e.alias === name})[0].label;
+                            var label = dashboard.exportQuery.params[0].fields
+                            .filter(function(e) {
+                                return e.expr === name || e.alias === name
+                            })[0].label;
 
                             return label ? label : name;
                         })
@@ -214,7 +217,7 @@ var NocExport = (function() {
                     ]
                 },
                 alias: 'duration_se',
-                label: 'Длительность по Отчету'
+                label: __('Duration by Report')
             };
         };
 
@@ -239,7 +242,7 @@ var NocExport = (function() {
                     })
                 },
                 alias: 'duration_val',
-                label: 'Длительность ИП'
+                label: __('EI Duration')
             }
         };
         var fields = dashboard.exportQuery.params[0].fields.filter(function(e) {
