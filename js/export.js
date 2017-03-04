@@ -31,7 +31,24 @@ var NocExport = (function() {
                     console.log(data.error);
                     return
                 }
-                var blob = new Blob([_toCsv(data.result.result, data.result.fields, '"', ';')], {type: "text/plain;charset=utf-8"});
+                var blob = new Blob([
+                    _toCsv(
+                        data.result.result,
+                        data.result.fields
+                        .map(function(name) {
+                            var label = dashboard.exportQuery.params[0].fields.filter(function(e) {return e.expr === name || e.alias === name})[0].label;
+
+                            return label ? label : name;
+                        })
+                        .map(function(name) {
+                            var field = dashboard.fieldsType[name];
+                            return field ?
+                                field.description ? field.description : name
+                                : name
+                        }),
+                        '"',
+                        ';')
+                ], {type: "text/plain;charset=utf-8"});
                 saveAs(blob, filename);
 
                 $('#export-btn')
@@ -52,16 +69,16 @@ var NocExport = (function() {
      * @return {string} The CSV equivalent of objArray.
      */
     var _toCsv = function(objArray, nameArray, sDelimiter, cDelimiter) {
-        var i, l, names = [], name, value, obj, row, output = "", n, nl;
+        var i, l, names = [], name, value, obj, row, output = '', n, nl;
 
         function toCsvValue(theValue, sDelimiter) {
             var t = typeof (theValue), output;
-            if(typeof (sDelimiter) === "undefined" || sDelimiter === null) {
+            if(typeof (sDelimiter) === 'undefined' || sDelimiter === null) {
                 sDelimiter = '"';
             }
-            if(t === "undefined" || t === null) {
-                output = "";
-            } else if(t === "string") {
+            if(t === 'undefined' || t === null) {
+                output = '';
+            } else if(t === 'string') {
                 output = sDelimiter + theValue + sDelimiter;
             } else {
                 output = String(theValue);
@@ -70,22 +87,22 @@ var NocExport = (function() {
         }
 
         // Initialize default parameters.
-        if(typeof (sDelimiter) === "undefined" || sDelimiter === null) {
+        if(typeof (sDelimiter) === 'undefined' || sDelimiter === null) {
             sDelimiter = '"';
         }
-        if(typeof (cDelimiter) === "undefined" || cDelimiter === null) {
-            cDelimiter = ",";
+        if(typeof (cDelimiter) === 'undefined' || cDelimiter === null) {
+            cDelimiter = ',';
         }
         for(i = 0, l = objArray.length; i < l; i += 1) {
             // Get the names of the properties.
             obj = objArray[i];
-            row = "";
+            row = '';
             if(i === 0) {
                 // Loop through the names
                 for(name in nameArray) {
                     if(nameArray.hasOwnProperty(name)) {
                         names.push(name);
-                        row += [sDelimiter, nameArray[name], sDelimiter, cDelimiter].join("");
+                        row += [sDelimiter, nameArray[name], sDelimiter, cDelimiter].join('');
                     }
                 }
                 row = row.substring(0, row.length - 1);
@@ -109,7 +126,7 @@ var NocExport = (function() {
     var _updateDurationZebra = function(filters) {
         if(Object.getOwnPropertyNames(dashboard.fieldsType).indexOf(dashboard.durationIntervalName) !== -1) {
             var dateInterval = NocFilter.getDateInterval();
-            if(typeof (filters) === "undefined" || filters === null) {
+            if(typeof (filters) === 'undefined' || filters === null) {
                 filters = NocFilter.getDurationIntervals();
                 if(!filters) {
                     _durationFields([[dateInterval[0], dateInterval[1]]]);
@@ -196,7 +213,8 @@ var NocExport = (function() {
                         }
                     ]
                 },
-                alias: 'duration_se'
+                alias: 'duration_se',
+                label: 'Длительность по Отчету'
             };
         };
 
@@ -215,12 +233,13 @@ var NocExport = (function() {
     var _durationFields = function(values) {
         var field = function(values) {
             return {
-                "expr": {
-                    "$duration": values.map(function(e) {
+                expr: {
+                    '$duration': values.map(function(e) {
                         return '[' + dashboard.toDateTime(e[0]) + ',' + dashboard.toDateTime(e[1]) + ']';
                     })
                 },
-                "alias": "duration_val"
+                alias: 'duration_val',
+                label: 'Длительность ИП'
             }
         };
         var fields = dashboard.exportQuery.params[0].fields.filter(function(e) {
