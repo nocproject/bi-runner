@@ -29,7 +29,7 @@ var NocAggregatePanel = (function() {
 
         // insert hr
         len = fields.length;
-        for(i = 1; i < len; i += 2) {
+        for(i = 1; i < len; i += 1) {
             if(fields[i - 1].group !== fields[i].group) {
                 insertIdx.push(i);
             }
