@@ -94,12 +94,6 @@ var NocFilter = (function() {
         };
     }
 
-    function orValuesArray(values) {
-        return [{
-            $or: values
-        }];
-    }
-
     function orValues(values) {
         if(values.length > 0) {
             return {
@@ -200,11 +194,16 @@ var NocFilter = (function() {
                     name = name.split(fieldNameSeparator)[0];
                     if('orForAnd' === key.condition) {
                         return orValues(key.values
-                        .filter(function(v) {
-                            return dashboard.durationIntervalName !== v.name;
-                        })
                         .map(function(v) {
-                            return conditionValue(v.name, v.values, v.type, v.condition);
+                            var name = v.name;
+                            var condition = v.condition;
+
+                            if(dashboard.durationIntervalName === v.name) {
+                                name = 'ts';
+                                condition = 'not.' + v.condition;
+                            }
+
+                            return conditionValue(name, v.values, v.type, condition);
                         }));
                     } else {
                         return conditionValue(name, key.values, key.type, key.condition);
@@ -261,7 +260,8 @@ var NocFilter = (function() {
             Object.getOwnPropertyNames(savedFilter).map(function(name) {
                 if(dashboard.durationIntervalName === savedFilter[name].values[0].name) {
                     NocExport.updateDurationZebra(valuesToDate(savedFilter[name].values));
-                } else if(name.split(fieldNameSeparator).length < 3) {
+                }
+                if(name.split(fieldNameSeparator).length < 3) {
                     if('orForAnd' === savedFilter[name].condition) {
                         filter[name] = {
                             values: savedFilter[name].values.map(function(val) {

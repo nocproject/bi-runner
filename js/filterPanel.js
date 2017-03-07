@@ -252,9 +252,8 @@ var NocFilterPanel = (function() {
                 if(!NocExport.updateDurationZebra(NocFilter.getFilter(id).values)) {
                     _unSelectedBtn($panel.find('.apply-filter'));
                 }
-            } else {
-                dashboard.drawAll();
             }
+            dashboard.drawAll();
             console.log('filter applied');
         });
 
