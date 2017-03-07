@@ -16,3 +16,13 @@ body {
 .hand {
   cursor: pointer;
 }
+
+.tree {
+  height: auto;
+  max-height: 300px;
+  overflow-x: hidden;
+}
+
+.tree .list-group-item {
+  border: 0px;
+}

@@ -143,17 +143,23 @@ var NocFilterPanel = (function() {
         }
     };
 
-    var _getTreeQuery = function(datasource, field_name, dict_name) {
+    var _getTreeQuery = function(datasource, field_name, dict_name, filter) {
+        var params = {
+            datasource: datasource,
+            field_name: field_name,
+            dic_name: dict_name
+        };
+
+        if(filter) {
+            params.filter = filter;
+        }
+
         return {
-            "params": [
-                {
-                    "datasource": datasource,
-                    "field_name": field_name,
-                    "dic_name": dict_name
-                }
+            params: [
+                params
             ],
-            "id": "0",
-            "method": "get_hierarchy"
+            id: 0,
+            method: 'get_hierarchy'
         }
     };
 
@@ -166,6 +172,14 @@ var NocFilterPanel = (function() {
             dict: value[2],
             description: element.find(':selected').text().split(',')[0]
         }
+    };
+
+    var _isEmpty = function(obj) {
+        for(var key in obj) {
+            if(obj.hasOwnProperty(key))
+                return false;
+        }
+        return true;
     };
 
     var _createPanel = function(id, field) {
@@ -302,50 +316,52 @@ var NocFilterPanel = (function() {
                 }
             });
         } else if(!field.type.indexOf('tree-')) {
-            $row.find('input').first()                      // add 'multiple' attr for multiple select
-            .replaceWith('<select name="' + field.name + '" class="form-control values"></select>');
-            // $row.find('.first-value').find('.values').append($('<option value="12" parent="1">12</option>'));
-            // $row.find('.first-value').find('.values').append($('<option value="1">1</option>'));
-            // $row.find('.first-value').find('.values').append($('<option value="13" parent="1">13</option>'));
-            // $row.find('.first-value').find('.values').append($('<option value="11" parent="1">11</option>'));
-            // $row.find('.first-value').find('.values').append($('<option value="131" parent="13">131</option>'));
-            // $row.find('.first-value').find('.values').append($('<option value="132" parent="13">132</option>'));
-            // $row.find('.first-value').find('.values').append($('<option value="2">2</option>'));
-            // $row.find('.first-value').find('.values').append($('<option value="21" parent="2">21</option>'));
-            // $row.find('.first-value').find('.values').append($('<option value="32" parent="3">32</option>'));
-            // $row.find('.first-value').find('.values').append($('<option value="33" parent="3">33</option>'));
-            // $row.find('.first-value').find('.values').append($('<option value="3">3</option>'));
-            // $row.find('.first-value').find('.values').append($('<option value="31" parent="3">31</option>'));
-            // $row.find('.first-value').find('.values').append($('<option value="22" parent="2">22</option>'));
-            // $row.find('.first-value').find('.values').append($('<option value="133" parent="13">133</option>'));
-            // $row.find('.first-value').find('.values').append($('<option value="23" parent="2">23</option>'));
-            // $row.find('.first-value').find('.values').select2tree();
+            var treeElement = {gulp_inject: './templates/tree.html'};
+            $row.find('input').first()
+            .replaceWith(treeElement.replace('{name}', __('Select from') + ' ' + field.dict));
 
-            $.ajax({
-                url: '/api/bi/',
-                type: 'POST',
-                contentType: 'application/json',
-                dataType: 'json',
-                data: JSON.stringify(_getTreeQuery(dashboard.datasource, field.name, field.dict))
-            }).then(function(data) {
-                if(!data.error) {
-                    console.log('************** : ' + data.result.length);
-                    var i, len;
-                    for(i = 0, len = data.result.length; i < len; i += 1) {
-                        var row = data.result[i];
-                        var $option = $('<option value="' + row.id + '">' + row.name + '</option>');
+            var $tree = $row.find('.tree');
 
-                        if(row.p_id) {
-                            $option.attr('parent', row.p_id);
+            var tree = $tree.tree({
+                // checkboxes: true,
+                uiLibrary: 'bootstrap',
+                primaryKey: 'id',
+                selectionType: 'multiple',
+                cascadeSelection: true,
+                params: _getTreeQuery(dashboard.datasource, field.name, field.dict),
+                autoLoad: true,
+                dataSource: {
+                    url: '/api/bi/',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    converters: {
+                        "text json": function(value) {
+                            var data = jQuery.parseJSON(value);
+
+                            if(_isEmpty(data.result)) {
+                                return [{text: __('not found')}];
+                            } else {
+                                return [data.result];
+                            }
                         }
-                        $row.find('.first-value').find('.values').append($option);
                     }
-                    // $row.find('.first-value').find('.values').append(new Option(data.result.result[0], val1, true, true));
-                    // $row.find('.first-value').find('.values').trigger('change');
-                } else {
-                    $row.remove();
                 }
-                $row.find('.first-value').find('.values').select2tree();
+            });
+
+            $row.find('.dropdown-menu').click(function(event) {
+                if($(event.target).hasClass('choose')) {
+                    console.log(tree.getSelections());
+                    console.log($tree.getSelections());
+                } else {
+                    event.stopPropagation();
+                }
+            });
+            $row.find('.pattern').keyup(function(event) {
+                var pattern = $(event.target).val();
+                console.log(pattern);
+
+                tree.reload(_getTreeQuery(dashboard.datasource, field.name, field.dict, pattern));
             });
 
             while(conditionOptions.length > 0) {
