@@ -25,9 +25,9 @@ var NocFilterPanel = (function() {
     var determinateType = function(name, field) {
 
         if(field.dict) {
-            // if('administrative_domain' === name) {
-            //     return 'tree-' + field.dict;
-            // }
+            if('administrative_domain' === name) {
+                return 'tree-' + field.dict;
+            }
             return 'dict-' + field.dict;
         }
 
@@ -184,11 +184,11 @@ var NocFilterPanel = (function() {
 
     var _createPanel = function(id, field) {
         var filterPanel = {gulp_inject: './templates/filter-panel.html'};
-        var typeText = __('type') + ':<b>' + field.type + '</b>';
+        var typeText = __('type') + ': <b>' + field.type + '</b>';
         var $panel;
 
         if(!field.type.indexOf('dict-') || !field.type.indexOf('tree-')) {
-            typeText = __('dictionary') + ':<b>' + field.dict + '</b>';
+            typeText = __('dictionary') + ': <b>' + field.dict + '</b>';
         }
 
         filterPanel = filterPanel.replace(/{name}/g, field.name);
@@ -277,6 +277,26 @@ var NocFilterPanel = (function() {
         return $panel;
     };
 
+    var _selectHalf = function(tree, node, method) {
+        var parent = $(node).parents('li');
+
+        if($.isFunction($.fn[method])) {
+            if(parent.children('li.active')) {
+                parent[method]('active-half');
+            }
+            _selectHalf(tree, parent);
+        }
+    };
+
+    var _treeUp = function(tree, node, method) {
+        var parent = $(node).parents('li');
+
+        if(parent.length > 0) {
+            tree.tree(method, parent);
+            _treeUp(tree, parent);
+        }
+    };
+
     var _replaceInput = function(field, $row, conditionOptions) {
         if(!field.type.indexOf('dict-')) {
             $row.find('input').first()                      // add 'multiple' attr for multiple select
@@ -317,16 +337,17 @@ var NocFilterPanel = (function() {
         } else if(!field.type.indexOf('tree-')) {
             var treeElement = {gulp_inject: './templates/tree.html'};
             $row.find('input').first()
-            .replaceWith(treeElement.replace('{name}', __('Select from') + ' ' + field.dict));
-
-            var $tree = $row.find('.tree');
-
-            var tree = $tree.tree({
+            .replaceWith(
+                treeElement
+                .replace('{nameHeader}', __('Select from') + ' ' + field.dict)
+                .replace(/{name}/g, field.name)
+            );
+            var $tree = $row.find('.tree').tree({
                 // checkboxes: true,
+                // selectionType: 'multiple',
+                // cascadeSelection: true,
                 uiLibrary: 'bootstrap',
                 primaryKey: 'id',
-                selectionType: 'multiple',
-                cascadeSelection: true,
                 params: _getTreeQuery(dashboard.datasource, field.name, field.dict),
                 autoLoad: true,
                 dataSource: {
@@ -339,7 +360,7 @@ var NocFilterPanel = (function() {
                             var data = jQuery.parseJSON(value);
 
                             if(_isEmpty(data.result)) {
-                                return [{text: __('not found')}];
+                                return [{text: __('not found'), id: 'not.found'}];
                             } else {
                                 return [data.result];
                             }
@@ -349,18 +370,32 @@ var NocFilterPanel = (function() {
             });
 
             $row.find('.dropdown-menu').click(function(event) {
-                if($(event.target).hasClass('choose')) {
-                    console.log(tree.getSelections());
-                    console.log($tree.getSelections());
-                } else {
-                    event.stopPropagation();
-                }
+                event.stopPropagation();
             });
             $row.find('.pattern').keyup(function(event) {
                 var pattern = $(event.target).val();
                 console.log(pattern);
 
-                tree.reload(_getTreeQuery(dashboard.datasource, field.name, field.dict, pattern));
+                $tree.tree('reload', _getTreeQuery(dashboard.datasource, field.name, field.dict, pattern));
+            });
+            $tree.on('select', function(e, node, id) {
+                if(id !== 'not.found') {
+                    var data = $tree.tree('getDataById', id);
+
+                    $row.find('.first-value').find('.values').val(
+                        [id].concat($.map($(node).children('ul').find('li'), function(element) {
+                            return $(element).attr('data-id')
+                        }))
+                    );
+                    _selectHalf($tree, node, 'addClass');
+                    $row.find('a>.select2-selection__rendered').text(data.text);
+                    $row.find('.first-value>div>span>.selection').removeClass('open');
+                    $row.find('input.values').trigger('change');
+                }
+            });
+            $tree.on('unselect', function(e, node, id) {
+                console.log(id);
+                _selectHalf($tree, node, 'removeClass');
             });
 
             while(conditionOptions.length > 0) {
@@ -475,6 +510,7 @@ var NocFilterPanel = (function() {
             .on('click', function() {
                 console.log('remove inner row');
                 $row.remove();
+                _unSelectedBtn($panel.find('.apply-filter'));
             })
         }
 
@@ -548,8 +584,19 @@ var NocFilterPanel = (function() {
                 });
             }
             if(!field.type.indexOf('tree-')) {
-                $row.find('.first-value').find('.values').val(field.values.join(','));
-                _selectedBtn($panel.find('.apply-filter'));
+                var $tree = $row.find('.tree');
+
+                $tree.one('dataBound', function() {
+                    var data = $tree.tree('getDataById', field.values[0]);
+                    var node = $tree.tree('getNodeById', field.values[0]);
+
+                    node.addClass('active');
+                    _treeUp($tree, node, 'expand');
+                    _selectHalf($tree, node, 'addClass');
+                    $row.find('.first-value').find('.values').val(field.values.join(','));
+                    $row.find('a>.select2-selection__rendered').text(data.text);
+                    _selectedBtn($panel.find('.apply-filter'));
+                });
             } else {
                 if('DateTime' === field.type && !field.condition.match(/periodic/i)) {
                     val1 = dashboard.dateToString(new Date(Date.parse(val1)), "%Y-%m-%dT%H:%M:%S");

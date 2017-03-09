@@ -23,6 +23,10 @@ body {
   overflow-x: hidden;
 }
 
+.active-half{
+  background-color: $brand-primary-half;
+}
+
 .tree .list-group-item {
   border: 0px;
 }

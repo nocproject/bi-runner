@@ -17,7 +17,7 @@ var NocExport = (function() {
         _updateDuration();
         _updateDurationZebra();
         console.log('file for export : ' + filename);
-        $("#export-btn").off("click");
+        $('#export-btn').off('click');
 
         d3.json('/api/bi/')
         .header("Content-Type", "application/json")
