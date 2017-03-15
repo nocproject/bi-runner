@@ -196,8 +196,8 @@ var Dashboard = function(element) {
         });
 
         $('#save-btn')
-        .on("click", "", function() {
-            saveBoard();
+        .on('click', function() {
+            dashboard.saveBoard();
         });
 
         $('#report-name').text(dashboardJSON.title);
@@ -299,9 +299,10 @@ var Dashboard = function(element) {
 
                 this.dashboardJSON = data.result;
                 if(!this.dashboardJSON) {
-                    $('#report-name').text('Report not found!');
+                    $('#report-name').text(_('Report not found!'));
                     $('#edit-btn').closest('li').remove();
                     $('#export-btn').closest('li').remove();
+                    $('#save-menu').closest('li').remove();
                     return;
                 }
 
@@ -342,6 +343,7 @@ var Dashboard = function(element) {
                         dashboard.clear();
                         dashboard.datasource = dashboardJSON.datasource;
                         dashboard.title = dashboardJSON.title;
+                        dashboard.description = dashboardJSON.description;
                         dashboard.agv_fields = dashboardJSON.agv_fields;
                         NocExport.init(dashboard);
                         drawBoard();
@@ -505,9 +507,10 @@ var Dashboard = function(element) {
         $('#' + widget.cell).replaceWith(tableTpl + '</tr></thead></table>');
     };
 
-    var saveBoard = function() {
+    this.saveBoard = function(title, description) {
         var filter = NocFilter.getFilter();
 
+        $('#save-menu').find('.spinner').show();
         if(!dashboardJSON.hasOwnProperty('filter')) {
             dashboardJSON.filter = {};
         }
@@ -538,6 +541,12 @@ var Dashboard = function(element) {
         });
         dashboardJSON.export = dashboard.exportQuery;
 
+        if(title) {
+            dashboardJSON.title = title;
+            dashboardJSON.description = description;
+            delete dashboardJSON.id;
+        }
+
         d3.json('/api/bi/')
         .header("Content-Type", "application/json")
         .post(
@@ -546,8 +555,12 @@ var Dashboard = function(element) {
                 method: 'set_dashboard',
                 params: [dashboardJSON]
             }),
-            function(error) {
+            function(error, data) {
+                $('#save-menu').find('.spinner').hide();
                 console.log('save board - done, error : ' + error);
+                if(title) {
+                    $(location).attr('search','?id=' + data.result);
+                }
             });
     };
 

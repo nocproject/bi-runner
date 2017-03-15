@@ -58,7 +58,7 @@ var NocExport = (function() {
                 saveAs(blob, filename);
 
                 $('#export-btn')
-                .on("click", "", function() {
+                .on('click', function() {
                     _export();
                     $('#export-btn').find('.spinner').show();
                 })
