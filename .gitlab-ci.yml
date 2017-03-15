@@ -1,9 +1,3 @@
-cache:
-  untracked: true
-  key: "$CI_BUILD_REF_NAME"
-  paths:
-    - node_modules/
-
 stages:
   - build
   - build_package
@@ -25,6 +19,11 @@ build_npm:
     paths:
       - dist/
     expire_in: 3 min
+  cache:
+    key: "$CI_BUILD_REF_NAME"
+    paths:
+      - node_modules/
+
 
 build:
   stage: build_package
