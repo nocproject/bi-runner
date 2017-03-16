@@ -39,7 +39,8 @@ var SOURCE_FILES = [
     './js/filter.js',
     './js/aggregatePanel.js',
     './js/filterPanel.js',
-    './js/export.js'
+    './js/export.js',
+    './js/dialogs.js'
 ];
 
 var LANGUAGE_FILES = [
@@ -70,7 +71,9 @@ var LIBS_FILES = [
     './node_modules/select2/dist/js/select2.js',
     './node_modules/bootstrap-checkbox/dist/js/bootstrap-checkbox.js',
     './node_modules/jquery-mask-plugin/dist/jquery.mask.js',
-    './node_modules/gijgo-modular/tree/js/tree.js'
+    './node_modules/gijgo-modular/tree/js/tree.js',
+    './node_modules/bootstrap-table/dist/bootstrap-table.js',
+    './node_modules/bootstrap-dialog/dist/js/bootstrap-dialog.js'
 ];
 
 var CSS_FILES = [
@@ -78,7 +81,8 @@ var CSS_FILES = [
     './node_modules/pikaday-time/css/pikaday.css',
     './node_modules/dc/dc.css',
     './node_modules/select2/dist/css/select2.css',
-    './node_modules/gijgo-modular/tree/css/tree.css'
+    './node_modules/gijgo-modular/tree/css/tree.css',
+    './node_modules/bootstrap-table/dist/bootstrap-table.css'
 ];
 
 gulp.task('clean', function() {

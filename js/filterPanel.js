@@ -22,7 +22,7 @@ var NocFilterPanel = (function() {
         $('.ipv4').mask('099.099.099.099');
     };
 
-    var determinateType = function(name, field) {
+    var _determinateType = function(name, field) {
 
         if(field.dict) {
             if('administrative_domain' === name) {
@@ -59,7 +59,7 @@ var NocFilterPanel = (function() {
             data: Object.getOwnPropertyNames(dashboard.fieldsType).map(function(name) {
                 var field = dashboard.fieldsType[name];
                 var text = field.description ? field.description : name;
-                var type = determinateType(name, field);
+                var type = _determinateType(name, field);
 
                 return {
                     id: [name, type, field.dict].filter(function(e) {
@@ -209,7 +209,7 @@ var NocFilterPanel = (function() {
                 var condition = $(this).parent().find('.condition').val();
                 var name = element.attr('name');
                 var value = element.val();
-                var type = determinateType(name, dashboard.fieldsType[name]);
+                var type = _determinateType(name, dashboard.fieldsType[name]);
                 var pattern;
 
                 console.log('condition : ' + condition + ',' + name + '=' + value);
