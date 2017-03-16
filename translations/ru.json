@@ -7,8 +7,8 @@
         "Language-Team": "ru <LL@li.org>",
         "Last-Translator": "",
         "MIME-Version": "1.0",
-        "PO-Revision-Date": "2017-03-15 18:05+0300",
-        "POT-Creation-Date": "2017-03-15 17:40+0300",
+        "PO-Revision-Date": "2017-03-16 09:54+0300",
+        "POT-Creation-Date": "2017-03-16 09:52+0300",
         "Plural-Forms": "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);",
         "Project-Id-Version": "The NOC Project VERSION",
         "Report-Msgid-Bugs-To": "EMAIL@ADDRESS",
@@ -21,6 +21,10 @@
     "All": [
         null,
         "Все"
+    ],
+    "Application NOC BI": [
+        null,
+        "Приложение NOC BI"
     ],
     "Apply": [
         null,
@@ -49,6 +53,10 @@
     "Clear filters": [
         null,
         "Сбросить фильтры"
+    ],
+    "Close": [
+        null,
+        "Закрыть"
     ],
     "Columns": [
         null,
@@ -268,7 +276,7 @@
     ],
     "Select a field": [
         null,
-        "Выберете поле"
+        "Выберите поле"
     ],
     "Select from": [
         null,
@@ -461,5 +469,9 @@
     "value is not number": [
         null,
         "значение не число"
+    ],
+    "version": [
+        null,
+        "версия"
     ]
 }

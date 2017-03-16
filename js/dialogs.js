@@ -1,5 +1,5 @@
 var NocDialog = (function() {
-    var dialogType = BootstrapDialog.TYPE_DEFAULT;
+    var dialogType = BootstrapDialog.TYPE_PRIMARY;
 
     var _load = function() {
         var formatter = function(value) {
@@ -131,7 +131,6 @@ var NocDialog = (function() {
         BootstrapDialog.show({
             title: __('Save As Report'),
             type: dialogType,
-            spinicon: '',
             message: __('Name') + ': <input id="save-report-name" type="text" class="form-control">' + __('Description') +
             ': <textarea id="save-report-desc" class="form-control" placeholder="' + 'Description' + '"></textarea>',
             onshown: function() {
@@ -177,8 +176,23 @@ var NocDialog = (function() {
         }
     };
 
+    var _aboutDlg = function() {
+        BootstrapDialog.show({
+            title: __('Application NOC BI'),
+            type: dialogType,
+            message: '<p>NOC BI ' + __('version') + ' 0.0.0.0</p><small>Copyright © 2007-2016, The NOC Project</small>',
+            buttons: [{
+                label: __('Close'),
+                action: function(dialog) {
+                    dialog.close();
+                }
+            }]
+        });
+    };
+
     return {
         selectReportDlg: _selectReport,
-        saveAsReportDlg: _saveAsReport
+        saveAsReportDlg: _saveAsReport,
+        aboutDlg: _aboutDlg
     }
 })();

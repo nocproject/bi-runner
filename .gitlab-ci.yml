@@ -15,7 +15,7 @@ build_npm:
   script:
     - if [ -n "${CI_BUILD_TAG}" ]; then export VERSION_FULL=${CI_BUILD_TAG}-${CI_BUILD_ID}; else export VERSION_FULL=${CI_BUILD_REF_NAME}-${CI_BUILD_ID}; fi
     - if [ -n "${CI_BUILD_TAG}" ]; then export VERSION_SHORT=${CI_BUILD_TAG}; else export VERSION_SHORT=0.0.0-dev; fi
-    - sed -i s/0.0.0.0/${VERSION_FULL}/ index.html
+    - sed -i s/0.0.0.0/${VERSION_FULL}/ js/dialogs.js
     - sed -i s/0.0.0/${VERSION_SHORT}/ package.json
     - npm install
     - npm run build.prod

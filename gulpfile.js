@@ -82,8 +82,7 @@ var CSS_FILES = [
     './node_modules/dc/dc.css',
     './node_modules/select2/dist/css/select2.css',
     './node_modules/gijgo-modular/tree/css/tree.css',
-    './node_modules/bootstrap-table/dist/bootstrap-table.css',
-    './node_modules/bootstrap-dialog/dist/css/bootstrap-dialog.css'
+    './node_modules/bootstrap-table/dist/bootstrap-table.css'
 ];
 
 gulp.task('clean', function() {
