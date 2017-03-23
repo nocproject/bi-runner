@@ -168,7 +168,6 @@ var NocFilter = (function() {
 
     function updateWidgets(queryFilter) {
         widgets.map(function(widget) {
-            // console.log(JSON.stringify(queryFilter));
             setFilter(widget, queryFilter);
         });
     }
@@ -256,9 +255,6 @@ var NocFilter = (function() {
                 filter['startDate'] = convert('startDate', savedFilter['startDate']);
             }
             Object.getOwnPropertyNames(savedFilter).map(function(name) {
-                // if(dashboard.durationIntervalName === savedFilter[name].values[0].name) {
-                //     NocExport.updateDurationZebra(valuesToDate(savedFilter[name].values));
-                // }
                 if(name.split(fieldNameSeparator).length < 3) {
                     if('orForAnd' === savedFilter[name].condition) {
                         filter[name] = {
