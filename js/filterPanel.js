@@ -824,11 +824,6 @@ var NocFilterPanel = (function() {
             format: 'YYYY-MM-DDTHH:mm:00',
             showSeconds: false
         });
-
-        // $row.find('input').on('change', function() {
-        //     console.log('onChange pikaday');
-        //     _unSelectedBtn($row.closest('.filter-rows').siblings().find('.apply-filter'));
-        // });
         dashboard.setPikaBounds();
     };
 
