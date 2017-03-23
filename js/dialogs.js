@@ -147,7 +147,7 @@ var NocDialog = (function() {
                 {
                     label: __('Save'),
                     action: function(dialog) {
-                        var id = dashboard.saveBoard($('#save-report-name').val(), $('#save-report-desc').text());
+                        dashboard.saveBoard($('#save-report-name').val(), $('#save-report-desc').text());
                         $('#report-name').text(dashboardJSON.title);
                         dialog.close();
                     }

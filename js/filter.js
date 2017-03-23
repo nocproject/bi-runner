@@ -55,9 +55,7 @@ var NocFilter = (function() {
             } else if('String' === type) {
                 values = values[0];
             } else if(type && (!type.indexOf('tree-') || !type.indexOf('dict-') || type.match(/int|float/i))) {
-                values = {
-                    $field: values
-                };
+                values = Number(values);
             }
 
             if(condition) {
@@ -258,9 +256,9 @@ var NocFilter = (function() {
                 filter['startDate'] = convert('startDate', savedFilter['startDate']);
             }
             Object.getOwnPropertyNames(savedFilter).map(function(name) {
-                if(dashboard.durationIntervalName === savedFilter[name].values[0].name) {
-                    NocExport.updateDurationZebra(valuesToDate(savedFilter[name].values));
-                }
+                // if(dashboard.durationIntervalName === savedFilter[name].values[0].name) {
+                //     NocExport.updateDurationZebra(valuesToDate(savedFilter[name].values));
+                // }
                 if(name.split(fieldNameSeparator).length < 3) {
                     if('orForAnd' === savedFilter[name].condition) {
                         filter[name] = {

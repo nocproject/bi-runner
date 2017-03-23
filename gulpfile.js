@@ -64,7 +64,7 @@ var LIBS_FILES = [
     './node_modules/jquery-deparam/jquery-deparam.js',
     './node_modules/crossfilter/crossfilter.js',
     './node_modules/d3/d3.js',
-    './node_modules/pikaday-time/pikaday.js',
+    './js/lib/pikaday.js',
     './node_modules/pikaday-time/plugins/pikaday.jquery.js',
     './node_modules/dc/dc.js',
     './node_modules/file-saver/FileSaver.js',

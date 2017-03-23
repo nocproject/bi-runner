@@ -15,7 +15,7 @@ var NocExport = (function() {
         var filename = dashboard.title.replace(/ /g, '_') + '_' + dashboard.dateToString(dateInterval[0], '%Y%m%d')
             + '-' + dashboard.dateToString(dateInterval[1], '%Y%m%d') + '.csv';
         _updateDuration();
-        _updateDurationZebra();
+        _updateDurationZebra(NocFilterPanel.durationIntervals());
         console.log('file for export : ' + filename);
         $('#export-btn').off('click');
 
@@ -129,53 +129,58 @@ var NocExport = (function() {
         return output;
     };
 
-    var _updateDurationZebra = function(filters) {
+    var _updateDurationZebra = function(values) {
         if(Object.getOwnPropertyNames(dashboard.fieldsType).indexOf(dashboard.durationIntervalName) !== -1) {
-            var dateInterval = NocFilter.getDateInterval();
-            if(typeof (filters) === 'undefined' || filters === null) {
-                filters = NocFilter.getDurationIntervals();
-                if(!filters) {
-                    _durationFields([[dateInterval[0], dateInterval[1]]]);
-                    return true;
-                }
-            }
-            var result = [];
-            var sorted = filters.sort(function(e1, e2) {
-                return e1.values[0] - e2.values[0];
-            });
-            var firstDate = sorted[0].values[0];
-            var lastDate = sorted[sorted.length - 1].values[1];
+            var result = _makeIntervals(values);
 
+            // var dateInterval = NocFilter.getDateInterval();
+            //
+            // if(typeof (filters) === 'undefined' || filters === null) {
+            //     filters = NocFilter.getDurationIntervals();
+            //     if(!filters) {
+            //         _durationFields([[dateInterval[0], dateInterval[1]]]);
+            //         return true;
+            //     }
+            // }
+            // var result = [];
+            // var sorted = filters.sort(function(e1, e2) {
+            //     return e1.values[0] - e2.values[0];
+            // });
+            // var firstDate = sorted[0].values[0];
+            // var lastDate = sorted[sorted.length - 1].values[1];
+            //
+            //
+            // if(dateInterval[0] <= firstDate && lastDate <= dateInterval[1]) {
+            //     var dates = [];
+            //
+            //     dates = dates.concat([].concat.apply([], (sorted.map(function(e) {
+            //         return e.values
+            //     }))));
+            //
+            //     if(dateInterval[0].getTime() !== firstDate.getTime()) {
+            //         dates.unshift(dateInterval[0]);
+            //     } else {
+            //         dates.shift();
+            //     }
+            //
+            //     if(lastDate.getTime() !== dateInterval[1].getTime()) {
+            //         dates.push(dateInterval[1]);
+            //     } else {
+            //         dates.pop();
+            //     }
+            //
+            //     for(var i = 0; i < dates.length; i += 2) {
+            //         result.push([dates[i], dates[i + 1]]);
+            //     }
+            // }
+            // if(result.length === 0) {
+            //     console.log('duration intervals more than time selector interval!');
+            //     return false;
+            // }
 
-            if(dateInterval[0] <= firstDate && lastDate <= dateInterval[1]) {
-                var dates = [];
-
-                dates = dates.concat([].concat.apply([], (sorted.map(function(e) {
-                    return e.values
-                }))));
-
-                if(dateInterval[0].getTime() !== firstDate.getTime()) {
-                    dates.unshift(dateInterval[0]);
-                } else {
-                    dates.shift();
-                }
-
-                if(lastDate.getTime() !== dateInterval[1].getTime()) {
-                    dates.push(dateInterval[1]);
-                } else {
-                    dates.pop();
-                }
-
-                for(var i = 0; i < dates.length; i += 2) {
-                    result.push([dates[i], dates[i + 1]]);
-                }
-            }
-            if(result.length === 0) {
-                console.log('duration intervals more than time selector interval!');
-                return false;
-            }
-            console.log(result);
-            _durationFields(result);
+            _durationFields(result.map(function(element) {
+                return [element.start, element.end]
+            }));
             return true;
         }
         return false;
@@ -256,10 +261,86 @@ var NocExport = (function() {
         dashboard.exportQuery.params[0].fields = fields;
     };
 
+    var _generateIntervals = function(startEndTotal, startTime, endTime) {
+        var start = startEndTotal[0];
+        var end = startEndTotal[1];
+        var from = startTime.split(':');
+        var to = endTime.split(':');
+        var nextFirst = new Date(start.getFullYear(), start.getMonth(), start.getDate(), Number(from[0]), Number(from[1]));
+        var result = [];
+
+        if(nextFirst > start) {
+            result.push({
+                start: nextFirst,
+                end: new Date(nextFirst.getFullYear(), nextFirst.getMonth(), nextFirst.getDate(), Number(to[0]), Number(to[1]))
+            });
+        } else {
+            var secondFirst = new Date(start.getFullYear(), start.getMonth(), start.getDate(), Number(to[0]), Number(to[1]));
+            if(secondFirst > start) {
+                result.push({
+                    start: start,
+                    end: secondFirst
+                });
+            }
+        }
+
+        do {
+            nextFirst = new Date(nextFirst.getTime() + 86400000);
+            var second = new Date(nextFirst.getFullYear(), nextFirst.getMonth(), nextFirst.getDate(), Number(to[0]), Number(to[1]));
+            if(nextFirst > end) {
+                break;
+            }
+            result.push({
+                start: nextFirst,
+                end: second < end ? second : end
+            });
+        } while(true);
+
+        return result;
+    };
+
+    var _makeIntervals = function(values) {
+        return values.filter(function(element) {
+            return !element.condition.match(/periodic/);
+        })
+        .map(function(element) {
+            return {start: dashboard.parseDate(element.start, '%Y-%m-%dT%H:%M:00'), end: dashboard.parseDate(element.end, '%Y-%m-%dT%H:%M:00')}
+        })
+        .concat([].concat.apply([], values.filter(function(element) {
+            return element.condition.match(/periodic/);
+        })
+        .map(function(element) {
+            return _generateIntervals(NocFilter.getDateInterval(), element.start, element.end)
+        })))
+        .sort(function(a, b) {
+            return a.start.getTime() - b.start.getTime();
+        })
+        .reduce(function(acc, curr, currIndex) { // join interval
+            if(currIndex) {
+                if(acc[acc.length - 1].end.getTime() === curr.start.getTime()) {
+                    acc[acc.length - 1].end = curr.end;
+                    return acc;
+                }
+            }
+            return acc.concat({start: curr.start, end: curr.end});
+        }, []);
+    };
+
     return {
         init: _init,
         export: _export,
         updateDuration: _updateDuration,
-        updateDurationZebra: _updateDurationZebra
+        updateDurationZebra: _updateDurationZebra,
+        checkDurationIntervals: function(values) {
+            return _makeIntervals(values).reduce(function(acc, curr, index, arr) {      // search error
+                if(index && arr[index - 1].end > curr.start) {                          // check end prev and start curr
+                    return acc.concat([[
+                        arr[index - 1].start.toString() + ' - ' + arr[index - 1].end.toString(),
+                        curr.start.toString() + ' - ' + curr.end.toString()
+                    ]]);
+                }
+                return acc;
+            }, []);
+        }
     }
 })();

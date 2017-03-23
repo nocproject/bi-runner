@@ -120,7 +120,7 @@ var Dashboard = function(element) {
             container: document.getElementById('startIntervalContainer'),
             bound: false,
             minDate: new Date(2014, 1, 1),
-            maxDate: new Date(),
+            maxDate: tomorrow(),
             theme: 'pikaday-theme',
             firstDay: 1,
             i18n: dashboard.pikaday_i18n,
@@ -140,7 +140,7 @@ var Dashboard = function(element) {
             bound: false,
             theme: 'pikaday-theme',
             minDate: new Date(2014, 1, 1),
-            maxDate: new Date(),
+            maxDate: tomorrow(),
             firstDay: 1,
             i18n: dashboard.pikaday_i18n,
             incrementMinuteBy: 10,
@@ -274,10 +274,6 @@ var Dashboard = function(element) {
             maxDate = new Date($('#endInterval').val());
         }
 
-        // $('.values.pikaday').each(function() {
-        //     $(this).pikaday('setMinDate', minDate)
-        //         .pikaday('setMaxDate', maxDate);
-        // });
         $('.values.pikaday')
         .pikaday('setMinDate', minDate)
         .pikaday('setMaxDate', maxDate);
@@ -298,6 +294,7 @@ var Dashboard = function(element) {
                     throw new Error(error);
 
                 this.dashboardJSON = data.result;
+                this.dashboardJSON.id = id;
                 if(!this.dashboardJSON) {
                     $('#report-name').text(_('Report not found!'));
                     $('#edit-btn').closest('li').remove();
@@ -559,7 +556,7 @@ var Dashboard = function(element) {
                 $('#save-menu').find('.spinner').hide();
                 console.log('save board - done, error : ' + error);
                 if(title) {
-                    $(location).attr('search','?id=' + data.result);
+                    $(location).attr('search', '?id=' + data.result);
                 }
             });
     };
@@ -1091,5 +1088,9 @@ var Dashboard = function(element) {
         console.log('length : ' + data.result.result.length);
         console.log("sql : " + data.result.sql);
         return false;
+    };
+
+    var tomorrow = function() {
+        return new Date(new Date() + 86400000);
     }
 };

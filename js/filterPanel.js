@@ -216,6 +216,9 @@ var NocFilterPanel = (function() {
 
                 _validate($panel, this, type, condition);
 
+                // ToDo Error dialog
+                // console.log(NocExport.checkDurationIntervals(_durationIntervals()));
+
                 if('in' === condition || 'not.in' === condition) {
                     value = value.split(',');
                 } else if(condition.match(/interval/i)) {
@@ -249,7 +252,7 @@ var NocFilterPanel = (function() {
             _selectedBtn($panel.find('.apply-filter'));
             NocFilter.updateFilter(id, field.type, values, 'orForAnd');
             if(dashboard.durationIntervalName === field.name) {
-                if(!NocExport.updateDurationZebra(NocFilter.getFilter(id).values)) {
+                if(!NocExport.updateDurationZebra(_durationIntervals())) {
                     _unSelectedBtn($panel.find('.apply-filter'));
                 }
             }
@@ -374,9 +377,17 @@ var NocFilterPanel = (function() {
             });
             $row.find('.pattern').keyup(function(event) {
                 var pattern = $(event.target).val();
-                console.log(pattern);
+                var keyCode = event.keyCode;
 
-                $tree.tree('reload', _getTreeQuery(dashboard.datasource, field.name, field.dict, pattern));
+                if(keyCode === 8 || keyCode === 13 ||
+                    (keyCode > 47 && keyCode < 58) || // number keys
+                    (keyCode > 64 && keyCode < 91) || // letter keys
+                    (keyCode > 95 && keyCode < 112) || // numpad keys
+                    (keyCode > 185 && keyCode < 193) || // ;=,-./` (in order)
+                    (keyCode > 218 && keyCode < 223)) {
+                    console.log(pattern);
+                    $tree.tree('reload', _getTreeQuery(dashboard.datasource, field.name, field.dict, pattern));
+                }
             });
             $tree.on('select', function(e, node, id) {
                 if(id !== 'not.found') {
@@ -412,7 +423,8 @@ var NocFilterPanel = (function() {
                     conditionOptions.pop();
                 }
                 conditionOptions.push(
-                    {id: 'interval', text: __('interval')}
+                    {id: 'interval', text: __('interval')},
+                    {id: 'periodic.interval', text: __('periodic interval')}
                 );
                 $row.filter('.second-value').removeClass('hidden');
             } else {
@@ -422,9 +434,9 @@ var NocFilterPanel = (function() {
                     {id: 'periodic.interval', text: __('periodic interval')},
                     {id: 'not.periodic.interval', text: __('not in periodic')},
                     {id: '$lt', text: '<'},
-                    {id: '$le', text: '<='},
+                    {id: '$lte', text: '<='},
                     {id: '$gt', text: '>'},
-                    {id: '$ge', text: '>='}
+                    {id: '$gte', text: '>='}
                 );
             }
         } else if('Date' === field.type) {
@@ -433,9 +445,9 @@ var NocFilterPanel = (function() {
                 {id: 'interval', text: __('interval')},
                 {id: 'not.interval', text: __('not in interval')},
                 {id: '$lt', text: '<'},
-                {id: '$le', text: '<='},
+                {id: '$lte', text: '<='},
                 {id: '$gt', text: '>'},
-                {id: '$ge', text: '>='}
+                {id: '$gte', text: '>='}
             );
         } else if('IPv4' === field.type) {
             console.log('setting mask for ip, change placeholder to xxx.xxx.xxx.xxx');
@@ -457,9 +469,9 @@ var NocFilterPanel = (function() {
                 {id: 'interval', text: __('interval')},
                 {id: 'not.interval', text: __('not in interval')},
                 {id: '$lt', text: '<'},
-                {id: '$le', text: '<='},
+                {id: '$lte', text: '<='},
                 {id: '$gt', text: '>'},
-                {id: '$ge', text: '>='}
+                {id: '$gte', text: '>='}
             );
         }
     };
@@ -530,6 +542,10 @@ var NocFilterPanel = (function() {
         .on('change', function() {
             var value = $(this).val();
 
+            if($row.find('input').hasClass('pikaday')) {
+                $row.find('input').pikaday('destroy');
+            }
+
             $row.find('.first-value').addClass('hidden');
             $row.find('.first-value>label').text(__('Value') + ':');
             $row.filter('.second-value').addClass('hidden');
@@ -540,6 +556,8 @@ var NocFilterPanel = (function() {
                 $row.filter('.second-value').removeClass('hidden');
                 $row.find('.first-value>label').text(__('Start Value') + ':');
                 $row.filter('.second-value').find('input').val(null);
+                $row.find('input')
+                .replaceWith('<input type="text" class="form-control values" name="' + field.name + '" placeholder="YYYY-MM-DDTHH:mm:00">');
             }
             if('DateTime' === field.type && !value.match(/periodic/i)) {
                 _setDateTimeField($row, field);
@@ -547,20 +565,28 @@ var NocFilterPanel = (function() {
                 _setDateField($row, field);
             }
             if(value.match(/periodic/i)) {
-                $row.find('input').replaceWith('<input type="text" class="form-control values periodic" name="' + field.name + '" placeholder="HH:mm">');
+                $row.find('input')
+                .replaceWith('<input type="text" class="form-control values periodic" name="' + field.name + '" placeholder="HH:mm">');
             }
+
+            $row.find('.values')
+            .off('change')
+            .on('change', function() {
+                _unSelectedBtn($panel.find('.apply-filter'));
+            });
+
             _unSelectedBtn($panel.find('.apply-filter'));
             console.log('condition changed to : ' + value);
-        });
-
-        $row.find('.values')
-        .on('change', function() {
-            _unSelectedBtn($panel.find('.apply-filter'));
         });
 
         if(field.condition) {
             $row.find('.condition').val(field.condition).trigger('change');
         }
+
+        $row.find('.values')
+        .on('change', function() {
+            _unSelectedBtn($panel.find('.apply-filter'));
+        });
 
         if(field.values) {
             var val1 = field.values[0];
@@ -582,8 +608,7 @@ var NocFilterPanel = (function() {
                         $row.remove();
                     }
                 });
-            }
-            if(!field.type.indexOf('tree-')) {
+            } else if(!field.type.indexOf('tree-')) {
                 var $tree = $row.find('.tree');
 
                 $tree.one('dataBound', function() {
@@ -743,30 +768,6 @@ var NocFilterPanel = (function() {
                 }
             }
 
-            if(dashboard.durationIntervalName === name) {
-                if($(panel).find('.first-value').each(
-                        function() {
-                            if(this !== firstRow) {
-                                var comparedFirstRow = $(this);
-                                var comparedSecondRow = $(comparedFirstRow).parent().next();
-
-                                var comparedFirstSec = new Date(Date.parse($(comparedFirstRow).find('.values').val())).getTime();
-                                var comparedSecondSec = new Date(Date.parse($(comparedSecondRow).find('.values').val())).getTime();
-                                var firstSec = new Date(Date.parse(firstValue)).getTime();
-                                var secondSec = new Date(Date.parse(secondValue)).getTime();
-
-                                if((comparedSecondSec < firstSec) || (secondSec < comparedFirstSec)) {
-                                    showErrors([], []);
-                                } else {
-                                    showErrors([__('interval intersected')], []);
-                                    return false;
-                                }
-                            }
-                        })) {
-                    return;
-                }
-            }
-
             if('IPv4' === type) {
                 var tokenLen = function(value) {
                     return value.split('.').filter(function(e) {
@@ -797,6 +798,16 @@ var NocFilterPanel = (function() {
         }
     };
 
+    var _durationIntervals = function() {
+        return $.map($('.first-value').find('[name="duration_intervals"]'), function(e) {
+            var firstValue = $(e).val();
+            var secondValue = $(e).closest('.form-group').siblings('.second-value').find('input').val();
+            var condition = $(e).closest('.first-value').siblings('div').find('select').val();
+
+            return {start: firstValue, end: secondValue, condition: condition};
+        });
+    };
+
     var _setDateTimeField = function($row, field) {
         $row.find('input')
         .addClass('pikaday')
@@ -813,6 +824,11 @@ var NocFilterPanel = (function() {
             format: 'YYYY-MM-DDTHH:mm:00',
             showSeconds: false
         });
+
+        // $row.find('input').on('change', function() {
+        //     console.log('onChange pikaday');
+        //     _unSelectedBtn($row.closest('.filter-rows').siblings().find('.apply-filter'));
+        // });
         dashboard.setPikaBounds();
     };
 
@@ -886,6 +902,7 @@ var NocFilterPanel = (function() {
     return {
         init: _init,
         setFilter: _setFilter,
-        unselectedBtn: _unSelectedBtn
+        unselectedBtn: _unSelectedBtn,
+        durationIntervals: _durationIntervals
     }
 })();
