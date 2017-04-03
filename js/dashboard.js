@@ -294,14 +294,14 @@ var Dashboard = function(element) {
                     throw new Error(error);
 
                 this.dashboardJSON = data.result;
-                this.dashboardJSON.id = id;
                 if(!this.dashboardJSON) {
                     $('#report-name').text(_('Report not found!'));
                     $('#edit-btn').closest('li').remove();
                     $('#export-btn').closest('li').remove();
-                    $('#save-menu').closest('li').remove();
+                    $('.save-menu').closest('li').remove();
                     return;
                 }
+                this.dashboardJSON.id = id;
 
                 d3.json('/api/bi/')
                 .header("Content-Type", "application/json")
@@ -507,7 +507,7 @@ var Dashboard = function(element) {
     this.saveBoard = function(title, description) {
         var filter = NocFilter.getFilter();
 
-        $('#save-menu').find('.spinner').show();
+        $('.report-spinner').show();
         if(!dashboardJSON.hasOwnProperty('filter')) {
             dashboardJSON.filter = {};
         }
@@ -553,7 +553,7 @@ var Dashboard = function(element) {
                 params: [dashboardJSON]
             }),
             function(error, data) {
-                $('#save-menu').find('.spinner').hide();
+                $('.report-spinner').hide();
                 console.log('save board - done, error : ' + error);
                 if(title) {
                     $(location).attr('search', '?id=' + data.result);
