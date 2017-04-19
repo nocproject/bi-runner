@@ -344,6 +344,34 @@ var Dashboard = function(element) {
                         dashboard.agv_fields = dashboardJSON.agv_fields;
                         NocExport.init(dashboard);
                         drawBoard();
+
+                        var maxDateQuery = {
+                            params: [
+                                {
+                                    fields: [
+                                        {
+                                            "expr": "max(date)",
+                                            "alias": "date"
+                                        }
+                                    ],
+                                    datasource: dashboard.datasource
+                                }
+                            ],
+                            id: 0,
+                            method: 'query'
+                        };
+
+                        d3.json('/api/bi/')
+                        .header("Content-Type", "application/json")
+                        .post(
+                            JSON.stringify(maxDateQuery),
+                            function(error, data) {
+                                if(error)
+                                    throw new Error(error);
+
+                                $('#last-update').replaceWith('<a id="last-update">' + __('Last Update') + ' : ' + data.result.result[0][0] + '</a>');
+                            });
+
                     });
             });
     };
