@@ -366,8 +366,8 @@ var Dashboard = function(element) {
                         .post(
                             JSON.stringify(maxDateQuery),
                             function(error, data) {
-                                if(error)
-                                    throw new Error(error);
+                                if(error || !data.result.result[0])
+                                    throw new Error(error || 'result is null');
 
                                 $('#last-update').replaceWith('<a id="last-update">' + __('Last Update') + ' : ' + data.result.result[0][0] + '</a>');
                             });
