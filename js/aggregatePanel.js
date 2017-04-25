@@ -153,10 +153,11 @@ var NocAggregatePanel = (function() {
                 return field.expr;
             }).join(',');
         };
+        var fields = groupedFields();
 
         return [
             {
-                expr: 'uniq(' + groupedFields() + ')',
+                expr: fields ? 'uniq(' + fields + ')' : '0',
                 alias: 'qty'
             }
         ]
