@@ -25,15 +25,14 @@ build:
   stage: build_package
   image: python:2.7-alpine
   script:
-    - mkdir -p dist2
     - sed -i s/0.0.0/${CI_BUILD_TAG}/ make.json
     - ./build.py make.json
-    - echo ${CI_BUILD_TAG} > dist2/bi-runner.latest
+    - echo ${CI_BUILD_TAG} > dist/bi-runner.latest
   tags:
     - docker
   artifacts:
     paths:
-      - dist2/
+      - dist/
     expire_in: 3 min
   only:
     - tags
@@ -45,7 +44,7 @@ upload:
     S3_BASE: https://s3.getnoc.com
     S3_BUCKET: $CI_PROJECT_NAMESPACE
   script:
-    /tmp/mc -q cp dist2/* cdn/$S3_BUCKET/
+    /tmp/mc -q cp dist/*.tar.bz2 cdn/$S3_BUCKET/
   tags:
     - docker
   only:
