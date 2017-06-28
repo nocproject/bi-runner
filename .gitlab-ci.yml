@@ -5,10 +5,9 @@ stages:
 
 build_npm:
   stage: build
-  image: node:alpine
+  image: node:7.10-alpine
   script:
-    - apk add --update yarn
-    - yarn install
+    - npm install
     - npm run-script build
   tags:
     - docker
