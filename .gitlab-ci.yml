@@ -8,7 +8,7 @@ build_npm:
   image: node:7.10-alpine
   script:
     - npm install
-    - npm run-script build
+    - npm run-script build --progress false
   tags:
     - docker
   artifacts:
