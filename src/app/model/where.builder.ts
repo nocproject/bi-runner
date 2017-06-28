@@ -8,25 +8,23 @@ import { Filter } from './filter';
 export class WhereBuilder {
 
     static makeWhere(groups: Group[]): Object {
-        if (groups.length === 1) {
-            const group = groups[0];
-            const activeFilters = group.filters
-                .filter(filter => !filter.isEmpty());
+        // if (groups.length === 1) {
+        //     const group = groups[0];
+        //     const activeFilters = group.filters
+        //         .filter(filter => !filter.isEmpty());
+        //
+        //     if (activeFilters.length > 0) {
+        //         const value = {};
+        //         value[group.association] = activeFilters.map(filter => this.where(filter));
+        //         return value;
+        //     } else {
+        //         return null;
+        //     }
+        // }
 
-            if (activeFilters.length > 0) {
-                const value = {};
-                value[group.association] = activeFilters.map(filter => this.where(filter));
-                return value;
-            } else {
-                return null;
-            }
-        }
-
-        // console.log(JSON.stringify(groups));
-        // const filters = this.getFilters(groups, '$and');
-        // console.log(JSON.stringify(filters));
         // return this.association('$and', filters);
         const andFilters = this.getFilters(groups, '$and');
+        console.log(JSON.stringify(andFilters));
         const orFilters = this.getFilters(groups, '$or');
         if (andFilters.length > 0 && orFilters.length > 0) {
             return this.orValues([this.andValues(_.flatten(andFilters)), _.flatten(orFilters)]);
@@ -57,8 +55,6 @@ export class WhereBuilder {
                         );
                     }
                     return activeFilters.map(filter => this.where(filter));
-                } else {
-                    return [];
                 }
             })
             .filter(obj => obj.length > 0);
