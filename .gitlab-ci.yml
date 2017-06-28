@@ -14,7 +14,7 @@ build_npm:
   artifacts:
     paths:
       - dist/
-    expire_in: 3 min
+    expire_in: 15 min
   cache:
     key: "$CI_BUILD_REF_NAME"
     paths:
