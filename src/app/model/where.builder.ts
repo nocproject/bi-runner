@@ -15,9 +15,7 @@ export class WhereBuilder {
 
             if (activeFilters.length > 0) {
                 const value = {};
-
                 value[group.association] = activeFilters.map(filter => this.where(filter));
-
                 return value;
             } else {
                 return null;
@@ -50,9 +48,14 @@ export class WhereBuilder {
                     .filter(filter => !filter.isEmpty());
 
                 if (activeFilters.length > 0) {
-                    // return this.association(
-                    //     this.filtersAssociation(group),
-                    //     activeFilters.map(filter => this.where(filter)));
+                    const association = this.filtersAssociation(group);
+
+                    if (association) {
+                        return this.association(
+                            association,
+                            activeFilters.map(filter => this.where(filter))
+                        );
+                    }
                     return activeFilters.map(filter => this.where(filter));
                 } else {
                     return [];
@@ -62,7 +65,10 @@ export class WhereBuilder {
     }
 
     static filtersAssociation(group: Group): string {
-        return group.filters[0].association;
+        if (group.filters.length > 1) {
+            return group.filters[0].association;
+        }
+        return null;
     }
 
     static where(filter: Filter): Object {
