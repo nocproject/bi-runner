@@ -45,8 +45,8 @@ upload:
     S3_BASE: https://s3.getnoc.com
     S3_BUCKET: $CI_PROJECT_NAMESPACE
   script:
-    /tmp/mc -q cp dist/*.tar.bz2 cdn/$S3_BUCKET/
-    /tmp/mc -q cp dist/*.latest cdn/$S3_BUCKET/
+    - /tmp/mc -q cp dist/*.tar.bz2 cdn/$S3_BUCKET/
+    - /tmp/mc -q cp dist/*.latest cdn/$S3_BUCKET/
   tags:
     - docker
   only:
