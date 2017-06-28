@@ -1,0 +1,48 @@
+.tp {
+  display: flex;
+  align-items: center;
+
+}
+
+.tp-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+
+}
+
+.tp-spacer {
+  width: 1em;
+  text-align: center;
+
+}
+
+.caret {
+  position: relative;
+  width: 14px;
+  height: 14px;
+}
+
+.up:before {
+  content: "\f0d8";
+  font-family: FontAwesome;
+  //font-size: 14px;
+  //position: absolute;
+  //top: 0;
+}
+
+.down:before {
+  content: "\f0d7";
+  font-family: FontAwesome;
+  //font-size: 14px;
+  //position: absolute;
+  //top: 0;
+}
+
+input {
+  text-align: center;
+  display: inline-block;
+  width: auto;
+
+}

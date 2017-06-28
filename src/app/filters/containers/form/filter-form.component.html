@@ -1,0 +1,26 @@
+<div class="row">
+    <button class="btn btn-default pull-right clearfix"
+            (click)="onAddGroup()"
+            style="margin-bottom: 5px">Add Group
+    </button>
+</div>
+<div class="row">
+    <form [formGroup]="form" (submit)="handleSubmit($event)">
+        <div formArrayName="groups">
+            <div class="form-group">
+                <bi-group *ngFor="let group of config.groups; let groupIndex = index"
+                          [index]="groupIndex"
+                          [groupConfig]="group"
+                          [parent]="form"
+                          (closeGroup)="onCloseGroup($event)">
+                </bi-group>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="row">
+    <!--<button class="btn btn-default pull-right clearfix"-->
+            <!--(click)="onSubmit()"-->
+            <!--style="margin-bottom: 5px">Submit-->
+    <!--</button>-->
+</div>

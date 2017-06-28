@@ -1,0 +1,13 @@
+<div class="container-fluid">
+    <bi-selector [board]="board"></bi-selector>
+    <div class="row" *ngFor="let row of cells">
+        <div *ngFor="let cell of row"
+             [ngSwitch]="cell.widget.type">
+            <bi-bar *ngSwitchCase="'barChart'" [data]="cell"></bi-bar>
+            <bi-pie *ngSwitchCase="'pieChart'" [data]="cell"></bi-pie>
+            <bi-line *ngSwitchCase="'lineChart'" [data]="cell"></bi-line>
+            <bi-row *ngSwitchCase="'rowChart'" [data]="cell"></bi-row>
+            <bi-table *ngSwitchCase="'dataTable'" [data]="cell"></bi-table>
+        </div>
+    </div>
+</div>

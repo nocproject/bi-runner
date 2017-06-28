@@ -1,0 +1,22 @@
+<div class="{{ cellClass }}">
+    <div class="chart-wrapper" #wrapper>
+        <div class="chart-title">
+            <div class="row">
+                <div class="col-md-6">{{ data.widget.title }}</div>
+                <div class="col-md-1 pull-right text-right" *ngIf="showSpinner">
+                    <i class="fa fa-spinner fa-spin fa-fw"></i>
+                </div>
+            </div>
+        </div>
+        <div class="chart-stage">
+            <table class="table table=hover" id="{{ data.cell.name }}">
+                <thead>
+                <tr class="header">
+                    <th *ngFor="let column of data.widget.query.getLabeledFields()">{{ column.label }}</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+        <div class="chart-notes">{{ data.widget.note }}</div>
+    </div>
+</div>

@@ -70,8 +70,8 @@
     "id": "580e1ba498601c0f96b7e809",
     "name": "c2x2"
   },
-  "description": "описание отчета по авариям",
-  "title": "Аварии",
+  "description": "\u043e\u043f\u0438\u0441\u0430\u043d\u0438\u0435 \u043e\u0442\u0447\u0435\u0442\u0430 \u043f\u043e \u0430\u0432\u0430\u0440\u0438\u044f\u043c",
+  "title": "\u0410\u0432\u0430\u0440\u0438\u0438",
   "format": 1,
   "filter": {
     "startDate": {
@@ -107,7 +107,7 @@
           {
             "expr": "count()",
             "alias": "qty",
-            "label": "Кол-во"
+            "label": "\u041a\u043e\u043b-\u0432\u043e"
           },
           {
             "expr": {
@@ -127,7 +127,7 @@
           {
             "expr": "sum(reboots)",
             "alias": "reboots_sum",
-            "label": "Кол-во перезагрузок"
+            "label": "\u041a\u043e\u043b-\u0432\u043e \u043f\u0435\u0440\u0435\u0437\u0430\u0433\u0440\u0443\u0437\u043e\u043a"
           },
           {
             "expr": "date",
@@ -183,7 +183,7 @@
               ]
             },
             "alias": "duration_se",
-            "label": "Длительность по Отчету"
+            "label": "\u0414\u043b\u0438\u0442\u0435\u043b\u044c\u043d\u043e\u0441\u0442\u044c \u043f\u043e \u041e\u0442\u0447\u0435\u0442\u0443"
           }
         ],
         "datasource": "alarms"
@@ -314,8 +314,8 @@
   "widgets": [
     {
       "cell": "c11",
-      "note": "по времени",
-      "title": "Аварии по Времени",
+      "note": "\u043f\u043e \u0432\u0440\u0435\u043c\u0435\u043d\u0438",
+      "title": "\u0410\u0432\u0430\u0440\u0438\u0438 \u043f\u043e \u0412\u0440\u0435\u043c\u0435\u043d\u0438",
       "type": "lineChart",
       "query": {
         "params": [
@@ -358,8 +358,8 @@
     },
     {
       "cell": "c21",
-      "note": "по платформе",
-      "title": "Группировка по платформе, топ 10",
+      "note": "\u043f\u043e \u043f\u043b\u0430\u0442\u0444\u043e\u0440\u043c\u0435",
+      "title": "\u0413\u0440\u0443\u043f\u043f\u0438\u0440\u043e\u0432\u043a\u0430 \u043f\u043e \u043f\u043b\u0430\u0442\u0444\u043e\u0440\u043c\u0435, \u0442\u043e\u043f 10",
       "type": "pieChart",
       "query": {
         "params": [
@@ -415,8 +415,8 @@
     },
     {
       "cell": "c12",
-      "note": "по дню недели",
-      "title": "Аварии по дню недели",
+      "note": "\u043f\u043e \u0434\u043d\u044e \u043d\u0435\u0434\u0435\u043b\u0438",
+      "title": "\u0410\u0432\u0430\u0440\u0438\u0438 \u043f\u043e \u0434\u043d\u044e \u043d\u0435\u0434\u0435\u043b\u0438",
       "type": "rowChart",
       "query": {
         "params": [
@@ -460,8 +460,8 @@
     },
     {
       "cell": "c22",
-      "note": "по времени",
-      "title": "Аварии по номеру часа",
+      "note": "\u043f\u043e \u0432\u0440\u0435\u043c\u0435\u043d\u0438",
+      "title": "\u0410\u0432\u0430\u0440\u0438\u0438 \u043f\u043e \u043d\u043e\u043c\u0435\u0440\u0443 \u0447\u0430\u0441\u0430",
       "type": "barChart",
       "query": {
         "params": [
@@ -509,7 +509,7 @@
       }
     },
     {
-      "note": "по сегменту сети",
+      "note": "\u043f\u043e \u0441\u0435\u0433\u043c\u0435\u043d\u0442\u0443 \u0441\u0435\u0442\u0438",
       "query": {
         "params": [
           {
@@ -563,10 +563,10 @@
       },
       "cell": "c31",
       "type": "pieChart",
-      "title": "Группировка по сегменту сети, топ 10"
+      "title": "\u0413\u0440\u0443\u043f\u043f\u0438\u0440\u043e\u0432\u043a\u0430 \u043f\u043e \u0441\u0435\u0433\u043c\u0435\u043d\u0442\u0443 \u0441\u0435\u0442\u0438, \u0442\u043e\u043f 10"
     },
     {
-      "note": "по важности",
+      "note": "\u043f\u043e \u0432\u0430\u0436\u043d\u043e\u0441\u0442\u0438",
       "query": {
         "params": [
           {
@@ -598,7 +598,7 @@
                   ]
                 },
                 "alias": "profile_text",
-                "label": "Профиль"
+                "label": "\u041f\u0440\u043e\u0444\u0438\u043b\u044c"
               },
               {
                 "expr": {
@@ -610,7 +610,7 @@
                   ]
                 },
                 "alias": "vendor_text",
-                "label": "Производитель"
+                "label": "\u041f\u0440\u043e\u0438\u0437\u0432\u043e\u0434\u0438\u0442\u0435\u043b\u044c"
               },
               {
                 "expr": {
@@ -622,7 +622,7 @@
                   ]
                 },
                 "alias": "platform_text",
-                "label": "Платформа"
+                "label": "\u041f\u043b\u0430\u0442\u0444\u043e\u0440\u043c\u0430"
               },
               {
                 "expr": {
@@ -634,11 +634,11 @@
                   ]
                 },
                 "alias": "version_text",
-                "label": "Версия ПО"
+                "label": "\u0412\u0435\u0440\u0441\u0438\u044f \u041f\u041e"
               },
               {
                 "expr": "severity",
-                "label": "Важность",
+                "label": "\u0412\u0430\u0436\u043d\u043e\u0441\u0442\u044c",
                 "alias": "xxx",
                 "order": 0,
                 "desc": true
@@ -653,7 +653,7 @@
       },
       "cell": "table2",
       "type": "dataTable",
-      "title": "По важности, топ 10"
+      "title": "\u041f\u043e \u0432\u0430\u0436\u043d\u043e\u0441\u0442\u0438, \u0442\u043e\u043f 10"
     },
     {
       "cell": "table1",
@@ -680,7 +680,7 @@
             "fields": [
               {
                 "expr": "severity",
-                "label": "Важность",
+                "label": "\u0412\u0430\u0436\u043d\u043e\u0441\u0442\u044c",
                 "alias": "severity"
               },
               {
@@ -693,16 +693,16 @@
                   ]
                 },
                 "alias": "managed_object_text",
-                "label": "Имя оборудования"
+                "label": "\u0418\u043c\u044f \u043e\u0431\u043e\u0440\u0443\u0434\u043e\u0432\u0430\u043d\u0438\u044f"
               },
               {
                 "expr": "date",
-                "label": "Дата создания",
+                "label": "\u0414\u0430\u0442\u0430 \u0441\u043e\u0437\u0434\u0430\u043d\u0438\u044f",
                 "format": "dateToString"
               },
               {
                 "expr": "reopens",
-                "label": "Кол-во переоткрытий"
+                "label": "\u041a\u043e\u043b-\u0432\u043e \u043f\u0435\u0440\u0435\u043e\u0442\u043a\u0440\u044b\u0442\u0438\u0439"
               },
               {
                 "expr": {
@@ -714,7 +714,7 @@
                   ]
                 },
                 "alias": "container_text",
-                "label": "Контейнер (Адрес)"
+                "label": "\u041a\u043e\u043d\u0442\u0435\u0439\u043d\u0435\u0440 (\u0410\u0434\u0440\u0435\u0441)"
               },
               {
                 "format": "secondsToString",
@@ -728,7 +728,7 @@
                     }
                   ]
                 },
-                "label": "Длительность (час:мин:сек)",
+                "label": "\u0414\u043b\u0438\u0442\u0435\u043b\u044c\u043d\u043e\u0441\u0442\u044c (\u0447\u0430\u0441:\u043c\u0438\u043d:\u0441\u0435\u043a)",
                 "alias": "xxx",
                 "order": 0,
                 "desc": true
@@ -741,9 +741,9 @@
         "id": 0,
         "method": "query"
       },
-      "note": "по длительности",
+      "note": "\u043f\u043e \u0434\u043b\u0438\u0442\u0435\u043b\u044c\u043d\u043e\u0441\u0442\u0438",
       "type": "dataTable",
-      "title": "По длительности аварии, топ 20"
+      "title": "\u041f\u043e \u0434\u043b\u0438\u0442\u0435\u043b\u044c\u043d\u043e\u0441\u0442\u0438 \u0430\u0432\u0430\u0440\u0438\u0438, \u0442\u043e\u043f 20"
     },
     {
       "cell": "c32",
@@ -798,14 +798,14 @@
         "id": 0,
         "method": "query"
       },
-      "note": "по профилю",
+      "note": "\u043f\u043e \u043f\u0440\u043e\u0444\u0438\u043b\u044e",
       "type": "pieChart",
-      "title": "Группировка по профилю, топ 10"
+      "title": "\u0413\u0440\u0443\u043f\u043f\u0438\u0440\u043e\u0432\u043a\u0430 \u043f\u043e \u043f\u0440\u043e\u0444\u0438\u043b\u044e, \u0442\u043e\u043f 10"
     },
     {
       "cell": "zc22",
-      "note": "по пулу",
-      "title": "Группировка по пулу, топ 10",
+      "note": "\u043f\u043e \u043f\u0443\u043b\u0443",
+      "title": "\u0413\u0440\u0443\u043f\u043f\u0438\u0440\u043e\u0432\u043a\u0430 \u043f\u043e \u043f\u0443\u043b\u0443, \u0442\u043e\u043f 10",
       "type": "pieChart",
       "query": {
         "params": [
@@ -863,122 +863,122 @@
     {
       "group": 2,
       "name": "administrative_domain",
-      "description": "З.О."
+      "description": "\u0417.\u041e."
     },
     {
       "group": 0,
       "name": "ts",
-      "description": "Создано"
+      "description": "\u0421\u043e\u0437\u0434\u0430\u043d\u043e"
     },
     {
       "group": 0,
       "name": "alarm_id",
-      "description": "Идентификатор"
+      "description": "\u0418\u0434\u0435\u043d\u0442\u0438\u0444\u0438\u043a\u0430\u0442\u043e\u0440"
     },
     {
       "group": 0,
       "name": "direct_services",
-      "description": "Повлияло на сервисы"
+      "description": "\u041f\u043e\u0432\u043b\u0438\u044f\u043b\u043e \u043d\u0430 \u0441\u0435\u0440\u0432\u0438\u0441\u044b"
     },
     {
       "group": 0,
       "name": "direct_subscribers",
-      "description": "Повлияло на абонентов"
+      "description": "\u041f\u043e\u0432\u043b\u0438\u044f\u043b\u043e \u043d\u0430 \u0430\u0431\u043e\u043d\u0435\u043d\u0442\u043e\u0432"
     },
     {
       "group": 0,
       "name": "escalation_ts",
-      "description": "Время когда эскалировано"
+      "description": "\u0412\u0440\u0435\u043c\u044f \u043a\u043e\u0433\u0434\u0430 \u044d\u0441\u043a\u0430\u043b\u0438\u0440\u043e\u0432\u0430\u043d\u043e"
     },
     {
       "group": 0,
       "name": "escalation_tt",
-      "description": "Номер ТТ"
+      "description": "\u041d\u043e\u043c\u0435\u0440 \u0422\u0422"
     },
     {
       "group": 1,
       "name": "managed_object",
-      "description": "Имя объекта"
+      "description": "\u0418\u043c\u044f \u043e\u0431\u044a\u0435\u043a\u0442\u0430"
     },
     {
       "group": 1,
       "name": "platform",
-      "description": "Платформа"
+      "description": "\u041f\u043b\u0430\u0442\u0444\u043e\u0440\u043c\u0430"
     },
     {
       "group": 1,
       "name": "profile",
-      "description": "Профиль объекта"
+      "description": "\u041f\u0440\u043e\u0444\u0438\u043b\u044c \u043e\u0431\u044a\u0435\u043a\u0442\u0430"
     },
     {
       "group": 0,
       "name": "reopens",
-      "description": "Переоткрытия"
+      "description": "\u041f\u0435\u0440\u0435\u043e\u0442\u043a\u0440\u044b\u0442\u0438\u044f"
     },
     {
       "group": 1,
       "name": "segment",
-      "description": "Сегмент сети"
+      "description": "\u0421\u0435\u0433\u043c\u0435\u043d\u0442 \u0441\u0435\u0442\u0438"
     },
     {
       "group": 0,
       "name": "severity",
-      "description": "Важность"
+      "description": "\u0412\u0430\u0436\u043d\u043e\u0441\u0442\u044c"
     },
     {
       "group": 0,
       "name": "total_objects",
-      "description": "Общее кол-во объектов"
+      "description": "\u041e\u0431\u0449\u0435\u0435 \u043a\u043e\u043b-\u0432\u043e \u043e\u0431\u044a\u0435\u043a\u0442\u043e\u0432"
     },
     {
       "group": 0,
       "name": "total_services",
-      "description": "Общее кол-во сервисов"
+      "description": "\u041e\u0431\u0449\u0435\u0435 \u043a\u043e\u043b-\u0432\u043e \u0441\u0435\u0440\u0432\u0438\u0441\u043e\u0432"
     },
     {
       "group": 0,
       "name": "total_subscribers",
-      "description": "Общее кол-во абонентов"
+      "description": "\u041e\u0431\u0449\u0435\u0435 \u043a\u043e\u043b-\u0432\u043e \u0430\u0431\u043e\u043d\u0435\u043d\u0442\u043e\u0432"
     },
     {
       "group": 1,
       "name": "version",
-      "description": "Версия"
+      "description": "\u0412\u0435\u0440\u0441\u0438\u044f"
     },
     {
       "group": 1,
       "name": "vendor",
-      "description": "Производитель"
+      "description": "\u041f\u0440\u043e\u0438\u0437\u0432\u043e\u0434\u0438\u0442\u0435\u043b\u044c"
     },
     {
       "group": 1,
       "name": "ip",
-      "description": "IP адрес"
+      "description": "IP \u0430\u0434\u0440\u0435\u0441"
     },
     {
       "group": 2,
       "name": "pool",
-      "description": "Имя пула"
+      "description": "\u0418\u043c\u044f \u043f\u0443\u043b\u0430"
     },
     {
       "group": 0,
       "name": "date",
-      "description": "Дата"
+      "description": "\u0414\u0430\u0442\u0430"
     },
     {
       "group": 1,
       "name": "container",
-      "description": "Адрес"
+      "description": "\u0410\u0434\u0440\u0435\u0441"
     },
     {
       "group": 0,
       "name": "close_ts",
-      "description": "Время закрытия"
+      "description": "\u0412\u0440\u0435\u043c\u044f \u0437\u0430\u043a\u0440\u044b\u0442\u0438\u044f"
     },
     {
       "group": 1,
       "name": "root",
-      "description": "Корень аварии"
+      "description": "\u041a\u043e\u0440\u0435\u043d\u044c \u0430\u0432\u0430\u0440\u0438\u0438"
     }
   ],
   "id": "58a2024898601c3093553637"

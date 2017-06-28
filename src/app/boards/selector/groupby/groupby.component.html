@@ -1,0 +1,34 @@
+<table class="table">
+  <thead>
+  <tr>
+    <th>Name</th>
+    <th>Type</th>
+    <th>GroupBy</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let field of fields$ | async"
+      [ngClass]="{'disabled-row': !field.isSelectable}">
+    <td>
+      <div class="checkbox rtl checkbox-primary">
+        {{ field.description }}
+      </div>
+    </td>
+    <td>
+      <div class="checkbox rtl checkbox-primary">
+        {{ field.dict ? field.dict : field.type }}
+      </div>
+    </td>
+    <td>
+      <div class="checkbox rtl checkbox-primary checkbox-circle">
+        <input id="groupBy-{{ field.name }}"
+               [checked]="field.grouped"
+               class="styled" type="checkbox"
+               [disabled]="!field.isGrouping"
+               (click)="onGroupBy(field, isGrouped)"
+               #isGrouped>
+        <label for="groupBy-{{ field.name }}"></label>
+      </div>
+    </td>
+  </tr>
+</table>

@@ -1,0 +1,57 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="chart-wrapper">
+            <div class="chart-title" (click)="collapsed = !collapsed">
+                <div class="title-left">Selector</div>
+                <div class="title-right"
+                     [ngClass]="{'collapsed': collapsed, 'expanded': !collapsed}">
+                </div>
+                <div style="clear:both;"></div>
+            </div>
+            <div class="chart-stage" [ngClass]="{'collapse': collapsed}">
+                <div class="container-fluid">
+                    <div class="row vertical-align">
+                        <div class="col-md-2">
+                            Report Range:
+                        </div>
+                        <div class="col-md-7">
+                            <form [formGroup]="rangeForm">
+                                <bi-datetime-range
+                                        [form]="rangeForm"
+                                        fromControlName="startDate"
+                                        toControlName="endDate">
+                                </bi-datetime-range>
+                            </form>
+                        </div>
+                        <div class="col-md-3 text-right">
+                            last update: {{ lastUpdate$ | async | date:'dd.MM.yyyy' }}
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <!-- scrolling -->
+                        <!--style="overflow-y: auto;">-->
+                        <div class="col-md-5" style="height: 550px">
+                            <bi-groupby [board]="board"></bi-groupby>
+                        </div>
+                        <div class="col-md-7" style="padding-right: 30px;">
+                            <bi-filter-form
+                                    [config]="config"
+                                    #form="filterForm"
+                                    (submit)="submitFilters($event)">
+                            </bi-filter-form>
+                            <div>
+                                <!--is valid : {{ form.valid }}-->
+                                <!--<hr>-->
+                                <!--form params : {{ form.value | json }}-->
+                                <!--<hr>-->
+                                sql : {{ debug.debug$ | async | json }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="chart-notes">Selector</div>
+        </div>
+    </div>
+</div>

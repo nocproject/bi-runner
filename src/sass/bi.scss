@@ -1,0 +1,69 @@
+@import "variables";
+@import "../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
+@import "../../node_modules/dc/style/dc";
+@import "chart";
+@import "bootstrap-dialog";
+@import "awesome-bootstrap-checkbox";
+
+body {
+  background: #95a5a6;
+}
+
+*:focus {
+  outline: none !important;
+}
+
+.hand {
+  cursor: pointer;
+}
+
+.add-filter{
+  font-size: 20px;
+  color: $brand-primary;
+}
+
+.icon-offset {
+  margin-right: 5px
+}
+
+.modal.modal-open {
+  display: block;
+}
+
+.board-selected {
+  color: #fff;
+  background: $brand-primary;
+  box-shadow: inset 0 1px 3px $input-border-focus;
+}
+
+.tree {
+  height: auto;
+  max-height: 300px;
+  overflow-x: hidden;
+}
+
+.active-half {
+  background-color: $brand-primary-half;
+}
+
+.tree .list-group-item {
+  border: 0px;
+}
+
+.not-active {
+  pointer-events: none;
+  cursor: default;
+}
+
+.small-mode .picker-calendar {
+  font-weight: normal;
+}
+
+.small-mode .picker-calendar .picker-day {
+  font-size: 12px !important;
+}
+
+.form-control {
+  font-weight: normal;
+}
+
