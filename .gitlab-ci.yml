@@ -10,6 +10,7 @@ build_npm:
     - sed -i s/0.0.0.0/${CI_BUILD_TAG}/ src/app/header/header.component.html 
     - npm install
     - npm run-script build
+    - cp -r boards/ dist/
   tags:
     - docker
   artifacts:
