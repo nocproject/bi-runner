@@ -155,14 +155,45 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
                             name: 'valueFirst',
                             type: 'inputMask',
                             mask: '999999999999',
-                            value: '2828',
+                            value: '0',
                             validation: [Validators.required, BIValidators.maskNotEmpty],
                             label: 'From Value'
                         }, {
                             name: 'valueSecond',
                             type: 'inputMask',
                             mask: '999999999999',
-                            value: '9090',
+                            value: '1',
+                            validation: [Validators.required, BIValidators.maskNotEmpty],
+                            label: 'To Value'
+                        }],
+                        [{
+                            name: 'name',
+                            type: 'select',
+                            value: 'total_objects.Int64',
+                            validation: [Validators.required],
+                            label: 'Field',
+                            placeholder: 'Select field',
+                            options: this.fieldList.getAsOption()
+                        }, {
+                            name: 'condition',
+                            type: 'select',
+                            value: 'interval',
+                            validation: [Validators.required],
+                            label: 'Condition',
+                            placeholder: 'Select Condition',
+                            options: this.conditionService.conditions('total_objects.Int64')
+                        }, {
+                            name: 'valueFirst',
+                            type: 'inputMask',
+                            mask: '999999999999',
+                            value: '0',
+                            validation: [Validators.required, BIValidators.maskNotEmpty],
+                            label: 'From Value'
+                        }, {
+                            name: 'valueSecond',
+                            type: 'inputMask',
+                            mask: '999999999999',
+                            value: '2',
                             validation: [Validators.required, BIValidators.maskNotEmpty],
                             label: 'To Value'
                         }]

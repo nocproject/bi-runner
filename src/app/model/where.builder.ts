@@ -24,16 +24,18 @@ export class WhereBuilder {
 
         // return this.association('$and', filters);
         const andFilters = this.getFilters(groups, '$and');
-        console.log(JSON.stringify(andFilters));
+        console.log('and : ', JSON.stringify(andFilters));
         const orFilters = this.getFilters(groups, '$or');
+        console.log('or : ', JSON.stringify(orFilters));
         if (andFilters.length > 0 && orFilters.length > 0) {
-            return this.orValues([this.andValues(_.flatten(andFilters)), _.flatten(orFilters)]);
+            return this.orValues([andFilters, orFilters]);
+            // return this.orValues([this.andValues(andFilters), orFilters]);
         }
         if (andFilters.length > 0) {
-            return this.andValues(_.flatten(andFilters));
+            return this.andValues(andFilters);
         }
         if (orFilters.length > 0) {
-            return this.orValues(_.flatten(orFilters));
+            return this.orValues(orFilters);
         }
         return null;
     }
@@ -56,15 +58,11 @@ export class WhereBuilder {
                     }
                     return activeFilters.map(filter => this.where(filter));
                 }
-            })
-            .filter(obj => obj.length > 0);
+            });
     }
 
     static filtersAssociation(group: Group): string {
-        if (group.filters.length > 1) {
-            return group.filters[0].association;
-        }
-        return null;
+        return group.filters[0].association;
     }
 
     static where(filter: Filter): Object {

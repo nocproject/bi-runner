@@ -50,10 +50,10 @@ export class FilterService {
         this.filtersSubject.next(groups);
     }
 
-    formFilters(groupsConfig: Groups[], config: FormConfig) {
+    formFilters(groups: Groups[], config: FormConfig) {
         const exist: Group[] = this.cloneValue(this.filtersSubject).filter(group => group.name !== this.FORM_GROUP_NAME);
 
-        groupsConfig.forEach((item, groupIndex) => {
+        groups.forEach((item, groupIndex) => {
                 exist.push(
                     new GroupBuilder()
                         .name(this.FORM_GROUP_NAME)
