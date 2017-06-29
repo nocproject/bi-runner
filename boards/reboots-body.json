@@ -1,0 +1,440 @@
+{
+  "id": "0",
+  "method": "set_dashboard",
+  "params": [
+    {
+      "layoutId": "580e1ba498601c0f96b7e809",
+      "layout": {
+        "uuid": "f2736f99-a568-4820-b746-1e71d48b4374",
+        "cells": [
+          {
+            "md": 6,
+            "name": "c11",
+            "lg": null,
+            "height": 200,
+            "sm": null,
+            "xs": null,
+            "row": 0
+          },
+          {
+            "md": 6,
+            "name": "c12",
+            "lg": null,
+            "height": 200,
+            "sm": null,
+            "xs": null,
+            "row": 0
+          },
+          {
+            "md": 6,
+            "name": "c21",
+            "lg": null,
+            "height": 200,
+            "sm": null,
+            "xs": null,
+            "row": 1
+          },
+          {
+            "md": 6,
+            "name": "c22",
+            "lg": null,
+            "height": 200,
+            "sm": null,
+            "xs": null,
+            "row": 1
+          },
+          {
+            "md": 12,
+            "name": "table1",
+            "lg": null,
+            "height": 360,
+            "sm": null,
+            "xs": null,
+            "row": 4
+          }
+        ],
+        "description": "",
+        "fav_status": false,
+        "is_builtin": false,
+        "id": "580e1ba498601c0f96b7e809",
+        "name": "c2x2"
+      },
+      "description": "описание отчета по перезагрузкам",
+      "title": "Перезагрузки",
+      "format": 1,
+      "filter": {
+        "startDate": {
+          "values": [
+            "2016-12-31T22:00:00.000Z",
+            "2017-12-31T22:59:59.000Z"
+          ],
+          "type": "DateTime",
+          "condition": "interval"
+        }
+      },
+      "export": {
+        "params": [
+          {
+            "fields": [
+              {
+                "alias": "date",
+                "expr": "date",
+                "group": 0,
+                "format": "dateToString"
+              },
+              {
+                "alias": "qty",
+                "desc": true,
+                "expr": "count()",
+                "order": 0,
+                "label": "Кол-во"
+              },
+              {
+                "expr": {
+                  "$lookup": [
+                    "pool",
+                    {
+                      "$field": "pool"
+                    }
+                  ]
+                },
+                "alias": "pool_text"
+              },
+              {
+                "expr": "pool",
+                "hide": "yes",
+                "group": 1
+              }
+            ],
+            "datasource": "reboots"
+          }
+        ],
+        "id": 0,
+        "method": "query"
+      },
+      "datasource": "reboots",
+      "filter_fields": [
+        {
+          "group": 2,
+          "name": "administrative_domain"
+        },
+        {
+          "group": 1,
+          "name": "container"
+        },
+        {
+          "group": 1,
+          "name": "ip"
+        },
+        {
+          "group": 1,
+          "name": "managed_object"
+        },
+        {
+          "group": 1,
+          "name": "platform"
+        },
+        {
+          "group": 1,
+          "name": "profile"
+        },
+        {
+          "group": 1,
+          "name": "segment"
+        },
+        {
+          "group": 0,
+          "name": "ts"
+        },
+        {
+          "group": 1,
+          "name": "vendor"
+        },
+        {
+          "group": 1,
+          "name": "version"
+        },
+        {
+          "group": 3,
+          "name": "x"
+        },
+        {
+          "group": 3,
+          "name": "y"
+        },
+        {
+          "group": 0,
+          "name": "ts"
+        },
+        {
+          "group": 2,
+          "name": "pool"
+        },
+        {
+          "group": 0,
+          "name": "date"
+        }
+      ],
+      "widgets": [
+        {
+          "cell": "c11",
+          "note": "по времени",
+          "title": "Перезагрузок в день",
+          "type": "lineChart",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "date",
+                    "group": 0,
+                    "order": 0,
+                    "desc": true
+                  },
+                  {
+                    "expr": "count()",
+                    "alias": "cnt"
+                  }
+                ],
+                "datasource": "reboots"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        },
+        {
+          "cell": "c12",
+          "note": "по дню недели",
+          "title": "Группировка по дню недели",
+          "type": "rowChart",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "toDayOfWeek(date)",
+                    "alias": "day",
+                    "group": 0,
+                    "order": 0,
+                    "desc": true
+                  },
+                  {
+                    "expr": "count()",
+                    "alias": "cnt"
+                  }
+                ],
+                "datasource": "reboots"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        },
+        {
+          "cell": "c21",
+          "note": "по сегменту сети",
+          "title": "Группировка по сегменту сети, топ 10",
+          "type": "pieChart",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "segment",
+                    "group": 0
+                  },
+                  {
+                    "expr": {
+                      "$lookup": [
+                        "networksegment",
+                        {
+                          "$field": "segment"
+                        }
+                      ]
+                    },
+                    "group": 1,
+                    "alias": "name"
+                  },
+                  {
+                    "expr": "count()",
+                    "alias": "cnt",
+                    "order": 0,
+                    "desc": true
+                  }
+                ],
+                "limit": 10,
+                "datasource": "reboots"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        },
+        {
+          "cell": "c22",
+          "note": "по времени",
+          "title": "Перезагрузки по номеру часа",
+          "type": "barChart",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "toHour(ts)",
+                    "alias": "hour",
+                    "group": 0,
+                    "order": 0,
+                    "desc": true
+                  },
+                  {
+                    "expr": "count()",
+                    "alias": "cnt"
+                  },
+                  {
+                    "expr": "toHour(ts)",
+                    "group": 1,
+                    "alias": "name"
+                  }
+                ],
+                "datasource": "reboots"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        },
+        {
+          "cell": "table1",
+          "note": "оборудование",
+          "title": "По количеству перезагрузок, топ 10",
+          "type": "dataTable",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "alias": "date",
+                    "expr": "date",
+                    "label": "Дата",
+                    "group": 0,
+                    "format": "dateToString"
+                  },
+                  {
+                    "expr": "managed_object",
+                    "group": 1
+                  },
+                  {
+                    "expr": "administrative_domain",
+                    "group": 2
+                  },
+                  {
+                    "expr": "segment",
+                    "group": 3
+                  },
+                  {
+                    "expr": {
+                      "$lookup": [
+                        "managedobject",
+                        {
+                          "$field": "managed_object"
+                        }
+                      ]
+                    },
+                    "alias": "name",
+                    "label": "Оборудование"
+                  },
+                  {
+                    "expr": {
+                      "$lookup": [
+                        "networksegment",
+                        {
+                          "$field": "segment"
+                        }
+                      ]
+                    },
+                    "alias": "segment_name",
+                    "label": "Сегмент сети"
+                  },
+                  {
+                    "alias": "qty",
+                    "desc": true,
+                    "expr": "count()",
+                    "order": 0,
+                    "label": "Кол-во перезагрузок"
+                  }
+                ],
+                "limit": 10,
+                "datasource": "reboots"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        }
+      ],
+      "agv_fields": [
+        {
+          "group": 2,
+          "name": "administrative_domain",
+          "description": "З.О."
+        },
+        {
+          "group": 1,
+          "name": "container",
+          "description": "Адрес"
+        },
+        {
+          "group": 1,
+          "name": "ip",
+          "description": "IP адрес"
+        },
+        {
+          "group": 1,
+          "name": "managed_object",
+          "description": "Имя объекта"
+        },
+        {
+          "group": 1,
+          "name": "platform",
+          "description": "Платформа"
+        },
+        {
+          "group": 1,
+          "name": "profile",
+          "description": "Профиль объекта"
+        },
+        {
+          "group": 1,
+          "name": "segment",
+          "description": "Сегмент сети"
+        },
+        {
+          "group": 1,
+          "name": "vendor",
+          "description": "Производитель"
+        },
+        {
+          "group": 1,
+          "name": "version",
+          "description": "Версия"
+        },
+        {
+          "group": 2,
+          "name": "pool",
+          "description": "Имя пула"
+        },
+        {
+          "group": 0,
+          "name": "date",
+          "description": "Дата"
+        },
+        {
+          "group": 0,
+          "name": "ts",
+          "description": "Создано"
+        }
+      ]
+    }
+  ]
+}
