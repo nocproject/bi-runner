@@ -65,6 +65,9 @@ export class FilterService {
                                     const nameField = _.first(config.groups[groupIndex].group.filters[filterIndex]
                                         .filter(f => f.name === 'name'));
 
+                                    if (!filter.hasOwnProperty('valueFirst')) {
+                                        return false;
+                                    }
                                     if (filter.name === nameField.value) {
                                         return true;
                                     } else {
