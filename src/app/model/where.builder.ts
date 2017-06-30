@@ -8,28 +8,10 @@ import { Filter } from './filter';
 export class WhereBuilder {
 
     static makeWhere(groups: Group[]): Object {
-        // if (groups.length === 1) {
-        //     const group = groups[0];
-        //     const activeFilters = group.filters
-        //         .filter(filter => !filter.isEmpty());
-        //
-        //     if (activeFilters.length > 0) {
-        //         const value = {};
-        //         value[group.association] = activeFilters.map(filter => this.where(filter));
-        //         return value;
-        //     } else {
-        //         return null;
-        //     }
-        // }
-
-        // return this.association('$and', filters);
         const andFilters = this.getFilters(groups, '$and');
-        console.log('and : ', JSON.stringify(andFilters));
         const orFilters = this.getFilters(groups, '$or');
-        console.log('or : ', JSON.stringify(orFilters));
         if (andFilters.length > 0 && orFilters.length > 0) {
-            return this.orValues([andFilters, orFilters]);
-            // return this.orValues([this.andValues(andFilters), orFilters]);
+            return this.orValues([this.andValues(andFilters), this.orValues(orFilters)]);
         }
         if (andFilters.length > 0) {
             return this.andValues(andFilters);
@@ -43,26 +25,20 @@ export class WhereBuilder {
     static getFilters(groups: Group[], association: string): Object[] {
         return groups
             .filter(group => group.association === association)
-            .map(group => {
-                const activeFilters = group.filters
-                    .filter(filter => !filter.isEmpty());
+            .map(group => group.filters.filter(filter => !filter.isEmpty()))
+            .filter(active => active.length > 0)
+            .map(active => {
+                const association = this.filtersAssociation(active);
 
-                if (activeFilters.length > 0) {
-                    const association = this.filtersAssociation(group);
-
-                    if (association) {
-                        return this.association(
-                            association,
-                            activeFilters.map(filter => this.where(filter))
-                        );
-                    }
-                    return activeFilters.map(filter => this.where(filter));
-                }
+                return this.association(
+                    association,
+                    active.map(filter => this.where(filter))
+                );
             });
     }
 
-    static filtersAssociation(group: Group): string {
-        return group.filters[0].association;
+    static filtersAssociation(filters: Filter[]): string {
+        return filters[0].association;
     }
 
     static where(filter: Filter): Object {
@@ -77,10 +53,7 @@ export class WhereBuilder {
                 return this.empty(clonedFilter);
             case 'not.empty':
                 return this.notEmpty(clonedFilter);
-            // case '$gt':
-            //
             default:
-                console.warn(`where default case! condition is '${clonedFilter.condition}'`);
                 return this.castValue(clonedFilter);
         }
     }
@@ -108,8 +81,8 @@ export class WhereBuilder {
             case 'Int16':
             case 'Int32':
             case 'Int64': {
-                from = this.toInt(filter.type, filter.values[0]);
-                to = this.toInt(filter.type, filter.values[1]);
+                from = this.castToNumber(filter.values[0], filter.type);
+                to = this.castToNumber(filter.values[1], filter.type);
                 break;
             }
             case 'String': {
@@ -230,12 +203,6 @@ export class WhereBuilder {
 
     static toDateTime(v) {
         return `toDateTime('${d3.time.format('%Y-%m-%dT%H:%M:%S')(v.value)}')`;
-    }
-
-    static toInt(type, v) {
-        const suffix = type.replace('Int', '');
-
-        return `toInt${suffix}('${v.value}')`;
     }
 
     static toSeconds(param) {

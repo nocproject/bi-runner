@@ -56,7 +56,6 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
 
     ngAfterViewInit() {
         this.filterChangeSub();
-        console.log(this.filters.valid);
     }
 
     ngOnDestroy(): void {
@@ -133,7 +132,7 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
                 // }, {
                 association: '$and',
                 group: {
-                    association: '$or',
+                    association: '$and',
                     filters: [
                         [{
                             name: 'name',
@@ -199,7 +198,77 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
                         }]
                     ]
                 }
-            }]
+            }, {
+                association: '$or',
+                group: {
+                    association: '$and',
+                    filters: [
+                        [{
+                            name: 'name',
+                            type: 'select',
+                            value: 'direct_subscribers.Int64',
+                            validation: [Validators.required],
+                            label: 'Field',
+                            placeholder: 'Select field',
+                            options: this.fieldList.getAsOption()
+                        }, {
+                            name: 'condition',
+                            type: 'select',
+                            value: 'interval',
+                            validation: [Validators.required],
+                            label: 'Condition',
+                            placeholder: 'Select Condition',
+                            options: this.conditionService.conditions('direct_subscribers.Int64')
+                        }, {
+                            name: 'valueFirst',
+                            type: 'inputMask',
+                            mask: '999999999999',
+                            value: '0',
+                            validation: [Validators.required, BIValidators.maskNotEmpty],
+                            label: 'From Value'
+                        }, {
+                            name: 'valueSecond',
+                            type: 'inputMask',
+                            mask: '999999999999',
+                            value: '3',
+                            validation: [Validators.required, BIValidators.maskNotEmpty],
+                            label: 'To Value'
+                        }],
+                        [{
+                            name: 'name',
+                            type: 'select',
+                            value: 'direct_services.Int64',
+                            validation: [Validators.required],
+                            label: 'Field',
+                            placeholder: 'Select field',
+                            options: this.fieldList.getAsOption()
+                        }, {
+                            name: 'condition',
+                            type: 'select',
+                            value: 'interval',
+                            validation: [Validators.required],
+                            label: 'Condition',
+                            placeholder: 'Select Condition',
+                            options: this.conditionService.conditions('direct_services.Int64')
+                        }, {
+                            name: 'valueFirst',
+                            type: 'inputMask',
+                            mask: '999999999999',
+                            value: '0',
+                            validation: [Validators.required, BIValidators.maskNotEmpty],
+                            label: 'From Value'
+                        }, {
+                            name: 'valueSecond',
+                            type: 'inputMask',
+                            mask: '999999999999',
+                            value: '4',
+                            validation: [Validators.required, BIValidators.maskNotEmpty],
+                            label: 'To Value'
+                        }]
+                    ]
+                }
+            }
+            ]
         };
     }
 
