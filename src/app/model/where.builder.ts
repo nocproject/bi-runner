@@ -47,10 +47,18 @@ export class WhereBuilder {
         switch (clonedFilter.condition) {
             case 'interval':
                 return this.interval(clonedFilter);
+            case 'not.interval':
+                return this.not(this.interval(clonedFilter));
+            case 'periodic.interval':
+                return this.interval(clonedFilter);
+            case 'not.periodic.interval':
+                return this.not(this.interval(clonedFilter));
             case 'in':
                 return this.in(clonedFilter);
+            case 'not.in':
+                return this.in(clonedFilter);
             case 'empty':
-                return this.empty(clonedFilter);
+                return this.not(this.empty(clonedFilter));
             case 'not.empty':
                 return this.notEmpty(clonedFilter);
             default:
@@ -69,8 +77,16 @@ export class WhereBuilder {
                 break;
             }
             case 'DateTime': {
-                from = this.toDateTime(filter.values[0]);
-                to = this.toDateTime(filter.values[1]);
+                if (filter.condition.match(/periodic/)) {
+                    const tokens = filter.values[0].value.split('-');
+
+                    from = this.toSeconds(tokens[0]);
+                    to = this.toSeconds(tokens[1]);
+                    filter.name = `toInt32(toTime(${filter.name}))`;
+                } else {
+                    from = this.toDateTime(filter.values[0]);
+                    to = this.toDateTime(filter.values[1]);
+                }
                 break;
             }
             case 'IPv4': {
@@ -81,6 +97,9 @@ export class WhereBuilder {
             case 'Int16':
             case 'Int32':
             case 'Int64': {
+                filter.values.forEach(item => {
+                    item.value = item.value.replace(/_/g, '');
+                });
                 from = this.castToNumber(filter.values[0], filter.type);
                 to = this.castToNumber(filter.values[1], filter.type);
                 break;
@@ -240,6 +259,12 @@ export class WhereBuilder {
             '$notEmpty': {
                 '$field': filter.name
             }
+        };
+    }
+
+    static not(value) {
+        return {
+            $not: value
         };
     }
 }

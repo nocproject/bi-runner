@@ -151,9 +151,8 @@ export class MaskDirective implements ControlValueAccessor {
     overWriteCharAtPosition(position: number, key: string): void {
         const currentValue = this.input.value;
 
-        this.input.value = currentValue.slice(0, position) +
-            key + currentValue.slice(position + 1);
-        this.propagateChange(this.input.value.replace(new RegExp(this.PROMPT, 'g'), ''));
-        // this.propagateChange(this.input.value);
+        this.input.value = currentValue.slice(0, position) + key + currentValue.slice(position + 1);
+        // this.propagateChange(this.input.value.replace(new RegExp(this.PROMPT, 'g'), ''));
+        this.propagateChange(this.input.value);
     }
 }
