@@ -88,8 +88,10 @@ export class WhereBuilder {
                 break;
             }
             case 'IPv4': {
-                from = this.ipv4StrToNum(filter.values[0]);
-                to = this.ipv4StrToNum(filter.values[1]);
+                const tokens = filter.values[0].value.split('-');
+
+                from = this.ipv4StrToNum(tokens[0]);
+                to = this.ipv4StrToNum(tokens[1]);
                 break;
             }
             case 'Int16':
@@ -210,8 +212,8 @@ export class WhereBuilder {
         return _.flattenDeep(filter.values.map(item => this.castToNumber(item, filter.type)));
     }
 
-    static ipv4StrToNum(v): string {
-        return `IPv4StringToNum('${v.value}')`;
+    static ipv4StrToNum(value): string {
+        return `IPv4StringToNum('${value}')`;
     }
 
     static toDate(v) {
