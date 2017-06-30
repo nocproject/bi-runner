@@ -41,10 +41,10 @@
                                     (submit)="submitFilters($event)">
                             </bi-filter-form>
                             <div>
-                                <!--is valid : {{ form.valid }}-->
-                                <!--<hr>-->
-                                <!--form params : {{ form.value | json }}-->
-                                <!--<hr>-->
+                                is valid : {{ form.valid }}
+                                <hr>
+                                form params : {{ form.value | json }}
+                                <hr>
                                 sql : {{ debug.debug$ | async | json }}
                             </div>
                         </div>

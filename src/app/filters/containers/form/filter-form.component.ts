@@ -32,7 +32,6 @@ export class FilterFormComponent implements OnChanges, OnDestroy, OnInit {
 
     form: FormGroup;
     private eventSubscription: Subscription;
-    private emptyFilter: FieldConfig[];
 
     get controls() {
         return this.config.groups;
@@ -82,16 +81,6 @@ export class FilterFormComponent implements OnChanges, OnDestroy, OnInit {
     }
 
     ngOnInit() {
-        this.emptyFilter = [{
-            name: 'name',
-            type: 'select',
-            label: 'Field',
-            value: '',
-            placeholder: 'Select field',
-            options: this.fieldList.getAsOption(),
-            validation: [Validators.required]
-        }];
-
         const groups: FormGroup[] = this.config.groups.map(g => this.createGroup(g));
 
         this.form = new FormGroup({
@@ -101,6 +90,16 @@ export class FilterFormComponent implements OnChanges, OnDestroy, OnInit {
         this.eventSubscription = this.eventService.event$
             .filter(event => event !== null)
             .subscribe(event => {
+                const emptyFilter: FieldConfig[] = [{
+                    name: 'name',
+                    type: 'select',
+                    label: 'Field',
+                    value: '',
+                    placeholder: 'Select field',
+                    options: this.fieldList.getAsOption(),
+                    validation: [Validators.required]
+                }];
+
                 switch (event.type) {
                     case EventType.DeleteGroup: {
                         // Config array
@@ -111,11 +110,12 @@ export class FilterFormComponent implements OnChanges, OnDestroy, OnInit {
                     }
                     case EventType.AddFilter: {
                         // Config array
-                        this.config.groups[event.group].group.filters.push(this.emptyFilter);
+                        // const emptyFilter = _.cloneDeep(emptyFilter);
+                        this.config.groups[event.group].group.filters.push(emptyFilter);
                         // Form control
                         (<FormArray>(<FormArray>this.form.get('groups'))
                             .at(event.group).get('group.filters'))
-                            .push(this.createFilter(this.emptyFilter));
+                            .push(this.createFilter(emptyFilter));
                         break;
                     }
                     case EventType.DeleteFilter: {
@@ -152,6 +152,9 @@ export class FilterFormComponent implements OnChanges, OnDestroy, OnInit {
                                 this.config.groups[event.group].group.filters[event.filter] =
                                     this.config.groups[event.group].group.filters[event.filter]
                                         .filter(field => field.name === 'name' || field.name === 'condition');
+
+                                // set value for catch change field name
+                                _.filter(this.config.groups[event.group].group.filters[event.filter], ['name', 'name'])[0].value = filterControls.get('name').value;
                                 // Delete from controls
                                 Object.keys(filterControls.controls)
                                     .filter(name => name !== 'name')
@@ -182,7 +185,17 @@ export class FilterFormComponent implements OnChanges, OnDestroy, OnInit {
             association: '$and',
             group: {
                 association: '$and',
-                filters: [this.emptyFilter]
+                filters: [
+                    [{
+                        name: 'name',
+                        type: 'select',
+                        label: 'Field',
+                        value: '',
+                        placeholder: 'Select field',
+                        options: this.fieldList.getAsOption(),
+                        validation: [Validators.required]
+                    }]
+                ]
             }
         };
         // ToDo make Class Config & Controls
