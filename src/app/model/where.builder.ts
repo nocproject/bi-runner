@@ -46,23 +46,21 @@ export class WhereBuilder {
 
         switch (clonedFilter.condition) {
             case 'interval':
-                return this.interval(clonedFilter);
-            case 'not.interval':
-                return this.not(this.interval(clonedFilter));
             case 'periodic.interval':
                 return this.interval(clonedFilter);
+            case 'not.interval':
             case 'not.periodic.interval':
                 return this.not(this.interval(clonedFilter));
             case 'in':
-                return this.in(clonedFilter);
+                return this.inCondition(clonedFilter);
             case 'not.in':
-                return this.in(clonedFilter);
+                return this.not(this.inCondition(clonedFilter));
             case 'empty':
                 return this.not(this.empty(clonedFilter));
             case 'not.empty':
                 return this.notEmpty(clonedFilter);
             default:
-                return this.castValue(clonedFilter);
+                return this.castToValue(clonedFilter);
         }
     }
 
@@ -97,9 +95,6 @@ export class WhereBuilder {
             case 'Int16':
             case 'Int32':
             case 'Int64': {
-                filter.values.forEach(item => {
-                    item.value = item.value.replace(/_/g, '');
-                });
                 from = this.castToNumber(filter.values[0], filter.type);
                 to = this.castToNumber(filter.values[1], filter.type);
                 break;
@@ -134,7 +129,7 @@ export class WhereBuilder {
         };
     }
 
-    static in(filter: Filter): Object {
+    static inCondition(filter: Filter): Object {
 
         if (filter.values.length > 1) {
             return {
@@ -157,7 +152,7 @@ export class WhereBuilder {
         }
     }
 
-    static castValue(filter: Filter): Object {
+    static castToValue(filter: Filter): Object {
         const firstValue = _.first(filter.values);
         const expression: Object = {};
         let fieldValue: Object;
@@ -198,8 +193,11 @@ export class WhereBuilder {
     }
 
     static castToNumber(item: any, type: string): any {
-        if (_.startsWith(type, 'tree-') || _.startsWith(type, 'dict-') || type.match(/int|float/i)) {
+        if (_.startsWith(type, 'tree-') || _.startsWith(type, 'dict-')) {
             return Number(item.value);
+        }
+        if (type.match(/int|float/i)) { // Delete mask prompt
+            return Number(item.value = item.value.replace(/_/g, ''));
         }
         return item.value;
     }

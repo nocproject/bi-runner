@@ -153,8 +153,9 @@ export class FilterFormComponent implements OnChanges, OnDestroy, OnInit {
                                     this.config.groups[event.group].group.filters[event.filter]
                                         .filter(field => field.name === 'name' || field.name === 'condition');
 
-                                // set value for catch change field name
+                                // set value for catch change field name & condition
                                 _.filter(this.config.groups[event.group].group.filters[event.filter], ['name', 'name'])[0].value = filterControls.get('name').value;
+                                _.filter(this.config.groups[event.group].group.filters[event.filter], ['name', 'condition'])[0].value = filterControls.get('condition').value;
                                 // Delete from controls
                                 Object.keys(filterControls.controls)
                                     .filter(name => name !== 'name')

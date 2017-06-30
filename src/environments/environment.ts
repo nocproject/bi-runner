@@ -5,5 +5,5 @@
 
 export const environment = {
     production: false,
-    version: '2.0.3-beta dev'
+    version: '2.1.0-beta dev'
 };

@@ -64,13 +64,18 @@ export class FilterService {
                                 .filter((filter, filterIndex) => {
                                     const nameField = _.first(config.groups[groupIndex].group.filters[filterIndex]
                                         .filter(f => f.name === 'name'));
+                                    const conditionField = _.first(config.groups[groupIndex].group.filters[filterIndex]
+                                        .filter(f => f.name === 'condition'));
 
                                     if (!filter.hasOwnProperty('valueFirst')) {
                                         return false;
                                     }
-                                    if (filter.name === nameField.value) {
+                                    if (filter.condition === conditionField.value && filter.name === nameField.value) {
                                         return true;
-                                    } else {
+                                    } else if (filter.condition !== conditionField.value) {
+                                        conditionField.value = filter.condition;
+                                        return false;
+                                    } else if (filter.name !== nameField.value) {
                                         nameField.value = filter.name;
                                         return false;
                                     }
