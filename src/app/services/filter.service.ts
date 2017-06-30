@@ -38,7 +38,7 @@ export class FilterService {
     }
 
     filtersNext(group: Group) {
-        const groups = this.cloneValue(this.filtersSubject);
+        const groups = _.cloneDeep(this.filtersSubject.getValue());
         const exist: Group = _.find(groups, item => item.name === group.name);
 
         if (exist) {
@@ -51,7 +51,8 @@ export class FilterService {
     }
 
     formFilters(groups: Groups[], config: FormConfig) {
-        const exist: Group[] = this.cloneValue(this.filtersSubject).filter(group => group.name !== this.FORM_GROUP_NAME);
+        const exist: Group[] = _.cloneDeep(this.filtersSubject.getValue())
+            .filter(group => group.name !== this.FORM_GROUP_NAME);
 
         groups.forEach((item, groupIndex) => {
                 exist.push(
@@ -91,7 +92,7 @@ export class FilterService {
     }
 
     allFilters(): Group[] {
-        return this.cloneValue(this.filtersSubject);
+        return _.cloneDeep(this.filtersSubject.getValue());
     }
 
     cleanGroups() {
@@ -103,11 +104,11 @@ export class FilterService {
     }
 
     allGroups(): Field[] {
-        return this.cloneValue(this.groupsSubject);
+        return _.cloneDeep(this.groupsSubject.getValue());
     }
 
     removeGroup(group: Field) {
-        const groups = this.cloneValue(this.groupsSubject);
+        const groups = _.cloneDeep(this.groupsSubject.getValue());
 
         _.remove(groups, e => e.expr === group.name);
 
@@ -116,9 +117,5 @@ export class FilterService {
         }
 
         this.groupsSubject.next(groups);
-    }
-
-    private cloneValue(subject: BehaviorSubject<any>) {
-        return _.cloneDeep(subject.getValue());
     }
 }
