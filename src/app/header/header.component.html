@@ -11,14 +11,31 @@
                             class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a class="hand" routerLink="list">Open</a></li>
+                        <li *ngIf="(accessLevel$ | async) === 2">
+                            <a class="hand" [routerLink]="['share', (board$ | async).id]">Share</a>
+                        </li>
+                        <!--<li>-->
+                        <li *ngIf="(accessLevel$ | async) === 2">
+                            <a class="hand" (click)="removeConfirm.open()">Remove</a>
+                        </li>
+                        <li *ngIf="(accessLevel$ | async) >= 0">
+                            <a class="hand" (click)="saveAs.open()">Save As</a>
+                        </li>
+                        <!--<li>-->
+                        <li *ngIf="(accessLevel$ | async) > 0">
+                            <a class="hand" (click)="onSaveBoard()">Save</a>
+                        </li>
                     </ul>
                 </li>
-                <li class="not-active"><a>{{ (board$ | async).title }}</a></li>
+                <li class="not-active"><a>{{ boardTitle }}</a></li>
                 <li><a class="hand" (click)="onExport()">
                     <i *ngIf="isExecExport"
                        class="fa fa-spinner fa-spin fa-fw icon-offset"></i>Export</a></li>
                 <li class="not-active"><a>
                     <bi-counter [board]="board$ | async"></bi-counter>
+                </a></li>
+                <li class="not-active"><a>
+                    <bi-access-level [level$]="accessLevel$"></bi-access-level>
                 </a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
@@ -60,5 +77,38 @@
     </bi-modal-content>
     <bi-modal-footer>
         <button class="btn btn-default" (click)="about.close()">Close</button>
+    </bi-modal-footer>
+</bi-modal>
+
+<bi-modal #saveAs>
+    <bi-modal-header>Save As</bi-modal-header>
+    <bi-modal-content>
+        <form [formGroup]="saveForm">
+            <div class="form-group">
+                <label for="save-title" class="control-label">Title</label>
+                <input id="save-title" class="form-control"
+                       [ngModel]="boardTitle" formControlName="title">
+            </div>
+            <div class="form-group">
+                <label for="save-description" class="control-label">Description</label>
+                <input id="save-description" class="form-control"
+                       [ngModel]="boardDesc" formControlName="description">
+            </div>
+        </form>
+    </bi-modal-content>
+    <bi-modal-footer>
+        <button class="btn btn-primary" (click)="onSaveAsBoard(saveAs)">Save As</button>
+        <button class="btn btn-default" (click)="saveAs.close()">Close</button>
+    </bi-modal-footer>
+</bi-modal>
+
+<bi-modal #removeConfirm>
+    <bi-modal-header>Remove Board</bi-modal-header>
+    <bi-modal-content>
+        Are you sure to delete dashboard?
+    </bi-modal-content>
+    <bi-modal-footer>
+        <button class="btn btn-primary" (click)="onRemoveBoard(removeConfirm)">Yes</button>
+        <button class="btn btn-default" (click)="removeConfirm.close()">No</button>
     </bi-modal-footer>
 </bi-modal>

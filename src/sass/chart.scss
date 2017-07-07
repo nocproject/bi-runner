@@ -132,6 +132,28 @@
   animation: fa-spin 2s infinite linear;
 }
 
+.shared {
+  position: relative;
+  width: 14px;
+  height: 14px;
+}
+
+.shared:before {
+  content: "\f1e0";
+  font-family: FontAwesome;
+  font-size: 14px;
+  padding-left: 5px;
+  top: 0;
+}
+
+.shared-rotate:before {
+  content: "\f110";
+  font-family: FontAwesome;
+  font-size: 14px;
+  padding-left: 5px;
+  top: 0;
+}
+
 .spinner-blank {
   position: relative;
   width: 14px;

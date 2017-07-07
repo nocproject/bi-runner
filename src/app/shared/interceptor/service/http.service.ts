@@ -7,9 +7,7 @@ import {
     RequestOptions,
     XHRBackend
 } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/switchMap';
-import 'rxjs/add/observable/of';
+import { Observable } from 'rxjs/Rx';
 
 import {
     Interceptor,

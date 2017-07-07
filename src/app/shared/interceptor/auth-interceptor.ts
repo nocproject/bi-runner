@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Response } from '@angular/http';
 
 import * as _ from 'lodash';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs/Rx';
 
 import {
     Interceptor,

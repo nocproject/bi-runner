@@ -3,12 +3,13 @@ import * as _ from 'lodash';
 
 import { Field } from './field';
 import { Filter } from './filter';
+import { Group } from './group';
 import { Layout } from './layout';
 import { Query } from './query';
 import { Widget } from './widget';
 import { DeserializationHelper, SerializationHelper } from './helpers';
 
-@JsonObject
+@JsonObject()
 export class Board {
     @JsonMember
     public id: string;
@@ -38,6 +39,8 @@ export class Board {
     public layout: Layout;
     @JsonMember({name: 'export'})
     public exportQry: Query;
+    @JsonMember({elements: Group})
+    public groups: Group[];
     // version 0.2, may be
     // @JsonMapMember(String, Filter)
     public filter: Map<String, Filter>;
@@ -54,8 +57,17 @@ export class Board {
     }
 
     toJSON() {
-        return Object.assign({}, this, {
-            filter: SerializationHelper.map<String, Filter>(this.filter)
-        });
+        // DoTo take from @JsonMember
+        const obj = Object.assign({}, this,
+            {
+                agv_fields: this.agvFields,
+                filter_fields: this.filterFields,
+                'export': this.exportQry
+            });
+        delete obj['agvFields'];
+        delete obj['filterFields'];
+        delete obj['exportQry'];
+
+        return obj;
     }
 }

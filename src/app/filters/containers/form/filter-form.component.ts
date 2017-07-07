@@ -3,8 +3,7 @@ import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@ang
 
 import * as _ from 'lodash';
 import { Subscription } from 'rxjs/Subscription';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/operator/debounceTime';
+import { Observable } from 'rxjs/Rx';
 
 import { FormConfig, GroupConfig } from '../../models/form-config.interface';
 import { FieldListService } from '../../../services/field-list.service';
@@ -14,7 +13,6 @@ import { EventType } from '../../models/event.interface';
 
 import { ConditionService } from '../../services/condition.service';
 import { ValueService } from '../../services/value.service';
-import { Observable } from 'rxjs/Observable';
 import { BIValidators } from '../../components/validators';
 
 @Component({

@@ -10,11 +10,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import * as _ from 'lodash';
 
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs/Rx';
 import { Subscription } from 'rxjs/Subscription';
-import 'rxjs/add/operator/toArray';
-
-import { environment } from '../../../environments/environment';
 
 import { APIService } from '../../services';
 import { Board, FilterBuilder, GroupBuilder, Methods, QueryBuilder, Value } from '../../model';

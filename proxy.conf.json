@@ -10,6 +10,12 @@
     "ignorePath": true,
     "changeOrigin": false
   },
+  "/share/**": {
+    "target": "http://localhost:4200/",
+    "logLevel": "debug",
+    "ignorePath": true,
+    "changeOrigin": false
+  },
   "/board/**": {
     "target": "http://localhost:4200/",
     "logLevel": "debug",

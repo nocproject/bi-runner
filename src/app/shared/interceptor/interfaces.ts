@@ -1,5 +1,5 @@
 import { Request, Response, RequestOptionsArgs } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs/Rx';
 
 /**
  * Request intereceptor options

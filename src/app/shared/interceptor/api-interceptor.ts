@@ -1,7 +1,7 @@
 import { Injectable, Optional } from '@angular/core';
 
 import * as _ from 'lodash';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs/Rx';
 
 import { environment } from '../../../environments/environment';
 import { Interceptor, ResponseInterceptorOptions } from './interfaces';

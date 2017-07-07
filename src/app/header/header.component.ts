@@ -1,32 +1,46 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs/Rx';
+import { Subscription } from 'rxjs/Subscription';
 
-import { FilterService, UserService } from '../services';
-import { Board, User } from '../model';
+import * as _ from 'lodash';
 
 import { environment } from '../../environments/environment';
 
+import { APIService, FilterService, MessageService, UserService } from '../services';
+import { Board, QueryBuilder, Message, Methods, MessageType, User } from '../model';
+import { ModalComponent } from '../shared/modal/modal';
+
 @Component({
+    changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'bi-header',
-    templateUrl: './header.component.html',
-    styleUrls: ['./header.component.sass']
+    templateUrl: './header.component.html'
 })
 
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
     user$: Observable<User>;
     isLogin$: Observable<boolean>;
     board$: Observable<Board>;
     isReportOpen$: Observable<boolean>;
-
+    accessLevel$: Observable<number>;
+    saveSubscription: Subscription;
+    saveAsSubscription: Subscription;
+    removeSubscription: Subscription;
     isExecExport = false;
     version = environment.version;
 
+    // save as form
+    saveForm: FormGroup;
+    boardTitle: string;
+    boardDesc: string;
+
     constructor(private userService: UserService,
-                private filterService: FilterService,
-                private router: Router) {
-        console.log('HeaderComponent constructor');
+                private messages: MessageService,
+                private api: APIService,
+                private route: Router,
+                private filterService: FilterService) {
     }
 
     ngOnInit() {
@@ -36,6 +50,76 @@ export class HeaderComponent implements OnInit {
         this.board$ = this.filterService.board$;
         this.isReportOpen$ = this.filterService.isReportOpen$;
         this.userService.userInfo();
+        this.accessLevel$ = this.filterService.board$
+            .switchMap(board => {
+                    if (board && board.id) {
+                        this.boardTitle = board.title;
+                        this.boardDesc = board.description;
+                        return this.userService.accessLevel(board.id);
+                    }
+                    return Observable.of(-1);
+                }
+            );
+        this.saveForm = new FormGroup({
+            'title': new FormControl(null, [Validators.required]),
+            'description': new FormControl(null, [Validators.required])
+        });
+    }
+
+    ngOnDestroy(): void {
+        this.saveSubscription.unsubscribe();
+        this.saveAsSubscription.unsubscribe();
+        this.removeSubscription.unsubscribe();
+    }
+
+    onSaveBoard() {
+        const board = _.clone(this.filterService.boardSubject.getValue());
+        board.groups = this.filterService.allFilters();
+        board.format = 2;
+        const query = new QueryBuilder()
+            .method(Methods.SET_DASHBOARD)
+            .params([board.toJSON()])
+            .build();
+        console.log(query);
+        this.saveSubscription = this.api.execute(query)
+            .subscribe(response => {
+                console.log(response);
+                this.messages.message(new Message(MessageType.INFO, 'Saved'));
+            });
+    }
+
+    onSaveAsBoard(modal: ModalComponent) {
+        const board = _.clone(this.filterService.boardSubject.getValue());
+        board.title = this.saveForm.get('title').value;
+        board.description = this.saveForm.get('description').value;
+        delete board['id'];
+
+        const query = new QueryBuilder()
+            .method(Methods.SET_DASHBOARD)
+            .params([board.toJSON()])
+            .build();
+        modal.close();
+        this.saveAsSubscription = this.api.execute(query)
+            .subscribe(response => {
+                console.log(response);
+                this.messages.message(new Message(MessageType.INFO, 'Saved'));
+            });
+    }
+
+    onRemoveBoard(modal: ModalComponent) {
+        const board = _.clone(this.filterService.boardSubject.getValue());
+        const query = new QueryBuilder()
+            .method(Methods.REMOVE_DASHBOARD)
+            .params([board.id])
+            .build();
+        modal.close();
+        console.log(query);
+        this.removeSubscription = this.api.execute(query)
+            .subscribe(response => {
+                console.log(response);
+                this.messages.message(new Message(MessageType.INFO, 'Removed'));
+                this.route.navigate(['']);
+            });
     }
 
     onExport(): void {

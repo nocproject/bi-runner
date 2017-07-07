@@ -23,6 +23,7 @@ export class Parameter {
     public datasource: string;
     @JsonMember
     public limit: number;
+    @JsonMember({elements: Field})
     public fields: Field[];
     // @JsonMapMember({elements: [String, String], name: 'filter'})
     // public where: Map<String, String>;

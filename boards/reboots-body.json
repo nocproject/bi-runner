@@ -61,17 +61,7 @@
       },
       "description": "описание отчета по перезагрузкам",
       "title": "Перезагрузки",
-      "format": 1,
-      "filter": {
-        "startDate": {
-          "values": [
-            "2016-12-31T22:00:00.000Z",
-            "2017-12-31T22:59:59.000Z"
-          ],
-          "type": "DateTime",
-          "condition": "interval"
-        }
-      },
+      "format": 2,
       "export": {
         "params": [
           {

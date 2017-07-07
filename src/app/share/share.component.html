@@ -1,0 +1,72 @@
+<div class="modal fade bootstrap-dialog type-primary modal-open in" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="bootstrap-dialog-header">
+                    <div class="bootstrap-dialog-close-button" style="display: block;">
+                        <button class="close" (click)="onCancel()">×</button>
+                    </div>
+                    <div class="bootstrap-dialog-title title-left">Share Report : {{ board.title }}</div>
+                    <div class="title-right" style="color: white;padding-right: 25px;">Selected : {{ preSelected.length }}</div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <form [formGroup]="chooseForm">
+                        <div class="col-md-6">
+                            <div class="radio radio-primary">
+                                <input type="radio"
+                                       id="object-user" value="user"
+                                       formControlName="object">
+                                <label for="object-user">By User</label>
+                            </div>
+                            <div class="radio radio-primary">
+                                <input type="radio"
+                                       id="object-group" value="group"
+                                       formControlName="object">
+                                <label for="object-group">By Group</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="radio radio-primary">
+                                <input type="radio"
+                                       id="access-read" value="0"
+                                       formControlName="access">
+                                <label for="access-read">Read Only</label>
+                            </div>
+                            <div class="radio radio-primary">
+                                <input type="radio"
+                                       id="access-modify" value="1"
+                                       formControlName="access">
+                                <label for="access-modify">Modify</label>
+                            </div>
+                            <div class="radio radio-primary">
+                                <input type="radio"
+                                       id="access-admin" value="2"
+                                       formControlName="access">
+                                <label for="access-admin">Admin</label>
+                            </div>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+                <bi-data-grid
+                        [config]="config"
+                        [selected]="preSelected"
+                        (selectedEvent)="onSelected($event)">
+                </bi-data-grid>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="onShare()"
+                        [disabled]="preSelected.length === 0">Share
+                    <span [ngClass]="{'shared-rotate': shareSpin, 'shared' : !shareSpin}"></span>
+                </button>
+                <button type="button" class="btn btn-default" (click)="onRemoveAll()"
+                        [disabled]="preSelected.length === 0">Remove Access From All
+                </button>
+                <button type="button" class="btn btn-default" (click)="onCancel()">Cancel</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

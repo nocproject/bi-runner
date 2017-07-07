@@ -1,3 +1,4 @@
+export * from './access-level.enum'
 export * from './board';
 export * from './cell';
 export * from './cell.widget';

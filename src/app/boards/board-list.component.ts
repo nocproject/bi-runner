@@ -1,9 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
-
-import { Board, Methods, QueryBuilder } from '../model';
-import { APIService } from '../services';
 import { Router } from '@angular/router';
+
+import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
+
+import { Methods } from '../model';
+import { GridConfig } from '../shared/data-grid/data-grid.component';
 
 @Component({
     selector: 'bi-board-list',
@@ -11,53 +14,44 @@ import { Router } from '@angular/router';
     styleUrls: ['./board-list.component.scss']
 })
 export class BoardListComponent implements OnInit {
+    tableConfig: GridConfig;
+    selected: string[] = [];
 
-    result: Board[];
-    scrollDistance = 1;
-    scrollThrottle = 250;
-    selected: string;
-
-    constructor(private api: APIService,
-                private route: Router,
+    constructor(private route: Router,
                 private location: Location) {
-        this.api.execute(new QueryBuilder().method(Methods.LIST_DASHBOARDS).build())
-            .subscribe(
-                result => this.result = result.data.map(item => Board.fromJSON(item)),
-                console.error
-            );
     }
 
     ngOnInit() {
+        this.tableConfig = new GridConfig();
+        this.tableConfig.headers = ['Title', 'Description', 'Owner', 'Created', 'Changed'];
+        this.tableConfig.names = ['title', 'description', 'owner', 'created', 'changed'];
+        this.tableConfig.method = Methods.LIST_DASHBOARDS;
+        this.tableConfig.fromJson = tableJson;
     }
 
-    onModalScrollDown() {
-        // ToDo remove infiniteScroll
-        console.log('onModalScrollDown');
-    }
-
-    isSelected(row: Board): boolean {
-        return this.selected === row.id;
-    }
-
-    onOpen(id: string): void {
-        let selected = this.selected;
-
-        if (id) {
-            selected = id;
+    onOpen(): void {
+        if (this.selected.length === 1) {
+            this.route.navigate(['board', this.selected[0]]);
         }
-
-        this.route.navigate(['board', selected]);
     }
 
-    onClick(id: string): void {
-        if (this.selected === id) {
-            this.selected = '';
-        } else {
-            this.selected = id;
-        }
+    onSelected(id: string[]) {
+        this.selected = id;
+        this.onOpen();
     }
 
     onCancel(): void {
         this.location.back();
     }
+}
+
+function tableJson(item) {
+    return {
+        id: item.id,
+        title: item.title,
+        description: item.description,
+        owner: item.owner,
+        created: item.created,
+        changed: item.changed
+    };
 }

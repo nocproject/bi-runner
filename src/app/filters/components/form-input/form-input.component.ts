@@ -1,6 +1,5 @@
-import { Component, EventEmitter } from '@angular/core';
+import { Component } from '@angular/core';
 
-import { Event } from '../../models/event.interface';
 import { Field } from '../../models/field.interface';
 import { FieldConfig } from '../../models/form-config.interface';
 import { FormGroup } from '@angular/forms';

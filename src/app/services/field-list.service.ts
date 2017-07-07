@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 
 import * as _ from 'lodash';
 
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/publishReplay';
+import { Observable } from 'rxjs/Rx';
 
 import { APIService } from './api.service';
 import { Board, Field, QueryBuilder, Methods } from '../model';
