@@ -30,11 +30,10 @@ export class BoardComponent implements OnInit, OnDestroy {
         this.subscription = this.route.data.map(data => data['detail'])
             .subscribe(
                 (board: Board) => {
-                    // ToDo init filters
-                    // this.filterService.filtersNext();
+                    this.fieldListService.init(board);
+                    this.filterService.initFilters(board.groups);
                     this.filterService.groupsNext(board.exportQry.params[0].fields);
                     this.board = board;
-                    this.fieldListService.init(board);
                     this.cells = this.cellsByRow(board.layout.cells, board.widgets);
                     this.filterService.boardSubject.next(board);
                     this.filterService.isReportOpenSubject.next(true);

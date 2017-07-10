@@ -38,7 +38,6 @@ import { SelectComponent } from './shared/select/select.component';
 
 import { FiltersModule } from './filters/filters.module';
 import { ModalModule } from './shared/modal';
-import { SaveComponent } from './save/save.component';
 import { ShareComponent } from './share/share.component';
 import { DataGridComponent } from './shared/data-grid/data-grid.component';
 import { AccessLevelComponent } from './header/access-level.component';
@@ -64,7 +63,6 @@ import { AccessLevelComponent } from './header/access-level.component';
         GroupByComponent,
         TimepickerComponent,
         SelectComponent,
-        SaveComponent,
         ShareComponent,
         DataGridComponent,
         AccessLevelComponent

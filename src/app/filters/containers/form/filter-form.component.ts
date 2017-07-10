@@ -1,28 +1,28 @@
-import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 import * as _ from 'lodash';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Rx';
 
-import { FormConfig, GroupConfig } from '../../models/form-config.interface';
-import { FieldListService } from '../../../services/field-list.service';
-import { FieldConfig } from '../../models/form-config.interface';
-import { EventService } from '../../services/event.service';
 import { EventType } from '../../models/event.interface';
+import { FiltersConfig, FormConfig, GroupConfig } from '../../models/form-config.interface';
+import { FieldConfig } from '../../models/form-config.interface';
+import { FieldListService, FilterService } from '../../../services';
+import { EventService } from '../../services';
 
 import { ConditionService } from '../../services/condition.service';
 import { ValueService } from '../../services/value.service';
 import { BIValidators } from '../../components/validators';
+import { Group } from '../../../model/group';
+import { FormData } from '../../models/form-data.interface';
 
 @Component({
     exportAs: 'filterForm',
     selector: 'bi-filter-form',
-    styleUrls: ['./filter-form.component.scss'],
     templateUrl: './filter-form.component.html'
 })
-export class FilterFormComponent implements OnChanges, OnDestroy, OnInit {
-    @Input()
+export class FilterFormComponent implements OnDestroy, OnInit {
     config: FormConfig;
 
     @Output()
@@ -30,10 +30,7 @@ export class FilterFormComponent implements OnChanges, OnDestroy, OnInit {
 
     form: FormGroup;
     private eventSubscription: Subscription;
-
-    get controls() {
-        return this.config.groups;
-    }
+    private formSubscription: Subscription;
 
     get changes(): Observable<any> {
         return this.form.valueChanges;
@@ -49,41 +46,20 @@ export class FilterFormComponent implements OnChanges, OnDestroy, OnInit {
 
     constructor(private fb: FormBuilder,
                 private eventService: EventService,
+                private filterService: FilterService,
                 private fieldList: FieldListService,
                 private conditionService: ConditionService,
                 private valueService: ValueService) {
     }
 
-    ngOnChanges(): void {
-        if (this.form) {
-            const controls = Object.keys(this.form.controls);
-            console.log('FilterFormComponent: ngOnChanges');
-            // const configControls = this.controls.map((item) => item.name);
-            //
-            // controls
-            //     .filter((control) => !configControls.includes(control))
-            //     .forEach((control) => this.form.removeControl(control));
-            //
-            // configControls
-            //     .filter((control) => !controls.includes(control))
-            //     .forEach((name) => {
-            //         const config = this.config.find((control) => control.name === name);
-            //         this.form.addControl(name, this.createControl(config));
-            //     });
-        }
-    }
-
     ngOnDestroy(): void {
         // ToDo check all subscription!!!
         this.eventSubscription.unsubscribe();
+        this.formSubscription.unsubscribe();
     }
 
     ngOnInit() {
-        const groups: FormGroup[] = this.config.groups.map(g => this.createGroup(g));
-
-        this.form = new FormGroup({
-            groups: new FormArray(groups)
-        }, BIValidators.form);
+        this.createForm();
 
         this.eventSubscription = this.eventService.event$
             .filter(event => event !== null)
@@ -107,8 +83,6 @@ export class FilterFormComponent implements OnChanges, OnDestroy, OnInit {
                         break;
                     }
                     case EventType.AddFilter: {
-                        // Config array
-                        // const emptyFilter = _.cloneDeep(emptyFilter);
                         this.config.groups[event.group].group.filters.push(emptyFilter);
                         // Form control
                         (<FormArray>(<FormArray>this.form.get('groups'))
@@ -123,6 +97,64 @@ export class FilterFormComponent implements OnChanges, OnDestroy, OnInit {
                         (<FormArray>(<FormArray>this.form.get('groups'))
                             .at(event.group).get('group.filters'))
                             .removeAt(event.filter);
+                        break;
+                    }
+                    case EventType.Restore: {
+                        const formGroups: Group[] = event.value.filter(group => group.name === 'form');
+
+                        if (formGroups.length > 0) {
+                            const formConfig: FormConfig = {groups: []};
+                            const qty = (<FormArray>this.form.get('groups')).length;
+
+                            console.log('restore : ', formGroups);
+                            this.config = formConfig;
+                            console.log('-', this.value);
+                            for (let i = 0; i < qty; i++) {
+                                (<FormArray>this.form.get('groups')).removeAt(i);
+                            }
+                            console.log('--', this.value);
+                            formGroups.forEach((group) => {
+                                const filtersConfig: FiltersConfig = {
+                                    association: group.filters[0].association,
+                                    filters: []
+                                };
+                                const groupConfig: GroupConfig = {
+                                    association: group.association,
+                                    group: filtersConfig
+                                };
+                                const formControl = this.createGroup(groupConfig);
+                                this.config.groups.push(groupConfig);
+                                group.filters.forEach((filter) => {
+                                    const nameField: FieldConfig = {
+                                        name: 'name',
+                                        type: 'select',
+                                        label: 'Field',
+                                        value: `${filter.name}.${filter.type}`,
+                                        placeholder: 'Select field',
+                                        options: this.fieldList.getAsOption(),
+                                        validation: [Validators.required]
+                                    };
+                                    const conditionField: FieldConfig = this.conditionService
+                                        .field(filter.type);
+                                    const valuesField: FieldConfig[] = this.valueService
+                                        .fields(`${filter.name}.${filter.type}`, filter.condition)
+                                        .map(field => field);
+
+                                    conditionField.value = filter.condition;
+                                    valuesField[0].value = filter.values[0].value;
+                                    if (filter.values[1] && filter.values[1].value) {
+                                        valuesField[1].value = filter.valueSecond;
+                                    }
+
+                                    filtersConfig.filters.push([nameField, conditionField].concat(valuesField.map(item => item)));
+                                    const filters = this.createFilter([nameField, conditionField].concat(valuesField.map(item => item)));
+                                    (<FormArray>formControl.get('group.filters')).push(filters);
+                                    console.log(formControl.value);
+                                });
+                                console.log(this.config);
+                                (<FormArray>this.form.get('groups')).push(formControl);
+                            });
+                        }
                         break;
                     }
                     case EventType.ChangeSelect: {
@@ -167,6 +199,7 @@ export class FilterFormComponent implements OnChanges, OnDestroy, OnInit {
                                 break;
                             }
                         }
+                        break;
                     }
                 }
             });
@@ -202,6 +235,47 @@ export class FilterFormComponent implements OnChanges, OnDestroy, OnInit {
         this.config.groups.push(fresh);
         // Form controls
         (<FormArray>this.form.get('groups')).push(this.createGroup(fresh));
+    }
+
+    private createForm() {
+        // init state
+        this.config = {
+            groups: [{
+                association: '$and',
+                group: {
+                    association: '$and',
+                    filters: [
+                        [{
+                            name: 'name',
+                            type: 'select',
+                            value: '',
+                            validation: [Validators.required],
+                            label: 'Field',
+                            placeholder: 'Select field',
+                            options: this.fieldList.getAsOption()
+                        }]
+                    ]
+                }
+            }]
+        };
+
+        const groups: FormGroup[] = this.config.groups.map(g => this.createGroup(g));
+
+        this.form = new FormGroup({
+            groups: new FormArray(groups)
+        }, BIValidators.form);
+
+        this.formSubscription = this.changes
+            .filter(() => this.form.valid)
+            .distinctUntilChanged((previous, current) => {
+                return JSON.stringify(previous) === JSON.stringify(current);
+            })
+            .subscribe((data: FormData) => {
+                console.log(`form is valid : ${this.form.valid}`);
+                console.log('SelectorComponent: subscribe - execute filter!');
+
+                this.filterService.formFilters(data.groups, this.config);
+            });
     }
 
     private createGroup(config: GroupConfig): FormGroup {

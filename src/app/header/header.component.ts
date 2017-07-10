@@ -78,12 +78,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
         board.format = 2;
         const query = new QueryBuilder()
             .method(Methods.SET_DASHBOARD)
-            .params([board.toJSON()])
+            .params([board.prepare()])
             .build();
+        console.log(this.filterService.allFilters());
         console.log(query);
         this.saveSubscription = this.api.execute(query)
-            .subscribe(response => {
-                console.log(response);
+            .subscribe(() => {
                 this.messages.message(new Message(MessageType.INFO, 'Saved'));
             });
     }
@@ -96,13 +96,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
         const query = new QueryBuilder()
             .method(Methods.SET_DASHBOARD)
-            .params([board.toJSON()])
+            .params([board.prepare()])
             .build();
         modal.close();
         this.saveAsSubscription = this.api.execute(query)
             .subscribe(response => {
-                console.log(response);
                 this.messages.message(new Message(MessageType.INFO, 'Saved'));
+                this.route.navigate(['board', response.result]);
             });
     }
 
@@ -113,10 +113,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
             .params([board.id])
             .build();
         modal.close();
-        console.log(query);
         this.removeSubscription = this.api.execute(query)
-            .subscribe(response => {
-                console.log(response);
+            .subscribe(() => {
                 this.messages.message(new Message(MessageType.INFO, 'Removed'));
                 this.route.navigate(['']);
             });

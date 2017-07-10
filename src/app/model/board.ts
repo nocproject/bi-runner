@@ -7,7 +7,7 @@ import { Group } from './group';
 import { Layout } from './layout';
 import { Query } from './query';
 import { Widget } from './widget';
-import { DeserializationHelper, SerializationHelper } from './helpers';
+import { DeserializationHelper } from './helpers';
 
 @JsonObject()
 export class Board {
@@ -56,7 +56,7 @@ export class Board {
         return board;
     }
 
-    toJSON() {
+    prepare() {
         // DoTo take from @JsonMember
         const obj = Object.assign({}, this,
             {

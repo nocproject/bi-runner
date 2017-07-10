@@ -217,10 +217,16 @@ export class WhereBuilder {
     }
 
     static toDate(v) {
+        if(typeof v.value === 'string'){
+            v.value = new Date(v.value);
+        }
         return `toDate('${d3.time.format('%Y-%m-%d')(v.value)}')`;
     }
 
     static toDateTime(v) {
+        if(typeof v.value === 'string'){
+            v.value = new Date(v.value);
+        }
         return `toDateTime('${d3.time.format('%Y-%m-%dT%H:%M:%S')(v.value)}')`;
     }
 

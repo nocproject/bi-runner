@@ -34,7 +34,7 @@ export class FilterBuilder {
         return this;
     }
 
-    public association(association: string) {
+    public association(association: '$and' | '$or') {
         this.filter.association = association;
         return this;
     }

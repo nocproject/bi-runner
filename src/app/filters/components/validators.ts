@@ -173,7 +173,7 @@ export class BIValidators {
     }
 
     public static maskNotEmpty(control: AbstractControl): ValidationErrors | null {
-        if (control.value.replace(new RegExp('_', 'g'), '').length > 0) {
+        if (control.value && control.value.replace(new RegExp('_', 'g'), '').length > 0) {
             return null;
         }
 

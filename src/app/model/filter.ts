@@ -8,9 +8,13 @@ export class Filter {
     public values: Value[];
     @JsonMember
     public condition: string;
+    @JsonMember
     public type: string;
+    @JsonMember
     public name: string;
-    public association: string;
+    @JsonMember
+    public association: '$and' | '$or';
+    @JsonMember
     public alias: string;
     // form data
     public valueFirst: string;

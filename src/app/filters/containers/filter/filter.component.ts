@@ -9,7 +9,6 @@ import { EventService } from '../../services/event.service';
 
 @Component({
     selector: 'bi-filter',
-    styleUrls: ['./filter.component.scss'],
     templateUrl: './filter.component.html'
 })
 export class FilterComponent implements OnInit {

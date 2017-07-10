@@ -6,7 +6,6 @@ import { EventType } from '../../models/event.interface';
 
 @Component({
     selector: 'bi-group',
-    styleUrls: ['./group.component.scss'],
     templateUrl: './group.component.html'
 })
 export class GroupComponent implements OnInit {

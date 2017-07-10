@@ -13,7 +13,7 @@ export class GroupBuilder {
         return this;
     }
 
-    public association(association: string) {
+    public association(association: '$and' | '$or') {
         this.group.association = association;
         return this;
     }

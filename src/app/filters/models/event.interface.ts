@@ -7,8 +7,9 @@ export interface Event {
 }
 
 export enum EventType {
+    AddFilter,
+    ChangeSelect,
     DeleteFilter,
     DeleteGroup,
-    AddFilter,
-    ChangeSelect
+    Restore
 }

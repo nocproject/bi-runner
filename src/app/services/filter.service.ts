@@ -2,11 +2,15 @@ import { Injectable } from '@angular/core';
 
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Rx';
+
 import * as _ from 'lodash';
 
 import { Board, FilterBuilder, Field, GroupBuilder, Group, Value } from '../model';
+
+import { EventService } from '../filters/services/event.service';
 import { Groups } from '../filters/models/form-data.interface';
 import { FormConfig } from '../filters/models/form-config.interface';
+import { EventType } from '../filters/models/event.interface';
 
 @Injectable()
 export class FilterService {
@@ -29,7 +33,7 @@ export class FilterService {
 
     lastUpdatedWidget: string;
 
-    constructor() {
+    constructor(private eventService: EventService) {
         console.log('created FilterService...');
     }
 
@@ -37,10 +41,16 @@ export class FilterService {
         this.filtersSubject.next([]);
     }
 
+    initFilters(groups: Group[]) {
+        this.filtersSubject.next(groups);
+        this.eventService.next({type: EventType.Restore, value: groups});
+    }
+
     filtersNext(group: Group) {
         const groups = _.cloneDeep(this.filtersSubject.getValue());
         const exist: Group = _.find(groups, item => item.name === group.name);
 
+        console.log(group);
         if (exist) {
             _.first(exist.filters).values = _.first(group.filters).values;
         } else {
@@ -70,6 +80,7 @@ export class FilterService {
                                     if (!filter.hasOwnProperty('valueFirst')) {
                                         return false;
                                     }
+                                    // detect change fields name or condition
                                     if (filter.condition === conditionField.value && filter.name === nameField.value) {
                                         return true;
                                     } else if (filter.condition !== conditionField.value) {

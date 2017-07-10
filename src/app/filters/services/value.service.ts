@@ -9,9 +9,6 @@ import { BIValidators } from '../components/validators';
 @Injectable()
 export class ValueService {
 
-    constructor() {
-    }
-
     fields(nameAndType: string, condition: string): FieldConfig[] {
         const first: FieldConfig = {
             name: 'valueFirst',
