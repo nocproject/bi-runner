@@ -28,8 +28,8 @@ import { Group } from '../../model/group';
     templateUrl: './selector.component.html'
 })
 export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
-    private START_DATE = 'startDate';
-    private END_DATE = 'endDate';
+    public START_DATE = 'startDate';
+    public END_DATE = 'endDate';
 
     @Input()
     board: Board;
@@ -84,15 +84,6 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
 
     submitFilters(value: { [name: string]: any }) {
         console.log(value);
-    }
-
-    click() {
-        this.rangeForm.setValue({
-            range: {
-                [this.START_DATE]: new Date(),
-                [this.END_DATE]: new Date()
-            }
-        });
     }
 
     private filterChangeSub() {
