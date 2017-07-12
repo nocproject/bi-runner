@@ -75,7 +75,7 @@ export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestro
         this.subscription = this.filterService.filters$
             .debounceTime(500)
             // .distinctUntilChanged()
-            .do(data => console.log('filters changed', data))
+            // .do(data => console.log('filters changed', data))
             .filter(() => this.filterService.lastUpdatedWidget !== this.data.widget.cell)
             .map(group => WhereBuilder.makeWhere(group))
             .filter(where => JSON.stringify(where) !== JSON.stringify(this.data.widget.query.params[0].filter))

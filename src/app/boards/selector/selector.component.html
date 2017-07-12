@@ -17,9 +17,9 @@
                         <div class="col-md-7">
                             <form [formGroup]="rangeForm">
                                 <bi-datetime-range
-                                        [form]="rangeForm"
-                                        fromControlName="startDate"
-                                        toControlName="endDate">
+                                        [formControlName]="'range'"
+                                        [fromControlName]="this.START_DATE"
+                                        [toControlName]="this.END_DATE">
                                 </bi-datetime-range>
                             </form>
                         </div>
@@ -48,6 +48,7 @@
                             </div>
                         </div>
                     </div>
+                    <button (click)="click()">Click</button>
                 </div>
             </div>
             <div class="chart-notes">Selector</div>

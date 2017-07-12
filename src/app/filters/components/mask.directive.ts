@@ -1,4 +1,4 @@
-import { Directive, ElementRef, forwardRef, HostListener, Input, OnInit } from '@angular/core';
+import { Directive, ElementRef, forwardRef, HostListener, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import * as _ from 'lodash';
@@ -15,9 +15,11 @@ const SPECIAL_CHARACTERS = [' ', '/', '(', ')', '+', '\/', '-', ':', '.'];
 
 @Directive({
     selector: '[biMask]',
-    providers: [
-        {provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => MaskDirective), multi: true}
-    ]
+    providers: [{
+        provide: NG_VALUE_ACCESSOR,
+        useExisting: forwardRef(() => MaskDirective),
+        multi: true
+    }]
 })
 export class MaskDirective implements ControlValueAccessor {
     @Input()

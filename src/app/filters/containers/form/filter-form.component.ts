@@ -106,13 +106,10 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                             const formConfig: FormConfig = {groups: []};
                             const qty = (<FormArray>this.form.get('groups')).length;
 
-                            console.log('restore : ', formGroups);
                             this.config = formConfig;
-                            console.log('-', this.value);
                             for (let i = 0; i < qty; i++) {
                                 (<FormArray>this.form.get('groups')).removeAt(i);
                             }
-                            console.log('--', this.value);
                             formGroups.forEach((group) => {
                                 const filtersConfig: FiltersConfig = {
                                     association: group.filters[0].association,
@@ -149,9 +146,7 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                                     filtersConfig.filters.push([nameField, conditionField].concat(valuesField.map(item => item)));
                                     const filters = this.createFilter([nameField, conditionField].concat(valuesField.map(item => item)));
                                     (<FormArray>formControl.get('group.filters')).push(filters);
-                                    console.log(formControl.value);
                                 });
-                                console.log(this.config);
                                 (<FormArray>this.form.get('groups')).push(formControl);
                             });
                         }

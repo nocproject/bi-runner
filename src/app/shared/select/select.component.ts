@@ -5,9 +5,11 @@ import { IOption } from '../../model';
 
 @Component({
     selector: 'bi-select',
-    providers: [
-        {provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => SelectComponent), multi: true}
-    ],
+    providers: [{
+        provide: NG_VALUE_ACCESSOR,
+        useExisting: forwardRef(() => SelectComponent),
+        multi: true
+    }],
     template: `
         <div class="form-group">
             <label class="control-label">{{ label }}</label>
