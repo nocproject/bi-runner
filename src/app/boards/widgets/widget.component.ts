@@ -6,11 +6,12 @@ import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/debounceTime';
 
-import { CellAndWidget, GroupBuilder, Filter, Result, Value, WhereBuilder } from '../../model';
+import { CellAndWidget, Group, GroupBuilder, Filter, Result, Value, WhereBuilder } from '../../model';
 import { APIService, FilterService } from '../../services';
 
 export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestroy {
     private subscription: Subscription;
+    // private eventSubscription: Subscription;
 
     @Input()
     data: CellAndWidget;
@@ -40,16 +41,14 @@ export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestro
         this.subscription.unsubscribe();
     }
 
-    catchEvents(chart: BaseMixin<any>,
-                nextFilter?: Filter,
-                getTitle?: (widget, filter) => string,
-                getValue?: (widget, filter) => Value[]): void {
-        chart.on('filtered', (widget, filter) => {
+    catchEvents(chart: BaseMixin<any>, nextFilter?: Filter): void {
+        chart.on('filtered', (widget: BaseMixin<any>, filter) => {
             const key = `${nextFilter.alias ? nextFilter.alias : nextFilter.name}.${chart.anchorName()}`;
 
             this.showReset = true;
-            this.title = getTitle(widget, filter);
-            nextFilter.values = getValue(widget, filter);
+            this.title = this.getTitle(widget, filter);
+            nextFilter.values = this.getValue(widget, filter);
+            console.log(widget.filters());
             if (nextFilter.isEmpty()) {
                 this.filterService.lastUpdatedWidget = '';
             } else {
@@ -63,6 +62,19 @@ export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestro
         chart.on('renderlet', () => this.showSpinner = false);
     }
 
+    initialState(widget: BaseMixin<any>) {
+        const cell = widget.anchorName();
+        const values: Value[] = this.filterService.initChart(cell);
+
+        if (values) {
+            const data = this.restore(values);
+
+            data.filter.forEach(f => widget.filter(f));
+            this.title = data.title;
+            this.showReset = true;
+        }
+    }
+
     onReset(): void {
         this.chart.filterAll();
         this.chart.render();
@@ -70,6 +82,12 @@ export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestro
     }
 
     abstract draw(response: Result): BaseMixin<any>;
+
+    abstract getTitle(widget: BaseMixin<any>, filter): string;
+
+    abstract getValue(widget: BaseMixin<any>, filter): Value[];
+
+    abstract restore(values: Value[]): Restore;
 
     private filtersSubscription() {
         this.subscription = this.filterService.filters$
@@ -97,4 +115,9 @@ export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestro
                 },
                 console.error);
     }
+}
+
+export interface Restore {
+    title: string;
+    filter: any[];
 }

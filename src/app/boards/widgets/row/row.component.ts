@@ -4,7 +4,7 @@ import * as dc from 'dc';
 import * as crossfilter from 'crossfilter';
 import { BaseMixin, RowChart } from 'dc';
 
-import { WidgetComponent } from '../widget.component';
+import { Restore, WidgetComponent } from '../widget.component';
 import { FilterBuilder, Result, Value } from '../../../model';
 import { Utils } from '../../../shared/utils';
 
@@ -19,6 +19,8 @@ export class RowComponent extends WidgetComponent {
         const ndx = crossfilter(response.zip(false));
         const dimension = ndx.dimension(d => new Value(d.day, days[d.day - 1]));
         const values = dimension.group().reduceSum(d => d.cnt);
+
+        this.initialState(chart);
 
         chart.width(this.wrapperView.nativeElement.scrollWidth - 10);
         chart.height(this.data.cell.height);
@@ -43,12 +45,24 @@ export class RowComponent extends WidgetComponent {
             .type('UInt64')
             .condition('in')
             .build();
-        this.catchEvents(chart,
-            newFilter,
-            (widget, filter) => widget.filters().map(item => Utils.reductionName(item)).join(),
-            (widget, filter) => widget.filters());
+        this.catchEvents(chart, newFilter);
         chart.render();
 
         return chart;
+    }
+
+    getTitle(widget: BaseMixin<any>, filter): string {
+        return widget.filters().map(item => Utils.reductionName(item)).join();
+    }
+
+    getValue(widget: BaseMixin<any>, filter): Value[] {
+        return widget.filters();
+    }
+
+    restore(values: Value[]): Restore {
+        return {
+            title: values.map(item => Utils.reductionName(item)).join(),
+            filter: values.map(item => new Value(item.value, item.desc))
+        };
     }
 }

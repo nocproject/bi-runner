@@ -4,7 +4,7 @@ import * as crossfilter from 'crossfilter';
 import * as dc from 'dc';
 import { BaseMixin, Legend, PieChart } from 'dc';
 
-import { WidgetComponent } from '../widget.component';
+import { Restore, WidgetComponent } from '../widget.component';
 import { FilterBuilder, Result, Value } from '../../../model';
 import { Utils } from '../../../shared/utils';
 
@@ -24,6 +24,8 @@ export class PieComponent extends WidgetComponent {
         const legendWidth = width - height;
         const offset = 30;
         const legend: Legend = dc.legend();
+
+        this.initialState(chart);
 
         // legend.x(width / 2 + offset / 2) // legend right
         legend.x(offset); // legend left
@@ -51,12 +53,24 @@ export class PieComponent extends WidgetComponent {
             .type('UInt64')
             .condition('in')
             .build();
-        this.catchEvents(chart,
-            newFilter,
-            (widget, filter) => widget.filters().map(item => Utils.reductionName(item)).join(),
-            (widget, filter) => widget.filters());
+        this.catchEvents(chart, newFilter);
         chart.render();
 
         return chart;
+    }
+
+    getTitle(widget: BaseMixin<any>, filter): string {
+        return widget.filters().map(item => Utils.reductionName(item)).join();
+    };
+
+    getValue(widget: BaseMixin<any>, filter): Value[] {
+        return widget.filters();
+    }
+
+    restore(values: Value[]): Restore {
+        return {
+            title: values.map(item => Utils.reductionName(item)).join(),
+            filter: values.map(item => new Value(item.value, item.desc))
+        };
     }
 }

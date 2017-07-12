@@ -6,9 +6,10 @@ import * as crossfilter from 'crossfilter';
 import * as _ from 'lodash';
 import { BaseMixin, DataTableWidget } from 'dc';
 
-import { WidgetComponent } from '../widget.component';
+import { Restore, WidgetComponent } from '../widget.component';
 import { Field, Result } from '../../../model';
 import { Utils } from '../../../shared/utils';
+import { Value } from '../../../model/value';
 
 @Component({
     selector: 'bi-table',
@@ -53,5 +54,17 @@ export class TableComponent extends WidgetComponent {
         chart.render();
 
         return chart;
+    }
+
+    getTitle(widget: BaseMixin<any>, filter): string {
+        return undefined;
+    }
+
+    getValue(widget: BaseMixin<any>, filter: any): any[] {
+        return undefined;
+    }
+
+    restore(values: Value[]): Restore {
+        return undefined;
     }
 }

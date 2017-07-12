@@ -5,7 +5,7 @@ import * as d3 from 'd3';
 import * as crossfilter from 'crossfilter';
 import { BarChart, BaseMixin } from 'dc';
 
-import { WidgetComponent } from '../widget.component';
+import { Restore, WidgetComponent } from '../widget.component';
 import { FilterBuilder, Result, Value } from '../../../model';
 
 @Component({
@@ -18,6 +18,8 @@ export class BarComponent extends WidgetComponent {
         const ndx = crossfilter(response.zip(false));
         const dimension = ndx.dimension(d => new Value(d[Object.keys(d)[0]], d.name));
         const values = dimension.group().reduceSum(d => d.cnt);
+
+        // this.initialState(chart);
 
         chart.width(this.wrapperView.nativeElement.scrollWidth);
         chart.height(this.data.cell.height);
@@ -34,12 +36,24 @@ export class BarComponent extends WidgetComponent {
             .type('UInt8')
             .condition('interval')
             .build();
-        this.catchEvents(chart,
-            newFilter,
-            (widget, filter) => filter ? Math.ceil(filter[0]) + ' - ' + Math.ceil(filter[1]) : '',
-            (widget, filter) => filter ? filter.map(element => new Value(Math.ceil(element))) : []);
+        this.catchEvents(chart, newFilter);
         chart.render();
 
         return chart;
+    }
+
+    getTitle(widget: BaseMixin<any>, filter): string {
+        return filter ? Math.ceil(filter[0]) + ' - ' + Math.ceil(filter[1]) : '';
+    }
+
+    getValue(widget: BaseMixin<any>, filter): Value[] {
+        return filter ? filter.map(element => new Value(Math.ceil(element))) : [];
+    }
+
+    restore(values: Value[]): Restore {
+        return {
+            title: Math.ceil(values[0].value) + ' - ' + Math.ceil(values[1].value),
+            filter: values.map(item => {const s = Math.ceil(item.value);console.log(s);return s;})
+        };
     }
 }

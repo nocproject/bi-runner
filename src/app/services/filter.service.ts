@@ -32,6 +32,16 @@ export class FilterService {
     isReportOpen$: Observable<boolean> = this.isReportOpenSubject.asObservable();
 
     lastUpdatedWidget: string;
+    // chart: initial state
+    private _initChart: ChartInitState[];
+
+    initChart(cell: string): Value[] {
+        const init = this._initChart.filter(item => item.name === cell);
+        if (init.length > 0 && !init[0].use) {
+            this._initChart.filter(item => item.name === cell)[0].use = true;
+            return this._initChart.filter(item => item.name === cell)[0].values;
+        }
+    }
 
     constructor(private eventService: EventService) {
         console.log('created FilterService...');
@@ -44,13 +54,21 @@ export class FilterService {
     initFilters(groups: Group[]) {
         this.filtersSubject.next(groups);
         this.eventService.next({type: EventType.Restore, value: groups});
+        this._initChart = groups
+            .filter(group => group.name !== 'form' && group.name !== 'startEnd')
+            .map(group => {
+                return {
+                    name: group.name.split('.')[1],
+                    values: group.filters[0].values,
+                    use: false
+                };
+            });
     }
 
     filtersNext(group: Group) {
         const groups = _.cloneDeep(this.filtersSubject.getValue());
         const exist: Group = _.find(groups, item => item.name === group.name);
 
-        console.log(group);
         if (exist) {
             _.first(exist.filters).values = _.first(group.filters).values;
         } else {
@@ -111,7 +129,13 @@ export class FilterService {
     }
 
     allFilters(): Group[] {
-        return _.cloneDeep(this.filtersSubject.getValue());
+        const groups = _.cloneDeep(this.filtersSubject.getValue());
+
+        groups.forEach(group => {
+            group.filters = group.filters.filter(filter => !filter.isEmpty());
+        });
+
+        return groups.filter(group => group.filters.length > 0);
     }
 
     cleanGroups() {
@@ -137,4 +161,10 @@ export class FilterService {
 
         this.groupsSubject.next(groups);
     }
+}
+
+export interface ChartInitState {
+    name: string;
+    values: Value[];
+    use: boolean;
 }

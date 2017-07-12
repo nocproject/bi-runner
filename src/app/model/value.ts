@@ -2,8 +2,8 @@ export class Value {
     public value: any;
     public desc: string;
 
-    constructor(values: any, desc?: string) {
-        this.value = values;
+    constructor(value: any, desc?: string) {
+        this.value = value;
         this.desc = desc;
     }
 

@@ -5,7 +5,7 @@ import * as d3 from 'd3';
 import * as crossfilter from 'crossfilter';
 import { BaseMixin, LineChart } from 'dc';
 
-import { WidgetComponent } from '../widget.component';
+import { Restore, WidgetComponent } from '../widget.component';
 import { FilterBuilder, Result, Value } from '../../../model';
 import { Utils } from '../../../shared/utils';
 
@@ -42,13 +42,26 @@ export class LineComponent extends WidgetComponent {
             .type('Date')
             .condition('interval')
             .build();
-        this.catchEvents(chart,
-            newFilter,
-            (widget, filter) => filter ? Utils.dateToString(filter[0], '%d.%m.%y')
-                + ' - ' + Utils.dateToString(filter[1], '%d.%m.%y') : '',
-            (widget, filter) => filter ? filter.map(element => new Value(element)) : []);
+        this.catchEvents(chart, newFilter);
         chart.render();
 
         return chart;
+    }
+
+    getTitle(widget: BaseMixin<any>, filter): string {
+        return filter ? Utils.dateToString(filter[0], '%d.%m.%y')
+            + ' - ' + Utils.dateToString(filter[1], '%d.%m.%y') : '';
+    }
+
+    getValue(widget: BaseMixin<any>, filter): Value[] {
+        return filter ? filter.map(element => new Value(element)) : [];
+    }
+
+    restore(values: Value[]): Restore {
+        return {
+            title: Utils.dateToString(new Date(values[0].value), '%d.%m.%y')
+            + ' - ' + Utils.dateToString(new Date(values[1].value), '%d.%m.%y'),
+            filter: values.map(item => new Value(new Date(item.value)))
+        };
     }
 }
