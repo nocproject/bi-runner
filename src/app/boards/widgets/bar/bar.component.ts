@@ -19,7 +19,7 @@ export class BarComponent extends WidgetComponent {
         const dimension = ndx.dimension(d => new Value(d[Object.keys(d)[0]], d.name));
         const values = dimension.group().reduceSum(d => d.cnt);
 
-        // this.initialState(chart);
+        this.initialState(chart);
 
         chart.width(this.wrapperView.nativeElement.scrollWidth);
         chart.height(this.data.cell.height);
@@ -53,7 +53,7 @@ export class BarComponent extends WidgetComponent {
     restore(values: Value[]): Restore {
         return {
             title: Math.ceil(values[0].value) + ' - ' + Math.ceil(values[1].value),
-            filter: values.map(item => {const s = Math.ceil(item.value);console.log(s);return s;})
+            filter: [values.map(item => Math.ceil(item.value))]
         };
     }
 }

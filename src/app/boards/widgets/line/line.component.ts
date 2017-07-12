@@ -27,6 +27,7 @@ export class LineComponent extends WidgetComponent {
         } else {
             minDate = maxDate = new Date;
         }
+        this.initialState(chart);
         chart.width(this.wrapperView.nativeElement.scrollWidth);
         chart.height(this.data.cell.height);
         chart.elasticY(true);
@@ -61,7 +62,7 @@ export class LineComponent extends WidgetComponent {
         return {
             title: Utils.dateToString(new Date(values[0].value), '%d.%m.%y')
             + ' - ' + Utils.dateToString(new Date(values[1].value), '%d.%m.%y'),
-            filter: values.map(item => new Value(new Date(item.value)))
+            filter: [values.map(item => new Date(item.value))]
         };
     }
 }

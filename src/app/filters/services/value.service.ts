@@ -31,36 +31,36 @@ export class ValueService {
             widgetType = 'Dictionary';
         }
 
-        console.log(`${name} ${widgetType} ${condition}`);
+        // console.log(`${name} ${widgetType} ${condition}`);
 
         switch (widgetType) {
             case 'String': {
-                console.log('widget String');
+                // console.log('widget String');
                 if (_.includes(condition, 'empty')) {
                     return [];
                 }
                 break;
             }
             case 'Dictionary': {
-                console.log('widget Dictionary');
+                // console.log('widget Dictionary');
                 first.type = 'dictionary';
                 break;
             }
             case 'Int16':
             case 'Int32':
             case 'Int64': {
-                console.log('widget Int');
+                // console.log('widget Int');
                 first.type = 'inputMask';
                 first.mask = '9999999999';
                 first.validation.push(BIValidators.maskNotEmpty);
                 break;
             }
             case 'Float64': {
-                console.log('widget Float');
+                // console.log('widget Float');
                 break;
             }
             case 'DateTime': {
-                console.log('widget DateTime');
+                // console.log('widget DateTime');
                 if (_.includes(condition, 'interval')) {
                     if (_.includes(condition, 'periodic')) {
                         first.type = 'inputMask';
@@ -75,7 +75,7 @@ export class ValueService {
                 break;
             }
             case 'IPv4': {
-                console.log('IPv4');
+                // console.log('IPv4');
                 first.type = 'inputMask';
                 first.mask = '299.299.299.299-299.299.299.299';
                 if (_.includes(condition, 'interval')) {
@@ -87,7 +87,7 @@ export class ValueService {
                 break;
             }
             case 'Date': {
-                console.log('widget Date');
+                // console.log('widget Date');
                 if (_.includes(condition, 'interval')) {
                     first.type = 'dateRange';
                     return [first];
@@ -101,7 +101,7 @@ export class ValueService {
         }
 
         if (_.includes(condition, 'interval')) {
-            console.log('add second field, except: Date(interval), DateTime (interval, periodic)');
+            // console.log('add second field, except: Date(interval), DateTime (interval, periodic)');
             first.label = 'From Value';
             if (type.startsWith('Int')) {
                 second.type = 'inputMask';

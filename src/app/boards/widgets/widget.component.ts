@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/debounceTime';
 
-import { CellAndWidget, Group, GroupBuilder, Filter, Result, Value, WhereBuilder } from '../../model';
+import { CellAndWidget, GroupBuilder, Filter, Result, Value, WhereBuilder } from '../../model';
 import { APIService, FilterService } from '../../services';
 
 export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestroy {
@@ -48,7 +48,6 @@ export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestro
             this.showReset = true;
             this.title = this.getTitle(widget, filter);
             nextFilter.values = this.getValue(widget, filter);
-            console.log(widget.filters());
             if (nextFilter.isEmpty()) {
                 this.filterService.lastUpdatedWidget = '';
             } else {
@@ -111,6 +110,7 @@ export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestro
                     // _.endsWith(
                     // _.startsWith(
                     // console.log(`updating: ${this.data.widget.cell}`);
+                    // console.log(`${this.data.widget.cell} => ${response.result.sql}`);
                     this.chart = this.draw(response);
                 },
                 console.error);
