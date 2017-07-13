@@ -19,15 +19,12 @@ import { ModalComponent } from '../shared/modal/modal';
     templateUrl: './header.component.html'
 })
 
-export class HeaderComponent implements OnInit, OnDestroy {
+export class HeaderComponent implements OnInit {
     user$: Observable<User>;
     isLogin$: Observable<boolean>;
     board$: Observable<Board>;
     isReportOpen$: Observable<boolean>;
     accessLevel$: Observable<number>;
-    saveSubscription: Subscription;
-    saveAsSubscription: Subscription;
-    removeSubscription: Subscription;
     isExecExport = false;
     version = environment.version;
 
@@ -66,12 +63,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
         });
     }
 
-    ngOnDestroy(): void {
-        this.saveSubscription.unsubscribe();
-        this.saveAsSubscription.unsubscribe();
-        this.removeSubscription.unsubscribe();
-    }
-
     onSaveBoard() {
         const board = _.clone(this.filterService.boardSubject.getValue());
         board.groups = this.filterService.allFilters();
@@ -80,10 +71,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
             .method(Methods.SET_DASHBOARD)
             .params([board.prepare()])
             .build();
-        console.log(this.filterService.allFilters());
-        console.log(query);
-        this.saveSubscription = this.api.execute(query)
-            .subscribe(() => {
+        this.api.execute(query).toPromise()
+            .then(() => {
                 this.messages.message(new Message(MessageType.INFO, 'Saved'));
             });
     }
@@ -92,17 +81,21 @@ export class HeaderComponent implements OnInit, OnDestroy {
         const board = _.clone(this.filterService.boardSubject.getValue());
         board.title = this.saveForm.get('title').value;
         board.description = this.saveForm.get('description').value;
+        board.groups = this.filterService.allFilters();
         delete board['id'];
+        this.filterService.cleanFilters();
 
         const query = new QueryBuilder()
             .method(Methods.SET_DASHBOARD)
             .params([board.prepare()])
             .build();
         modal.close();
-        this.saveAsSubscription = this.api.execute(query)
-            .subscribe(response => {
+        this.api.execute(query).toPromise()
+            .then(response => {
                 this.messages.message(new Message(MessageType.INFO, 'Saved'));
-                this.route.navigate(['board', response.result]);
+                this.route.navigate(['']);
+                // console.log(response.result);
+                // this.route.navigate(['board', response.result]);
             });
     }
 
@@ -113,17 +106,20 @@ export class HeaderComponent implements OnInit, OnDestroy {
             .params([board.id])
             .build();
         modal.close();
-        this.removeSubscription = this.api.execute(query)
-            .subscribe(() => {
+        this.api.execute(query).toPromise()
+            .then(() => {
                 this.messages.message(new Message(MessageType.INFO, 'Removed'));
                 this.route.navigate(['']);
             });
     }
 
     onExport(): void {
+        const board = _.clone(this.filterService.boardSubject.getValue());
+
         this.isExecExport = !this.isExecExport;
         // this.isExecExport = true;
         console.log(`onExport : ${this.isExecExport}`);
+        console.log(board.exportQry);
         // this.isExecExport = false;
         // ToDo make query from allGroups and allFilters, see CounterComponent.makeUniqQuery
         // this.api.execute(this.filterService.boardSubject.getValue().exportQry).subscribe();

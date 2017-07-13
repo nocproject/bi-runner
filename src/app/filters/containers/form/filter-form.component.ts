@@ -53,7 +53,7 @@ export class FilterFormComponent implements OnDestroy, OnInit {
     }
 
     ngOnDestroy(): void {
-        // ToDo check all subscription!!!
+        // ToDo check all subscription, may be use .toPromise()
         this.eventSubscription.unsubscribe();
         this.formSubscription.unsubscribe();
     }
