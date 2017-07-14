@@ -67,6 +67,7 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                 const emptyFilter: FieldConfig[] = [{
                     name: 'name',
                     type: 'select',
+                    pseudo: false,
                     label: 'Field',
                     value: '',
                     placeholder: 'Select field',
@@ -125,14 +126,15 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                                     const nameField: FieldConfig = {
                                         name: 'name',
                                         type: 'select',
+                                        pseudo: filter.pseudo,
                                         label: 'Field',
-                                        value: `${filter.name}.${filter.type}`,
+                                        value: `${filter.name}.${filter.type}.${filter.pseudo}`,
                                         placeholder: 'Select field',
                                         options: this.fieldList.getAsOption(),
                                         validation: [Validators.required]
                                     };
                                     const conditionField: FieldConfig = this.conditionService
-                                        .field(filter.type);
+                                        .field(filter.name, filter.type, filter.pseudo);
                                     const valuesField: FieldConfig[] = this.valueService
                                         .fields(`${filter.name}.${filter.type}`, filter.condition)
                                         .map(field => field);
@@ -167,7 +169,7 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                                     .forEach(name => filterControls.removeControl(name));
 
                                 this.addControlToFilter(event.group, event.filter,
-                                    this.conditionService.field(event.value.split('.')[1]));
+                                    this.conditionService.field(event.value.split('.')[0], event.value.split('.')[1], JSON.parse(event.value.split('.')[2])));
                                 break;
                             }
                             case 'condition': {
@@ -216,6 +218,7 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                     [{
                         name: 'name',
                         type: 'select',
+                        pseudo: false,
                         label: 'Field',
                         value: '',
                         placeholder: 'Select field',
@@ -244,6 +247,7 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                             name: 'name',
                             type: 'select',
                             value: '',
+                            pseudo: false,
                             validation: [Validators.required],
                             label: 'Field',
                             placeholder: 'Select field',

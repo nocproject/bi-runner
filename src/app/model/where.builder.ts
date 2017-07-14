@@ -4,273 +4,274 @@ import * as d3 from 'd3';
 import { Group } from './group';
 import { Filter } from './filter';
 
-// ToDo refactor!
 export class WhereBuilder {
-
     static makeWhere(groups: Group[]): Object {
-        const andFilters = this.getFilters(groups, '$and');
-        const orFilters = this.getFilters(groups, '$or');
+        const andFilters = getFilters(groups, '$and');
+        const orFilters = getFilters(groups, '$or');
+
         if (andFilters.length > 0 && orFilters.length > 0) {
-            return this.orValues([this.andValues(andFilters), this.orValues(orFilters)]);
+            return orValues([andValues(andFilters), orValues(orFilters)]);
         }
         if (andFilters.length > 0) {
-            return this.andValues(andFilters);
+            return andValues(andFilters);
         }
         if (orFilters.length > 0) {
-            return this.orValues(orFilters);
+            return orValues(orFilters);
         }
+
         return null;
     }
+}
 
-    static getFilters(groups: Group[], association: string): Object[] {
-        return groups
-            .filter(group => group.association === association)
-            .map(group => group.filters.filter(filter => !filter.isEmpty()))
-            .filter(active => active.length > 0)
-            .map(active => {
-                const association = this.filtersAssociation(active);
+function getFilters(groups: Group[], association: string): Object[] {
+    return groups
+        .filter(group => group.association === association)
+        .map(group => group.filters.filter(filter => !filter.isEmpty()).filter(filter => !filter.isPseudo()))
+        .filter(active => active.length > 0)
+        .map(active => {
+            const association = filtersAssociation(active);
 
-                return this.association(
-                    association,
-                    active.map(filter => this.where(filter))
-                );
-            });
+            return associationFn(
+                association,
+                active.map(filter => where(filter))
+            );
+        });
+}
+
+function filtersAssociation(filters: Filter[]): string {
+    return filters[0].association;
+}
+
+function where(filter: Filter): Object {
+    const clonedFilter = _.clone(filter);
+
+    switch (clonedFilter.condition) {
+        case 'interval':
+        case 'periodic.interval':
+            return interval(clonedFilter);
+        case 'not.interval':
+        case 'not.periodic.interval':
+            return not(interval(clonedFilter));
+        case 'in':
+            return inCondition(clonedFilter);
+        case 'not.in':
+            return not(inCondition(clonedFilter));
+        case 'empty':
+            return not(empty(clonedFilter));
+        case 'not.empty':
+            return notEmpty(clonedFilter);
+        default:
+            return castToValue(clonedFilter);
     }
+}
 
-    static filtersAssociation(filters: Filter[]): string {
-        return filters[0].association;
-    }
+// conditions
+function interval(filter: Filter): Object {
+    let from, to;
 
-    static where(filter: Filter): Object {
-        const clonedFilter = _.clone(filter);
-
-        switch (clonedFilter.condition) {
-            case 'interval':
-            case 'periodic.interval':
-                return this.interval(clonedFilter);
-            case 'not.interval':
-            case 'not.periodic.interval':
-                return this.not(this.interval(clonedFilter));
-            case 'in':
-                return this.inCondition(clonedFilter);
-            case 'not.in':
-                return this.not(this.inCondition(clonedFilter));
-            case 'empty':
-                return this.not(this.empty(clonedFilter));
-            case 'not.empty':
-                return this.notEmpty(clonedFilter);
-            default:
-                return this.castToValue(clonedFilter);
+    switch (filter.type) {
+        case 'Date': {
+            from = toDate(filter.values[0]);
+            to = toDate(filter.values[1]);
+            break;
         }
-    }
-
-    // conditions
-    static interval(filter: Filter): Object {
-        let from, to;
-
-        switch (filter.type) {
-            case 'Date': {
-                from = this.toDate(filter.values[0]);
-                to = this.toDate(filter.values[1]);
-                break;
-            }
-            case 'DateTime': {
-                if (filter.condition.match(/periodic/)) {
-                    const tokens = filter.values[0].value.split('-');
-
-                    from = this.toSeconds(tokens[0]);
-                    to = this.toSeconds(tokens[1]);
-                    filter.name = `toInt32(toTime(${filter.name}))`;
-                } else {
-                    from = this.toDateTime(filter.values[0]);
-                    to = this.toDateTime(filter.values[1]);
-                }
-                break;
-            }
-            case 'IPv4': {
+        case 'DateTime': {
+            if (filter.condition.match(/periodic/)) {
                 const tokens = filter.values[0].value.split('-');
 
-                from = this.ipv4StrToNum(tokens[0]);
-                to = this.ipv4StrToNum(tokens[1]);
-                break;
+                from = toSeconds(tokens[0]);
+                to = toSeconds(tokens[1]);
+                filter.name = `toInt32(toTime(${filter.name}))`;
+            } else {
+                from = toDateTime(filter.values[0]);
+                to = toDateTime(filter.values[1]);
             }
-            case 'Int16':
-            case 'Int32':
-            case 'Int64': {
-                from = this.castToNumber(filter.values[0], filter.type);
-                to = this.castToNumber(filter.values[1], filter.type);
-                break;
-            }
-            case 'String': {
-                return {
-                    $between: [{
-                        $field: filter.name
-                    }, from, to
-                    ]
-                };
-            }
-            default: {
-                return {
-                    $between: [{
-                        $field: filter.name
-                    },
-                        filter.values[0].value,
-                        filter.values[1].value
-                    ]
-                };
-            }
+            break;
         }
-        return {
-            $between: [{
-                $field: filter.name
-            }, {
-                $field: from
-            }, {
-                $field: to
-            }]
-        };
-    }
+        case 'IPv4': {
+            const tokens = filter.values[0].value.split('-');
 
-    static inCondition(filter: Filter): Object {
-
-        if (filter.values.length > 1) {
+            from = ipv4StrToNum(tokens[0]);
+            to = ipv4StrToNum(tokens[1]);
+            break;
+        }
+        case 'Int16':
+        case 'Int32':
+        case 'Int64': {
+            from = castToNumber(filter.values[0], filter.type);
+            to = castToNumber(filter.values[1], filter.type);
+            break;
+        }
+        case 'String': {
             return {
-                $in: [
-                    {
-                        $field: filter.name
-                    },
-                    this.castToNumberArray(filter)
+                $between: [{
+                    $field: filter.name
+                }, from, to
                 ]
             };
-        } else {
+        }
+        default: {
             return {
-                $eq: [
-                    {
-                        $field: filter.name
-                    },
-                    this.castFirstToNumber(filter)
+                $between: [{
+                    $field: filter.name
+                },
+                    filter.values[0].value,
+                    filter.values[1].value
                 ]
             };
         }
     }
-
-    static castToValue(filter: Filter): Object {
-        const firstValue = _.first(filter.values);
-        const expression: Object = {};
-        let fieldValue: Object;
-
-        switch (filter.type) {
-            case 'Date': {
-                fieldValue = {
-                    $field: this.toDate(firstValue.value)
-                };
-                break;
-            }
-            case 'DateTime': {
-                fieldValue = {
-                    $field: this.toDateTime(firstValue.value)
-                };
-                break;
-            }
-            case 'IPv4': {
-                fieldValue = {
-                    $field: this.ipv4StrToNum(firstValue.value)
-                };
-                break;
-            }
-            case 'String': {
-                fieldValue = firstValue.value;
-                break;
-            }
-            default: {
-                fieldValue = this.castFirstToNumber(filter);
-            }
-        }
-
-        expression[filter.condition] = [{
+    return {
+        $between: [{
             $field: filter.name
-        }, fieldValue];
+        }, {
+            $field: from
+        }, {
+            $field: to
+        }]
+    };
+}
 
-        return expression;
-    }
+function inCondition(filter: Filter): Object {
 
-    static castToNumber(item: any, type: string): any {
-        if (_.startsWith(type, 'tree-') || _.startsWith(type, 'dict-')) {
-            return Number(item.value);
-        }
-        if (type.match(/int|float/i)) { // Delete mask prompt
-            return Number(item.value = item.value.replace(/_/g, ''));
-        }
-        return item.value;
-    }
-
-    static castFirstToNumber(filter: Filter): any {
-        return this.castToNumber(_.first(filter.values), filter.type);
-    }
-
-    static castToNumberArray(filter: Filter): any[] {
-        return _.flattenDeep(filter.values.map(item => this.castToNumber(item, filter.type)));
-    }
-
-    static ipv4StrToNum(value): string {
-        return `IPv4StringToNum('${value}')`;
-    }
-
-    static toDate(v) {
-        if(typeof v.value === 'string'){
-            v.value = new Date(v.value);
-        }
-        return `toDate('${d3.time.format('%Y-%m-%d')(v.value)}')`;
-    }
-
-    static toDateTime(v) {
-        if(typeof v.value === 'string'){
-            v.value = new Date(v.value);
-        }
-        return `toDateTime('${d3.time.format('%Y-%m-%dT%H:%M:%S')(v.value)}')`;
-    }
-
-    static toSeconds(param) {
-        return Number(param.split(':')[0]) * 3600 + Number(param.split(':')[1]) * 60 + 86400;
-    }
-
-    static association(condition: string, filters) {
+    if (filter.values.length > 1) {
         return {
-            [condition]: filters
+            $in: [
+                {
+                    $field: filter.name
+                },
+                castToNumberArray(filter)
+            ]
         };
-    }
-
-    static andValues(values) {
+    } else {
         return {
-            $and: values
-        };
-    }
-
-    static orValues(values) {
-        return {
-            $or: values
-        };
-    }
-
-    static empty(filter: Filter) {
-        return {
-            '$empty': {
-                '$field': filter.name
-            }
-        };
-    }
-
-    static notEmpty(filter: Filter) {
-        return {
-            '$notEmpty': {
-                '$field': filter.name
-            }
-        };
-    }
-
-    static not(value) {
-        return {
-            $not: value
+            $eq: [
+                {
+                    $field: filter.name
+                },
+                castFirstToNumber(filter)
+            ]
         };
     }
 }
+
+function castToValue(filter: Filter): Object {
+    const firstValue = _.first(filter.values);
+    const expression: Object = {};
+    let fieldValue: Object;
+
+    switch (filter.type) {
+        case 'Date': {
+            fieldValue = {
+                $field: toDate(firstValue.value)
+            };
+            break;
+        }
+        case 'DateTime': {
+            fieldValue = {
+                $field: toDateTime(firstValue.value)
+            };
+            break;
+        }
+        case 'IPv4': {
+            fieldValue = {
+                $field: ipv4StrToNum(firstValue.value)
+            };
+            break;
+        }
+        case 'String': {
+            fieldValue = firstValue.value;
+            break;
+        }
+        default: {
+            fieldValue = castFirstToNumber(filter);
+        }
+    }
+
+    expression[filter.condition] = [{
+        $field: filter.name
+    }, fieldValue];
+
+    return expression;
+}
+
+function castToNumber(item: any, type: string): any {
+    if (_.startsWith(type, 'tree-') || _.startsWith(type, 'dict-')) {
+        return Number(item.value);
+    }
+    if (type.match(/int|float/i)) { // Delete mask prompt
+        return Number(item.value = item.value.replace(/_/g, ''));
+    }
+    return item.value;
+}
+
+function castFirstToNumber(filter: Filter): any {
+    return castToNumber(_.first(filter.values), filter.type);
+}
+
+function castToNumberArray(filter: Filter): any[] {
+    return _.flattenDeep(filter.values.map(item => castToNumber(item, filter.type)));
+}
+
+function ipv4StrToNum(value): string {
+    return `IPv4StringToNum('${value}')`;
+}
+
+function toDate(v) {
+    if (typeof v.value === 'string') {
+        v.value = new Date(v.value);
+    }
+    return `toDate('${d3.time.format('%Y-%m-%d')(v.value)}')`;
+}
+
+function toDateTime(v) {
+    if (typeof v.value === 'string') {
+        v.value = new Date(v.value);
+    }
+    return `toDateTime('${d3.time.format('%Y-%m-%dT%H:%M:%S')(v.value)}')`;
+}
+
+function toSeconds(param) {
+    return Number(param.split(':')[0]) * 3600 + Number(param.split(':')[1]) * 60 + 86400;
+}
+
+function associationFn(condition: string, filters) {
+    return {
+        [condition]: filters
+    };
+}
+
+function andValues(values) {
+    return {
+        $and: values
+    };
+}
+
+function orValues(values) {
+    return {
+        $or: values
+    };
+}
+
+function empty(filter: Filter) {
+    return {
+        '$empty': {
+            '$field': filter.name
+        }
+    };
+}
+
+function notEmpty(filter: Filter) {
+    return {
+        '$notEmpty': {
+            '$field': filter.name
+        }
+    };
+}
+
+function not(value) {
+    return {
+        $not: value
+    };
+}
+

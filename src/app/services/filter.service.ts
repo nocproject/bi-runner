@@ -98,6 +98,7 @@ export class FilterService {
                                     if (!filter.hasOwnProperty('valueFirst')) {
                                         return false;
                                     }
+                                    filter.pseudo = conditionField.pseudo;
                                     // detect change fields name or condition
                                     if (filter.condition === conditionField.value && filter.name === nameField.value) {
                                         return true;
@@ -117,6 +118,7 @@ export class FilterService {
                                         .type(type)
                                         .association(item.group.association)
                                         .condition(filter.condition)
+                                        .pseudo(filter.pseudo)
                                         .values([new Value(filter.valueFirst), new Value(filter.valueSecond)])
                                         .build();
                                 })
@@ -136,6 +138,10 @@ export class FilterService {
         });
 
         return groups.filter(group => group.filters.length > 0);
+    }
+
+    getFilter(name: string): Group[] {
+        return this.allFilters().filter(group => group.name === name);
     }
 
     cleanGroups() {

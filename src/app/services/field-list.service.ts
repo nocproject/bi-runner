@@ -24,6 +24,7 @@ export class FieldListService {
                 .build())
             .flatMap(result => result.data['fields'])
             .map(item => Field.fromJSON(item))
+            .concat(board.pseudoFields)
             .map(field => {
                 const index = _.findIndex(board.filterFields, e => e.name === field.name);
 
@@ -49,6 +50,9 @@ export class FieldListService {
                     field.type = 'IPv4';
                 }
 
+                if(!field.pseudo) {
+                    field.pseudo = false;
+                }
                 return field;
             })
             .map(field => {
@@ -87,7 +91,7 @@ export class FieldListService {
         return this.fields$
             .map(array => array
                 .map(field => {
-                        return {value: `${field.name}.${field.type}`, text: field.description};
+                        return {value: `${field.name}.${field.type}.${field.pseudo}`, text: field.description};
                     }
                 )
             );

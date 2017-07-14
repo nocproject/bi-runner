@@ -12,6 +12,7 @@ import { environment } from '../../environments/environment';
 import { APIService, FilterService, MessageService, UserService } from '../services';
 import { Board, QueryBuilder, Message, Methods, MessageType, User } from '../model';
 import { ModalComponent } from '../shared/modal/modal';
+import { Export } from './export';
 
 @Component({
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,7 +26,7 @@ export class HeaderComponent implements OnInit {
     board$: Observable<Board>;
     isReportOpen$: Observable<boolean>;
     accessLevel$: Observable<number>;
-    isExecExport = false;
+    exportSpin: boolean;
     version = environment.version;
 
     // save as form
@@ -114,13 +115,25 @@ export class HeaderComponent implements OnInit {
     }
 
     onExport(): void {
-        const board = _.clone(this.filterService.boardSubject.getValue());
+        // this.exportSpin = !this.exportSpin;
+        // this.exportSpin = true;
+        // setTimeout(() => {
+        //     this.exportSpin = false;
+        //     console.log('done');
+        // }, 2000);
+        Export.query(this.api, this.filterService)
+            .toPromise().then(
+            () => {
+                // console.log(this);
+                // console.log(`onExport : ${this.exportSpin}`);
+                // this.messages.message(new Message(MessageType.INFO, 'Exported'));
+                // this.exportSpin = false;
+                // console.log(`onExport : ${this.exportSpin}`);
+                console.log('Exported');
+            }
+        );
 
-        this.isExecExport = !this.isExecExport;
-        // this.isExecExport = true;
-        console.log(`onExport : ${this.isExecExport}`);
-        console.log(board.exportQry);
-        // this.isExecExport = false;
+        // this.exportSpin = false;
         // ToDo make query from allGroups and allFilters, see CounterComponent.makeUniqQuery
         // this.api.execute(this.filterService.boardSubject.getValue().exportQry).subscribe();
         // console.log(this.filterService.allGroups());

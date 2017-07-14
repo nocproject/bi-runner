@@ -16,11 +16,17 @@ export class Filter {
     public association: '$and' | '$or';
     @JsonMember
     public alias: string;
+    @JsonMember
+    public pseudo: boolean;
     // form data
     public valueFirst: string;
     public valueSecond: string;
 
     public isEmpty(): boolean {
         return this.values.length === 0;
+    }
+
+    public isPseudo(): boolean {
+        return this.pseudo;
     }
 }

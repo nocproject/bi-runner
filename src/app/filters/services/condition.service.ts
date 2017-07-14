@@ -9,7 +9,7 @@ import { FieldConfig } from '../models/form-config.interface';
 
 @Injectable()
 export class ConditionService {
-    conditions(type: string): Observable<IOption[]> {
+    conditions(name: string, type: string): Observable<IOption[]> {
         let conditions: IOption[] = [
             {value: '$eq', text: '=='},
             {value: '$ne', text: '<>'}
@@ -89,14 +89,15 @@ export class ConditionService {
         }
     }
 
-    field(type: string): FieldConfig {
+    field(name: string, type: string, pseudo: boolean): FieldConfig {
         return {
             name: 'condition',
             type: 'select',
+            pseudo: pseudo,
             value: '',
             validation: [Validators.required],
             label: 'Condition',
-            options: this.conditions(type),
+            options: this.conditions(name, type),
             placeholder: 'Select Condition'
         };
     }

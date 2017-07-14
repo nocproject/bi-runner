@@ -10,8 +10,7 @@ import { FieldListService, FilterService } from '../../services';
 @Component({
     selector: 'bi-board',
     templateUrl: './board.component.html',
-    providers: [FieldListService],
-    styleUrls: ['./board.component.scss']
+    providers: [FieldListService]
 })
 
 export class BoardComponent implements OnInit, OnDestroy {

@@ -75,12 +75,17 @@
         "name": "c2x2"
       },
       "description": "описание отчета по авариям",
+      "groups": [],
       "title": "Аварии",
       "format": 2,
       "export": {
         "params": [
           {
             "fields": [
+              {
+                "expr": "date",
+                "group": 0
+              },
               {
                 "expr": "count()",
                 "alias": "qty",
@@ -99,68 +104,13 @@
                     ]
                   }
                 },
-                "alias": "duration_sum"
+                "alias": "duration_sum",
+                "label": "Продолжительность"
               },
               {
                 "expr": "sum(reboots)",
                 "alias": "reboots_sum",
                 "label": "Кол-во перезагрузок"
-              },
-              {
-                "expr": "date",
-                "group": 1
-              },
-              {
-                "expr": {
-                  "$sum": [
-                    {
-                      "$minus": [
-                        {
-                          "$?": [
-                            {
-                              "$gt": [
-                                {
-                                  "$field": "toDateTime('2017-02-25T15:50:00')"
-                                },
-                                {
-                                  "$field": "close_ts"
-                                }
-                              ]
-                            },
-                            {
-                              "$field": "close_ts"
-                            },
-                            {
-                              "$field": "toDateTime('2017-02-25T15:50:00')"
-                            }
-                          ]
-                        },
-                        {
-                          "$?": [
-                            {
-                              "$gt": [
-                                {
-                                  "$field": "ts"
-                                },
-                                {
-                                  "$field": "toDateTime('2017-01-01T00:40:00')"
-                                }
-                              ]
-                            },
-                            {
-                              "$field": "ts"
-                            },
-                            {
-                              "$field": "toDateTime('2017-01-01T00:40:00')"
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                },
-                "alias": "duration_se",
-                "label": "Длительность по Отчету"
               }
             ],
             "datasource": "alarms"
@@ -170,124 +120,6 @@
         "method": "query"
       },
       "datasource": "alarms",
-      "filter_fields": [
-        {
-          "group": 2,
-          "name": "administrative_domain"
-        },
-        {
-          "group": 0,
-          "name": "alarm_id"
-        },
-        {
-          "group": 0,
-          "name": "close_ts"
-        },
-        {
-          "group": 1,
-          "name": "container"
-        },
-        {
-          "group": 0,
-          "name": "direct_services"
-        },
-        {
-          "group": 0,
-          "name": "direct_subscribers"
-        },
-        {
-          "group": 0,
-          "name": "escalation_ts"
-        },
-        {
-          "group": 0,
-          "name": "escalation_tt"
-        },
-        {
-          "group": 1,
-          "name": "managed_object"
-        },
-        {
-          "group": 1,
-          "name": "platform"
-        },
-        {
-          "group": 1,
-          "name": "profile"
-        },
-        {
-          "group": 0,
-          "name": "reopens"
-        },
-        {
-          "group": 1,
-          "name": "root"
-        },
-        {
-          "group": 1,
-          "name": "segment"
-        },
-        {
-          "group": 0,
-          "name": "severity"
-        },
-        {
-          "group": 0,
-          "name": "total_objects"
-        },
-        {
-          "group": 0,
-          "name": "total_services"
-        },
-        {
-          "group": 0,
-          "name": "total_subscribers"
-        },
-        {
-          "group": 1,
-          "name": "version"
-        },
-        {
-          "group": 0,
-          "name": "x"
-        },
-        {
-          "group": 0,
-          "name": "y"
-        },
-        {
-          "group": 0,
-          "name": "ts"
-        },
-        {
-          "group": 1,
-          "name": "vendor"
-        },
-        {
-          "group": 1,
-          "name": "ip"
-        },
-        {
-          "group": 2,
-          "name": "pool"
-        },
-        {
-          "group": 0,
-          "name": "date"
-        },
-        {
-          "group": 0,
-          "name": "duration_intervals"
-        },
-        {
-          "group": 0,
-          "name": "duration"
-        },
-        {
-          "group": 0,
-          "name": "reboots"
-        }
-      ],
       "widgets": [
         {
           "cell": "c11",
@@ -683,66 +515,180 @@
           }
         }
       ],
+      "filter_fields": [
+        {
+          "group": 2,
+          "name": "administrative_domain"
+        },
+        {
+          "group": 0,
+          "name": "alarm_id"
+        },
+        {
+          "group": 0,
+          "name": "close_ts"
+        },
+        {
+          "group": 1,
+          "name": "container"
+        },
+        {
+          "group": 0,
+          "name": "direct_services"
+        },
+        {
+          "group": 0,
+          "name": "direct_subscribers"
+        },
+        {
+          "group": 0,
+          "name": "escalation_ts"
+        },
+        {
+          "group": 0,
+          "name": "escalation_tt"
+        },
+        {
+          "group": 1,
+          "name": "managed_object"
+        },
+        {
+          "group": 1,
+          "name": "platform"
+        },
+        {
+          "group": 1,
+          "name": "profile"
+        },
+        {
+          "group": 0,
+          "name": "reopens"
+        },
+        {
+          "group": 1,
+          "name": "root"
+        },
+        {
+          "group": 1,
+          "name": "segment"
+        },
+        {
+          "group": 0,
+          "name": "severity"
+        },
+        {
+          "group": 0,
+          "name": "total_objects"
+        },
+        {
+          "group": 0,
+          "name": "total_services"
+        },
+        {
+          "group": 0,
+          "name": "total_subscribers"
+        },
+        {
+          "group": 1,
+          "name": "version"
+        },
+        {
+          "group": 0,
+          "name": "x"
+        },
+        {
+          "group": 0,
+          "name": "y"
+        },
+        {
+          "group": 0,
+          "name": "ts"
+        },
+        {
+          "group": 1,
+          "name": "vendor"
+        },
+        {
+          "group": 1,
+          "name": "ip"
+        },
+        {
+          "group": 2,
+          "name": "pool"
+        },
+        {
+          "group": 0,
+          "name": "date"
+        },
+        {
+          "group": 0,
+          "name": "duration_intervals"
+        },
+        {
+          "group": 0,
+          "name": "duration"
+        },
+        {
+          "group": 0,
+          "name": "reboots"
+        }
+      ],
+      "pseudo_fields": [
+        {
+          "description": "ИП Длительность",
+          "name": "duration_intervals",
+          "type": "DateTime",
+          "pseudo": true
+        }
+      ],
       "agv_fields": [
         {
           "group": 2,
-          "name": "administrative_domain",
-          "description": "З.О."
+          "name": "administrative_domain"
         },
         {
           "group": 0,
-          "name": "ts",
-          "description": "Создано"
+          "name": "ts"
         },
         {
           "group": 0,
-          "name": "alarm_id",
-          "description": "Идентификатор"
+          "name": "alarm_id"
         },
         {
           "group": 0,
-          "name": "direct_services",
-          "description": "Повлияло на сервисы"
+          "name": "direct_services"
         },
         {
           "group": 0,
-          "name": "direct_subscribers",
-          "description": "Повлияло на абонентов"
+          "name": "direct_subscribers"
         },
         {
           "group": 0,
-          "name": "escalation_ts",
-          "description": "Время когда эскалировано"
+          "name": "escalation_ts"
         },
         {
           "group": 0,
-          "name": "escalation_tt",
-          "description": "Номер ТТ"
+          "name": "escalation_tt"
         },
         {
           "group": 1,
-          "name": "managed_object",
-          "description": "Имя объекта"
+          "name": "managed_object"
         },
         {
           "group": 1,
-          "name": "platform",
-          "description": "Платформа"
+          "name": "platform"
         },
         {
           "group": 1,
-          "name": "profile",
-          "description": "Профиль объекта"
+          "name": "profile"
         },
         {
           "group": 0,
-          "name": "reopens",
-          "description": "Переоткрытия"
+          "name": "reopens"
         },
         {
           "group": 1,
-          "name": "segment",
-          "description": "Сегмент сети"
+          "name": "segment"
         },
         {
           "group": 0,
@@ -751,58 +697,47 @@
         },
         {
           "group": 0,
-          "name": "total_objects",
-          "description": "Общее кол-во объектов"
+          "name": "total_objects"
         },
         {
           "group": 0,
-          "name": "total_services",
-          "description": "Общее кол-во сервисов"
+          "name": "total_services"
         },
         {
           "group": 0,
-          "name": "total_subscribers",
-          "description": "Общее кол-во абонентов"
+          "name": "total_subscribers"
         },
         {
           "group": 1,
-          "name": "version",
-          "description": "Версия"
+          "name": "version"
         },
         {
           "group": 1,
-          "name": "vendor",
-          "description": "Производитель"
+          "name": "vendor"
         },
         {
           "group": 1,
-          "name": "ip",
-          "description": "IP адрес"
+          "name": "ip"
         },
         {
           "group": 2,
-          "name": "pool",
-          "description": "Имя пула"
+          "name": "pool"
         },
         {
           "group": 0,
-          "name": "date",
-          "description": "Дата"
+          "name": "date"
         },
         {
           "group": 1,
-          "name": "container",
-          "description": "Адрес"
+          "name": "container"
         },
         {
           "group": 0,
-          "name": "close_ts",
-          "description": "Время закрытия"
+          "name": "close_ts"
         },
         {
           "group": 1,
-          "name": "root",
-          "description": "Корень аварии"
+          "name": "root"
         }
       ]
     }

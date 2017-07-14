@@ -10,8 +10,7 @@ import { Board, Field, Group, Methods, QueryBuilder, Result, WhereBuilder } from
 
 @Component({
     selector: 'bi-counter',
-    templateUrl: './counter.component.html',
-    styleUrls: ['./counter.component.sass']
+    template: `<span class="badge">{{ qty$ | async }}</span>`
 })
 export class CounterComponent implements OnInit, OnDestroy {
 

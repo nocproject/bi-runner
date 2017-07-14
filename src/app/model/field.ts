@@ -25,6 +25,8 @@ export class Field {
     @JsonMember
     public type: string;
     public hide: boolean;
+    @JsonMember
+    public pseudo: boolean;
     public isSelectable: boolean;
     public isGrouping: boolean;
     public grouped: boolean;

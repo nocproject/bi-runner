@@ -49,6 +49,11 @@ export class FilterBuilder {
         return this;
     }
 
+    public pseudo(pseudo: boolean) {
+        this.filter.pseudo = pseudo;
+        return this;
+    }
+
     public build(): Filter {
         return this.filter;
     }

@@ -21,6 +21,7 @@ export interface FiltersConfig {
 export interface FieldConfig {
     name: string;
     type: string;
+    pseudo: boolean;
     disabled?: boolean;
     label?: string;
     mask?: string;

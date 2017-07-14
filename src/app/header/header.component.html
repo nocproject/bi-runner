@@ -29,8 +29,9 @@
                 </li>
                 <li class="not-active"><a>{{ boardTitle }}</a></li>
                 <li><a class="hand" (click)="onExport()">
-                    <i *ngIf="isExecExport"
-                       class="fa fa-spinner fa-spin fa-fw icon-offset"></i>Export</a></li>
+                    <!--<i *ngIf="exportSpin"-->
+                       <!--class="fa fa-spinner fa-spin fa-fw icon-offset"></i>-->
+                    Export</a></li>
                 <li class="not-active"><a>
                     <bi-counter [board]="board$ | async"></bi-counter>
                 </a></li>
@@ -38,6 +39,9 @@
                     <bi-access-level [level$]="accessLevel$"></bi-access-level>
                 </a></li>
             </ul>
+            <!--<ul class="nav navbar-nav">-->
+                <!--<li class="not-active"><a>{{ exportSpin }}</a></li>-->
+            <!--</ul>-->
             <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown" biDropdown>
                     <a class="dropdown-toggle" role="button">

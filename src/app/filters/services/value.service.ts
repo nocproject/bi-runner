@@ -13,6 +13,7 @@ export class ValueService {
         const first: FieldConfig = {
             name: 'valueFirst',
             type: 'input',
+            pseudo: false,
             value: '',
             validation: [Validators.required],
             label: 'Value'
@@ -20,6 +21,7 @@ export class ValueService {
         const second: FieldConfig = {
             name: 'valueSecond',
             type: 'input',
+            pseudo: false,
             value: '',
             validation: [Validators.required],
             label: 'To Value'

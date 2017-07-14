@@ -60,6 +60,7 @@
         "name": "c2x2"
       },
       "description": "описание отчета по перезагрузкам",
+      "groups": [],
       "title": "Перезагрузки",
       "format": 2,
       "export": {
@@ -78,22 +79,6 @@
                 "expr": "count()",
                 "order": 0,
                 "label": "Кол-во"
-              },
-              {
-                "expr": {
-                  "$lookup": [
-                    "pool",
-                    {
-                      "$field": "pool"
-                    }
-                  ]
-                },
-                "alias": "pool_text"
-              },
-              {
-                "expr": "pool",
-                "hide": "yes",
-                "group": 1
               }
             ],
             "datasource": "reboots"

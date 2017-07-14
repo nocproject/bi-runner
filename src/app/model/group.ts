@@ -10,4 +10,9 @@ export class Group {
     association: '$and' | '$or';
     @JsonMember({elements: Filter})
     filters: Filter[];
+
+    // public isEmpty(): boolean {
+    //     this.filters.reduce((prev, cur)=>prev+cur.)
+    //     return this.filters.length === 0;
+    // }
 }

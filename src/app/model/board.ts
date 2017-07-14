@@ -35,6 +35,8 @@ export class Board {
     public agvFields: Field[];
     @JsonMember({elements: Field, name: 'filter_fields'})
     public filterFields: Field[];
+    @JsonMember({elements: Field, name: 'pseudo_fields'})
+    public pseudoFields: Field[];
     @JsonMember
     public layout: Layout;
     @JsonMember({name: 'export'})
@@ -62,11 +64,13 @@ export class Board {
             {
                 agv_fields: this.agvFields,
                 filter_fields: this.filterFields,
-                'export': this.exportQry
+                'export': this.exportQry,
+                pseudo_fields: this.pseudoFields
             });
         delete obj['agvFields'];
         delete obj['filterFields'];
         delete obj['exportQry'];
+        delete obj['pseudoFields'];
 
         return obj;
     }
