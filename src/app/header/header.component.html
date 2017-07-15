@@ -14,24 +14,23 @@
                         <li *ngIf="(accessLevel$ | async) === 2">
                             <a class="hand" [routerLink]="['share', (board$ | async).id]">Share</a>
                         </li>
-                        <!--<li>-->
                         <li *ngIf="(accessLevel$ | async) === 2">
                             <a class="hand" (click)="removeConfirm.open()">Remove</a>
                         </li>
                         <li *ngIf="(accessLevel$ | async) >= 0">
                             <a class="hand" (click)="saveAs.open()">Save As</a>
                         </li>
-                        <!--<li>-->
                         <li *ngIf="(accessLevel$ | async) > 0">
                             <a class="hand" (click)="onSaveBoard()">Save</a>
                         </li>
                     </ul>
                 </li>
                 <li class="not-active"><a>{{ boardTitle }}</a></li>
-                <li><a class="hand" (click)="onExport()">
-                    <!--<i *ngIf="exportSpin"-->
-                       <!--class="fa fa-spinner fa-spin fa-fw icon-offset"></i>-->
-                    Export</a></li>
+                <li [ngClass]="{'disabled': exportSpin}">
+                    <a type="button" class="hand" (click)="onExport()">
+                        <i *ngIf="exportSpin"
+                           class="fa fa-spinner fa-spin fa-fw icon-offset"></i>
+                        Export</a></li>
                 <li class="not-active"><a>
                     <bi-counter [board]="board$ | async"></bi-counter>
                 </a></li>
@@ -39,9 +38,6 @@
                     <bi-access-level [level$]="accessLevel$"></bi-access-level>
                 </a></li>
             </ul>
-            <!--<ul class="nav navbar-nav">-->
-                <!--<li class="not-active"><a>{{ exportSpin }}</a></li>-->
-            <!--</ul>-->
             <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown" biDropdown>
                     <a class="dropdown-toggle" role="button">

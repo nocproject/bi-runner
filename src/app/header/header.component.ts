@@ -1,9 +1,8 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { Observable } from 'rxjs/Rx';
-import { Subscription } from 'rxjs/Subscription';
 
 import * as _ from 'lodash';
 
@@ -15,7 +14,6 @@ import { ModalComponent } from '../shared/modal/modal';
 import { Export } from './export';
 
 @Component({
-    changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'bi-header',
     templateUrl: './header.component.html'
 })
@@ -26,7 +24,7 @@ export class HeaderComponent implements OnInit {
     board$: Observable<Board>;
     isReportOpen$: Observable<boolean>;
     accessLevel$: Observable<number>;
-    exportSpin: boolean;
+    exportSpin: boolean = false;
     version = environment.version;
 
     // save as form
@@ -51,8 +49,8 @@ export class HeaderComponent implements OnInit {
         this.accessLevel$ = this.filterService.board$
             .switchMap(board => {
                     if (board && board.id) {
-                        this.boardTitle = board.title;
-                        this.boardDesc = board.description;
+                        setTimeout(() => this.boardTitle = board.title, 0);
+                        setTimeout(()=> this.boardDesc = board.description, 0);
                         return this.userService.accessLevel(board.id);
                     }
                     return Observable.of(-1);
@@ -116,23 +114,23 @@ export class HeaderComponent implements OnInit {
 
     onExport(): void {
         // this.exportSpin = !this.exportSpin;
-        // this.exportSpin = true;
-        // setTimeout(() => {
-        //     this.exportSpin = false;
-        //     console.log('done');
-        // }, 2000);
-        Export.query(this.api, this.filterService)
-            .toPromise()
-            .then(
-                () => {
-                    // console.log(this);
-                    // console.log(`onExport : ${this.exportSpin}`);
-                    // this.messages.message(new Message(MessageType.INFO, 'Exported'));
-                    // this.exportSpin = false;
-                    // console.log(`onExport : ${this.exportSpin}`);
-                    console.log('Exported');
-                }
-            ).catch(msg => this.messages.message(new Message(MessageType.DANGER, msg)));
+        this.exportSpin = true;
+        setTimeout(() => {
+            this.exportSpin = false;
+            console.log('done');
+        }, 2000);
+        // Export.query(this.api, this.filterService)
+        //     .toPromise()
+        //     .then(
+        //         () => {
+        //             // console.log(this);
+        //             // console.log(`onExport : ${this.exportSpin}`);
+        //             // this.messages.message(new Message(MessageType.INFO, 'Exported'));
+        //             this.exportSpin = 'no';
+        //             // console.log(`onExport : ${this.exportSpin}`);
+        //             console.log('Exported');
+        //         }
+        //     ).catch(msg => this.messages.message(new Message(MessageType.DANGER, msg)));
 
         // this.exportSpin = false;
         // ToDo make query from allGroups and allFilters, see CounterComponent.makeUniqQuery

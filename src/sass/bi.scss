@@ -47,7 +47,7 @@ body {
 }
 
 .tree .list-group-item {
-  border: 0px;
+  border: 0;
 }
 
 .not-active {
@@ -67,3 +67,10 @@ body {
   font-weight: normal;
 }
 
+.navbar-nav > .disabled{
+  cursor: not-allowed;
+}
+
+.navbar-nav > .disabled > a{
+  pointer-events: none;
+}
