@@ -68,16 +68,7 @@ export class BIValidators {
 
     public static filter(filter: FormGroup): ValidationErrors | null {
         if (filter) {
-            // console.log(`filter validation values : ${JSON.stringify(filter.value)}`);
             const fields = Object.keys(filter.controls);
-
-            // if (filter.controls.hasOwnProperty('name')
-            //     && _.startsWith(filter.get('name').value, 'new_')) {
-            //     return {
-            //         valid: false,
-            //         msg: 'select field name'
-            //     };
-            // }
 
             if (!filter.controls.hasOwnProperty('condition')) {
                 return {
@@ -173,7 +164,8 @@ export class BIValidators {
     }
 
     public static maskNotEmpty(control: AbstractControl): ValidationErrors | null {
-        if (control.value && control.value.replace(new RegExp('_', 'g'), '').length > 0) {
+        // ToDo make sync with SPECIAL_CHARACTERS from mask.directive, need `\-` instead `-`
+        if (control.value && control.value.replace(/[ /()+\-:._]/g, '').length > 0) {
             return null;
         }
 
@@ -181,5 +173,15 @@ export class BIValidators {
             valid: false,
             msg: 'value must be entered'
         };
+    }
+
+    public static dateTimeRange(control: AbstractControl): ValidationErrors | null {
+        if(control.value.match('_')){
+            return {
+                valid: false,
+                msg: 'value must be entered completely'
+            };
+        }
+        return null;
     }
 }

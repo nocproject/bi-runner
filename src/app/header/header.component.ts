@@ -122,16 +122,17 @@ export class HeaderComponent implements OnInit {
         //     console.log('done');
         // }, 2000);
         Export.query(this.api, this.filterService)
-            .toPromise().then(
-            () => {
-                // console.log(this);
-                // console.log(`onExport : ${this.exportSpin}`);
-                // this.messages.message(new Message(MessageType.INFO, 'Exported'));
-                // this.exportSpin = false;
-                // console.log(`onExport : ${this.exportSpin}`);
-                console.log('Exported');
-            }
-        );
+            .toPromise()
+            .then(
+                () => {
+                    // console.log(this);
+                    // console.log(`onExport : ${this.exportSpin}`);
+                    // this.messages.message(new Message(MessageType.INFO, 'Exported'));
+                    // this.exportSpin = false;
+                    // console.log(`onExport : ${this.exportSpin}`);
+                    console.log('Exported');
+                }
+            ).catch(msg => this.messages.message(new Message(MessageType.DANGER, msg)));
 
         // this.exportSpin = false;
         // ToDo make query from allGroups and allFilters, see CounterComponent.makeUniqQuery

@@ -1,7 +1,8 @@
-import { AfterContentInit, Component, forwardRef, Input, OnInit } from '@angular/core';
-import { ControlValueAccessor, FormBuilder, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { AfterContentInit, Component, Input, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 import * as dateFns from 'date-fns';
+import { Observable } from 'rxjs/Rx';
 
 export interface IDateRange {
     from: Date;
@@ -10,17 +11,11 @@ export interface IDateRange {
 
 @Component({
     selector: 'bi-datetime-range',
-    providers: [{
-        provide: NG_VALUE_ACCESSOR,
-        useExisting: forwardRef(() => DatetimeRangeComponent),
-        multi: true
-    }],
     templateUrl: './datetime-range.component.html',
     styleUrls: ['./datetime-range.component.scss']
 })
-export class DatetimeRangeComponent implements AfterContentInit, OnInit, ControlValueAccessor {
+export class DatetimeRangeComponent implements AfterContentInit, OnInit {
     private WEEK_STARTS_ON = 1;
-    private propagateChange: (_: any) => void;
 
     public opened: false | 'from' | 'to';
     public datePick: IDateRange;
@@ -36,19 +31,19 @@ export class DatetimeRangeComponent implements AfterContentInit, OnInit, Control
     public toControlName: string;
     public form: FormGroup;
 
+    get changes(): Observable<any> {
+        return this.form.valueChanges;
+    }
+
+    get valid(): boolean {
+        return this.form.valid;
+    }
+
+    get value() {
+        return this.form.value;
+    }
+
     constructor(private fb: FormBuilder) {
-    }
-
-    registerOnChange(fn: any): void {
-        this.propagateChange = fn;
-    }
-
-    registerOnTouched(fn: any): void {
-    }
-
-    writeValue(obj: any): void {
-        this.datePick.from = obj[this.fromControlName];
-        this.datePick.to = obj[this.toControlName];
     }
 
     public ngOnInit() {
@@ -59,8 +54,8 @@ export class DatetimeRangeComponent implements AfterContentInit, OnInit, Control
             to: null
         };
         this.form = this.fb.group({
-            startDate: [new Date()],
-            endDate: [new Date()]
+            startDate: this.datePick.from,
+            endDate: this.datePick.to
         });
 
         // default period is not set
@@ -69,7 +64,19 @@ export class DatetimeRangeComponent implements AfterContentInit, OnInit, Control
     }
 
     ngAfterContentInit(): void {
-        this.selectRange('lw');
+        if(!this.moment) {
+            this.selectRange('lw');
+        }
+    }
+
+    public restoreValue(data) {
+        this.form.setValue(data, {
+            emitEvent: false,
+            onlySelf: true
+        });
+        this.datePick.from = data[this.fromControlName];
+        this.datePick.to = data[this.toControlName];
+        this.restoreRange();
     }
 
     public toggleCalendar(selection: false | 'from' | 'to'): void {
@@ -140,8 +147,15 @@ export class DatetimeRangeComponent implements AfterContentInit, OnInit, Control
             [this.fromControlName]: this.datePick.from,
             [this.toControlName]: this.datePick.to
         });
-        this.propagateChange(this.form.value);
+        // this.propagateChange(this.form.value);
         this.range = range;
+        this.moment = new Date(this.datePick.from);
+        this.currentDate = this.datePick.from;
+        this.generateCalendar();
+        this.toggleCalendar(false);
+    }
+
+    public restoreRange() {
         this.moment = new Date(this.datePick.from);
         this.currentDate = this.datePick.from;
         this.generateCalendar();
@@ -161,7 +175,6 @@ export class DatetimeRangeComponent implements AfterContentInit, OnInit, Control
     }
 
     public selectDate(date: Date): void {
-
         if (this.opened === 'from') {
             this.datePick.from = date;
             this.form.patchValue({[this.fromControlName]: date});
@@ -171,7 +184,6 @@ export class DatetimeRangeComponent implements AfterContentInit, OnInit, Control
                 this.datePick.to = null;
                 this.form.patchValue({[this.toControlName]: null});
             }
-            this.propagateChange(this.form.value);
         }
 
         if (this.opened === 'to') {
@@ -183,7 +195,6 @@ export class DatetimeRangeComponent implements AfterContentInit, OnInit, Control
                 this.datePick.from = null;
                 this.form.patchValue({[this.fromControlName]: null});
             }
-            this.propagateChange(this.form.value);
         }
     }
 
@@ -216,13 +227,11 @@ export class DatetimeRangeComponent implements AfterContentInit, OnInit, Control
             this.datePick.from = date;
             this.form.patchValue({[this.fromControlName]: date});
             this.currentDate = this.datePick.to;
-            this.propagateChange(this.form.value);
             return;
         }
         if (this.opened === 'to') {
             this.datePick.to = date;
             this.form.patchValue({[this.toControlName]: date});
-            this.propagateChange(this.form.value);
             this.toggleCalendar(false);
         }
     }
@@ -231,13 +240,11 @@ export class DatetimeRangeComponent implements AfterContentInit, OnInit, Control
         if (this.opened === 'from') {
             this.datePick.from = date;
             this.form.patchValue({[this.fromControlName]: date});
-            this.propagateChange(this.form.value);
             return;
         }
         if (this.opened === 'to') {
             this.datePick.to = date;
             this.form.patchValue({[this.toControlName]: date});
-            this.propagateChange(this.form.value);
         }
     }
 }

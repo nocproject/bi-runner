@@ -1,4 +1,4 @@
-import { TestBed, inject } from '@angular/core/testing';
+import { TestBed, inject, async } from '@angular/core/testing';
 
 import { ConditionService } from './condition.service';
 
@@ -9,11 +9,14 @@ describe('ConditionService', () => {
         });
     });
 
-    it('should be created', inject([ConditionService], (service: ConditionService) => {
+    it('service should be created', inject([ConditionService], (service: ConditionService) => {
         expect(service).toBeTruthy();
     }));
 
-    it('should be Dictionary', inject([ConditionService], (service: ConditionService) => {
-        expect(service.conditions('Dictionary').length).toEqual(2, 'Dictionary condition is not 2');
-    }));
+    it('retrieve duration_intervals conditions', async(inject([ConditionService], (service) => {
+        service.conditions('duration_intervals', 'Dictionary')
+            .subscribe(result =>
+                expect(result.length).toEqual(2)
+            );
+    })));
 });

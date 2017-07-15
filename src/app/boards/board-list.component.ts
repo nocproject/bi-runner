@@ -1,12 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
-
 import { Methods } from '../model';
-import { GridConfig } from '../shared/data-grid/data-grid.component';
+import { GridConfig, GridConfigBuilder } from '../shared/data-grid/data-grid.component';
 
 @Component({
     selector: 'bi-board-list',
@@ -22,16 +19,18 @@ export class BoardListComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.tableConfig = new GridConfig();
-        this.tableConfig.headers = ['Title', 'Description', 'Owner', 'Created', 'Changed'];
-        this.tableConfig.names = ['title', 'description', 'owner', 'created', 'changed'];
-        this.tableConfig.method = Methods.LIST_DASHBOARDS;
-        this.tableConfig.fromJson = tableJson;
+        this.tableConfig = new GridConfigBuilder()
+            .headers(['Title', 'Description', 'Owner', 'Created', 'Changed'])
+            .names(['title', 'description', 'owner', 'created', 'changed'])
+            .fromJson(tableJson)
+            .method(Methods.LIST_DASHBOARDS)
+            .build();
     }
 
     onOpen(): void {
         if (this.selected.length === 1) {
-            this.route.navigate(['board', this.selected[0]]);
+            this.route.navigate(['board', this.selected[0]])
+                .catch(msg => console.log(msg));
         }
     }
 

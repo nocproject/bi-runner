@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import * as d3 from 'd3';
 
 import { APIService, FilterService } from '../services';
-import { Board, Field, Group, Methods, QueryBuilder, Query, Result, WhereBuilder } from '../model';
+import { Board, Field, Filter, Group, Methods, QueryBuilder, Query, Result, WhereBuilder } from '../model';
 
 export class Export {
 
@@ -19,17 +19,20 @@ export class Export {
             .join(',');
         const params = {
             datasource: board.datasource,
-            fields: [
-                {
-                    expr: `uniq(${fields})`,
-                    alias: 'qty'
-                }
-            ]
+            fields: []
         };
+        const durationFilters: Filter[] = filterService.allFiltersByName('duration_intervals');
 
-        console.log(groups.filter(field => field.hasOwnProperty('group')));
-        console.log(durationByReport(_.first(filterService.getFilter('startEnd'))));
-
+        if (durationFilters.length > 0) {
+            const rangeGroup = _.first(filterService.getFilter('startEnd'));
+            if (!rangeGroup) {
+                return Observable.throw('You must set report range!');
+            }
+            const range = reportRange(rangeGroup);
+            params.fields = groups.filter(field => field.hasOwnProperty('group'));
+            params.fields.push(durationByReport(range));
+            params.fields.push(durationByZebra(range, durationFilters));
+        }
         if (!fields) {
             const response = new Result();
 
@@ -50,9 +53,9 @@ export class Export {
 
 }
 
-function durationByReport(group: Group) {
-    const startDate = `toDateTime('${d3.time.format('%Y-%m-%dT%H:%M:%S')(group.filters[0].values[0].value)}')`;
-    const endDate = `toDateTime('${d3.time.format('%Y-%m-%dT%H:%M:%S')(group.filters[0].values[1].value)}')`;
+function durationByReport(values: any[]) {
+    const startDate = toDateTime(values[0]);
+    const endDate = toDateTime(values[1]);
 
     return {
         expr: {
@@ -92,105 +95,104 @@ function durationByReport(group: Group) {
     };
 }
 
-// function updateDurationZebra(values) {
-//     // check exist duration_intervals field
-//     if (Object.getOwnPropertyNames(dashboard.fieldsType).indexOf(dashboard.durationIntervalName) !== -1) {
-//         var result = makeIntervals(values);
-//
-//         durationFields(result.map(function (element) {
-//             return [element.start, element.end];
-//         }));
-//         return true;
-//     }
-//     return false;
-// }
-//
-// function makeIntervals(values) {
-//     return values.filter(element => !element.condition.match(/periodic/))
-//         .map(element => {
-//             return {
-//                 start: d3.time.format('%Y-%m-%dT%H:%M:00').parse(element.start),
-//                 end: d3.time.format('%Y-%m-%dT%H:%M:00').parse(element.end)
-//             };
-//         })
-//         .concat([].concat.apply([], values.filter(function (element) {
-//             return element.condition.match(/periodic/);
-//         })
-//             .map(function (element) {
-//                 return generateIntervals(NocFilter.getDateInterval(), element.start, element.end);
-//             })))
-//         .sort(function (a, b) {
-//             return a.start.getTime() - b.start.getTime();
-//         })
-//         .reduce(function (acc, curr, currIndex) { // join interval
-//             if (currIndex) {
-//                 if (acc[acc.length - 1].end.getTime() === curr.start.getTime()) {
-//                     acc[acc.length - 1].end = curr.end;
-//                     return acc;
-//                 }
-//             }
-//             return acc.concat({start: curr.start, end: curr.end});
-//         }, []);
-// }
-//
-// function generateIntervals(startEndTotal, startTime, endTime) {
-//     var start = startEndTotal[0];
-//     var end = startEndTotal[1];
-//     var from = startTime.split(':');
-//     var to = endTime.split(':');
-//     var nextFirst = new Date(start.getFullYear(), start.getMonth(), start.getDate(), Number(from[0]), Number(from[1]));
-//     var result = [];
-//
-//     if (nextFirst > start) {
-//         result.push({
-//             start: nextFirst,
-//             end: new Date(nextFirst.getFullYear(), nextFirst.getMonth(), nextFirst.getDate(), Number(to[0]), Number(to[1]))
-//         });
-//     } else {
-//         var secondFirst = new Date(start.getFullYear(), start.getMonth(), start.getDate(), Number(to[0]), Number(to[1]));
-//         if (secondFirst > start) {
-//             result.push({
-//                 start: start,
-//                 end: secondFirst
-//             });
+function durationEIField(values) {
+    return {
+        expr: {
+            '$duration': values.map(e => `[${toDateTime(e.start)},${toDateTime(e.end)}]`)
+        },
+        alias: 'duration_ei',
+        label: 'EI Duration'
+    };
+}
+
+function durationByZebra(reportRange: any[], filters: Filter[]) {
+    return durationEIField(makeIntervals(reportRange, filters));
+}
+
+function makeIntervals(reportRange, filters) {
+    return filters
+        .filter(element => !element.condition.match(/periodic/))
+        // ToDo check interval is in range report, may be DB cut - test
+        .map(element => {
+            const values = element.values[0].value.split('-');
+            return {
+                start: d3.time.format('%d.%m.%Y %H:%M').parse(values[0]),
+                end: d3.time.format('%d.%m.%Y %H:%M').parse(values[1])
+            };
+        }).concat(
+            _.flatMap(
+                filters
+                    .filter(element => element.condition.match(/periodic/))
+                    .map(element => generateIntervals(reportRange, element.values[0].value))))
+        .sort((a, b) => {
+            return a.start.getTime() - b.start.getTime();
+        })
+        .reduce((acc, curr, currIndex) => { // join interval
+            if (currIndex) {
+                if (acc[acc.length - 1].end.getTime() === curr.start.getTime()) {
+                    acc[acc.length - 1].end = curr.end;
+                    return acc;
+                }
+            }
+            return acc.concat({start: curr.start, end: curr.end});
+        }, []);
+}
+
+// from BI version 1
+// function checkDurationIntervals: (values) {
+//     return _makeIntervals(values).reduce(function(acc, curr, index, arr) {      // search error
+//         if(index && arr[index - 1].end > curr.start) {                          // check end prev and start curr
+//             return acc.concat([[
+//                 arr[index - 1].start.toString() + ' - ' + arr[index - 1].end.toString(),
+//                 curr.start.toString() + ' - ' + curr.end.toString()
+//             ]]);
 //         }
-//     }
-//
-//     do {
-//         nextFirst = new Date(nextFirst.getTime() + 86400000);
-//         var second = new Date(nextFirst.getFullYear(), nextFirst.getMonth(), nextFirst.getDate(), Number(to[0]), Number(to[1]));
-//         if (nextFirst > end) {
-//             break;
-//         }
-//         result.push({
-//             start: nextFirst,
-//             end: second < end ? second : end
-//         });
-//     } while (true);
-//
-//     return result;
+//         return acc;
+//     }, []);
 // }
-//
-// function durationFields(values) {
-//     var field = function (values) {
-//         return {
-//             expr: {
-//                 '$duration': values.map(function (e) {
-//                     return `[${toDateTime(e[0])},${toDateTime(e[1])}]`;
-//                 })
-//             },
-//             alias: 'duration_val',
-//             label: 'EI Duration'
-//         };
-//     };
-//     var fields = dashboard.exportQuery.params[0].fields.filter(function (e) {
-//         return 'duration_val' !== e.alias;
-//     });
-//
-//     fields.push(field(values));
-//     dashboard.exportQuery.params[0].fields = fields;
-// }
-//
-// function toDateTime(value) {
-//     return `toDateTime('${d3.time.format('%Y-%m-%dT%H:%M:%S')(value)}')`;
-// }
+
+function generateIntervals(reportRange, interval) {
+    const start = reportRange[0];
+    const end = reportRange[1];
+    const from = interval.split('-')[0].split(':');
+    const to = interval.split('-')[1].split(':');
+    const result = [];
+    let nextFirst = new Date(start.getFullYear(), start.getMonth(), start.getDate(), Number(from[0]), Number(from[1]));
+
+    if (nextFirst > start) {
+        result.push({
+            start: nextFirst,
+            end: new Date(nextFirst.getFullYear(), nextFirst.getMonth(), nextFirst.getDate(), Number(to[0]), Number(to[1]))
+        });
+    } else {
+        let secondFirst = new Date(start.getFullYear(), start.getMonth(), start.getDate(), Number(to[0]), Number(to[1]));
+        if (secondFirst > start) {
+            result.push({
+                start: start,
+                end: secondFirst
+            });
+        }
+    }
+
+    do {
+        nextFirst = new Date(nextFirst.getTime() + 86400000);
+        const second = new Date(nextFirst.getFullYear(), nextFirst.getMonth(), nextFirst.getDate(), Number(to[0]), Number(to[1]));
+        if (nextFirst > end) {
+            break;
+        }
+        result.push({
+            start: nextFirst,
+            end: second < end ? second : end
+        });
+    } while (true);
+
+    return result;
+}
+
+function reportRange(group: Group): any[] {
+    return [group.filters[0].values[0].value, group.filters[0].values[1].value];
+}
+
+function toDateTime(value) {
+    return `toDateTime('${d3.time.format('%Y-%m-%dT%H:%M:%S')(value)}')`;
+}

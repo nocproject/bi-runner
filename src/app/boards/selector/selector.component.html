@@ -15,13 +15,10 @@
                             Report Range:
                         </div>
                         <div class="col-md-7">
-                            <form [formGroup]="rangeForm">
-                                <bi-datetime-range
-                                        [formControlName]="'range'"
-                                        [fromControlName]="this.START_DATE"
-                                        [toControlName]="this.END_DATE">
-                                </bi-datetime-range>
-                            </form>
+                            <bi-datetime-range
+                                    [fromControlName]="this.START_DATE"
+                                    [toControlName]="this.END_DATE">
+                            </bi-datetime-range>
                         </div>
                         <div class="col-md-3 text-right">
                             last update: {{ lastUpdate$ | async | date:'dd.MM.yyyy' }}

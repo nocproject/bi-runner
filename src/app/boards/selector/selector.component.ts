@@ -7,7 +7,6 @@ import {
     OnInit,
     ViewChild
 } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
 
 import * as _ from 'lodash';
 
@@ -21,6 +20,7 @@ import { FilterFormComponent } from '../../filters/containers/form/filter-form.c
 import { EventService } from '../../filters/services/event.service';
 import { EventType } from '../../filters/models/event.interface';
 import { Group } from '../../model/group';
+import { DatetimeRangeComponent } from '../../shared/datetime-range/datetime-range.component';
 
 @Component({
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -33,11 +33,13 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
 
     @Input()
     board: Board;
-    @ViewChild(FilterFormComponent) filters: FilterFormComponent;
+    @ViewChild(FilterFormComponent)
+    filters: FilterFormComponent;
+    @ViewChild(DatetimeRangeComponent)
+    rangeForm: DatetimeRangeComponent;
     lastUpdate$: Observable<any>;
 
     collapsed = true;
-    rangeForm: FormGroup;
 
     private rangeSubscription: Subscription;
     private eventSubscription: Subscription;
@@ -45,15 +47,7 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
     constructor(public debug: DebugService,
                 private api: APIService,
                 private eventService: EventService,
-                private fb: FormBuilder,
                 private filterService: FilterService) {
-        this.rangeForm = this.fb.group({
-                range: {
-                    [this.START_DATE]: [new Date()],
-                    [this.END_DATE]: [new Date()]
-                }
-            }
-        );
     }
 
     ngAfterViewInit() {
@@ -87,7 +81,7 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
     }
 
     private filterChangeSub() {
-        this.rangeSubscription = this.rangeForm.valueChanges
+        this.rangeSubscription = this.rangeForm.changes
             .filter(() => this.rangeForm.valid)
             .subscribe(data => {
                 this.filterService.filtersNext(
@@ -98,7 +92,7 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
                                 .name('ts')
                                 .type('DateTime')
                                 .condition('interval')
-                                .values([new Value(data.range[this.START_DATE]), new Value(data.range[this.END_DATE])])
+                                .values([new Value(data[this.START_DATE]), new Value(data[this.END_DATE])])
                                 .build()
                         ])
                         .build()
@@ -111,14 +105,9 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
             .filter((group: Group) => group.name === 'startEnd')
             .subscribe(
                 (group: Group) => {
-                    this.rangeForm.setValue({
-                        range: {
-                            [this.START_DATE]: new Date(group.filters[0].values[0].value),
-                            [this.END_DATE]: new Date(group.filters[0].values[1].value)
-                        }
-                    }, {
-                        emitEvent: false,
-                        onlySelf: true
+                    this.rangeForm.restoreValue({
+                        [this.START_DATE]: new Date(group.filters[0].values[0].value),
+                        [this.END_DATE]: new Date(group.filters[0].values[1].value)
                     });
                 }
             );

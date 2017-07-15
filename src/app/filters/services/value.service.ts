@@ -63,6 +63,13 @@ export class ValueService {
             }
             case 'DateTime': {
                 // console.log('widget DateTime');
+                if (name === 'duration_intervals' && !_.includes(condition, 'periodic')) {
+                    first.type = 'inputMask';
+                    first.mask = '39.19.2999 29:59-39.19.2999 29:59';
+                    // ToDo make dateTimeRange validator, check first less second
+                    first.validation.push(BIValidators.dateTimeRange);
+                    return [first];
+                }
                 if (_.includes(condition, 'interval')) {
                     if (_.includes(condition, 'periodic')) {
                         first.type = 'inputMask';

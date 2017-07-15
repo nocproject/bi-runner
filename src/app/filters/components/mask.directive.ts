@@ -11,7 +11,7 @@ const TAB = 9,
     BACKSPACE = 8,
     DELETE = 46;
 
-const SPECIAL_CHARACTERS = [' ', '/', '(', ')', '+', '\/', '-', ':', '.'];
+const SPECIAL_CHARACTERS = [' ', '/', '(', ')', '+', '-', ':', '.'];
 
 @Directive({
     selector: '[biMask]',

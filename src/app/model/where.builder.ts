@@ -3,6 +3,8 @@ import * as d3 from 'd3';
 
 import { Group } from './group';
 import { Filter } from './filter';
+import { FilterBuilder } from './filter.builder';
+import { Value } from './value';
 
 export class WhereBuilder {
     static makeWhere(groups: Group[]): Object {
@@ -26,7 +28,34 @@ export class WhereBuilder {
 function getFilters(groups: Group[], association: string): Object[] {
     return groups
         .filter(group => group.association === association)
-        .map(group => group.filters.filter(filter => !filter.isEmpty()).filter(filter => !filter.isPseudo()))
+        .map(group => group.filters
+            .filter(filter => !filter.isEmpty())
+            // hard code
+            .map(filter => {
+                let values: Value[];
+                if (filter.name === 'duration_intervals') {
+                    if (filter.condition === 'interval') {
+                        const raw = filter.values[0].value.split('-');
+                        values = [
+                            new Value(d3.time.format('%d.%m.%Y %H:%M').parse(raw[0])),
+                            new Value(d3.time.format('%d.%m.%Y %H:%M').parse(raw[1]))
+                        ];
+                    } else {
+                        values = filter.values;
+                    }
+                    return new FilterBuilder()
+                        .condition(`not.${filter.condition}`)
+                        .pseudo(false)
+                        .type(filter.type)
+                        .name('ts')
+                        .values(values)
+                        .association(filter.association)
+                        .alias(filter.alias)
+                        .build();
+                }
+                return filter;
+            })
+            .filter(filter => !filter.isPseudo()))
         .filter(active => active.length > 0)
         .map(active => {
             const association = filtersAssociation(active);
