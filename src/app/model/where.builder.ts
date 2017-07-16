@@ -44,11 +44,11 @@ function getFilters(groups: Group[], association: string): Object[] {
                         values = filter.values;
                     }
                     return new FilterBuilder()
+                        .name('ts')
                         .condition(`not.${filter.condition}`)
                         .pseudo(false)
-                        .type(filter.type)
-                        .name('ts')
                         .values(values)
+                        .type(filter.type)
                         .association(filter.association)
                         .alias(filter.alias)
                         .build();

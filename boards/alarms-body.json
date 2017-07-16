@@ -76,7 +76,7 @@
       },
       "description": "описание отчета по авариям",
       "groups": [],
-      "title": "Аварии",
+      "title": "Аварии-export",
       "format": 2,
       "export": {
         "params": [
@@ -84,12 +84,19 @@
             "fields": [
               {
                 "expr": "date",
-                "group": 0
+                "group": 0,
+                "format": "dateToString",
+                "label": "Дата"
               },
               {
                 "expr": "count()",
                 "alias": "qty",
                 "label": "Кол-во"
+              },
+              {
+                "expr": "sum(reboots)",
+                "alias": "reboots_sum",
+                "label": "Кол-во перезагрузок"
               },
               {
                 "expr": {
@@ -106,11 +113,6 @@
                 },
                 "alias": "duration_sum",
                 "label": "Продолжительность"
-              },
-              {
-                "expr": "sum(reboots)",
-                "alias": "reboots_sum",
-                "label": "Кол-во перезагрузок"
               }
             ],
             "datasource": "alarms"

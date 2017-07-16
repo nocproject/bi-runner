@@ -21,6 +21,7 @@ export class Filter {
     // form data
     public valueFirst: string;
     public valueSecond: string;
+    public hide: string;
 
     public isEmpty(): boolean {
         return this.values.length === 0;

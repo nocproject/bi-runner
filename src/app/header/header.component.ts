@@ -93,6 +93,7 @@ export class HeaderComponent implements OnInit {
             .then(response => {
                 this.messages.message(new Message(MessageType.INFO, 'Saved'));
                 this.route.navigate(['']);
+                // ToDo problem
                 // console.log(response.result);
                 // this.route.navigate(['board', response.result]);
             });
@@ -113,29 +114,15 @@ export class HeaderComponent implements OnInit {
     }
 
     onExport(): void {
-        // this.exportSpin = !this.exportSpin;
         this.exportSpin = true;
-        setTimeout(() => {
-            this.exportSpin = false;
-            console.log('done');
-        }, 2000);
-        // Export.query(this.api, this.filterService)
-        //     .toPromise()
-        //     .then(
-        //         () => {
-        //             // console.log(this);
-        //             // console.log(`onExport : ${this.exportSpin}`);
-        //             // this.messages.message(new Message(MessageType.INFO, 'Exported'));
-        //             this.exportSpin = 'no';
-        //             // console.log(`onExport : ${this.exportSpin}`);
-        //             console.log('Exported');
-        //         }
-        //     ).catch(msg => this.messages.message(new Message(MessageType.DANGER, msg)));
-
-        // this.exportSpin = false;
-        // ToDo make query from allGroups and allFilters, see CounterComponent.makeUniqQuery
-        // this.api.execute(this.filterService.boardSubject.getValue().exportQry).subscribe();
-        // console.log(this.filterService.allGroups());
-        // console.log(this.filterService.allFilters());
+        Export.query(this.api, this.filterService)
+            .toPromise()
+            .then(
+                (response) => {
+                    this.exportSpin = false;
+                    Export.save(response.result, this.filterService);
+                    console.log('Exported');
+                }
+            );
     }
 }

@@ -71,7 +71,8 @@
                 "alias": "date",
                 "expr": "date",
                 "group": 0,
-                "format": "dateToString"
+                "format": "dateToString",
+                "label": "Дата"
               },
               {
                 "alias": "qty",

@@ -1,6 +1,7 @@
 import { Observable } from 'rxjs/Rx';
 import * as _ from 'lodash';
 import * as d3 from 'd3';
+import * as saver from 'file-saver';
 
 import { APIService, FilterService } from '../services';
 import { Board, Field, Filter, Group, Methods, QueryBuilder, Query, Result, WhereBuilder } from '../model';
@@ -10,17 +11,8 @@ export class Export {
     static query(api: APIService,
                  filterService: FilterService): Observable<Result> {
         const board: Board = _.clone(filterService.boardSubject.getValue());
-        const groups: Field[] = filterService.allGroups();
-        const filters: Group[] = filterService.allFilters();
-        const where = WhereBuilder.makeWhere(filters);
-        const fields = groups
-            .filter(field => field.hasOwnProperty('group'))
-            .map(field => field.expr)
-            .join(',');
-        const params = {
-            datasource: board.datasource,
-            fields: []
-        };
+        const where = WhereBuilder.makeWhere(filterService.allFilters());
+        const params = _.clone(board.exportQry.params);
         const durationFilters: Filter[] = filterService.allFiltersByName('duration_intervals');
 
         if (durationFilters.length > 0) {
@@ -29,28 +21,41 @@ export class Export {
                 return Observable.throw('You must set report range!');
             }
             const range = reportRange(rangeGroup);
-            params.fields = groups.filter(field => field.hasOwnProperty('group'));
-            params.fields.push(durationByReport(range));
-            params.fields.push(durationByZebra(range, durationFilters));
-        }
-        if (!fields) {
-            const response = new Result();
-
-            response.data = {result: [['0']]};
-            return Observable.of(response);
+            params[0].fields.push(durationByReport(range));
+            params[0].fields.push(durationByZebra(range, durationFilters));
         }
 
         if (where) {
-            params['filter'] = where;
+            params[0].filter = where;
         }
-
+        // ToDo change backend (use boolean) and remove
+        params[0].fields = params[0].fields.map(field => {
+            if (field.hide) {
+                field.hide = 'yes';
+            }
+            return field;
+        });
         const query: Query = new QueryBuilder()
             .method(Methods.QUERY)
-            .params([params])
+            .params(params)
             .build();
         return api.execute(query);
     }
 
+    static save(data, filterService) {
+        const fields: Field[] = _.clone(filterService.boardSubject.getValue().exportQry.params[0].fields);
+        const title: string = _.clone(filterService.boardSubject.getValue().title);
+        const pairs = _.clone(fields
+            .map(field => [field.alias ? field.alias : field.expr, field.label]))
+            .reduce((acc, [key, value]) => {
+                acc[key] = value;
+                return acc;
+            }, {});
+        saver.saveAs(
+            new Blob([toCsv(data.result, data.fields.map(field => pairs[field]), '"', ';')]
+                , {type: 'text/plain;charset=utf-8'}), `${title}.csv`
+        );
+    }
 }
 
 function durationByReport(values: any[]) {
@@ -195,4 +200,67 @@ function reportRange(group: Group): any[] {
 
 function toDateTime(value) {
     return `toDateTime('${d3.time.format('%Y-%m-%dT%H:%M:%S')(value)}')`;
+}
+
+/**
+ * Converts an array of objects (with identical schemas) into a CSV table.
+ * @param {Array} objArray An array of objects.  Each object in the array must have the same property list.
+ * @param {Array} nameArray an array names of fields.
+ * @param {string} sDelimiter The string delimiter.  Defaults to a double quote (") if omitted.
+ * @param {string} cDelimiter The column delimiter.  Defaults to a comma (,) if omitted.
+ * @return {string} The CSV equivalent of objArray.
+ */
+function toCsv(objArray, nameArray, sDelimiter, cDelimiter) {
+    let i, l, names = [], name, value, obj, row, output = '', n, nl;
+
+    function toCsvValue(theValue, sDelimiter) {
+        let t = typeof (theValue), output;
+        if (typeof (sDelimiter) === 'undefined' || sDelimiter === null) {
+            sDelimiter = '"';
+        }
+        if (t === 'undefined' || t === null) {
+            output = '';
+        } else if (t === 'string') {
+            output = sDelimiter + theValue + sDelimiter;
+        } else {
+            output = String(theValue);
+        }
+        return output;
+    }
+
+    // Initialize default parameters.
+    if (typeof (sDelimiter) === 'undefined' || sDelimiter === null) {
+        sDelimiter = '"';
+    }
+    if (typeof (cDelimiter) === 'undefined' || cDelimiter === null) {
+        cDelimiter = ',';
+    }
+    for (i = 0, l = objArray.length; i < l; i += 1) {
+        // Get the names of the properties.
+        obj = objArray[i];
+        row = '';
+        if (i === 0) {
+            // Loop through the names
+            for (name in nameArray) {
+                if (nameArray.hasOwnProperty(name)) {
+                    names.push(name);
+                    row += [sDelimiter, nameArray[name], sDelimiter, cDelimiter].join('');
+                }
+            }
+            row = row.substring(0, row.length - 1);
+            output += row;
+        }
+        output += '\n';
+        row = '';
+        for (n = 0, nl = names.length; n < nl; n += 1) {
+            name = names[n];
+            value = obj[name];
+            if (n > 0) {
+                row += cDelimiter;
+            }
+            row += toCsvValue(value, '"');
+        }
+        output += row;
+    }
+    return output;
 }
