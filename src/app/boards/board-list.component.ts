@@ -2,19 +2,20 @@ import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 
-import { Methods } from '../model';
+import { Methods, QueryBuilder } from '../model';
 import { GridConfig, GridConfigBuilder } from '../shared/data-grid/data-grid.component';
+import { APIService } from '../services/api.service';
 
 @Component({
     selector: 'bi-board-list',
-    templateUrl: './board-list.component.html',
-    styleUrls: ['./board-list.component.scss']
+    templateUrl: './board-list.component.html'
 })
 export class BoardListComponent implements OnInit {
     tableConfig: GridConfig;
     selected: string[] = [];
 
-    constructor(private route: Router,
+    constructor(private api: APIService,
+                private route: Router,
                 private location: Location) {
     }
 
@@ -23,7 +24,12 @@ export class BoardListComponent implements OnInit {
             .headers(['Title', 'Description', 'Owner', 'Created', 'Changed'])
             .names(['title', 'description', 'owner', 'created', 'changed'])
             .fromJson(tableJson)
-            .method(Methods.LIST_DASHBOARDS)
+            .data(this.api
+                .execute(new QueryBuilder().method(Methods.LIST_DASHBOARDS).build())
+                .map(response => response.result)
+                .flatMap(rows => rows)
+                .filter(row => row['format'] === '2')
+                .toArray())
             .build();
     }
 
