@@ -5,8 +5,7 @@ import * as _ from 'lodash';
 import { Observable } from 'rxjs/Rx';
 
 import { APIService } from './api.service';
-import { Board, Field, QueryBuilder, Methods } from '../model';
-import { IOption } from '../model/ioption';
+import { Board, Field, IOption, Methods, QueryBuilder } from '../model';
 
 @Injectable()
 export class FieldListService {

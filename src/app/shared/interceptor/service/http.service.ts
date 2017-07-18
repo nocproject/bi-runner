@@ -1,20 +1,8 @@
 import { Injectable } from '@angular/core';
-import {
-    Http as _Http,
-    Request,
-    Response,
-    RequestOptionsArgs,
-    RequestOptions,
-    XHRBackend
-} from '@angular/http';
+import { Http as _Http, Request, RequestOptions, RequestOptionsArgs, Response, XHRBackend } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 
-import {
-    Interceptor,
-    RequestInterceptorOptions,
-    InterceptorType,
-    MAP
-} from '../interfaces';
+import { Interceptor, InterceptorType, MAP, RequestInterceptorOptions } from '../interfaces';
 import { InterceptorStore } from './interceptor.store';
 
 @Injectable()

@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Rx';
 
 import * as _ from 'lodash';
 
-import { Board, FilterBuilder, Filter, Field, GroupBuilder, Group, Value } from '../model';
+import { Board, Field, Filter, FilterBuilder, Group, GroupBuilder, Value } from '../model';
 
 import { EventService } from '../filters/services/event.service';
 import { Groups } from '../filters/models/form-data.interface';

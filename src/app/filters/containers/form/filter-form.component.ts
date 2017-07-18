@@ -6,15 +6,11 @@ import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Rx';
 
 import { EventType } from '../../models/event.interface';
-import { FiltersConfig, FormConfig, GroupConfig } from '../../models/form-config.interface';
-import { FieldConfig } from '../../models/form-config.interface';
+import { FieldConfig, FiltersConfig, FormConfig, GroupConfig } from '../../models/form-config.interface';
 import { FieldListService, FilterService } from '../../../services';
-import { EventService } from '../../services';
-
-import { ConditionService } from '../../services/condition.service';
-import { ValueService } from '../../services/value.service';
+import { ConditionService, EventService, ValueService } from '../../services';
 import { BIValidators } from '../../components/validators';
-import { Group } from '../../../model/group';
+import { Group } from '../../../model';
 import { FormData } from '../../models/form-data.interface';
 
 @Component({

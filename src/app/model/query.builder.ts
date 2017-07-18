@@ -1,5 +1,4 @@
 import { Query } from './query';
-import { Parameter } from './parameter';
 
 export class QueryBuilder {
     private query: Query = new Query();

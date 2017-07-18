@@ -4,7 +4,7 @@ import * as d3 from 'd3';
 import * as saver from 'file-saver';
 
 import { APIService, FilterService } from '../services';
-import { Board, Field, Filter, Group, Methods, QueryBuilder, Query, Result, WhereBuilder } from '../model';
+import { Board, Field, Filter, Group, Methods, Query, QueryBuilder, Result, WhereBuilder } from '../model';
 
 export class Export {
 

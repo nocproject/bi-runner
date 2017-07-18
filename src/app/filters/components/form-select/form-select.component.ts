@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 
 import { Field } from '../../models/field.interface';
 import { FieldConfig } from '../../models/form-config.interface';
-import { FormGroup } from '@angular/forms';
 
 @Component({
     selector: 'bi-form-select',

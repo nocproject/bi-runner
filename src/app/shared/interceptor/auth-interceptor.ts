@@ -5,10 +5,7 @@ import { Response } from '@angular/http';
 import * as _ from 'lodash';
 import { Observable } from 'rxjs/Rx';
 
-import {
-    Interceptor,
-    ResponseInterceptorOptions
-} from './interfaces';
+import { Interceptor, ResponseInterceptorOptions } from './interfaces';
 
 @Injectable()
 export class AuthInterceptor implements Interceptor {

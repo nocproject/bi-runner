@@ -12,8 +12,7 @@ import { QueryBuilder } from '../model/query.builder';
 
 @Component({
     selector: 'bi-share',
-    templateUrl: './share.component.html',
-    styleUrls: ['./share.component.scss']
+    templateUrl: './share.component.html'
 })
 export class ShareComponent implements OnInit, OnDestroy {
     private paramSubscription: Subscription;
@@ -39,14 +38,22 @@ export class ShareComponent implements OnInit, OnDestroy {
         this.userConfig = new GridConfigBuilder()
             .headers(['Username', 'Full Name'])
             .names(['username', 'full_name'])
-            .method(Methods.LIST_USERS)
+            .data(this.api
+                .execute(new QueryBuilder().method(Methods.LIST_USERS).build())
+                .map(response => response.result)
+                // .publishLast().refCount()
+            )
             .fromJson(userJson)
             .build();
 
         this.groupConfig = new GridConfigBuilder()
             .headers(['Name'])
             .names(['name'])
-            .method(Methods.LIST_GROUPS)
+            .data(this.api
+                .execute(new QueryBuilder().method(Methods.LIST_GROUPS).build())
+                .map(response => response.result)
+                // .publishLast().refCount()
+            )
             .fromJson(groupJson)
             .build();
 
@@ -112,9 +119,9 @@ export class ShareComponent implements OnInit, OnDestroy {
                 {items: items}
             ])
             .build())
-            .subscribe(response=>console.log(response),
-                error=>console.log(error),
-                ()=>this.shareSpin = false);
+            .subscribe(response => console.log(response),
+                error => console.log(error),
+                () => this.shareSpin = false);
     }
 
     onRemoveAll() {
@@ -128,7 +135,8 @@ export class ShareComponent implements OnInit, OnDestroy {
                 {items: []}
             ])
             .build())
-            .subscribe(console.log);
+            .toPromise()
+            .then(console.log);
         this.location.back();
     }
 

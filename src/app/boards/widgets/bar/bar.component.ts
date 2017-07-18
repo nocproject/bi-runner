@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 
 import * as dc from 'dc';
+import { BarChart, BaseMixin } from 'dc';
 import * as d3 from 'd3';
 import * as crossfilter from 'crossfilter';
-import { BarChart, BaseMixin } from 'dc';
 
 import { Restore, WidgetComponent } from '../widget.component';
 import { FilterBuilder, Result, Value } from '../../../model';

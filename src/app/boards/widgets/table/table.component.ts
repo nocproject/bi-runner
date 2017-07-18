@@ -13,8 +13,7 @@ import { Value } from '../../../model/value';
 
 @Component({
     selector: 'bi-table',
-    templateUrl: './table.component.html',
-    styleUrls: ['./table.component.sass']
+    templateUrl: './table.component.html'
 })
 export class TableComponent extends WidgetComponent {
     draw(response: Result): BaseMixin<DataTableWidget> {

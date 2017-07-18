@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 
 import * as dc from 'dc';
-import * as crossfilter from 'crossfilter';
 import { BaseMixin, RowChart } from 'dc';
+import * as crossfilter from 'crossfilter';
 
 import { Restore, WidgetComponent } from '../widget.component';
 import { FilterBuilder, Result, Value } from '../../../model';

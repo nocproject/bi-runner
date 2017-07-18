@@ -1,4 +1,4 @@
-import { TypedJSON, JsonObject, JsonMember } from 'typedjson-npm/src/typed-json';
+import { JsonMember, JsonObject, TypedJSON } from 'typedjson-npm/src/typed-json';
 import * as _ from 'lodash';
 
 import { Field } from './field';

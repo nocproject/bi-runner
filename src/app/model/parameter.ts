@@ -1,8 +1,8 @@
-import { JsonObject, JsonMember, TypedJSON } from 'typedjson-npm/src/typed-json';
+import { JsonMember, JsonObject, TypedJSON } from 'typedjson-npm/src/typed-json';
 import * as _ from 'lodash';
 
 import { Field } from './field';
-import { DeserializationHelper, SerializationHelper } from './helpers';
+import { DeserializationHelper } from './helpers';
 
 // ToDo need recursion for where
 // doesn't work:

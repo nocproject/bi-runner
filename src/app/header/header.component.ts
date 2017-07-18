@@ -9,7 +9,7 @@ import * as _ from 'lodash';
 import { environment } from '../../environments/environment';
 
 import { APIService, FilterService, MessageService, UserService } from '../services';
-import { Board, QueryBuilder, Message, Methods, MessageType, User } from '../model';
+import { Board, Message, MessageType, Methods, QueryBuilder, User } from '../model';
 import { ModalComponent } from '../shared/modal/modal';
 import { Export } from './export';
 

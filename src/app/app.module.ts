@@ -8,26 +8,14 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { DropdownDirective } from './shared/dropdown.directive';
-import {
-    APIService,
-    DebugService,
-    UserService,
-    FilterService,
-    MessageService
-} from './services';
+import { APIService, DebugService, FilterService, MessageService, UserService } from './services';
 import { MessagesComponent } from './shared/messages/messages.component';
 import { HttpModule } from './shared/interceptor/module/http.module';
 import { BoardListComponent } from './boards/board-list.component';
 import { LoginComponent } from './login/login.component';
 import { BoardComponent } from './boards/board/board.component';
 import { BoardResolver } from './boards/board/board.resolver';
-import {
-    BarComponent,
-    LineComponent,
-    PieComponent,
-    RowComponent,
-    TableComponent
-} from './boards/widgets';
+import { BarComponent, LineComponent, PieComponent, RowComponent, TableComponent } from './boards/widgets';
 import { SelectorComponent } from './boards/selector/selector.component';
 import { CounterComponent } from './boards/widgets/counter/counter.component';
 import { AnchorDirective } from './shared/anchor.directive';

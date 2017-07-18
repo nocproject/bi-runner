@@ -6,8 +6,7 @@ import { UserService } from '../services';
 
 @Component({
     selector: 'bi-login',
-    templateUrl: './login.component.html',
-    styleUrls: ['./login.component.scss']
+    templateUrl: './login.component.html'
 })
 export class LoginComponent implements OnInit, OnDestroy {
     message = '';

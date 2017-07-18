@@ -1,7 +1,4 @@
-import {
-    AfterViewInit, ChangeDetectionStrategy, Component,
-    EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges
-} from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 
 import * as _ from 'lodash';
@@ -10,7 +7,7 @@ import { QueryBuilder } from '../../model/query.builder';
 import { APIService } from '../../services/api.service';
 
 @Component({
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    // changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'bi-data-grid',
     templateUrl: './data-grid.component.html',
     styleUrls: ['./data-grid.component.scss']
@@ -41,10 +38,10 @@ export class DataGridComponent implements AfterViewInit, OnInit, OnChanges {
             searchField: this.searchField
         });
         this.results = this.searchField.valueChanges
-        // .debounceTime(400)
-        // .distinctUntilChanged()
+            .debounceTime(400)
+            .distinctUntilChanged()
             .do(_ => this.loading = true)
-            .switchMap(term => this.search(term, this.config.method, this.config.fromJson))
+            .switchMap(term => this.search(term))
             .do(_ => this.loading = false);
     }
 
@@ -59,13 +56,21 @@ export class DataGridComponent implements AfterViewInit, OnInit, OnChanges {
         }
     }
 
-    search(term: string, method: string, fromJson): Observable<any> {
-        return this.api
-            .execute(new QueryBuilder()
-                .method(method)
-                .params([{'query': term}])
-                .build())
-            .map(result => result.data.map(fromJson));
+    search(term: string): Observable<any> {
+        if (this.config.method) {
+            return this.api
+                .execute(new QueryBuilder()
+                    .method(this.config.method)
+                    .params([{'query': term}])
+                    .build())
+                .map(result => result.data.map(this.config.fromJson));
+        }
+        if (this.config.data) {
+            return this.config.data
+                .flatMap(rows => rows)
+                .filter(row => this.contains(row, term))
+                .toArray();
+        }
     }
 
     isSelected(row: any): boolean {
@@ -93,6 +98,11 @@ export class DataGridComponent implements AfterViewInit, OnInit, OnChanges {
     onOpen(id: string): void {
         this.openEvent.emit([id]);
     }
+
+    private contains(row: any, term: string): boolean {
+        return this.config.names
+            .reduce((acc, colName) => acc || (row[colName].match(new RegExp(term, 'i')) !== null), false);
+    }
 }
 
 export class GridConfig {
@@ -100,6 +110,7 @@ export class GridConfig {
     names: string[];
     height: number;
     method: string;
+    data: Observable<any[]>;
     fromJson: (any) => any;
 
     constructor() {
@@ -136,6 +147,11 @@ export class GridConfigBuilder {
 
     public fromJson(fromJson: (any) => any) {
         this.config.fromJson = fromJson;
+        return this;
+    }
+
+    public data(data: Observable<any[]>) {
+        this.config.data = data;
         return this;
     }
 

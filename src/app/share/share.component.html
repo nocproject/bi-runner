@@ -7,47 +7,49 @@
                         <button class="close" (click)="onCancel()">×</button>
                     </div>
                     <div class="bootstrap-dialog-title title-left">Share Report : {{ board.title }}</div>
-                    <div class="title-right" style="color: white;padding-right: 25px;">Selected : {{ preSelected.length }}</div>
+                    <div class="title-right" style="color: white;padding-right: 25px;">
+                        Selected : {{ preSelected.length }}
+                    </div>
                 </div>
             </div>
             <div class="modal-body">
                 <div class="container-fluid">
                     <div class="row">
                         <form [formGroup]="chooseForm">
-                        <div class="col-md-6">
-                            <div class="radio radio-primary">
-                                <input type="radio"
-                                       id="object-user" value="user"
-                                       formControlName="object">
-                                <label for="object-user">By User</label>
+                            <div class="col-md-6">
+                                <div class="radio radio-primary">
+                                    <input type="radio"
+                                           id="object-user" value="user"
+                                           formControlName="object">
+                                    <label for="object-user">By User</label>
+                                </div>
+                                <div class="radio radio-primary">
+                                    <input type="radio"
+                                           id="object-group" value="group"
+                                           formControlName="object">
+                                    <label for="object-group">By Group</label>
+                                </div>
                             </div>
-                            <div class="radio radio-primary">
-                                <input type="radio"
-                                       id="object-group" value="group"
-                                       formControlName="object">
-                                <label for="object-group">By Group</label>
+                            <div class="col-md-6">
+                                <div class="radio radio-primary">
+                                    <input type="radio"
+                                           id="access-read" value="0"
+                                           formControlName="access">
+                                    <label for="access-read">Read Only</label>
+                                </div>
+                                <div class="radio radio-primary">
+                                    <input type="radio"
+                                           id="access-modify" value="1"
+                                           formControlName="access">
+                                    <label for="access-modify">Modify</label>
+                                </div>
+                                <div class="radio radio-primary">
+                                    <input type="radio"
+                                           id="access-admin" value="2"
+                                           formControlName="access">
+                                    <label for="access-admin">Admin</label>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="radio radio-primary">
-                                <input type="radio"
-                                       id="access-read" value="0"
-                                       formControlName="access">
-                                <label for="access-read">Read Only</label>
-                            </div>
-                            <div class="radio radio-primary">
-                                <input type="radio"
-                                       id="access-modify" value="1"
-                                       formControlName="access">
-                                <label for="access-modify">Modify</label>
-                            </div>
-                            <div class="radio radio-primary">
-                                <input type="radio"
-                                       id="access-admin" value="2"
-                                       formControlName="access">
-                                <label for="access-admin">Admin</label>
-                            </div>
-                        </div>
                         </form>
                     </div>
                 </div>
