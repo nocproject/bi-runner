@@ -6,6 +6,7 @@ import { BoardListComponent } from './boards/board-list.component';
 import { BoardComponent } from './boards/board/board.component';
 import { BoardResolver } from './boards/board/board.resolver';
 import { ShareComponent } from './share/share.component';
+import { ShareCanDeactivateGuard } from './share/share-can-deactivate.guard';
 
 const routes: Routes = [
     {
@@ -23,6 +24,7 @@ const routes: Routes = [
     {
         path: 'share/:id',
         component: ShareComponent,
+        canDeactivate: [ShareCanDeactivateGuard],
         resolve: {
             detail: BoardResolver
         }

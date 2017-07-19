@@ -1,18 +1,26 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import {
+    AfterViewInit,
+    Component,
+    EventEmitter,
+    Input,
+    OnChanges,
+    OnDestroy,
+    OnInit,
+    Output,
+    SimpleChanges
+} from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 
 import * as _ from 'lodash';
 import { Observable } from 'rxjs/Observable';
-import { QueryBuilder } from '../../model/query.builder';
-import { APIService } from '../../services/api.service';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
-    // changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'bi-data-grid',
     templateUrl: './data-grid.component.html',
     styleUrls: ['./data-grid.component.scss']
 })
-export class DataGridComponent implements AfterViewInit, OnInit, OnChanges {
+export class DataGridComponent implements AfterViewInit, OnInit, OnChanges, OnDestroy {
     @Input()
     config: GridConfig;
     @Input()
@@ -25,11 +33,15 @@ export class DataGridComponent implements AfterViewInit, OnInit, OnChanges {
     openEvent: EventEmitter<any> = new EventEmitter<any>();
 
     loading: boolean = false;
-    results: Observable<any[]>;
+    data: any[];
+    cache: any[];
+    // animation on change data only
+    colNames: string[];
+    searching: Subscription;
     searchForm: FormGroup;
     searchField: FormControl;
 
-    constructor(private api: APIService) {
+    constructor() {
     }
 
     ngOnInit(): void {
@@ -37,40 +49,32 @@ export class DataGridComponent implements AfterViewInit, OnInit, OnChanges {
         this.searchForm = new FormGroup({
             searchField: this.searchField
         });
-        this.results = this.searchField.valueChanges
-            .debounceTime(400)
-            .distinctUntilChanged()
-            .do(_ => this.loading = true)
-            .switchMap(term => this.search(term))
-            .do(_ => this.loading = false);
+        this.getData();
+    }
+
+    ngOnDestroy(): void {
+        this.searching.unsubscribe();
     }
 
     ngAfterViewInit(): void {
-        this.searchField.setValue('');
+        this.searching = this.searchField.valueChanges
+            .subscribe(term => {
+                this.loading = true;
+                this.data = this.localSearch(term);
+                this.loading = false;
+            });
     }
 
     ngOnChanges(changes: SimpleChanges): void {
         if (this.searchField) {
             console.log('changed');
-            this.searchField.setValue('');
+            this.getData().then(_ => this.searchField.setValue(''));
         }
     }
 
-    search(term: string): Observable<any> {
-        if (this.config.method) {
-            return this.api
-                .execute(new QueryBuilder()
-                    .method(this.config.method)
-                    .params([{'query': term}])
-                    .build())
-                .map(result => result.data.map(this.config.fromJson));
-        }
-        if (this.config.data) {
-            return this.config.data
-                .flatMap(rows => rows)
-                .filter(row => this.contains(row, term))
-                .toArray();
-        }
+    localSearch(term: string): any[] {
+        return _.flatMap(this.cache)
+            .filter(row => this.contains(row, term));
     }
 
     isSelected(row: any): boolean {
@@ -103,13 +107,22 @@ export class DataGridComponent implements AfterViewInit, OnInit, OnChanges {
         return this.config.names
             .reduce((acc, colName) => acc || (row[colName].match(new RegExp(term, 'i')) !== null), false);
     }
+
+    private getData(): Promise<any> {
+        return this.config.data.toPromise()
+            .then(response => {
+                this.loading = true;
+                this.colNames = this.config.names;
+                this.cache = this.data = response;
+                this.loading = false;
+            });
+    }
 }
 
 export class GridConfig {
     headers: string[];
     names: string[];
     height: number;
-    method: string;
     data: Observable<any[]>;
     fromJson: (any) => any;
 
@@ -132,11 +145,6 @@ export class GridConfigBuilder {
 
     public names(names: string[]) {
         this.config.names = names;
-        return this;
-    }
-
-    public method(method: string) {
-        this.config.method = method;
         return this;
     }
 

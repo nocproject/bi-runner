@@ -92,10 +92,10 @@ export class HeaderComponent implements OnInit {
         this.api.execute(query).toPromise()
             .then(response => {
                 this.messages.message(new Message(MessageType.INFO, 'Saved'));
-                this.route.navigate(['']);
+                // this.route.navigate(['']);
                 // ToDo problem
-                // console.log(response.result);
-                // this.route.navigate(['board', response.result]);
+                console.log(response.result);
+                this.route.navigate(['board', response.result]);
             });
     }
 

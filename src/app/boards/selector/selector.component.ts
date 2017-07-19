@@ -5,6 +5,7 @@ import * as _ from 'lodash';
 import { Observable } from 'rxjs/Rx';
 import { Subscription } from 'rxjs/Subscription';
 
+import { environment } from '../../../environments/environment';
 import { APIService, DebugService, FilterService } from '../../services';
 import { Board, FilterBuilder, GroupBuilder, Methods, QueryBuilder, Value } from '../../model';
 
@@ -20,8 +21,8 @@ import { DatetimeRangeComponent } from '../../shared/datetime-range/datetime-ran
     templateUrl: './selector.component.html'
 })
 export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
-    public START_DATE = 'startDate';
-    public END_DATE = 'endDate';
+    private rangeSubscription: Subscription;
+    private eventSubscription: Subscription;
 
     @Input()
     board: Board;
@@ -29,12 +30,14 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
     filters: FilterFormComponent;
     @ViewChild(DatetimeRangeComponent)
     rangeForm: DatetimeRangeComponent;
+
+    START_DATE = 'startDate';
+    END_DATE = 'endDate';
+    production = environment.production;
     lastUpdate$: Observable<any>;
 
     collapsed = true;
 
-    private rangeSubscription: Subscription;
-    private eventSubscription: Subscription;
 
     constructor(public debug: DebugService,
                 private api: APIService,

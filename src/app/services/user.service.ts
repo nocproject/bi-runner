@@ -1,16 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Response } from '@angular/http';
-import { ActivatedRoute } from '@angular/router';
 
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Rx';
 
-import { Message, MessageType, User } from '../model';
-import { MessageService } from '../services';
+import { Message, MessageType, Methods, QueryBuilder, User } from '../model';
+import { APIService, MessageService } from '../services';
 import { Http } from '../shared/interceptor/service/http.service';
-import { APIService } from './api.service';
-import { QueryBuilder } from '../model/query.builder';
-import { Methods } from '../model/methods.enum';
 
 @Injectable()
 export class UserService {
@@ -32,7 +28,6 @@ export class UserService {
 
     constructor(private http: Http,
                 private api: APIService,
-                private activatedRoute: ActivatedRoute,
                 private messagesService: MessageService) {
     }
 

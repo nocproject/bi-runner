@@ -36,7 +36,7 @@
                                     #form="filterForm"
                                     (submit)="submitFilters($event)">
                             </bi-filter-form>
-                            <div>
+                            <div *ngIf="!production">
                                 is valid : {{ form.valid }}
                                 <hr>
                                 form params : {{ form.value | json }}

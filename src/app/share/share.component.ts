@@ -1,35 +1,44 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Location } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
+import * as _ from 'lodash';
 
-import { AccessLevel, Board, Methods } from '../model';
+import { AccessLevel, Methods, QueryBuilder } from '../model';
 import { APIService } from '../services/api.service';
 import { GridConfig, GridConfigBuilder } from '../shared/data-grid/data-grid.component';
-import { QueryBuilder } from '../model/query.builder';
+import { ModalComponent } from '../shared/modal/modal';
 
 @Component({
     selector: 'bi-share',
     templateUrl: './share.component.html'
 })
 export class ShareComponent implements OnInit, OnDestroy {
-    private paramSubscription: Subscription;
     private chooseSubscription: Subscription;
-    private accessSubscription: Subscription;
+    private confirmAnswerSubject = new BehaviorSubject(null);
 
-    board: Board;
+    @ViewChild(ModalComponent)
+    confirmDialog: ModalComponent;
+
+    confirmAnswer$: Observable<boolean> = this.confirmAnswerSubject.asObservable();
+    boardId: string;
+    title: string;
     userConfig: GridConfig;
     groupConfig: GridConfig;
+    accessCache: Access[] = [];
     preSelected: any[] = [];
+    unsavedData = false;
     config: GridConfig;
     chooseForm: FormGroup;
     shareSpin = false;
+    trashSpin = false;
 
     constructor(private api: APIService,
                 private route: ActivatedRoute,
-                private location: Location) {
+                private router: Router) {
     }
 
     ngOnInit() {
@@ -41,7 +50,6 @@ export class ShareComponent implements OnInit, OnDestroy {
             .data(this.api
                 .execute(new QueryBuilder().method(Methods.LIST_USERS).build())
                 .map(response => response.result)
-                // .publishLast().refCount()
             )
             .fromJson(userJson)
             .build();
@@ -52,7 +60,6 @@ export class ShareComponent implements OnInit, OnDestroy {
             .data(this.api
                 .execute(new QueryBuilder().method(Methods.LIST_GROUPS).build())
                 .map(response => response.result)
-                // .publishLast().refCount()
             )
             .fromJson(groupJson)
             .build();
@@ -63,30 +70,93 @@ export class ShareComponent implements OnInit, OnDestroy {
             }
         );
 
-        this.paramSubscription = this.route.data.map(data => data['detail'])
-            .subscribe(
-                (board: Board) => {
-                    this.board = board;
+        this.route.data.map(data => data['detail'])
+            .map(board => board)
+            .switchMap(board => {
+                this.boardId = board.id;
+                this.title = board.title;
+                this.config = this.configGrid(init);
+                return this.initCacheAccess(board.id);
+            })
+            .subscribe(data => {
+                    this.accessCache = data;
+                    this.preSelected = this.getAccess(init);
                 }
             );
-
-        this.config = this.configGrid(init);
 
         this.chooseSubscription = this.chooseForm
             .valueChanges
             .subscribe((data: Choose) => {
                 this.config = this.configGrid(data);
+                this.preSelected = this.getAccess(data);
             });
     }
 
     ngOnDestroy(): void {
-        this.paramSubscription.unsubscribe();
         this.chooseSubscription.unsubscribe();
-        this.accessSubscription.unsubscribe();
     }
 
-    configGrid(data: Choose) {
-        this.getAccess(data);
+    onSelected(ids: any[]) {
+        this.preSelected = ids;
+        this.unsavedData = true;
+        this.updateAccess(this.chooseForm.value);
+    }
+
+    onCloseConfirm() {
+        this.confirmAnswerSubject.next(false);
+    }
+
+    onConfirm(answer: boolean) {
+        this.confirmDialog.close();
+        this.confirmAnswerSubject.next(answer);
+        if (answer) {
+            this.onCancel();
+        }
+    }
+
+    // buttons
+    onShare() {
+        this.shareSpin = true;
+        this.api.execute(new QueryBuilder()
+            // .method(`set_dashboard_access_${this.chooseForm.value.object}`)
+            .method(Methods.SET_DASHBOARD_ACCESS)
+            .params([
+                {id: this.boardId},
+                {items: this.accessCache}
+            ])
+            .build())
+            .toPromise()
+            .then(response => {
+                console.log(response);
+                this.unsavedData = false;
+                this.shareSpin = false;
+            })
+            .catch(_ => this.shareSpin = false);
+    }
+
+    onRemoveAll() {
+        this.trashSpin = true;
+        this.api.execute(new QueryBuilder()
+            .method(Methods.SET_DASHBOARD_ACCESS)
+            .params([
+                {id: this.boardId},
+                {items: []}
+            ])
+            .build())
+            .toPromise()
+            .then(_ => {
+                this.trashSpin = false;
+                this.unsavedData = false;
+                this.accessCache = [];
+                this.preSelected = [];
+            });
+    }
+
+    onCancel(): void {
+        this.router.navigate(['board', this.boardId]);
+    }
+
+    private configGrid(data: Choose) {
         switch (data.object) {
             case 'user':
                 return this.userConfig;
@@ -95,68 +165,48 @@ export class ShareComponent implements OnInit, OnDestroy {
         }
     }
 
-    onSelected(ids: any[]) {
-        this.preSelected = ids;
-    }
-
-    // buttons
-    onShare() {
-        const items = this.preSelected.map(id => {
-            return {
-                [this.chooseForm.value.object]: {
-                    'id': id
-                },
-                'level': Number(this.chooseForm.value.access)
-            };
-        });
-        console.log(items);
-
-        this.shareSpin = true;
-        this.api.execute(new QueryBuilder()
-            .method(`set_dashboard_access_${this.chooseForm.value.object}`)
-            .params([
-                {id: this.board.id},
-                {items: items}
-            ])
-            .build())
-            .subscribe(response => console.log(response),
-                error => console.log(error),
-                () => this.shareSpin = false);
-    }
-
-    onRemoveAll() {
-        // console.log(this.chooseForm.value);
-        // console.log(this.board.id);
-        this.api.execute(new QueryBuilder()
-        // .method(`set_dashboard_access_${this.chooseForm.value.object}`)
-            .method(Methods.SET_DASHBOARD_ACCESS)
-            .params([
-                {id: this.board.id},
-                {items: []}
-            ])
-            .build())
-            .toPromise()
-            .then(console.log);
-        this.location.back();
-    }
-
-    onCancel(): void {
-        this.location.back();
-    }
-
-    private getAccess(data: Choose): void {
-        this.accessSubscription = this.api.execute(
+    private initCacheAccess(boardId: string): Observable<Access[]> {
+        console.log('invoke get_dashboard_access');
+        return this.api.execute(
             new QueryBuilder()
                 .method(Methods.GET_DASHBOARD_ACCESS)
-                .params([{id: this.board.id}])
+                .params([{id: boardId}])
                 .build())
             .flatMap(response => response.result)
-            .filter(item => Number(item['level']) === Number(data.access))
-            .filter(item => item.hasOwnProperty(data.object))
-            .map(item => item[data.object].id)
-            .toArray()
-            .subscribe(data => this.preSelected = data);
+            .map(item => {
+                if (item.hasOwnProperty('user')) {
+                    return <Access>({user: {id: item['user'].id}, level: Number(item['level'])});
+                } else {  // if (item.hasOwnProperty('group')) {
+                    return <Access>{group: {id: item['group'].id}, level: Number(item['level'])};
+                }
+            })
+            .toArray();
     }
+
+    private getAccess(choose: Choose): any[] {
+        return this.accessCache
+            .filter(item => Number(item['level']) === Number(choose.access))
+            .filter(item => item.hasOwnProperty(choose.object))
+            .map(item => item[choose.object].id);
+    }
+
+    private updateAccess(choose: Choose) {
+        _.remove(this.accessCache, e=> Number(e['level']) === Number(choose.access) && e.hasOwnProperty(choose.object));
+        const items = this.preSelected.map(id => {
+            if (choose.object === 'user') {
+                return <Access>({user: {id: id}, level: Number(choose.access)});
+            } else {  // if 'group'
+                return <Access>{group: {id: id}, level: Number(choose.access)};
+            }
+        });
+        this.accessCache = _.concat(this.accessCache, items);
+    }
+}
+
+class Access {
+    user: User;
+    group: Group;
+    level: AccessLevel;
 }
 
 interface Group {

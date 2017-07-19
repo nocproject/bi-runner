@@ -29,6 +29,7 @@ import { ModalModule } from './shared/modal';
 import { ShareComponent } from './share/share.component';
 import { DataGridComponent } from './shared/data-grid/data-grid.component';
 import { AccessLevelComponent } from './header/access-level.component';
+import { ShareCanDeactivateGuard } from './share/share-can-deactivate.guard';
 
 @NgModule({
     declarations: [
@@ -69,6 +70,7 @@ import { AccessLevelComponent } from './header/access-level.component';
         BoardResolver,
         DebugService,
         FilterService,
+        ShareCanDeactivateGuard,
         MessageService,
         UserService
     ],

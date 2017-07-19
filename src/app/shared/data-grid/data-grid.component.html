@@ -1,5 +1,5 @@
-<div class="title-right">
-    <!--[ngClass]="{'spinner': loading, 'spinner-blank' : !loading}">-->
+<div class="title-right"
+    [ngClass]="{'spinner': loading, 'spinner-blank' : !loading}">
 </div>
 <form [formGroup]="searchForm">
     <div class="form-group">
@@ -17,11 +17,11 @@
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let row of results | async"
+        <tr *ngFor="let row of data"
             [ngClass]="{'info': isSelected(row)}"
             (dblclick)="onOpen(row.id)"
             (click)="onClick(row.id)">
-            <td *ngFor="let field of config.names">{{ row[field] }}</td>
+            <td *ngFor="let field of colNames">{{ row[field] }}</td>
         </tr>
         </tbody>
     </table>
