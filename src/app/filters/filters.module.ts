@@ -5,6 +5,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 // PrimeNG
 import { CalendarModule } from 'primeng/components/calendar/calendar';
+import { AutoCompleteModule } from 'primeng/primeng';
 
 import { GroupComponent } from './containers/group/group.component';
 import { FilterComponent } from './containers/filter/filter.component';
@@ -23,17 +24,20 @@ import { MaskDirective } from './components/mask.directive';
 import { ConditionService } from './services/condition.service';
 import { EventService } from './services/event.service';
 import { ValueService } from './services/value.service';
+import { DictDirective } from './components/dict.directive';
 
 @NgModule({
     imports: [
         BrowserAnimationsModule,
         CalendarModule,
+        AutoCompleteModule,
         CommonModule,
         ReactiveFormsModule
     ],
     declarations: [
         DynamicFieldDirective,
         MaskDirective,
+        DictDirective,
         FilterComponent,
         FilterFormComponent,
         FormButtonComponent,

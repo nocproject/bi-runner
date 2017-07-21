@@ -19,27 +19,27 @@ export class FilterBuilder {
         this.filter.association = '$and';
     }
 
-    public name(name: string) {
+    public name(name: string): FilterBuilder {
         this.filter.name = name;
         return this;
     }
 
-    public type(type: string) {
+    public type(type: string): FilterBuilder {
         this.filter.type = type;
         return this;
     }
 
-    public condition(condition: string) {
+    public condition(condition: string): FilterBuilder {
         this.filter.condition = condition;
         return this;
     }
 
-    public association(association: '$and' | '$or') {
+    public association(association: '$and' | '$or'): FilterBuilder {
         this.filter.association = association;
         return this;
     }
 
-    public alias(alias: string) {
+    public alias(alias: string): FilterBuilder {
         this.filter.alias = alias;
         return this;
     }
@@ -49,8 +49,13 @@ export class FilterBuilder {
         return this;
     }
 
-    public pseudo(pseudo: boolean) {
+    public pseudo(pseudo: boolean): FilterBuilder {
         this.filter.pseudo = pseudo;
+        return this;
+    }
+
+    public datasource(datasource: string): FilterBuilder {
+        this.filter.datasource = datasource;
         return this;
     }
 

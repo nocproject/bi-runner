@@ -64,7 +64,7 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                     name: 'name',
                     type: 'select',
                     pseudo: false,
-                    label: 'Field',
+                    label: 'FilterControl',
                     value: '',
                     placeholder: 'Select field',
                     options: this.fieldList.getAsOption(),
@@ -118,12 +118,12 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                                 };
                                 const formControl = this.createGroup(groupConfig);
                                 this.config.groups.push(groupConfig);
-                                group.filters.forEach((filter) => {
+                                group.filters.forEach(filter => {
                                     const nameField: FieldConfig = {
                                         name: 'name',
                                         type: 'select',
                                         pseudo: filter.pseudo,
-                                        label: 'Field',
+                                        label: 'FilterControl',
                                         value: `${filter.name}.${filter.type}.${filter.pseudo}`,
                                         placeholder: 'Select field',
                                         options: this.fieldList.getAsOption(),
@@ -132,7 +132,7 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                                     const conditionField: FieldConfig = this.conditionService
                                         .field(filter.name, filter.type, filter.pseudo);
                                     const valuesField: FieldConfig[] = this.valueService
-                                        .fields(`${filter.name}.${filter.type}`, filter.condition)
+                                        .fields(`${filter.name}.${filter.type}`, filter.condition, filter.datasource)
                                         .map(field => field);
 
                                     conditionField.value = filter.condition;
@@ -185,7 +185,7 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                                     .filter(name => name !== 'condition')
                                     .forEach(name => filterControls.removeControl(name));
 
-                                this.valueService.fields(filterControls.get('name').value, event.value)
+                                this.valueService.fields(filterControls.get('name').value, event.value, this.fieldList.datasource)
                                     .forEach(control => {
                                         this.addControlToFilter(event.group, event.filter, control);
                                     });
@@ -215,7 +215,7 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                         name: 'name',
                         type: 'select',
                         pseudo: false,
-                        label: 'Field',
+                        label: 'FilterControl',
                         value: '',
                         placeholder: 'Select field',
                         options: this.fieldList.getAsOption(),
@@ -245,7 +245,7 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                             value: '',
                             pseudo: false,
                             validation: [Validators.required],
-                            label: 'Field',
+                            label: 'FilterControl',
                             placeholder: 'Select field',
                             options: this.fieldList.getAsOption()
                         }]

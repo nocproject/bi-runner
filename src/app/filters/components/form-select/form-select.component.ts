@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
-import { Field } from '../../models/field.interface';
+import { FilterControl } from '../../models/field.interface';
 import { FieldConfig } from '../../models/form-config.interface';
 
 @Component({
@@ -15,14 +15,14 @@ import { FieldConfig } from '../../models/form-config.interface';
                     [formControlName]="config.name">
                 <option [ngValue]="''">{{ config.placeholder }}</option>
                 <option *ngFor="let item of config.options | async"
-                        [ngValue]="item.value">
+                        [value]="item.value">
                     {{ item.text }}
                 </option>
             </select>
         </div>
     `
 })
-export class FormSelectComponent implements Field {
+export class FormSelectComponent implements FilterControl {
     config: FieldConfig;
     form: FormGroup;
 }

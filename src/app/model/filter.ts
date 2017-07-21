@@ -22,6 +22,8 @@ export class Filter {
     public valueFirst: string;
     public valueSecond: string;
     public hide: string;
+    @JsonMember
+    public datasource: string;
 
     public isEmpty(): boolean {
         return this.values.length === 0;

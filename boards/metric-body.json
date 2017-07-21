@@ -1,0 +1,149 @@
+{
+  "id": "0",
+  "method": "set_dashboard",
+  "params": [
+    {
+      "id": "5971a89198601c43b866f95c",
+      "layoutId": "580e1ba498601c0f96b7e809",
+      "layout": {
+        "uuid": "f2736f99-a568-4820-b746-1e71d48b4374",
+        "cells": [
+          {
+            "md": 12,
+            "name": "table1",
+            "lg": null,
+            "height": 360,
+            "sm": null,
+            "xs": null,
+            "row": 4
+          }
+        ],
+        "description": "",
+        "fav_status": false,
+        "is_builtin": false,
+        "id": "580e1ba498601c0f96b7e809",
+        "name": "c2x2"
+      },
+      "description": "шаблон отчета по метрикам",
+      "groups": [],
+      "title": "Метрика",
+      "format": 2,
+      "export": {
+        "params": [
+          {
+            "fields": [
+              {
+                "alias": "date",
+                "expr": "date",
+                "group": 0,
+                "format": "dateToString",
+                "label": "Дата"
+              },
+              {
+                "alias": "qty",
+                "desc": true,
+                "expr": "count()",
+                "order": 0,
+                "label": "Кол-во"
+              }
+            ],
+            "datasource": "reboots"
+          }
+        ],
+        "id": 0,
+        "method": "query"
+      },
+      "datasource": "memory",
+      "filter_fields": [
+        {
+          "group": 0,
+          "name": "load_1min"
+        },
+        {
+          "group": 0,
+          "name": "usage"
+        },
+        {
+          "group": 0,
+          "name": "usage_5s"
+        }
+      ],
+      "widgets": [
+        {
+          "cell": "table1",
+          "note": "оборудование",
+          "title": "По количеству используемой памяти, топ 10",
+          "type": "dataTable",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "alias": "date",
+                    "expr": "date",
+                    "label": "Дата",
+                    "format": "dateToString"
+                  },
+                  {
+                    "expr": "managed_object",
+                  },
+                  {
+                    "expr": {
+                      "$lookup": [
+                        "managedobject",
+                        {
+                          "$field": "managed_object"
+                        }
+                      ]
+                    },
+                    "alias": "name",
+                    "label": "Оборудование"
+                  },
+                  {
+                    "expr": "load_1min",
+                    "label": "Минутная загрузка"
+                  },
+                  {
+                    "expr": "usage",
+                    "label": "использование"
+                  },
+                  {
+                    "expr": "usage_5s",
+                    "label": "5 сек"
+                  }
+                ],
+                "limit": 10,
+                "datasource": "memory"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        }
+      ],
+      "agv_fields": [
+        {
+          "group": 2,
+          "name": "administrative_domain",
+          "description": "З.О."
+        },
+        {
+          "group": 0,
+          "name": "load_1min",
+          "description": "загрузка 1мин"
+        },
+        {
+          "group": 0,
+          "name": "usage",
+          "description": "использование 1мин"
+        },
+        {
+          "group": 0,
+          "name": "usage_5s",
+          "description": "использование 5сек"
+        }
+      ],
+      "pseudo_fields": []
+    }
+  ]
+}

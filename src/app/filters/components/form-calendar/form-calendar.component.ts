@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
-import { Field } from '../../models/field.interface';
+import { FilterControl } from '../../models/field.interface';
 import { FieldConfig } from '../../models/form-config.interface';
 
 @Component({
@@ -15,7 +15,7 @@ import { FieldConfig } from '../../models/form-config.interface';
         </div>
     `
 })
-export class FormCalendarComponent implements Field {
+export class FormCalendarComponent implements FilterControl {
     config: FieldConfig;
     form: FormGroup;
 }

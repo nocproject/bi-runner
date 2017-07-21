@@ -6,7 +6,7 @@
 
         <div class="collapse navbar-collapse" *ngIf="isLogin$ | async">
             <ul *ngIf="isReportOpen$ | async; else openReport" class="nav navbar-nav">
-                <li class="dropdown" biDropdown>
+                <li biDropdown class="dropdown">
                     <a class="dropdown-toggle" role="button">Reports<span
                             class="caret"></span></a>
                     <ul class="dropdown-menu">

@@ -9,7 +9,7 @@ import { BIValidators } from '../components/validators';
 @Injectable()
 export class ValueService {
 
-    fields(nameAndType: string, condition: string): FieldConfig[] {
+    fields(nameAndType: string, condition: string, datasource: string): FieldConfig[] {
         const first: FieldConfig = {
             name: 'valueFirst',
             type: 'input',
@@ -46,23 +46,29 @@ export class ValueService {
             case 'Dictionary': {
                 // console.log('widget Dictionary');
                 first.type = 'dictionary';
+                first.dict = type.replace('dict-', '');
+                first.expr = name;
+                first.datasource = datasource;
                 break;
             }
+            case 'UInt8':
+            case 'UInt16':
+            case 'UInt32':
+            case 'UInt64':
+            case 'Int8':
             case 'Int16':
             case 'Int32':
             case 'Int64': {
-                // console.log('widget Int');
                 first.type = 'inputMask';
                 first.mask = '9999999999';
                 first.validation.push(BIValidators.maskNotEmpty);
                 break;
             }
+            case 'Float32':
             case 'Float64': {
-                // console.log('widget Float');
                 break;
             }
             case 'DateTime': {
-                // console.log('widget DateTime');
                 if (name === 'duration_intervals' && !_.includes(condition, 'periodic')) {
                     first.type = 'inputMask';
                     first.mask = '39.19.2999 29:59-39.19.2999 29:59';
@@ -84,7 +90,6 @@ export class ValueService {
                 break;
             }
             case 'IPv4': {
-                // console.log('IPv4');
                 first.type = 'inputMask';
                 first.mask = '299.299.299.299-299.299.299.299';
                 if (_.includes(condition, 'interval')) {
@@ -96,7 +101,6 @@ export class ValueService {
                 break;
             }
             case 'Date': {
-                // console.log('widget Date');
                 if (_.includes(condition, 'interval')) {
                     first.type = 'dateRange';
                     return [first];
@@ -110,7 +114,6 @@ export class ValueService {
         }
 
         if (_.includes(condition, 'interval')) {
-            // console.log('add second field, except: Date(interval), DateTime (interval, periodic)');
             first.label = 'From Value';
             if (type.startsWith('Int')) {
                 second.type = 'inputMask';

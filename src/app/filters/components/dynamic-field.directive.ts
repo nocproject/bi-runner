@@ -17,11 +17,11 @@ import { FormDictionaryComponent } from './form-dictionary/form-dictionary.compo
 import { FormInputComponent } from './form-input/form-input.component';
 import { FormSelectComponent } from './form-select/form-select.component';
 
-import { Field } from '../models/field.interface';
+import { FilterControl } from '../models/field.interface';
 import { FieldConfig } from '../models/form-config.interface';
 import { FormInputMaskComponent } from './form-input-mask/form-input-mask.component';
 
-const components: { [type: string]: Type<Field> } = {
+const components: { [type: string]: Type<FilterControl> } = {
     button: FormButtonComponent,
     calendar: FormCalendarComponent,
     dateRange: FormDateRangeComponent,
@@ -34,14 +34,14 @@ const components: { [type: string]: Type<Field> } = {
 @Directive({
     selector: '[biDynamicField]'
 })
-export class DynamicFieldDirective implements Field, OnChanges, OnInit {
+export class DynamicFieldDirective implements FilterControl, OnChanges, OnInit {
     @Input()
     config: FieldConfig;
 
     @Input()
     form: FormGroup;
 
-    component: ComponentRef<Field>;
+    component: ComponentRef<FilterControl>;
 
     constructor(private resolver: ComponentFactoryResolver,
                 private container: ViewContainerRef) {
@@ -62,7 +62,7 @@ export class DynamicFieldDirective implements Field, OnChanges, OnInit {
         Supported types: ${supportedTypes}`
                 );
             }
-            const component = this.resolver.resolveComponentFactory<Field>(components[this.config.type]);
+            const component = this.resolver.resolveComponentFactory<FilterControl>(components[this.config.type]);
             this.component = this.container.createComponent(component);
             this.component.instance.config = this.config;
             this.component.instance.form = this.form;

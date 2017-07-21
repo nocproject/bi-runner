@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
-import { Field } from '../../models/field.interface';
+import { FilterControl } from '../../models/field.interface';
 import { FieldConfig } from '../../models/form-config.interface';
 
 @Component({
@@ -17,7 +17,7 @@ import { FieldConfig } from '../../models/form-config.interface';
         </div>
     `
 })
-export class FormInputMaskComponent implements Field {
+export class FormInputMaskComponent implements FilterControl {
     config: FieldConfig;
     form: FormGroup;
 }

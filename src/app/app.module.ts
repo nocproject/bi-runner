@@ -22,7 +22,6 @@ import { AnchorDirective } from './shared/anchor.directive';
 import { DatetimeRangeComponent } from './shared/datetime-range/datetime-range.component';
 import { TimepickerComponent } from './shared/timepicker/timepicker.component';
 import { GroupByComponent } from './boards/selector/groupby/groupby.component';
-import { SelectComponent } from './shared/select/select.component';
 
 import { FiltersModule } from './filters/filters.module';
 import { ModalModule } from './shared/modal';
@@ -51,7 +50,6 @@ import { ShareCanDeactivateGuard } from './share/share-can-deactivate.guard';
         DatetimeRangeComponent,
         GroupByComponent,
         TimepickerComponent,
-        SelectComponent,
         ShareComponent,
         DataGridComponent,
         AccessLevelComponent

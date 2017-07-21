@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import * as _ from 'lodash';
 
 import { Observable } from 'rxjs/Rx';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import { APIService } from './api.service';
 import { Board, Field, IOption, Methods, QueryBuilder } from '../model';
@@ -11,6 +12,7 @@ import { Board, Field, IOption, Methods, QueryBuilder } from '../model';
 export class FieldListService {
 
     private fields$: Observable<Field[]>;
+    datasource: string;
 
     constructor(private api: APIService) {
     }
@@ -27,6 +29,7 @@ export class FieldListService {
             .map(field => {
                 const index = _.findIndex(board.filterFields, e => e.name === field.name);
 
+                this.datasource = board.datasource;
                 if (index === -1) {
                     field.isSelectable = false;
                     field.group = 999;
@@ -39,17 +42,18 @@ export class FieldListService {
                 }
 
                 if (field.dict) {
-                    if ('administrative_domain' === field.name) {
-                        field.type = 'tree-' + field.dict;
-                    }
+                    // if ('administrative_domain' === field.name) {
+                    //     field.type = 'tree-' + field.dict;
+                    // } else {
                     field.type = 'dict-' + field.dict;
+                    field.datasource = board.datasource;
                 }
 
                 if ('UInt32' === field.type && 'ip' === field.name) {
                     field.type = 'IPv4';
                 }
 
-                if(!field.pseudo) {
+                if (!field.pseudo) {
                     field.pseudo = false;
                 }
                 return field;

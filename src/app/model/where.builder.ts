@@ -162,8 +162,7 @@ function interval(filter: Filter): Object {
 }
 
 function inCondition(filter: Filter): Object {
-
-    if (filter.values.length > 1) {
+    if (valueLength(filter.values) > 1) {
         return {
             $in: [
                 {
@@ -304,3 +303,6 @@ function not(value) {
     };
 }
 
+function valueLength(values: Value[]): number {
+    return values.filter(item => item.value).length;
+}

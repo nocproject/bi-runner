@@ -22,6 +22,9 @@ export interface FieldConfig {
     name: string;
     type: string;
     pseudo: boolean;
+    dict?: string;
+    expr?: string;
+    datasource?: string;
     disabled?: boolean;
     label?: string;
     mask?: string;

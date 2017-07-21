@@ -45,7 +45,6 @@ export class FilterComponent implements OnInit {
     }
 
     onChange(value, name): void {
-        value = value.split(':')[1].trim();
         console.log(`onChange: ${name} = ${value}`);
         this.eventService.next({
             type: EventType.ChangeSelect,

@@ -94,11 +94,14 @@ export class FilterService {
                                         .filter(f => f.name === 'name'));
                                     const conditionField = _.first(config.groups[groupIndex].group.filters[filterIndex]
                                         .filter(f => f.name === 'condition'));
+                                    const valueField = _.first(config.groups[groupIndex].group.filters[filterIndex]
+                                        .filter(f => f.name === 'valueFirst'));
 
                                     if (!filter.hasOwnProperty('valueFirst')) {
                                         return false;
                                     }
                                     filter.pseudo = conditionField.pseudo;
+                                    filter.datasource = valueField.datasource;
                                     // detect change fields name or condition
                                     if (filter.condition === conditionField.value && filter.name === nameField.value) {
                                         return true;
@@ -119,6 +122,7 @@ export class FilterService {
                                         .association(item.group.association)
                                         .condition(filter.condition)
                                         .pseudo(filter.pseudo)
+                                        .datasource(filter.datasource)
                                         .values([new Value(filter.valueFirst), new Value(filter.valueSecond)])
                                         .build();
                                 })
