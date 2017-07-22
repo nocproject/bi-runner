@@ -37,14 +37,12 @@ export class ValueService {
 
         switch (widgetType) {
             case 'String': {
-                // console.log('widget String');
                 if (_.includes(condition, 'empty')) {
                     return [];
                 }
                 break;
             }
             case 'Dictionary': {
-                // console.log('widget Dictionary');
                 first.type = 'dictionary';
                 first.dict = type.replace('dict-', '');
                 first.expr = name;
@@ -82,17 +80,24 @@ export class ValueService {
                         first.mask = '29:59-29:59';
                         first.validation.push(BIValidators.hours);
                     } else {
-                        first.type = 'dateRange';
+                        // first.type = 'dateRange';
+                        first.type = 'inputMask';
+                        first.mask = '39.19.2999 29:59-39.19.2999 29:59';
+                        // ToDo make dateTimeRange validator, check first less second
+                        first.validation.push(BIValidators.dateTimeRange);
                     }
                     return [first];
                 }
-                first.type = 'calendar';
+                first.type = 'inputMask';
+                first.mask = '39.19.2999 29:59';
+                first.validation.push(BIValidators.dateTime);
+                // first.type = 'calendar';
                 break;
             }
             case 'IPv4': {
                 first.type = 'inputMask';
-                first.mask = '299.299.299.299-299.299.299.299';
                 if (_.includes(condition, 'interval')) {
+                    first.mask = '299.299.299.299-299.299.299.299';
                     first.validation.push(BIValidators.ipV4Range);
                     return [first];
                 }
@@ -102,10 +107,16 @@ export class ValueService {
             }
             case 'Date': {
                 if (_.includes(condition, 'interval')) {
-                    first.type = 'dateRange';
+                    // first.type = 'dateRange';
+                    first.type = 'inputMask';
+                    first.mask = '39.19.2999-39.19.2999';
+                    first.validation.push(BIValidators.dateRange);
                     return [first];
                 }
-                first.type = 'calendar';
+                // first.type = 'calendar';
+                first.type = 'inputMask';
+                first.mask = '39.19.2999';
+                first.validation.push(BIValidators.date);
                 break;
             }
             default: {

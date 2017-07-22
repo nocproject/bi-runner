@@ -2,6 +2,7 @@ import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/cor
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 import * as _ from 'lodash';
+import * as d3 from 'd3';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Rx';
 
@@ -136,9 +137,28 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                                         .map(field => field);
 
                                     conditionField.value = filter.condition;
-                                    valuesField[0].value = filter.values[0].value;
-                                    if (filter.values[1] && filter.values[1].value) {
-                                        valuesField[1].value = filter.valueSecond;
+                                    // remove after implement calendar type
+                                    if (filter.type === 'Date') {
+                                        if (filter.condition.match(/interval/i)) {
+                                            valuesField[0].value = `${d3.time.format('%d.%m.%Y')(filter.values[0].value)}-${d3.time.format('%d.%m.%Y')(filter.values[1].value)}`;
+                                        } else {
+                                            valuesField[0].value = d3.time.format('%d.%m.%Y')(filter.values[0].value);
+                                        }
+                                    } else {
+                                        valuesField[0].value = filter.values[0].value;
+                                    }
+                                    // remove after implement calendar type
+                                    if (filter.type === 'DateTime') {
+                                        if (filter.condition.match(/interval/i)) {
+                                            valuesField[0].value = `${d3.time.format('%d.%m.%Y %H:%M')(filter.values[0].value)}-${d3.time.format('%d.%m.%Y %H:%M')(filter.values[1].value)}`;
+                                        } else {
+                                            valuesField[0].value = d3.time.format('%d.%m.%Y %H:%M')(filter.values[0].value);
+                                        }
+                                    } else {
+                                        valuesField[0].value = filter.values[0].value;
+                                    }
+                                    if (filter.values[1] && filter.values[1].value && valuesField.length > 1) {
+                                        valuesField[1].value = filter.values[1].value;
                                     }
 
                                     filtersConfig.filters.push([nameField, conditionField].concat(valuesField.map(item => item)));

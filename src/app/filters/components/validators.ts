@@ -184,4 +184,33 @@ export class BIValidators {
         }
         return null;
     }
+    public static dateTime(control: AbstractControl): ValidationErrors | null {
+        if(control.value.match('_')){
+            return {
+                valid: false,
+                msg: 'value must be entered completely'
+            };
+        }
+        return null;
+    }
+
+    public static dateRange(control: AbstractControl): ValidationErrors | null {
+        if(control.value.match('_')){
+            return {
+                valid: false,
+                msg: 'value must be entered completely'
+            };
+        }
+        return null;
+    }
+
+    public static date(control: AbstractControl): ValidationErrors | null {
+        if(control.value.match('_')){
+            return {
+                valid: false,
+                msg: 'value must be entered completely'
+            };
+        }
+        return null;
+    }
 }

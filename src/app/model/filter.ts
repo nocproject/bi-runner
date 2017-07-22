@@ -2,7 +2,7 @@ import { JsonMember, JsonObject } from 'typedjson-npm/src/typed-json';
 
 import { Value } from './value';
 
-@JsonObject
+@JsonObject({initializer: Filter.fromJSON})
 export class Filter {
     @JsonMember({elements: Value})
     public values: Value[];
@@ -31,5 +31,17 @@ export class Filter {
 
     public isPseudo(): boolean {
         return this.pseudo;
+    }
+
+    static fromJSON(json: any): Filter {
+        if (json.hasOwnProperty('type') && json.hasOwnProperty('values')) {
+            if (json.type.match(/Date/)) {
+                json.values[0].value = new Date(json.values[0].value);
+                if (json.condition.match(/interval/)) {
+                    json.values[1].value = new Date(json.values[1].value);
+                }
+            }
+        }
+        return Object.assign(Object.create(Filter.prototype), json);
     }
 }
