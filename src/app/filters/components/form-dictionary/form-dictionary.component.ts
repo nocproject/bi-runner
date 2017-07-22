@@ -16,17 +16,23 @@ import { Methods, QueryBuilder } from '../../../model';
         <div class="form-group" [formGroup]="form">
             <label class="control-label">{{ config.label }}:</label>
             <div class="dropdown"
-                 [ngClass]="{'open': isOpen}">
+                 [ngClass]="{'open': open}">
                 <button class="dropdown-toggle form-control"
                         biDict
                         style="width: 100%;text-align: left;"
-                        [ngClass]="{'open': isOpen}"
+                        [ngClass]="{'open': open}"
                         (click)="openList()">{{ selected }}
                     <span class="pull-right caret" style="margin-top: 9px;"></span></button>
-                <ul class="dropdown-menu scrollable-menu" style="width: 100%;" [formGroup]="pattern">
-                    <input formControlName="term" class="form-control" style="margin: 0 20px 5px 20px;width: 90%">
+                <div [formGroup]="pattern" *ngIf="open">
+                    <input formControlName="term" class="form-control" placeholder="enter pattern">
+                    <div *ngIf="notFound"><a class="not-active">not found</a></div>
+                    <div *ngIf="search"><a class="not-active">searching...</a></div>
+                </div>
+                <ul class="dropdown-menu scrollable-menu"
+                    style="width: 100%;"
+                    *ngIf="!notFound && !search">
                     <li><a class="hand" (click)="onSelect(row)"
-                           *ngFor="let row of (list$ | async)">{{ row[1] }}</a></li>
+                           *ngFor="let row of list">{{ row[1] }}</a></li>
                 </ul>
             </div>
         </div>
@@ -38,8 +44,11 @@ export class FormDictionaryComponent implements FilterControl, OnInit, AfterCont
     form: FormGroup;
     pattern: FormGroup;
     list$: Observable<any[]>;
-    selected: string = 'Select Value';
-    isOpen = false;
+    list: any[];
+    selected: string = 'Choose Value';
+    open = false;
+    search = false;
+    notFound = false;
 
     constructor(private api: APIService) {
     }
@@ -49,14 +58,16 @@ export class FormDictionaryComponent implements FilterControl, OnInit, AfterCont
             'term': new FormControl('')
         });
 
-        this.list$ = this.api.execute(
+        this.api.execute(
             new QueryBuilder()
                 .id(1)
                 .method(Methods.QUERY)
                 .params([this.query(this.config)])
                 .build())
-            .map(response => response.result.result);
-        if (this.config.value) {
+            .map(response => response.result.result)
+            .toPromise()
+            .then(this.fill.bind(this));
+        if (this.config.value) { // restore by Id
             this.api.execute(
                 new QueryBuilder()
                     .method(Methods.QUERY)
@@ -89,23 +100,35 @@ export class FormDictionaryComponent implements FilterControl, OnInit, AfterCont
 
     ngAfterContentInit(): void {
         this.subscription = this.pattern.valueChanges
-            .subscribe(data => this.list$ = this.api.execute(
-                new QueryBuilder()
-                    .id(2)
-                    .method(Methods.QUERY)
-                    .params([this.query(this.config, data.term)])
-                    .build())
-                .map(response => response.result.result));
+            .subscribe(data => {
+                this.search = true;
+                this.notFound = false;
+                this.api.execute(
+                    new QueryBuilder()
+                        .id(2)
+                        .method(Methods.QUERY)
+                        .params([this.query(this.config, data.term)])
+                        .build())
+                    .map(response => response.result.result)
+                    .toPromise()
+                    .then(this.fill.bind(this));
+            });
     }
 
     openList() {
-        this.isOpen = !this.isOpen;
+        this.open = !this.open;
     }
 
     onSelect(row: any[]) {
         this.form.patchValue({valueFirst: row[0]});
-        this.isOpen = false;
+        this.open = false;
         this.selected = row[1];
+    }
+
+    private fill(data){
+        this.search = false;
+        this.notFound = data.length === 0;
+        this.list = data
     }
 
     private query(config: FieldConfig, term?: string) {
@@ -141,7 +164,6 @@ export class FormDictionaryComponent implements FilterControl, OnInit, AfterCont
                 ]
             };
         }
-        console.log(query);
         return query;
     }
 }
