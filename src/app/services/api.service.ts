@@ -18,15 +18,16 @@ export class APIService {
 
     execute(query: Query): Observable<Result> {
         return this.http.post(this.url, query)
-            .map(this.extractData)
+            .map(extractData)
             .catch(response => {
                 console.log(response);
-                this.messagesService.message(new Message(MessageType.DANGER, response.toString()));
-                return Observable.throw(response.toString());
+                this.messagesService.message(new Message(MessageType.DANGER, response.json().error));
+                return Observable.throw(response);
             });
     }
 
-    private extractData(response: Response): Result {
-        return Result.fromJSON(response.json() || {});
-    }
+}
+
+function extractData(response: Response): Result {
+    return Result.fromJSON(response.json() || {});
 }

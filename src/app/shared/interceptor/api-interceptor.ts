@@ -15,8 +15,8 @@ export class ApiInterceptor implements Interceptor {
         | Observable<ResponseInterceptorOptions> {
 
         if (_.includes(response.url, '/api/bi/') && response.json().error) {
-            console.log('api interceptor : ', response.json());
-            return Observable.throw(response.json().error);
+            console.log('api interceptor : ', response.json().error);
+            return Observable.throw({url, options, response});
         }
         // ToDo make DI only in development mode (environment.production !== true)
         // if (!environment.production && _.includes(response.url, '/api/bi/') && response.json().result.sql) {
