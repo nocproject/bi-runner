@@ -1,11 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-// Animations
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-// PrimeNG
-import { CalendarModule } from 'primeng/components/calendar/calendar';
-import { AutoCompleteModule } from 'primeng/primeng';
 
 import { GroupComponent } from './containers/group/group.component';
 import { FilterComponent } from './containers/filter/filter.component';
@@ -28,9 +23,6 @@ import { DictDirective } from './components/dict.directive';
 
 @NgModule({
     imports: [
-        BrowserAnimationsModule,
-        CalendarModule,
-        AutoCompleteModule,
         CommonModule,
         ReactiveFormsModule
     ],

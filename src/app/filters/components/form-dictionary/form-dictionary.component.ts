@@ -16,7 +16,7 @@ import { Methods, QueryBuilder } from '../../../model';
         <div class="form-group" [formGroup]="form">
             <label class="control-label">{{ config.label }}:</label>
             <div class="dropdown"
-                 [ngClass]="{'open': open}">
+                 [ngClass]="{'open': open, 'dropdown': !up, 'dropup': up}">
                 <button class="dropdown-toggle form-control"
                         biDict
                         style="width: 100%;text-align: left;"
@@ -31,8 +31,8 @@ import { Methods, QueryBuilder } from '../../../model';
                 <ul class="dropdown-menu scrollable-menu"
                     style="width: 100%;"
                     [ngStyle]="{'display': (!notFound && !search && open) ? 'block' : 'none'}">
-                <li><a class="hand" (click)="onSelect(row)"
-                       *ngFor="let row of (list$ | async) as list">{{ row[1] }}</a></li>
+                    <li><a class="hand" (click)="onSelect(row)"
+                           *ngFor="let row of (list$ | async) as list">{{ row[1] }}</a></li>
                 </ul>
             </div>
         </div>
@@ -48,6 +48,7 @@ export class FormDictionaryComponent implements FilterControl, OnInit, AfterCont
     open = false;
     search = false;
     notFound = false;
+    up = false;
 
     constructor(private api: APIService) {
     }
@@ -61,7 +62,7 @@ export class FormDictionaryComponent implements FilterControl, OnInit, AfterCont
             new QueryBuilder()
                 .id(1)
                 .method(Methods.QUERY)
-                .params([this.query(this.config)])
+                .params([query(this.config)])
                 .build())
             .map(response => response.result.result)
             .publishLast()
@@ -110,7 +111,7 @@ export class FormDictionaryComponent implements FilterControl, OnInit, AfterCont
                     new QueryBuilder()
                         .id(2)
                         .method(Methods.QUERY)
-                        .params([this.query(this.config, data.term)])
+                        .params([query(this.config, data.term)])
                         .build())
                     .map(response => response.result.result)
                     .publishLast()
@@ -131,40 +132,40 @@ export class FormDictionaryComponent implements FilterControl, OnInit, AfterCont
         this.open = false;
         this.selected = row[1];
     }
+}
 
-    private query(config: FieldConfig, term?: string) {
-        const query = {
-            fields: [
+function query(config: FieldConfig, term?: string) {
+    const query = {
+        fields: [
+            {
+                expr: config.expr,
+                group: 0
+            }, {
+                expr: {
+                    $lookup: [
+                        config.dict,
+                        {
+                            $field: config.expr
+                        }
+                    ]
+                },
+                alias: 'value',
+                order: 0
+            }
+        ],
+        datasource: config.datasource,
+        limit: 500
+    };
+    if (term) {
+        query['filter'] = {
+            $like: [
                 {
-                    expr: config.expr,
-                    group: 0
+                    $lower: {$field: 'value'}
                 }, {
-                    expr: {
-                        $lookup: [
-                            config.dict,
-                            {
-                                $field: config.expr
-                            }
-                        ]
-                    },
-                    alias: 'value',
-                    order: 0
+                    $lower: `%${term}%`
                 }
-            ],
-            datasource: config.datasource,
-            limit: 500
+            ]
         };
-        if (term) {
-            query['filter'] = {
-                $like: [
-                    {
-                        $lower: {$field: 'value'}
-                    }, {
-                        $lower: `%${term}%`
-                    }
-                ]
-            };
-        }
-        return query;
     }
+    return query;
 }
