@@ -1,7 +1,5 @@
 import { AfterContentInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-
-import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
 import { FilterControl } from '../../models/field.interface';
@@ -43,7 +41,6 @@ export class FormDictionaryComponent implements FilterControl, OnInit, AfterCont
     config: FieldConfig;
     form: FormGroup;
     pattern: FormGroup;
-    list$: Observable<any[]>;
     list: any[];
     selected: string = 'Choose Value';
     open = false;
@@ -66,7 +63,11 @@ export class FormDictionaryComponent implements FilterControl, OnInit, AfterCont
                 .build())
             .map(response => response.result.result)
             .toPromise()
-            .then(this.fill.bind(this));
+            .then(data => {
+                this.search = false;
+                this.notFound = data.length === 0;
+                this.list = data;
+            });
         if (this.config.value) { // restore by Id
             this.api.execute(
                 new QueryBuilder()
@@ -111,7 +112,11 @@ export class FormDictionaryComponent implements FilterControl, OnInit, AfterCont
                         .build())
                     .map(response => response.result.result)
                     .toPromise()
-                    .then(this.fill.bind(this));
+                    .then(data => {
+                        this.search = false;
+                        this.notFound = data.length === 0;
+                        this.list = data;
+                    });
             });
     }
 
@@ -123,12 +128,6 @@ export class FormDictionaryComponent implements FilterControl, OnInit, AfterCont
         this.form.patchValue({valueFirst: row[0]});
         this.open = false;
         this.selected = row[1];
-    }
-
-    private fill(data){
-        this.search = false;
-        this.notFound = data.length === 0;
-        this.list = data
     }
 
     private query(config: FieldConfig, term?: string) {
