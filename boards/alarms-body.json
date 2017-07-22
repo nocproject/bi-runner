@@ -76,7 +76,7 @@
       },
       "description": "описание отчета по авариям",
       "groups": [],
-      "title": "Аварии-export",
+      "title": "Аварии",
       "format": 2,
       "export": {
         "params": [

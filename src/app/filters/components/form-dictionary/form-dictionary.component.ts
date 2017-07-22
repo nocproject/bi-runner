@@ -2,6 +2,8 @@ import { AfterContentInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs/Subscription';
 
+import { Observable } from 'rxjs/Observable';
+
 import { FilterControl } from '../../models/field.interface';
 import { FieldConfig } from '../../models/form-config.interface';
 import { APIService } from '../../../services/api.service';
@@ -23,14 +25,14 @@ import { Methods, QueryBuilder } from '../../../model';
                     <span class="pull-right caret" style="margin-top: 9px;"></span></button>
                 <div [formGroup]="pattern" *ngIf="open">
                     <input formControlName="term" class="form-control" placeholder="enter pattern">
-                    <div *ngIf="notFound"><a class="not-active">not found</a></div>
+                    <div><a class="not-active" *ngIf="notFound">not found</a></div>
                     <div *ngIf="search"><a class="not-active">searching...</a></div>
                 </div>
                 <ul class="dropdown-menu scrollable-menu"
                     style="width: 100%;"
-                    *ngIf="!notFound && !search">
-                    <li><a class="hand" (click)="onSelect(row)"
-                           *ngFor="let row of list">{{ row[1] }}</a></li>
+                    [ngStyle]="{'display': (!notFound && !search && open) ? 'block' : 'none'}">
+                <li><a class="hand" (click)="onSelect(row)"
+                       *ngFor="let row of (list$ | async) as list">{{ row[1] }}</a></li>
                 </ul>
             </div>
         </div>
@@ -41,7 +43,7 @@ export class FormDictionaryComponent implements FilterControl, OnInit, AfterCont
     config: FieldConfig;
     form: FormGroup;
     pattern: FormGroup;
-    list: any[];
+    list$: Observable<any[]>;
     selected: string = 'Choose Value';
     open = false;
     search = false;
@@ -55,18 +57,18 @@ export class FormDictionaryComponent implements FilterControl, OnInit, AfterCont
             'term': new FormControl('')
         });
 
-        this.api.execute(
+        this.list$ = this.api.execute(
             new QueryBuilder()
                 .id(1)
                 .method(Methods.QUERY)
                 .params([this.query(this.config)])
                 .build())
             .map(response => response.result.result)
-            .toPromise()
-            .then(data => {
+            .publishLast()
+            .refCount()
+            .do(data => {
                 this.search = false;
                 this.notFound = data.length === 0;
-                this.list = data;
             });
         if (this.config.value) { // restore by Id
             this.api.execute(
@@ -104,18 +106,18 @@ export class FormDictionaryComponent implements FilterControl, OnInit, AfterCont
             .subscribe(data => {
                 this.search = true;
                 this.notFound = false;
-                this.api.execute(
+                this.list$ = this.api.execute(
                     new QueryBuilder()
                         .id(2)
                         .method(Methods.QUERY)
                         .params([this.query(this.config, data.term)])
                         .build())
                     .map(response => response.result.result)
-                    .toPromise()
-                    .then(data => {
+                    .publishLast()
+                    .refCount()
+                    .do(data => {
                         this.search = false;
                         this.notFound = data.length === 0;
-                        this.list = data;
                     });
             });
     }

@@ -66,16 +66,18 @@ function getFilters(groups: Group[], association: string): Object[] {
                     filter.values = values;
                 }
                 if (filter.type === 'DateTime' && typeof filter.values[0].value === 'string') {
-                    if (filter.condition.match(/interval/i)) {
-                        const raw = filter.values[0].value.split('-');
-                        values = [
-                            new Value(d3.time.format('%d.%m.%Y %H:%M').parse(raw[0])),
-                            new Value(d3.time.format('%d.%m.%Y %H:%M').parse(raw[1]))
-                        ];
-                    } else {
-                        values = [new Value(d3.time.format('%d.%m.%Y %H:%M').parse(filter.values[0].value))];
+                    if (!filter.condition.match(/periodic/)) {
+                        if (filter.condition.match(/interval/i)) {
+                            const raw = filter.values[0].value.split('-');
+                            values = [
+                                new Value(d3.time.format('%d.%m.%Y %H:%M').parse(raw[0])),
+                                new Value(d3.time.format('%d.%m.%Y %H:%M').parse(raw[1]))
+                            ];
+                        } else {
+                            values = [new Value(d3.time.format('%d.%m.%Y %H:%M').parse(filter.values[0].value))];
+                        }
+                        filter.values = values;
                     }
-                    filter.values = values;
                 }
                 return filter;
             })

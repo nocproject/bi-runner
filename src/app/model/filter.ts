@@ -36,8 +36,10 @@ export class Filter {
     static fromJSON(json: any): Filter {
         if (json.hasOwnProperty('type') && json.hasOwnProperty('values')) {
             if (json.type.match(/Date/)) {
-                json.values[0].value = new Date(json.values[0].value);
-                if (json.condition.match(/interval/)) {
+                if (!json.condition.match(/periodic/)) {
+                    json.values[0].value = new Date(json.values[0].value);
+                }
+                if (json.condition.match(/interval/) && !json.condition.match(/periodic/)) {
                     json.values[1].value = new Date(json.values[1].value);
                 }
             }
