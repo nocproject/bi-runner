@@ -154,6 +154,11 @@ function interval(filter: Filter): Object {
             to = ipv4StrToNum(tokens[1]);
             break;
         }
+        case 'UInt8':
+        case 'UInt16':
+        case 'UInt32':
+        case 'UInt64':
+        case 'Int8':
         case 'Int16':
         case 'Int32':
         case 'Int64': {

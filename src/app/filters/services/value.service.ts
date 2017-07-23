@@ -70,6 +70,11 @@ export class ValueService {
                 first.type = 'inputMask';
                 first.mask = '9999999999';
                 first.validation.push(BIValidators.maskNotEmpty);
+                if (_.includes(condition, 'interval')) {
+                    second.type = 'inputMask';
+                    second.mask = '9999999999';
+                    second.validation.push(BIValidators.maskNotEmpty);
+                }
                 break;
             }
             case 'Float32':

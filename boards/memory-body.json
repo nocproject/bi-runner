@@ -25,7 +25,7 @@
       },
       "description": "шаблон отчета по метрикам",
       "groups": [],
-      "title": "Метрика",
+      "title": "Память",
       "format": 2,
       "export": {
         "params": [
@@ -46,27 +46,13 @@
                 "label": "Кол-во"
               }
             ],
-            "datasource": "reboots"
+            "datasource": "memory"
           }
         ],
         "id": 0,
         "method": "query"
       },
       "datasource": "memory",
-      "filter_fields": [
-        {
-          "group": 0,
-          "name": "load_1min"
-        },
-        {
-          "group": 0,
-          "name": "usage"
-        },
-        {
-          "group": 0,
-          "name": "usage_5s"
-        }
-      ],
       "widgets": [
         {
           "cell": "table1",
@@ -100,15 +86,15 @@
                   },
                   {
                     "expr": "load_1min",
-                    "label": "Минутная загрузка"
+                    "label": "Загрузка 1 мин"
                   },
                   {
                     "expr": "usage",
-                    "label": "использование"
+                    "label": "Использ. %"
                   },
                   {
                     "expr": "usage_5s",
-                    "label": "5 сек"
+                    "label": "Использ. 5 сек"
                   }
                 ],
                 "limit": 10,
@@ -120,26 +106,36 @@
           }
         }
       ],
+      "filter_fields": [
+        {
+          "group": 1,
+          "name": "managed_object"
+        },
+        {
+          "group": 0,
+          "name": "load_1min"
+        },
+        {
+          "group": 0,
+          "name": "usage"
+        },
+        {
+          "group": 0,
+          "name": "usage_5s"
+        }
+      ],
       "agv_fields": [
         {
-          "group": 2,
-          "name": "administrative_domain",
-          "description": "З.О."
+          "group": 0,
+          "name": "load_1min"
         },
         {
           "group": 0,
-          "name": "load_1min",
-          "description": "загрузка 1мин"
+          "name": "usage"
         },
         {
           "group": 0,
-          "name": "usage",
-          "description": "использование 1мин"
-        },
-        {
-          "group": 0,
-          "name": "usage_5s",
-          "description": "использование 5сек"
+          "name": "usage_5s"
         }
       ],
       "pseudo_fields": [
