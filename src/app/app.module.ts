@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 // ToDo delete
 import { DateTimePickerModule } from 'ng-pick-datetime';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -61,7 +62,8 @@ import { ShareCanDeactivateGuard } from './share/share-can-deactivate.guard';
         ModalModule,
         DateTimePickerModule,
         FiltersModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        TooltipModule.forRoot()
     ],
     providers: [
         APIService,

@@ -19,9 +19,7 @@
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "bi",
       "styles": [
-        "styles.sass",
-        "../node_modules/primeng/resources/primeng.min.css",
-        "../node_modules/primeng/resources/themes/bootstrap/theme.css"
+        "styles.sass"
       ],
       "scripts": [],
       "environmentSource": "environments/environment.ts",

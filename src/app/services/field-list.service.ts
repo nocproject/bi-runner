@@ -100,7 +100,7 @@ export class FieldListService {
         return this.fields$
             .map(array => array
                 .map(field => {
-                        return {value: `${field.name}.${field.type}.${field.pseudo}`, text: field.description};
+                        return {value: `${field.name}.${field.type}.${field.pseudo}`, text: field.name};
                     }
                 )
             );
