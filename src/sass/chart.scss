@@ -146,6 +146,20 @@
   top: 0;
 }
 
+.times {
+  position: relative;
+  width: 14px;
+  height: 14px;
+}
+
+.times:before {
+  content: "\f00d";
+  font-family: FontAwesome;
+  font-size: 14px;
+  padding-left: 5px;
+  top: 0;
+}
+
 .trash {
   position: relative;
   width: 14px;

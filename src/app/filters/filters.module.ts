@@ -12,14 +12,16 @@ import { FormDictionaryComponent } from './components/form-dictionary/form-dicti
 import { FormInputComponent } from './components/form-input/form-input.component';
 import { FormInputMaskComponent } from './components/form-input-mask/form-input-mask.component';
 import { FormSelectComponent } from './components/form-select/form-select.component';
+import { FormModelComponent } from './components/form-model/form-model.component';
+import { FormDropdownComponent } from './components/dropdown.component';
 
 import { DynamicFieldDirective } from './components/dynamic-field.directive';
 import { MaskDirective } from './components/mask.directive';
+import { DictDirective } from './components/dict.directive';
 
 import { ConditionService } from './services/condition.service';
 import { EventService } from './services/event.service';
 import { ValueService } from './services/value.service';
-import { DictDirective } from './components/dict.directive';
 
 @NgModule({
     imports: [
@@ -34,6 +36,8 @@ import { DictDirective } from './components/dict.directive';
         FilterFormComponent,
         FormButtonComponent,
         FormInputComponent,
+        FormModelComponent,
+        FormDropdownComponent,
         FormInputMaskComponent,
         FormSelectComponent,
         GroupComponent,
@@ -54,6 +58,7 @@ import { DictDirective } from './components/dict.directive';
         FormButtonComponent,
         FormCalendarComponent,
         FormDateRangeComponent,
+        FormModelComponent,
         FormDictionaryComponent,
         FormInputComponent,
         FormInputMaskComponent,

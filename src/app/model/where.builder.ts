@@ -115,6 +115,10 @@ function where(filter: Filter): Object {
             return not(empty(clonedFilter));
         case 'not.empty':
             return notEmpty(clonedFilter);
+        case '$selector':
+            return {
+                $selector: clonedFilter.values[0].value
+            };
         default:
             return castToValue(clonedFilter);
     }

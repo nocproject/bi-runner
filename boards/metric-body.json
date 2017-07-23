@@ -85,7 +85,7 @@
                     "format": "dateToString"
                   },
                   {
-                    "expr": "managed_object",
+                    "expr": "managed_object"
                   },
                   {
                     "expr": {
@@ -143,7 +143,15 @@
           "description": "использование 5сек"
         }
       ],
-      "pseudo_fields": []
+      "pseudo_fields": [
+        {
+          "description": "Managed Object",
+          "model": "sa.ManagedObject",
+          "name": "managed_object",
+          "type": "UInt64",
+          "pseudo": true
+        }
+      ]
     }
   ]
 }

@@ -49,6 +49,12 @@ export class FieldListService {
                     field.datasource = board.datasource;
                 }
 
+                if(field.model){
+                    field.type = 'model-' + field.model.replace('.', '_');
+                    field.datasource = board.datasource;
+                    field.pseudo = false;
+                }
+
                 if ('UInt32' === field.type && 'ip' === field.name) {
                     field.type = 'IPv4';
                 }

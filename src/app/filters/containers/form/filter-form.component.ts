@@ -216,13 +216,6 @@ export class FilterFormComponent implements OnDestroy, OnInit {
             });
     }
 
-    handleSubmit(event: Event) {
-        console.log('FilterFormComponent: submit');
-        event.preventDefault();
-        event.stopPropagation();
-        this.submit.emit(this.value);
-    }
-
     onAddGroup() {
         const fresh: GroupConfig = {
             association: '$and',

@@ -33,8 +33,7 @@
                         </div>
                         <div class="col-md-7" style="padding-right: 30px;">
                             <bi-filter-form
-                                    #form="filterForm"
-                                    (submit)="submitFilters($event)">
+                                    #form="filterForm">
                             </bi-filter-form>
                             <div *ngIf="!production">
                                 is valid : {{ form.valid }}

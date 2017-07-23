@@ -23,6 +23,8 @@ export interface FieldConfig {
     type: string;
     pseudo: boolean;
     dict?: string;
+    model?: string;
+    description?: string;
     expr?: string;
     datasource?: string;
     disabled?: boolean;

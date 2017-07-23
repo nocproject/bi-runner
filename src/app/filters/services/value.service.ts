@@ -32,6 +32,9 @@ export class ValueService {
         if (_.startsWith(type, 'dict-')) {
             widgetType = 'Dictionary';
         }
+        if (_.startsWith(type, 'model-')) {
+            widgetType = 'Model';
+        }
 
         // console.log(`${name} ${widgetType} ${condition}`);
 
@@ -45,6 +48,13 @@ export class ValueService {
             case 'Dictionary': {
                 first.type = 'dictionary';
                 first.dict = type.replace('dict-', '');
+                first.expr = name;
+                first.datasource = datasource;
+                break;
+            }
+            case 'Model': {
+                first.type = 'model';
+                first.model = type.replace('model-', '').replace('_', '.');
                 first.expr = name;
                 first.datasource = datasource;
                 break;

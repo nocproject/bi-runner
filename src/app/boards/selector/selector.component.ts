@@ -71,10 +71,6 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
             .flatMap(response => _.first(response.data['result']));
     }
 
-    submitFilters(value: { [name: string]: any }) {
-        console.log(value);
-    }
-
     private filterChangeSub() {
         this.rangeSubscription = this.rangeForm.changes
             .filter(() => this.rangeForm.valid)

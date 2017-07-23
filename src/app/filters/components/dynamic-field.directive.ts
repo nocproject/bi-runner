@@ -16,6 +16,7 @@ import { FormDateRangeComponent } from './form-date-range/form-date-range.compon
 import { FormDictionaryComponent } from './form-dictionary/form-dictionary.component';
 import { FormInputComponent } from './form-input/form-input.component';
 import { FormSelectComponent } from './form-select/form-select.component';
+import { FormModelComponent } from './form-model/form-model.component';
 
 import { FilterControl } from '../models/field.interface';
 import { FieldConfig } from '../models/form-config.interface';
@@ -28,7 +29,8 @@ const components: { [type: string]: Type<FilterControl> } = {
     dictionary: FormDictionaryComponent,
     input: FormInputComponent,
     inputMask: FormInputMaskComponent,
-    select: FormSelectComponent
+    select: FormSelectComponent,
+    model: FormModelComponent
 };
 
 @Directive({
