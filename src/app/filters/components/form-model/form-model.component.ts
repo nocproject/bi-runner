@@ -1,7 +1,5 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-
-import { Subscription } from 'rxjs/Subscription';
 
 import { FilterControl } from '../../models/field.interface';
 import { FieldConfig } from '../../models/form-config.interface';
@@ -19,18 +17,15 @@ import { FieldConfig } from '../../models/form-config.interface';
         </div>
     `
 })
-export class FormModelComponent implements FilterControl, OnInit, OnDestroy {
-    private subscription: Subscription;
-
+export class FormModelComponent implements FilterControl, OnInit {
     config: FieldConfig;
     form: FormGroup;
 
     dicts: FieldConfig[] = [];
 
     ngOnInit(): void {
-        // console.log(this.config);
         // hardcode
-        this.dicts.push({
+        this.dicts = [{
             // datasource: this.config.datasource,
             datasource: 'reboots',
             dict: 'platform',
@@ -40,8 +35,7 @@ export class FormModelComponent implements FilterControl, OnInit, OnDestroy {
             description: 'Платформа',
             pseudo: false,
             type: 'dictionary'
-        });
-        this.dicts.push({
+        }, {
             datasource: 'reboots',
             dict: 'administrativedomain',
             expr: 'administrative_domain',
@@ -50,8 +44,52 @@ export class FormModelComponent implements FilterControl, OnInit, OnDestroy {
             description: 'З.О.',
             pseudo: false,
             type: 'dictionary'
-        });
-        this.dicts.push({
+        }, {
+            datasource: 'reboots',
+            dict: 'vendor',
+            expr: 'vendor',
+            label: 'Value',
+            name: 'valueFirst',
+            description: 'Производитель',
+            pseudo: false,
+            type: 'dictionary'
+        }, {
+            datasource: 'reboots',
+            dict: 'container',
+            expr: 'container',
+            label: 'Value',
+            name: 'valueFirst',
+            description: 'Адрес',
+            pseudo: false,
+            type: 'dictionary'
+        }, {
+            datasource: 'reboots',
+            dict: 'profile',
+            expr: 'profile',
+            label: 'Value',
+            name: 'valueFirst',
+            description: 'Профиль объекта',
+            pseudo: false,
+            type: 'dictionary'
+        }, {
+            datasource: 'reboots',
+            dict: 'networksegment',
+            expr: 'segment',
+            label: 'Value',
+            name: 'valueFirst',
+            description: 'Сегмент сети',
+            pseudo: false,
+            type: 'dictionary'
+        }, {
+            datasource: 'reboots',
+            dict: 'pool',
+            expr: 'pool',
+            label: 'Value',
+            name: 'valueFirst',
+            description: 'Имя Пула',
+            pseudo: false,
+            type: 'dictionary'
+        }, {
             datasource: 'reboots',
             dict: 'version',
             expr: 'version',
@@ -61,10 +99,10 @@ export class FormModelComponent implements FilterControl, OnInit, OnDestroy {
             pseudo: false,
             type: 'dictionary'
             // value: '384'
-        });
+        }];
 
         this.dicts.forEach(dict => {
-            if (this.config.value[2].hasOwnProperty(dict.expr)) {
+            if (this.config.value && this.config.value[2].hasOwnProperty(dict.expr)) {
                 dict.value = this.config.value[2][dict.expr];
             }
             this.form.addControl(dict.expr, new FormControl(dict.value));
@@ -81,13 +119,9 @@ export class FormModelComponent implements FilterControl, OnInit, OnDestroy {
         }, {});
 
         if (Object.keys(value).length) {
+            // {"$selector": [{"$field": "managed_object"}, "sa.ManagedObject", {"administrative_domain": 15}]}
             // console.log(JSON.stringify({valueFirst: [{field$: this.config.expr}, this.config.model, value]}));
             this.form.patchValue({valueFirst: [{$field: `${this.config.expr}`}, this.config.model, value]});
         }
-        // {"$selector": [{"$field": "managed_object"}, "sa.ManagedObject", {"administrative_domain": 15}]}
-    }
-
-    ngOnDestroy(): void {
-        this.subscription.unsubscribe();
     }
 }
