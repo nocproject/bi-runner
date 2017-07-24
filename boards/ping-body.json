@@ -1,0 +1,154 @@
+{
+  "id": "0",
+  "method": "set_dashboard",
+  "params": [
+    {
+      "layoutId": "580e1ba498601c0f96b7e809",
+      "layout": {
+        "uuid": "f2736f99-a568-4820-b746-1e71d48b4374",
+        "cells": [
+          {
+            "md": 12,
+            "name": "table1",
+            "lg": null,
+            "height": 360,
+            "sm": null,
+            "xs": null,
+            "row": 4
+          }
+        ],
+        "description": "",
+        "fav_status": false,
+        "is_builtin": false,
+        "id": "580e1ba498601c0f96b7e809",
+        "name": "c2x2"
+      },
+      "description": "шаблон отчета по метрикам",
+      "groups": [],
+      "title": "Ping",
+      "format": 2,
+      "export": {
+        "params": [
+          {
+            "fields": [
+              {
+                "alias": "date",
+                "expr": "date",
+                "group": 0,
+                "format": "dateToString",
+                "label": "Дата"
+              },
+              {
+                "alias": "qty",
+                "desc": true,
+                "expr": "count()",
+                "order": 0,
+                "label": "Кол-во"
+              }
+            ],
+            "datasource": "ping"
+          }
+        ],
+        "id": 0,
+        "method": "query"
+      },
+      "datasource": "ping",
+      "widgets": [
+        {
+          "cell": "table1",
+          "note": "оборудование",
+          "title": "ICMP Ping packet loss in per request, топ 10",
+          "type": "dataTable",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "alias": "date",
+                    "expr": "date",
+                    "label": "Дата",
+                    "format": "dateToString",
+                    "group": 0
+                  },
+                  {
+                    "alias": "date",
+                    "expr": "ts",
+                    "label": "Время",
+                    "format": "dateToTimeString",
+                    "group": 1
+                  },
+                  {
+                    "expr": "managed_object",
+                    "group": 2
+                  },
+                  {
+                    "expr": "attempts",
+                    "label": "",
+                    "group": 3
+                  }
+                ],
+                "limit": 10,
+                "datasource": "ping"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        },
+        {
+          "cell": "table2",
+          "note": "оборудование",
+          "title": "ICMP Ping packet loss in per request, топ 10",
+          "type": "dataTable",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "alias": "date",
+                    "expr": "date",
+                    "label": "Дата",
+                    "format": "dateToString",
+                    "group": 0
+                  },
+                  {
+                    "expr": "managed_object",
+                    "group": 2
+                  },
+                  {
+                    "expr": "rtt",
+                    "label": "",
+                    "group": 3
+                  }
+                ],
+                "limit": 10,
+                "datasource": "ping"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        }
+      ],
+      "filter_fields": [
+        {
+          "name": "attempts"
+        },
+        {
+          "name": "rtt"
+        }
+      ],
+      "agv_fields": [
+      ],
+      "pseudo_fields": [
+        {
+          "description": "Managed Object",
+          "model": "sa.ManagedObject",
+          "name": "managed_object",
+          "type": "UInt64",
+          "pseudo": true
+        }
+      ]
+    }
+  ]
+}

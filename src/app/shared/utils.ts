@@ -18,6 +18,12 @@ export class Utils {
         return d3.time.format(format)(date);
     };
 
+    static dateToTimeString(date, format?: string): string {
+        format = typeof format !== 'undefined' ? format : '%H:%M';
+
+        return d3.time.format(format)(date);
+    };
+
     // use if property format exist in table query
     static secondsToString(sec) {
         const hours = Math.floor(sec / 3600);
