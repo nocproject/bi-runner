@@ -3214,9 +3214,9 @@ negotiator@0.6.1:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.1.tgz#2b327184e8992101177b28563fb5e7102acd0ca9"
 
-ng-pick-datetime@^4.1.2:
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/ng-pick-datetime/-/ng-pick-datetime-4.2.0.tgz#a9b063b4dc5dff1164e63f5f15b8c38fac131b50"
+ng-pick-datetime@^4.3.0:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/ng-pick-datetime/-/ng-pick-datetime-4.3.0.tgz#9ceb210b5105685f9fe7b900c6e4b85a744595d5"
   dependencies:
     moment "^2.17.0"
 
