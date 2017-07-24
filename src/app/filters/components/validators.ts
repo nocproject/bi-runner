@@ -107,6 +107,13 @@ export class BIValidators {
             return null;
         }
 
+        if(!control.value.match('-')){
+            return {
+                valid: false,
+                msg: 'value must have separator'
+            };
+        }
+
         const [start, end] = control.value.split('-');
         if (isIPv4BI(start) || isIPv4BI(end)) {
             return {
@@ -182,6 +189,12 @@ export class BIValidators {
                 msg: 'value must be entered completely'
             };
         }
+        if(!control.value.match('-')){
+            return {
+                valid: false,
+                msg: 'value must have separator'
+            };
+        }
         return null;
     }
     public static dateTime(control: AbstractControl): ValidationErrors | null {
@@ -199,6 +212,12 @@ export class BIValidators {
             return {
                 valid: false,
                 msg: 'value must be entered completely'
+            };
+        }
+        if(!control.value.match('-')){
+            return {
+                valid: false,
+                msg: 'value must have separator'
             };
         }
         return null;
