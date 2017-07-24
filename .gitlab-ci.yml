@@ -5,11 +5,11 @@ stages:
 
 build_npm:
   stage: build
-  image: node:7.10-alpine
+  image: node:8
   script:
     - set -x
     - sed -i s/0.0.0.0/${CI_BUILD_TAG}/ src/environments/environment.prod.ts
-    - npm install
+    - npm yarn
     - npm run-script build
     - cp -r boards/ dist/
   tags:
