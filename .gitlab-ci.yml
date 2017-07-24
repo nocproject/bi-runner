@@ -9,7 +9,7 @@ build_npm:
   script:
     - set -x
     - sed -i s/0.0.0.0/${CI_BUILD_TAG}/ src/environments/environment.prod.ts
-    - npm yarn
+    - yarn install
     - npm run-script build
     - cp -r boards/ dist/
   tags:
