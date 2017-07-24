@@ -12,6 +12,7 @@ import { FieldConfig } from '../../models/form-config.interface';
              [formGroup]="form">
             <label class="control-label">{{ config.label }}:</label>
             <input class="form-control"
+                   autofocus
                    [formControlName]="config.name">
         </div>
     `
