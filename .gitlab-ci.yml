@@ -7,6 +7,7 @@ build_npm:
   stage: build
   image: node:7.10-alpine
   script:
+    - set -x
     - sed -i s/0.0.0.0/${CI_BUILD_TAG}/ src/environments/environment.prod.ts
     - npm install
     - npm run-script build
