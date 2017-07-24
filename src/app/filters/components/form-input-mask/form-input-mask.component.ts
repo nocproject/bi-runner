@@ -12,22 +12,23 @@ import { FieldConfig } from '../../models/form-config.interface';
              [formGroup]="form">
             <label class="control-label">{{ config.label }}:</label>
             <input class="form-control"
+                   #input
                    biMask="{{ config.mask }}"
                    [formControlName]="config.name">
         </div>
     `
 })
 export class FormInputMaskComponent implements FilterControl, AfterViewInit {
-    // @ViewChild('input')
-    // input: ElementRef;
-    //
+    @ViewChild('input')
+    input: ElementRef;
+
     config: FieldConfig;
     form: FormGroup;
 
     ngAfterViewInit(): void {
-        // if (this.config.name === 'valueFirst') {
-        //     this.input.nativeElement.focus();
-        //     this.input.nativeElement.setSelectionRange(0, 0);
-        // }
+        if (this.config.name === 'valueFirst') {
+            this.input.nativeElement.focus();
+            this.input.nativeElement.setSelectionRange(0,0);
+        }
     }
 }
