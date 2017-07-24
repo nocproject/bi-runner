@@ -46,10 +46,10 @@ export class MaskDirective implements ControlValueAccessor {
     registerOnTouched(fn: any): void {
     }
 
-    @HostListener('paste', ['$event'])
-    onPaste($event) {
-        $event.preventDefault();
-    }
+    // @HostListener('paste', ['$event'])
+    // onPaste($event) {
+    //     $event.preventDefault();
+    // }
 
     @HostListener('select', ['$event'])
     onSelect($event: UIEvent) {
