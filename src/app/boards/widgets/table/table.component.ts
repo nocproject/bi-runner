@@ -45,10 +45,10 @@ export class TableComponent extends WidgetComponent {
         chart.group(() => 'click on column header to switch');
         chart.showGroups(false);
         chart.columns(cols);
-        if (sort) {
-            chart.sortBy(d => parseInt(d[sort.field], 10));
-            chart.order(sort.direct);
-        }
+        // if (sort) {
+        //     chart.sortBy(d => parseInt(d[sort.field], 10));
+        //     chart.order(sort.direct);
+        // }
         this.catchEvents(chart);
         chart.render();
 

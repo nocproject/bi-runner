@@ -24,6 +24,15 @@ export class Utils {
         return d3.time.format(format)(date);
     };
 
+    static stringDateTimeToTimeString(date: string): string {
+        const time = date.split(' ')[1];
+        return `${time.split(':')[0]}:${time.split(':')[1]}`;
+    }
+
+    static numberFormat(data) {
+        return d3.format('.4f')(parseFloat(data));
+    }
+
     // use if property format exist in table query
     static secondsToString(sec) {
         const hours = Math.floor(sec / 3600);

@@ -73,16 +73,20 @@
                     "expr": "managed_object"
                   },
                   {
+                    "expr": "path",
+                    "label": "Path"
+                  },
+                  {
+                    "label": "Оборудование",
+                    "alias": "name",
                     "expr": {
                       "$lookup": [
-                        "managedobject",
+                        "managedobject_bi",
                         {
                           "$field": "managed_object"
                         }
                       ]
-                    },
-                    "alias": "name",
-                    "label": "Оборудование"
+                    }
                   }
                 ],
                 "limit": 10,

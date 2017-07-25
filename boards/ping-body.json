@@ -9,6 +9,15 @@
         "cells": [
           {
             "md": 12,
+            "name": "table2",
+            "lg": null,
+            "height": 360,
+            "sm": null,
+            "xs": null,
+            "row": 4
+          },
+          {
+            "md": 12,
             "name": "table1",
             "lg": null,
             "height": 360,
@@ -23,7 +32,7 @@
         "id": "580e1ba498601c0f96b7e809",
         "name": "c2x2"
       },
-      "description": "шаблон отчета по метрикам",
+      "description": "отчет по метрикам",
       "groups": [],
       "title": "Ping",
       "format": 2,
@@ -32,18 +41,36 @@
           {
             "fields": [
               {
-                "alias": "date",
-                "expr": "date",
-                "group": 0,
-                "format": "dateToString",
-                "label": "Дата"
+                "label": "Object ID",
+                "alias": "object",
+                "expr": "managed_object",
+                "group": 0
               },
               {
-                "alias": "qty",
-                "desc": true,
-                "expr": "count()",
+                "label": "Устройство",
+                "alias": "name",
+                "expr": {
+                  "$lookup": [
+                    "managedobject_bi",
+                    {
+                      "$field": "managed_object"
+                    }
+                  ],
+                }
+              },
+              {
+                "label": "Среднее количество потерянных пакетов в серии",
+                "expr": "sum(rtt)/count(rtt)",
+                "alias": "rtt_value",
                 "order": 0,
-                "label": "Кол-во"
+                "desc": true
+              },
+              {
+                "label": "Средняя круговая задержка пакета",
+                "expr": "sum(attempts)/count(attempts)",
+                "alias": "attempts_value",
+                "order": 1,
+                "desc": true
               }
             ],
             "datasource": "ping"
@@ -57,34 +84,35 @@
         {
           "cell": "table1",
           "note": "оборудование",
-          "title": "ICMP Ping packet loss in per request, топ 10",
+          "title": "ICMP Ping round trip time in microseconds, топ 10",
           "type": "dataTable",
           "query": {
             "params": [
               {
                 "fields": [
                   {
-                    "alias": "date",
-                    "expr": "date",
-                    "label": "Дата",
-                    "format": "dateToString",
+                    "expr": "managed_object",
                     "group": 0
                   },
                   {
-                    "alias": "date",
-                    "expr": "ts",
-                    "label": "Время",
-                    "format": "dateToTimeString",
-                    "group": 1
+                    "label": "Устройство",
+                    "alias": "name",
+                    "expr": {
+                      "$lookup": [
+                        "managedobject_bi",
+                        {
+                          "$field": "managed_object"
+                        }
+                      ]
+                    }
                   },
                   {
-                    "expr": "managed_object",
-                    "group": 2
-                  },
-                  {
-                    "expr": "attempts",
-                    "label": "Количество потерянных пакетов в серии",
-                    "group": 3
+                    "label": "Среднее количество потерянных пакетов в серии",
+                    "expr": "sum(rtt)/count(rtt)",
+                    "alias": "value",
+                    "format": "numberFormat",
+                    "order": 0,
+                    "desc": true
                   }
                 ],
                 "limit": 10,
@@ -105,20 +133,28 @@
               {
                 "fields": [
                   {
-                    "alias": "date",
-                    "expr": "date",
-                    "label": "Дата",
-                    "format": "dateToString",
+                    "expr": "managed_object",
                     "group": 0
                   },
                   {
-                    "expr": "managed_object",
-                    "group": 2
+                    "label": "Устройство",
+                    "alias": "name",
+                    "expr": {
+                      "$lookup": [
+                        "managedobject_bi",
+                        {
+                          "$field": "managed_object"
+                        }
+                      ]
+                    }
                   },
                   {
-                    "expr": "rtt",
-                    "label": "Круговая задержка пакета",
-                    "group": 3
+                    "label": "Средняя круговая задержка пакета",
+                    "expr": "sum(attempts)/count(attempts)",
+                    "alias": "value",
+                    "format": "numberFormat",
+                    "order": 0,
+                    "desc": true
                   }
                 ],
                 "limit": 10,
@@ -132,6 +168,9 @@
       ],
       "filter_fields": [
         {
+          "name": "managed_object"
+        },
+        {
           "name": "attempts"
         },
         {
@@ -141,13 +180,6 @@
       "agv_fields": [
       ],
       "pseudo_fields": [
-        {
-          "description": "Managed Object",
-          "model": "sa.ManagedObject",
-          "name": "managed_object",
-          "type": "UInt64",
-          "pseudo": true
-        }
       ]
     }
   ]

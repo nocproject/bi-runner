@@ -106,11 +106,6 @@ export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestro
             })
             .subscribe(
                 (response: Result) => {
-                    // ToDo restore chart state from filter, by prefix '.sav'
-                    // _.endsWith(
-                    // _.startsWith(
-                    // console.log(`updating: ${this.data.widget.cell}`);
-                    // console.log(`${this.data.widget.cell} => ${response.result.sql}`);
                     this.chart = this.draw(response);
                 },
                 console.error);
