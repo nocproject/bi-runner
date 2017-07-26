@@ -1,4 +1,6 @@
 <div class="row">
+    <!--<div class="pull-left"-->
+    <!--[ngClass]="{'spinner': (qty$ | async) > 0}"></div>-->
     <button class="btn btn-default pull-right clearfix"
             (click)="onAddGroup()"
             style="margin-bottom: 5px">Add Group
@@ -11,8 +13,7 @@
                 <bi-group *ngFor="let group of config.groups; let groupIndex = index"
                           [index]="groupIndex"
                           [groupConfig]="group"
-                          [parent]="form"
-                          (closeGroup)="onCloseGroup($event)">
+                          [parent]="form">
                 </bi-group>
             </div>
         </div>
@@ -20,7 +21,7 @@
 </div>
 <div class="row">
     <!--<button class="btn btn-default pull-right clearfix"-->
-            <!--(click)="onSubmit()"-->
-            <!--style="margin-bottom: 5px">Submit-->
+    <!--(click)="onSubmit()"-->
+    <!--style="margin-bottom: 5px">Submit-->
     <!--</button>-->
 </div>

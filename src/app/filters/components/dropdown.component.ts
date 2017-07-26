@@ -79,8 +79,6 @@ export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAcc
                 .params([query(this.config)])
                 .build())
             .map(response => response.result.result)
-            .publishLast()
-            .refCount()
             .do(data => {
                 this.search = false;
                 this.notFound = data.length === 0;
@@ -96,8 +94,6 @@ export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAcc
                         .params([query(this.config, data.term)])
                         .build())
                     .map(response => response.result.result)
-                    .publishLast()
-                    .refCount()
                     .do(data => {
                         this.search = false;
                         this.notFound = data.length === 0;

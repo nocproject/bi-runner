@@ -32,13 +32,11 @@
                             <bi-groupby [board]="board"></bi-groupby>
                         </div>
                         <div class="col-md-7" style="padding-right: 30px;">
-                            <bi-filter-form
-                                    #form="filterForm">
-                            </bi-filter-form>
+                            <bi-filter-form></bi-filter-form>
                             <div *ngIf="!production">
-                                is valid : {{ form.valid }}
+                                is valid : {{ filters.valid }}
                                 <hr>
-                                form params : {{ form.value | json }}
+                                form params : {{ filters.value | json }}
                                 <hr>
                                 sql : {{ debug.debug$ | async | json }}
                             </div>

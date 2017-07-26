@@ -56,8 +56,7 @@ export class UserService {
                     .method(Methods.GET_USER_ACCESS)
                     .params([{id: id}])
                     .build())
-            .map(response => response.result)
-            .publishLast().refCount();
+            .map(response => response.result);
     }
 
     login(param: Object): Observable<boolean> {
