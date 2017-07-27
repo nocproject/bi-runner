@@ -3,7 +3,6 @@ import { HttpModule as _HttpModule, RequestOptions, XHRBackend } from '@angular/
 
 import { Http, InterceptorStore } from '../service';
 import { httpFactory } from './http.factory';
-import { AuthInterceptor } from '../auth-interceptor';
 import { ApiInterceptor } from '../api-interceptor';
 
 @NgModule({
