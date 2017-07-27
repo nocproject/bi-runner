@@ -40,22 +40,25 @@ export class AuthenticationService {
                 private messagesService: MessageService) {
     }
 
-    userInfo(): void {
-        this.http.get('/main/desktop/user_settings/')
-            .subscribe(
+    checkConnection(): Observable<boolean> {
+        return this.userInfo();
+    }
+
+    userInfo(): Observable<boolean> {
+        return this.http.get('/main/desktop/user_settings/')
+            .map(
                 (response: Response) => {
-                    if (!this.isLoginOpen) {
+                    if (response) {
                         const user = User.fromJSON(response.json());
                         this.userSubject.next(user);
                         this.isLogInSubject.next(true);
+                        return true;
                     }
+                    return false;
                 }
-                // () => {
-                //     // this.messagesService.message(new Message(MessageType.DANGER, response.toString()));
-                //     // this.userSubject.next(new User('error'));
-                // },
-                // () => console.log('/main/desktop/user_settings/ - finished!')
-            );
+            ).catch(_ => {
+                return Observable.of(false);
+            });
     }
 
     accessLevel(id: string): Observable<number> {

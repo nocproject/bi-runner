@@ -46,7 +46,6 @@ export class HeaderComponent implements OnInit {
         this.isLogin$ = this.authService.isLogIn$;
         this.board$ = this.filterService.board$;
         this.isReportOpen$ = this.filterService.isReportOpen$;
-        this.authService.userInfo();
         this.accessLevel$ = this.filterService.board$
             .switchMap(board => {
                     if (board && board.id) {
