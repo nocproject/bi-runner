@@ -19,15 +19,12 @@ import { ApiInterceptor } from '../api-interceptor';
             ],
             useFactory: httpFactory
         },
-        AuthInterceptor,
         ApiInterceptor
     ]
 })
 export class HttpModule {
     constructor(interceptorStore: InterceptorStore,
-                authInterceptor: AuthInterceptor,
                 apiInterceptor: ApiInterceptor) {
-        interceptorStore.register(authInterceptor);
         interceptorStore.register(apiInterceptor);
     }
 }

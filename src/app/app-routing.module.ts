@@ -7,10 +7,12 @@ import { BoardComponent } from './boards/board/board.component';
 import { BoardResolver } from './boards/board/board.resolver';
 import { ShareComponent } from './share/share.component';
 import { ShareCanDeactivateGuard } from './share/share-can-deactivate.guard';
+import { AuthGuard } from './api/auth.guard';
 
 const routes: Routes = [
     {
         path: '',
+        canActivate: [AuthGuard],
         children: []
     },
     {
@@ -19,12 +21,14 @@ const routes: Routes = [
     },
     {
         path: 'list',
-        component: BoardListComponent
+        component: BoardListComponent,
+        canActivate: [AuthGuard]
     },
     {
         path: 'share/:id',
         component: ShareComponent,
         canDeactivate: [ShareCanDeactivateGuard],
+        canActivate: [AuthGuard],
         resolve: {
             detail: BoardResolver
         }
@@ -32,6 +36,7 @@ const routes: Routes = [
     {
         path: 'board/:id',
         component: BoardComponent,
+        canActivate: [AuthGuard],
         resolve: {
             detail: BoardResolver
         }

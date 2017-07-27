@@ -9,7 +9,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { DropdownDirective } from './shared/dropdown.directive';
-import { APIService, DebugService, FilterService, MessageService, UserService } from './services';
+import { APIService, DebugService, FilterService, MessageService } from './services';
 import { MessagesComponent } from './shared/messages/messages.component';
 import { HttpModule } from './shared/interceptor/module/http.module';
 import { BoardListComponent } from './boards/board-list.component';
@@ -30,6 +30,8 @@ import { ShareComponent } from './share/share.component';
 import { DataGridComponent } from './shared/data-grid/data-grid.component';
 import { AccessLevelComponent } from './header/access-level.component';
 import { ShareCanDeactivateGuard } from './share/share-can-deactivate.guard';
+import { AuthGuard } from './api/auth.guard';
+import { AuthenticationService } from './api/services/authentication.service';
 
 @NgModule({
     declarations: [
@@ -66,13 +68,14 @@ import { ShareCanDeactivateGuard } from './share/share-can-deactivate.guard';
         TooltipModule.forRoot()
     ],
     providers: [
+        AuthGuard,
+        AuthenticationService,
         APIService,
         BoardResolver,
         DebugService,
         FilterService,
         ShareCanDeactivateGuard,
-        MessageService,
-        UserService
+        MessageService
     ],
     bootstrap: [AppComponent]
 })

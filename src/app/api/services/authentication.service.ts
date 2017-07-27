@@ -4,12 +4,12 @@ import { Response } from '@angular/http';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Rx';
 
-import { Message, MessageType, Methods, QueryBuilder, User } from '../model';
-import { APIService, MessageService } from '../services';
-import { Http } from '../shared/interceptor/service/http.service';
+import { Message, MessageType, Methods, QueryBuilder, User } from '../../model';
+import { APIService, MessageService } from '../../services';
+import { Http } from '../../shared/interceptor/service/http.service';
 
 @Injectable()
-export class UserService {
+export class AuthenticationService {
     get isLoginOpen(): boolean {
         return this._isLoginOpen;
     }
@@ -18,7 +18,16 @@ export class UserService {
         this._isLoginOpen = value;
     }
 
+    get isLogin(): boolean {
+        return this._isLogin;
+    }
+
+    set isLogin(value: boolean) {
+        this._isLogin = value;
+    }
+
     private _isLoginOpen = false;
+    private _isLogin = false;
 
     private userSubject = new BehaviorSubject(new User());
     public user$: Observable<User> = this.userSubject.asObservable();

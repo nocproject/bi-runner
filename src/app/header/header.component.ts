@@ -8,10 +8,11 @@ import * as _ from 'lodash';
 
 import { environment } from '../../environments/environment';
 
-import { APIService, FilterService, MessageService, UserService } from '../services';
+import { APIService, FilterService, MessageService } from '../services';
 import { Board, Message, MessageType, Methods, QueryBuilder, User } from '../model';
 import { ModalComponent } from '../shared/modal/modal';
 import { Export } from './export';
+import { AuthenticationService } from '../api/services/authentication.service';
 
 @Component({
     selector: 'bi-header',
@@ -32,7 +33,7 @@ export class HeaderComponent implements OnInit {
     boardTitle: string;
     boardDesc: string;
 
-    constructor(private userService: UserService,
+    constructor(private authService: AuthenticationService,
                 private messages: MessageService,
                 private api: APIService,
                 private route: Router,
@@ -41,17 +42,17 @@ export class HeaderComponent implements OnInit {
 
     ngOnInit() {
         console.log('HeaderComponent ngOnInit');
-        this.user$ = this.userService.user$;
-        this.isLogin$ = this.userService.isLogIn$;
+        this.user$ = this.authService.user$;
+        this.isLogin$ = this.authService.isLogIn$;
         this.board$ = this.filterService.board$;
         this.isReportOpen$ = this.filterService.isReportOpen$;
-        this.userService.userInfo();
+        this.authService.userInfo();
         this.accessLevel$ = this.filterService.board$
             .switchMap(board => {
                     if (board && board.id) {
                         setTimeout(() => this.boardTitle = board.title, 0);
                         setTimeout(()=> this.boardDesc = board.description, 0);
-                        return this.userService.accessLevel(board.id);
+                        return this.authService.accessLevel(board.id);
                     }
                     return Observable.of(-1);
                 }

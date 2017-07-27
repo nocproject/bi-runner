@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { UserService } from '../services';
+import { AuthenticationService } from '../api/services/authentication.service';
 
 @Component({
     selector: 'bi-login',
@@ -11,11 +11,13 @@ import { UserService } from '../services';
 export class LoginComponent implements OnInit, OnDestroy {
     message = '';
     loginForm: FormGroup;
+    returnUrl: string;
 
-    constructor(private userService: UserService,
+    constructor(private authService: AuthenticationService,
+                private route: ActivatedRoute,
                 private router: Router) {
         console.log('LoginComponent constructor');
-        this.userService.logout();
+        this.authService.logout();
     }
 
     ngOnInit() {
@@ -24,20 +26,23 @@ export class LoginComponent implements OnInit, OnDestroy {
             'user': new FormControl(null, [Validators.required]),
             'password': new FormControl(null, [Validators.required])
         });
+        // get return url from route parameters or default to '/'
+        this.returnUrl = this.route.snapshot.queryParams['url'] || '/';
     }
 
     ngOnDestroy(): void {
         console.log('LoginComponent ngOnDestroy');
-        this.userService.isLoginOpen = false;
+        this.authService.isLoginOpen = false;
     }
 
     onLogin(): void {
-        this.userService.login(this.loginForm.value).subscribe(
+        this.authService.login(this.loginForm.value).subscribe(
             response => {
                 if (response) {
-                    this.userService.userInfo();
-                    this.router.navigate(['']);
+                    this.authService.userInfo();
+                    this.router.navigate([this.returnUrl]);
                     this.message = '';
+                    this.authService.isLogin = true;
                 } else {
                     this.message = 'Username or password incorrect!';
                     setTimeout(() => this.message = '', 5000);
