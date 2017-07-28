@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { Observable } from 'rxjs/Rx';
+import { Subscription } from 'rxjs/Subscription';
 
 import * as _ from 'lodash';
 
@@ -19,7 +20,8 @@ import { AuthenticationService } from '../api/services/authentication.service';
     templateUrl: './header.component.html'
 })
 
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
+    private boardSubscription: Subscription;
     user$: Observable<User>;
     isLogin$: Observable<boolean>;
     board$: Observable<Board>;
@@ -46,20 +48,25 @@ export class HeaderComponent implements OnInit {
         this.isLogin$ = this.authService.isLogIn$;
         this.board$ = this.filterService.board$;
         this.isReportOpen$ = this.filterService.isReportOpen$;
-        this.accessLevel$ = this.filterService.board$
-            .switchMap(board => {
+        this.accessLevel$ = this.authService.accessLevel$;
+
+        this.boardSubscription = this.filterService.board$
+            .subscribe(board => {
                     if (board && board.id) {
                         setTimeout(() => this.boardTitle = board.title, 0);
-                        setTimeout(()=> this.boardDesc = board.description, 0);
-                        return this.authService.accessLevel(board.id);
+                        setTimeout(() => this.boardDesc = board.description, 0);
+                        this.authService.initAccessLevel(board.id);
                     }
-                    return Observable.of(-1);
                 }
             );
         this.saveForm = new FormGroup({
             'title': new FormControl(null, [Validators.required]),
             'description': new FormControl(null, [Validators.required])
         });
+    }
+
+    ngOnDestroy(): void {
+        this.boardSubscription.unsubscribe();
     }
 
     onSaveBoard() {

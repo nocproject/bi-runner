@@ -29,11 +29,14 @@ export class AuthenticationService {
     private _isLoginOpen = false;
     private _isLogin = false;
 
-    private userSubject = new BehaviorSubject(new User());
+    private userSubject = new BehaviorSubject<User>(new User());
     public user$: Observable<User> = this.userSubject.asObservable();
 
-    private isLogInSubject = new BehaviorSubject(false);
+    private isLogInSubject = new BehaviorSubject<boolean>(false);
     public isLogIn$: Observable<boolean> = this.isLogInSubject.asObservable();
+
+    private accessLevelSubject = new BehaviorSubject<number>(-1);
+    public accessLevel$: Observable<number> = this.accessLevelSubject.asObservable();
 
     constructor(private http: Http,
                 private api: APIService,
@@ -41,7 +44,11 @@ export class AuthenticationService {
     }
 
     checkConnection(): Observable<boolean> {
-        return this.userInfo();
+        if (!this.isLogInSubject.getValue()) {
+            return this.userInfo();
+        } else {
+            return Observable.of(true);
+        }
     }
 
     userInfo(): Observable<boolean> {
@@ -56,19 +63,21 @@ export class AuthenticationService {
                     }
                     return false;
                 }
-            ).catch(_ => {
+            ).catch(() => {
                 return Observable.of(false);
             });
     }
 
-    accessLevel(id: string): Observable<number> {
-        return this.api
+    initAccessLevel(id: string): void {
+        this.api
             .execute(
                 new QueryBuilder()
                     .method(Methods.GET_USER_ACCESS)
                     .params([{id: id}])
                     .build())
-            .map(response => response.result);
+            .map(response => response.result)
+            .subscribe(level => this.accessLevelSubject.next(level),
+                _ => this.accessLevelSubject.next(-1));
     }
 
     login(param: Object): Observable<boolean> {
