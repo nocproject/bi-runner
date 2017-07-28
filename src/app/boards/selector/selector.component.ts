@@ -16,7 +16,7 @@ import { Group } from '../../model/group';
 import { DatetimeRangeComponent } from '../../shared/datetime-range/datetime-range.component';
 
 @Component({
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    // changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'bi-selector',
     templateUrl: './selector.component.html'
 })

@@ -118,20 +118,19 @@ export class ShareComponent implements OnInit, OnDestroy {
     onShare() {
         this.shareSpin = true;
         this.api.execute(new QueryBuilder()
-            // .method(`set_dashboard_access_${this.chooseForm.value.object}`)
+        // .method(`set_dashboard_access_${this.chooseForm.value.object}`)
             .method(Methods.SET_DASHBOARD_ACCESS)
             .params([
                 {id: this.boardId},
                 {items: this.accessCache}
             ])
             .build())
-            .toPromise()
-            .then(response => {
-                console.log(response);
-                this.unsavedData = false;
-                this.shareSpin = false;
-            })
-            .catch(_ => this.shareSpin = false);
+            .first()
+            .subscribe(response => {
+                    this.unsavedData = false;
+                    this.shareSpin = false;
+                },
+                () => this.shareSpin = false);
     }
 
     onRemoveAll() {
@@ -143,8 +142,8 @@ export class ShareComponent implements OnInit, OnDestroy {
                 {items: []}
             ])
             .build())
-            .toPromise()
-            .then(_ => {
+            .first()
+            .subscribe(_ => {
                 this.trashSpin = false;
                 this.unsavedData = false;
                 this.accessCache = [];
@@ -191,7 +190,7 @@ export class ShareComponent implements OnInit, OnDestroy {
     }
 
     private updateAccess(choose: Choose) {
-        _.remove(this.accessCache, e=> Number(e['level']) === Number(choose.access) && e.hasOwnProperty(choose.object));
+        _.remove(this.accessCache, e => Number(e['level']) === Number(choose.access) && e.hasOwnProperty(choose.object));
         const items = this.preSelected.map(id => {
             if (choose.object === 'user') {
                 return <Access>({user: {id: id}, level: Number(choose.access)});

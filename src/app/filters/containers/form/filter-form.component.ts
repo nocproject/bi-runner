@@ -8,7 +8,7 @@ import { Observable } from 'rxjs/Rx';
 
 import { EventType } from '../../models/event.interface';
 import { FieldConfig, FiltersConfig, FormConfig, GroupConfig } from '../../models/form-config.interface';
-import { FieldListService, FilterService } from '../../../services';
+import { APIService, FieldListService, FilterService } from '../../../services';
 import { ConditionService, EventService, ValueService } from '../../services';
 import { BIValidators } from '../../components/validators';
 import { Group } from '../../../model';
@@ -26,6 +26,7 @@ export class FilterFormComponent implements OnDestroy, OnInit {
     submit: EventEmitter<any> = new EventEmitter<any>();
 
     form: FormGroup;
+    requestQty$: Observable<number>;
     private eventSubscription: Subscription;
     private formSubscription: Subscription;
 
@@ -42,6 +43,7 @@ export class FilterFormComponent implements OnDestroy, OnInit {
     }
 
     constructor(private fb: FormBuilder,
+                private api: APIService,
                 private eventService: EventService,
                 private filterService: FilterService,
                 private fieldList: FieldListService,
@@ -57,7 +59,7 @@ export class FilterFormComponent implements OnDestroy, OnInit {
 
     ngOnInit() {
         this.createForm();
-
+        this.requestQty$ = this.api.requestQty$;
         this.eventSubscription = this.eventService.event$
             .filter(event => event !== null)
             .subscribe(event => {

@@ -122,8 +122,8 @@ export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAcc
                         datasource: this.config.datasource
                     }])
                     .build())
-                .toPromise()
-                .then(response => this.placeholder = response.result.result[0][0]);
+                .first()
+                .subscribe(response => this.placeholder = response.result.result[0][0]);
         }
 
     }

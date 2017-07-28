@@ -77,10 +77,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
             .method(Methods.SET_DASHBOARD)
             .params([board.prepare()])
             .build();
-        this.api.execute(query).toPromise()
-            .then(() => {
+        this.api.execute(query).first().subscribe(
+            () => {
                 this.messages.message(new Message(MessageType.INFO, 'Saved'));
-            });
+            }
+        );
+        // .toPromise()
+        //     .then(() => {
+        //         this.messages.message(new Message(MessageType.INFO, 'Saved'));
+        //     });
     }
 
     onSaveAsBoard(modal: ModalComponent) {
@@ -96,8 +101,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
             .params([board.prepare()])
             .build();
         modal.close();
-        this.api.execute(query).toPromise()
-            .then(response => {
+        this.api.execute(query).first()
+            .subscribe(response => {
                 this.messages.message(new Message(MessageType.INFO, 'Saved'));
                 // this.route.navigate(['']);
                 // ToDo problem
@@ -113,8 +118,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
             .params([board.id])
             .build();
         modal.close();
-        this.api.execute(query).toPromise()
-            .then(() => {
+        this.api.execute(query).first()
+            .subscribe(() => {
                 this.messages.message(new Message(MessageType.INFO, 'Removed'));
                 this.route.navigate(['']);
             });
@@ -123,8 +128,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     onExport(): void {
         this.exportSpin = true;
         Export.query(this.api, this.filterService)
-            .toPromise()
-            .then(
+            .first()
+            .subscribe(
                 (response) => {
                     this.exportSpin = false;
                     Export.save(response.result, this.filterService);
