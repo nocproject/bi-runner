@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 import { FilterControl } from '../../models/field.interface';
@@ -12,12 +12,31 @@ import { FieldConfig } from '../../models/form-config.interface';
              [formGroup]="form">
             <label class="control-label">{{ config.label }}:</label>
             <input class="form-control"
-                   autofocus
+                   #input
+                   [placeholder]="config.placeholder"
                    [formControlName]="config.name">
+            <div ngxErrors="{{ config.name }}" class="ng-invalid">
+                <div ngxError="required" >
+                    value is required
+                </div>
+                <div *ngIf="form.get(config.name).hasError('invalid')">
+                    {{ form.get(config.name).errors.msg }}
+                </div>
+            </div>
         </div>
     `
 })
-export class FormInputComponent implements FilterControl {
+export class FormInputComponent implements FilterControl, AfterViewInit {
+    @ViewChild('input')
+    input: ElementRef;
+
     config: FieldConfig;
     form: FormGroup;
+
+    ngAfterViewInit(): void {
+        if (this.config.name === 'valueFirst') {
+            this.input.nativeElement.focus();
+            this.input.nativeElement.setSelectionRange(0,0);
+        }
+    }
 }

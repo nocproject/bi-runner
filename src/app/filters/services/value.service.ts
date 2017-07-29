@@ -18,14 +18,6 @@ export class ValueService {
             validation: [Validators.required],
             label: 'Value'
         };
-        const second: FieldConfig = {
-            name: 'valueSecond',
-            type: 'input',
-            pseudo: false,
-            value: '',
-            validation: [Validators.required],
-            label: 'To Value'
-        };
         const [name, type] = nameAndType.split('.');
         let widgetType = type;
 
@@ -67,87 +59,78 @@ export class ValueService {
             case 'Int16':
             case 'Int32':
             case 'Int64': {
-                first.type = 'inputMask';
-                first.mask = '9999999999';
-                first.validation.push(BIValidators.maskNotEmpty);
+                first.type = 'input';
                 if (_.includes(condition, 'interval')) {
-                    second.type = 'inputMask';
-                    second.mask = '9999999999';
-                    second.validation.push(BIValidators.maskNotEmpty);
+                    first.placeholder = '9999999999-9999999999';
+                    first.validation.push(BIValidators.intRange);
+                } else {
+                    first.placeholder = '9999999999';
+                    first.validation.push(BIValidators.int);
                 }
-                break;
+                return [first];
             }
             case 'Float32':
             case 'Float64': {
-                break;
+                first.type = 'input';
+                if (_.includes(condition, 'interval')) {
+                    first.placeholder = '9999999999.9999-9999999999.9999';
+                    first.validation.push(BIValidators.floatRange);
+                } else {
+                    first.placeholder = '9999999999.9999';
+                    first.validation.push(BIValidators.float);
+                }
+                return [first];
             }
             case 'DateTime': {
                 if (name === 'duration_intervals' && !_.includes(condition, 'periodic')) {
-                    first.type = 'inputMask';
-                    first.mask = '39.19.2999 29:59-39.19.2999 29:59';
-                    // ToDo make dateTimeRange validator, check first less second
+                    first.type = 'inpu';
+                    first.placeholder = 'dd.mm.yyyy HH:mm-dd.mm.yyyy HH:mm';
                     first.validation.push(BIValidators.dateTimeRange);
                     return [first];
                 }
                 if (_.includes(condition, 'interval')) {
                     if (_.includes(condition, 'periodic')) {
-                        first.type = 'inputMask';
-                        first.mask = '29:59-29:59';
+                        first.type = 'input';
+                        first.placeholder = '29:59-29:59';
                         first.validation.push(BIValidators.hours);
                     } else {
-                        // first.type = 'dateRange';
-                        first.type = 'inputMask';
-                        first.mask = '39.19.2999 29:59-39.19.2999 29:59';
-                        // ToDo make dateTimeRange validator, check first less second
+                        first.type = 'input';
+                        first.placeholder = 'dd.mm.yyyy HH:mm-dd.mm.yyyy HH:mm';
                         first.validation.push(BIValidators.dateTimeRange);
                     }
                     return [first];
                 }
-                first.type = 'inputMask';
-                first.mask = '39.19.2999 29:59';
+                first.type = 'input';
+                first.placeholder = 'dd.mm.yyyy HH:mm';
                 first.validation.push(BIValidators.dateTime);
                 // first.type = 'calendar';
                 break;
             }
             case 'IPv4': {
-                first.type = 'inputMask';
+                first.type = 'input';
                 if (_.includes(condition, 'interval')) {
-                    first.mask = '299.299.299.299-299.299.299.299';
+                    first.placeholder = '299.299.299.299-299.299.299.299';
                     first.validation.push(BIValidators.ipV4Range);
                     return [first];
                 }
-                first.mask = '299.299.299.299';
+                first.placeholder = '299.299.299.299';
                 first.validation.push(BIValidators.ipV4);
                 break;
             }
             case 'Date': {
                 if (_.includes(condition, 'interval')) {
-                    // first.type = 'dateRange';
-                    first.type = 'inputMask';
-                    first.mask = '39.19.2999-39.19.2999';
+                    first.placeholder = 'dd.mm.yyyy-dd.mm.yyyy';
                     first.validation.push(BIValidators.dateRange);
                     return [first];
                 }
-                // first.type = 'calendar';
-                first.type = 'inputMask';
-                first.mask = '39.19.2999';
+                first.type = 'input';
+                first.placeholder = 'dd.mm.yyyy';
                 first.validation.push(BIValidators.date);
                 break;
             }
             default: {
                 console.error('unknowns widget type!');
             }
-        }
-
-        if (_.includes(condition, 'interval')) {
-            first.label = 'From Value';
-            if (type.startsWith('Int')) {
-                second.type = 'inputMask';
-                second.mask = '9999999999';
-                first.validation.push(BIValidators.maskNotEmpty);
-            }
-
-            return [first, second];
         }
 
         return [first];

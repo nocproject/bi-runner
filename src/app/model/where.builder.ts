@@ -1,5 +1,7 @@
 import * as _ from 'lodash';
 import * as d3 from 'd3';
+import * as moment from 'moment';
+import { Moment } from 'moment';
 
 import { Group } from './group';
 import { Filter } from './filter';
@@ -161,9 +163,12 @@ function interval(filter: Filter): Object {
         case 'Int8':
         case 'Int16':
         case 'Int32':
-        case 'Int64': {
-            from = castToNumber(filter.values[0], filter.type);
-            to = castToNumber(filter.values[1], filter.type);
+        case 'Int64':
+        case 'Float32':
+        case 'Float64': {
+            const tokens = filter.values[0].value.split('-');
+            from = castToNumber(new Value(tokens[0]), filter.type);
+            to = castToNumber(new Value(tokens[1]), filter.type);
             break;
         }
         case 'String': {
@@ -258,7 +263,7 @@ function castToValue(filter: Filter): Object {
     return expression;
 }
 
-function castToNumber(item: any, type: string): any {
+function castToNumber(item: Value, type: string): any {
     if (_.startsWith(type, 'tree-') || _.startsWith(type, 'dict-')) {
         return Number(item.value);
     }
@@ -280,14 +285,14 @@ function ipv4StrToNum(value): string {
     return `IPv4StringToNum('${value}')`;
 }
 
-function toDate(v) {
+function toDate(v: Value) {
     if (typeof v.value === 'string') {
         v.value = new Date(v.value);
     }
     return `toDate('${d3.time.format('%Y-%m-%d')(v.value)}')`;
 }
 
-function toDateTime(v) {
+function toDateTime(v: Value) {
     if (typeof v.value === 'string') {
         v.value = new Date(v.value);
     }

@@ -20,7 +20,6 @@ import { FormModelComponent } from './form-model/form-model.component';
 
 import { FilterControl } from '../models/field.interface';
 import { FieldConfig } from '../models/form-config.interface';
-import { FormInputMaskComponent } from './form-input-mask/form-input-mask.component';
 
 const components: { [type: string]: Type<FilterControl> } = {
     button: FormButtonComponent,
@@ -28,7 +27,6 @@ const components: { [type: string]: Type<FilterControl> } = {
     dateRange: FormDateRangeComponent,
     dictionary: FormDictionaryComponent,
     input: FormInputComponent,
-    inputMask: FormInputMaskComponent,
     select: FormSelectComponent,
     model: FormModelComponent
 };

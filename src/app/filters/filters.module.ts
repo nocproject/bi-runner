@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 
+import { NgxErrorsModule } from '@ultimate/ngxerrors';
+
 import { GroupComponent } from './containers/group/group.component';
 import { FilterComponent } from './containers/filter/filter.component';
 import { FilterFormComponent } from './containers/form/filter-form.component';
@@ -10,13 +12,11 @@ import { FormCalendarComponent } from './components/form-calendar/form-calendar.
 import { FormDateRangeComponent } from './components/form-date-range/form-date-range.component';
 import { FormDictionaryComponent } from './components/form-dictionary/form-dictionary.component';
 import { FormInputComponent } from './components/form-input/form-input.component';
-import { FormInputMaskComponent } from './components/form-input-mask/form-input-mask.component';
 import { FormSelectComponent } from './components/form-select/form-select.component';
 import { FormModelComponent } from './components/form-model/form-model.component';
 import { FormDropdownComponent } from './components/dropdown.component';
 
 import { DynamicFieldDirective } from './components/dynamic-field.directive';
-import { MaskDirective } from './components/mask.directive';
 import { DictDirective } from './components/dict.directive';
 
 import { ConditionService } from './services/condition.service';
@@ -26,11 +26,11 @@ import { ValueService } from './services/value.service';
 @NgModule({
     imports: [
         CommonModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        NgxErrorsModule
     ],
     declarations: [
         DynamicFieldDirective,
-        MaskDirective,
         DictDirective,
         FilterComponent,
         FilterFormComponent,
@@ -38,7 +38,6 @@ import { ValueService } from './services/value.service';
         FormInputComponent,
         FormModelComponent,
         FormDropdownComponent,
-        FormInputMaskComponent,
         FormSelectComponent,
         GroupComponent,
         FormDictionaryComponent,
@@ -61,7 +60,6 @@ import { ValueService } from './services/value.service';
         FormModelComponent,
         FormDictionaryComponent,
         FormInputComponent,
-        FormInputMaskComponent,
         FormSelectComponent
     ]
 })
