@@ -6,5 +6,6 @@ export interface FormData {
 
 export interface Groups {
     association: '$and' | '$or';
+    active: boolean;
     group: Group;
 }

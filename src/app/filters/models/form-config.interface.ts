@@ -10,6 +10,7 @@ export interface FormConfig {
 
 export interface GroupConfig {
     association: '$and' | '$or';
+    active: boolean;
     group: FiltersConfig;
 }
 

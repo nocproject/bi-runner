@@ -4,6 +4,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Rx';
 
 import * as _ from 'lodash';
+import * as d3 from 'd3';
 
 import { Board, Field, Filter, FilterBuilder, Group, GroupBuilder, Value } from '../model';
 
@@ -52,7 +53,7 @@ export class FilterService {
     }
 
     initFilters(groups: Group[]) {
-        this.filtersSubject.next(groups);
+        this.nextFilter(groups);
         this.eventService.next({type: EventType.Restore, value: groups});
         this._initChart = groups
             .filter(group => group.name !== 'form' && group.name !== 'startEnd')
@@ -71,11 +72,12 @@ export class FilterService {
 
         if (exist) {
             _.first(exist.filters).values = _.first(group.filters).values;
+            exist.active = true;
         } else {
             groups.push(group);
         }
 
-        this.filtersSubject.next(groups);
+        this.nextFilter(groups);
     }
 
     formFilters(groups: Groups[], config: FormConfig) {
@@ -86,6 +88,7 @@ export class FilterService {
                 exist.push(
                     new GroupBuilder()
                         .name(this.FORM_GROUP_NAME)
+                        .active(item.active)
                         .association(item.association)
                         .filters(
                             item.group.filters
@@ -131,7 +134,7 @@ export class FilterService {
                 );
             }
         );
-        this.filtersSubject.next(exist);
+        this.nextFilter(exist);
     }
 
     allFilters(): Group[] {
@@ -177,6 +180,41 @@ export class FilterService {
         }
 
         this.groupsSubject.next(groups);
+    }
+
+    private nextFilter(groups: Group[]) {
+        groups.forEach(group => group.filters
+            .forEach(filter => {
+                let values: Value[];
+
+                if (filter.type === 'Date' && typeof filter.values[0].value === 'string') {
+                    if (filter.condition.match(/interval/i)) {
+                        const raw = filter.values[0].value.split('-');
+                        values = [
+                            new Value(d3.time.format('%d.%m.%Y').parse(raw[0])),
+                            new Value(d3.time.format('%d.%m.%Y').parse(raw[1]))
+                        ];
+                    } else {
+                        values = [new Value(d3.time.format('%d.%m.%Y').parse(filter.values[0].value))];
+                    }
+                    filter.values = values;
+                }
+                if (filter.type === 'DateTime' && typeof filter.values[0].value === 'string') {
+                    if (!filter.condition.match(/periodic/)) {
+                        if (filter.condition.match(/interval/i)) {
+                            const raw = filter.values[0].value.split('-');
+                            values = [
+                                new Value(d3.time.format('%d.%m.%Y %H:%M').parse(raw[0])),
+                                new Value(d3.time.format('%d.%m.%Y %H:%M').parse(raw[1]))
+                            ];
+                        } else {
+                            values = [new Value(d3.time.format('%d.%m.%Y %H:%M').parse(filter.values[0].value))];
+                        }
+                        filter.values = values;
+                    }
+                }
+            }));
+        this.filtersSubject.next(groups);
     }
 }
 

@@ -7,6 +7,8 @@ export class Group {
     @JsonMember
     name: string;
     @JsonMember
+    active: boolean;
+    @JsonMember
     association: '$and' | '$or';
     @JsonMember({elements: Filter})
     filters: Filter[];

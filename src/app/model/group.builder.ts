@@ -6,10 +6,16 @@ export class GroupBuilder {
 
     constructor() {
         this.group.association = '$and';
+        this.group.active = true;
     }
 
     public name(name: string) {
         this.group.name = name;
+        return this;
+    }
+
+    public active(active: boolean) {
+        this.group.active = active;
         return this;
     }
 

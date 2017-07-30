@@ -20,9 +20,17 @@
         </div>
     </form>
 </div>
-<div class="row">
-    <!--<button class="btn btn-default pull-right clearfix"-->
-    <!--(click)="onSubmit()"-->
-    <!--style="margin-bottom: 5px">Submit-->
-    <!--</button>-->
+<div class="row" *ngIf="config.groups.length > 0">
+    <div class="pull-right">
+        <button class="btn btn-default"
+                (click)="onApplyDisableAll(false)"
+                style="margin-bottom: 5px">Disable All
+        </button>
+        <button class="btn clearfix"
+                [ngClass]="{'btn-default': !active, 'btn-primary' : active}"
+                [disabled]="!form.valid"
+                (click)="onApplyDisableAll(true)"
+                style="margin-bottom: 5px">Apply All
+        </button>
+    </div>
 </div>

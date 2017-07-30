@@ -29,57 +29,22 @@ export class WhereBuilder {
 
 function getFilters(groups: Group[], association: string): Object[] {
     return groups
+        .filter(group => group.active)
         .filter(group => group.association === association)
         .map(group => group.filters
             .filter(filter => !filter.isEmpty())
-            // hard code
+            // hard code, add filter
             .map(filter => {
-                let values: Value[];
                 if (filter.name === 'duration_intervals') {
-                    if (filter.condition === 'interval') {
-                        const raw = filter.values[0].value.split('-');
-                        values = [
-                            new Value(d3.time.format('%d.%m.%Y %H:%M').parse(raw[0])),
-                            new Value(d3.time.format('%d.%m.%Y %H:%M').parse(raw[1]))
-                        ];
-                    } else {
-                        values = filter.values;
-                    }
                     return new FilterBuilder()
                         .name('ts')
                         .condition(`not.${filter.condition}`)
                         .pseudo(false)
-                        .values(values)
+                        .values(filter.values)
                         .type(filter.type)
                         .association(filter.association)
                         .alias(filter.alias)
                         .build();
-                }
-                if (filter.type === 'Date' && typeof filter.values[0].value === 'string') {
-                    if (filter.condition.match(/interval/i)) {
-                        const raw = filter.values[0].value.split('-');
-                        values = [
-                            new Value(d3.time.format('%d.%m.%Y').parse(raw[0])),
-                            new Value(d3.time.format('%d.%m.%Y').parse(raw[1]))
-                        ];
-                    } else {
-                        values = [new Value(d3.time.format('%d.%m.%Y').parse(filter.values[0].value))];
-                    }
-                    filter.values = values;
-                }
-                if (filter.type === 'DateTime' && typeof filter.values[0].value === 'string') {
-                    if (!filter.condition.match(/periodic/)) {
-                        if (filter.condition.match(/interval/i)) {
-                            const raw = filter.values[0].value.split('-');
-                            values = [
-                                new Value(d3.time.format('%d.%m.%Y %H:%M').parse(raw[0])),
-                                new Value(d3.time.format('%d.%m.%Y %H:%M').parse(raw[1]))
-                            ];
-                        } else {
-                            values = [new Value(d3.time.format('%d.%m.%Y %H:%M').parse(filter.values[0].value))];
-                        }
-                        filter.values = values;
-                    }
                 }
                 return filter;
             })

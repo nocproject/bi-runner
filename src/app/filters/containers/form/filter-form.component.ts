@@ -117,6 +117,7 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                                 };
                                 const groupConfig: GroupConfig = {
                                     association: group.association,
+                                    active: group.active,
                                     group: filtersConfig
                                 };
                                 const formControl = this.createGroup(groupConfig);
@@ -221,6 +222,7 @@ export class FilterFormComponent implements OnDestroy, OnInit {
     onAddGroup() {
         const fresh: GroupConfig = {
             association: '$and',
+            active: false,
             group: {
                 association: '$and',
                 filters: [
@@ -244,11 +246,22 @@ export class FilterFormComponent implements OnDestroy, OnInit {
         (<FormArray>this.form.get('groups')).push(this.createGroup(fresh));
     }
 
+    onApplyDisableAll(active: boolean) {
+        const data = _.clone(this.form.value);
+
+        data.groups = data.groups.map(group => {
+            group.active = active;
+            return group;
+        });
+        this.form.patchValue(data);
+    }
+
     private createForm() {
         // init state
         this.config = {
             groups: [{
                 association: '$and',
+                active: false,
                 group: {
                     association: '$and',
                     filters: [
@@ -280,7 +293,7 @@ export class FilterFormComponent implements OnDestroy, OnInit {
             })
             .subscribe((data: FormData) => {
                 console.log(`form is valid : ${this.form.valid}`);
-                console.log('SelectorComponent: subscribe - execute filter!');
+                console.log('FilterFormComponent: subscribe - execute filter!');
 
                 this.filterService.formFilters(data.groups, this.config);
             });
@@ -299,6 +312,7 @@ export class FilterFormComponent implements OnDestroy, OnInit {
         group.setValidators(BIValidators.group);
         return this.fb.group({
                 association: config.association,
+                active: config.active,
                 group: group
             }
         );

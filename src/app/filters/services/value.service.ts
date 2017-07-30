@@ -83,7 +83,7 @@ export class ValueService {
             }
             case 'DateTime': {
                 if (name === 'duration_intervals' && !_.includes(condition, 'periodic')) {
-                    first.type = 'inpu';
+                    first.type = 'input';
                     first.placeholder = 'dd.mm.yyyy HH:mm-dd.mm.yyyy HH:mm';
                     first.validation.push(BIValidators.dateTimeRange);
                     return [first];

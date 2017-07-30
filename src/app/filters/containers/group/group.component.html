@@ -53,6 +53,15 @@
                            [parent]="group">
                 </bi-filter>
             </div>
+            <div class="pull-right" style="margin: 0 10px 10px;">
+                <button class="btn btn-default clean-filter btn-sm"
+                   [disabled]="!group.value.active"
+                   (click)="onDisable()">Disable</button>
+                <button class="btn apply-filter btn-sm"
+                   [ngClass]="{'btn-default': !group.value.active, 'btn-primary' : group.value.active}"
+                   [disabled]="!group.valid"
+                   (click)="onApply()">Apply</button>
+            </div>
         </div>
     </div>
 </div>

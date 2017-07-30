@@ -297,7 +297,7 @@ function isDate(input, format, prefix: string = '') {
     } else if (value.year() < 2000) {
         return {
             invalid: true,
-            msg: 'year > 2000'
+            msg: 'year < 2000'
         };
     }
 }
@@ -324,7 +324,7 @@ function _dateRange(control: AbstractControl, format: string): ValidationErrors 
     if (!control.value.match('-')) {
         return {
             invalid: true,
-            msg: 'bad format, use dd.mm.yyyy-dd.mm.yyyy'
+            msg: 'bad format'
         };
     }
 

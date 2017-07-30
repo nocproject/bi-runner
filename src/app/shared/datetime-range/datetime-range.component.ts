@@ -1,4 +1,4 @@
-import { AfterContentInit, ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { AfterContentInit, Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
 import * as dateFns from 'date-fns';
@@ -10,7 +10,7 @@ export interface IDateRange {
 }
 
 @Component({
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    // changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'bi-datetime-range',
     templateUrl: './datetime-range.component.html',
     styleUrls: ['./datetime-range.component.scss']
