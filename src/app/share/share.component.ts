@@ -191,6 +191,7 @@ export class ShareComponent implements OnInit, OnDestroy {
 
     private updateAccess(choose: Choose) {
         _.remove(this.accessCache, e => Number(e['level']) === Number(choose.access) && e.hasOwnProperty(choose.object));
+        _.remove(this.accessCache, e => e.hasOwnProperty(choose.object) && _.includes(this.preSelected, e[choose.object].id));
         const items = this.preSelected.map(id => {
             if (choose.object === 'user') {
                 return <Access>({user: {id: id}, level: Number(choose.access)});
