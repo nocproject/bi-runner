@@ -126,7 +126,7 @@ export class ShareComponent implements OnInit, OnDestroy {
             ])
             .build())
             .first()
-            .subscribe(response => {
+            .subscribe(() => {
                     this.unsavedData = false;
                     this.shareSpin = false;
                 },
@@ -143,7 +143,7 @@ export class ShareComponent implements OnInit, OnDestroy {
             ])
             .build())
             .first()
-            .subscribe(_ => {
+            .subscribe(() => {
                 this.trashSpin = false;
                 this.unsavedData = false;
                 this.accessCache = [];
