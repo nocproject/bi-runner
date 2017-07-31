@@ -55,7 +55,8 @@ export class LineComponent extends WidgetComponent {
     }
 
     getValue(widget: BaseMixin<any>, filter): Value[] {
-        return filter ? filter.map(element => new Value(element)) : [];
+        return filter ? [new Value(`${Utils.dateToString(filter[0], '%d.%m.%Y')}-${Utils.dateToString(filter[1], '%d.%m.%Y')}`)] : [];
+
     }
 
     restore(values: Value[]): Restore {

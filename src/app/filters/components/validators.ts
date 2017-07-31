@@ -306,7 +306,6 @@ function checkDateRange(tokens: string[], format: string) {
     const start: Moment = moment(tokens[0], format, true);
     const end: Moment = moment(tokens[1], format, true);
 
-    console.log(start.isAfter(end));
     if (start.isAfter(end)) {
         return {
             invalid: true,

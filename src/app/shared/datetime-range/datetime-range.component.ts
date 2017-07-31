@@ -188,6 +188,7 @@ export class DatetimeRangeComponent implements AfterContentInit, OnInit {
         }
 
         if (this.opened === 'to') {
+            date = dateFns.endOfDay(date);
             this.datePick.to = date;
             this.form.patchValue({[this.toControlName]: date});
             this.currentDate = date;

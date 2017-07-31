@@ -10,6 +10,7 @@
             </button>
             <div *ngIf="readonly">{{model | date: 'HH'}}</div>
             <input *ngIf="!readonly"
+                   tabindex="1"
                    class="form-control"
                    style="font-size: 12px;height: 30px;"
                    maxlength="2" size="3"
@@ -36,6 +37,7 @@
             </button>
             <div *ngIf="readonly">{{model | date: 'mm'}}</div>
             <input *ngIf="!readonly"
+                   tabindex="2"
                    class="form-control"
                    style="font-size: 12px;height: 30px;"
                    maxlength="2" size="3"

@@ -47,13 +47,13 @@ export class BarComponent extends WidgetComponent {
     }
 
     getValue(widget: BaseMixin<any>, filter): Value[] {
-        return filter ? filter.map(element => new Value(Math.ceil(element))) : [];
+        return filter ? [new Value(`${Math.ceil(filter[0])}-${Math.ceil(filter[1])}`)] : [];
     }
 
     restore(values: Value[]): Restore {
         return {
-            title: Math.ceil(values[0].value) + ' - ' + Math.ceil(values[1].value),
-            filter: [values.map(item => Math.ceil(item.value))]
+            title: values[0].value,
+            filter: [values[0].value.split('-').map(item => Math.ceil(item))]
         };
     }
 }
