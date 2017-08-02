@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
+import { environment } from '../../environments/environment';
+
 @Injectable()
 export class LanguageService {
     private _languages: string[] = ['ru', 'en'];
-    private _current: string = 'ru';
+    private _current: string = environment.language ? environment.language : 'en';
 
     constructor(private translate: TranslateService) {
         // this language will be used as a fallback when a translation isn't found in the current language
