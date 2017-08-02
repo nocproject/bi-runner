@@ -1,4 +1,4 @@
-import { AfterContentInit, Component, Input, OnInit } from '@angular/core';
+import { AfterContentInit, Component, ElementRef, HostListener, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
 import * as dateFns from 'date-fns';
@@ -44,7 +44,8 @@ export class DatetimeRangeComponent implements AfterContentInit, OnInit {
         return this.form.value;
     }
 
-    constructor(private fb: FormBuilder) {
+    constructor(private fb: FormBuilder,
+                private _element: ElementRef) {
     }
 
     public ngOnInit() {
@@ -65,7 +66,7 @@ export class DatetimeRangeComponent implements AfterContentInit, OnInit {
     }
 
     ngAfterContentInit(): void {
-        if(!this.moment) {
+        if (!this.moment) {
             this.selectRange('lw');
         }
     }
@@ -247,6 +248,15 @@ export class DatetimeRangeComponent implements AfterContentInit, OnInit {
         if (this.opened === 'to') {
             this.datePick.to = date;
             this.form.patchValue({[this.toControlName]: date});
+        }
+    }
+
+    @HostListener('document:click', ['$event'])
+    onDocumentClick(event: any): void {
+
+        if (event.button !== 2 &&
+            !this._element.nativeElement.contains(event.target)) {
+            this.toggleCalendar(false);
         }
     }
 }

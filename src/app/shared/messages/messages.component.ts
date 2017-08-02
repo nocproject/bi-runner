@@ -19,8 +19,4 @@ export class MessagesComponent implements OnInit {
     ngOnInit() {
         this.messages$ = this.messagesService.messages$;
     }
-
-    close(message: Message) {
-        this.messagesService.removeMessage(message);
-    }
 }

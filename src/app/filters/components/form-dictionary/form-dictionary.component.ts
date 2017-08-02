@@ -8,7 +8,7 @@ import { FieldConfig } from '../../models/form-config.interface';
     selector: 'bi-form-dictionary',
     template: `
         <div class="form-group" [formGroup]="form">
-            <label class="control-label">{{ config.label }}:</label>
+            <label class="control-label" translate>{{ config.label }}:</label>
             <bi-form-dropdown [config]="config"
                               [formControlName]="config.name"></bi-form-dropdown>
         </div>

@@ -21,7 +21,7 @@ export class BoardListComponent implements OnInit {
 
     ngOnInit() {
         this.tableConfig = new GridConfigBuilder()
-            .headers(['Title', 'Description', 'Owner', 'Created', 'Changed'])
+            .headers(['LIST.NAME', 'LIST.DESCRIPTION', 'LIST.OWNER', 'LIST.CREATED', 'LIST.CHANGED'])
             .names(['title', 'description', 'owner', 'created', 'changed'])
             .fromJson(tableJson)
             .data(this.api

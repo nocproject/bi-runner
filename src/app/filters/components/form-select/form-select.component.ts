@@ -10,7 +10,7 @@ import { FieldConfig } from '../../models/form-config.interface';
     template: `
         <div class="form-group"
              [formGroup]="form">
-            <label class="control-label">{{ config.label }}:</label>
+            <label class="control-label" translate>{{ config.label }}:</label>
             <select class="form-control"
                     [formControlName]="config.name">
                 <option [ngValue]="''">{{ config.placeholder }}</option>

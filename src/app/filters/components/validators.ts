@@ -21,8 +21,8 @@ export class BIValidators {
 
             if (!filter.controls.hasOwnProperty('condition')) {
                 return {
-                    valid: false,
-                    msg: 'condition not found'
+                    invalid: true,
+                    msg: 'VALIDATOR.CONDITION_NOT_FOUND'
                 };
             }
 
@@ -37,8 +37,8 @@ export class BIValidators {
             }
 
             return {
-                valid: false,
-                msg: 'not all fields'
+                invalid: true,
+                msg: 'VALIDATOR.NOT_ALL_FIELDS'
             };
         }
     }
@@ -66,14 +66,14 @@ export class BIValidators {
         if (isIPv4BI(start) || isIPv4BI(end)) {
             return {
                 invalid: true,
-                msg: 'start or end is not IPv4 address'
+                msg: 'VALIDATOR.START_END_NOT_IP'
             };
         }
 
         if (IPtoNumber(start) >= IPtoNumber(end)) {
             return {
                 invalid: true,
-                msg: 'the start of the range is bigger than end'
+                msg: 'VALIDATOR.IP_BAD_RANGE'
             };
         }
     }
@@ -84,32 +84,39 @@ export class BIValidators {
         }
 
         let errors;
-        const tokens = control.value.split('-');
 
-        errors = checkRangeQty(tokens);
+        errors = checkRangeQty(control.value.split('-'));
         if (errors) return errors;
 
         const [first, second] = control.value.split('-');
         if (isRightMinutes(first) || isRightMinutes(second)) {
             return {
                 invalid: true,
-                msg: 'minutes should be in the range from 0 to 59'
+                msg: 'VALIDATOR.BAD_MINUTES'
             };
         }
 
         const start = toMinutes(first);
         const end = toMinutes(second);
+
+        if (_.isNaN(start) || _.isNaN(end)) {
+            return {
+                invalid: true,
+                msg: 'VALIDATOR.PERIODIC_NOT_NUMBER'
+            };
+        }
+
         if (start > 1440 || end > 1440) {
             return {
                 invalid: true,
-                msg: 'one or both of the values exceed 23:59'
+                msg: 'VALIDATOR.PERIODIC_EXCEED'
             };
         }
 
         if (start >= end) {
             return {
                 invalid: true,
-                msg: 'the start of the range is bigger than end'
+                msg: 'VALIDATOR.PERIODIC_BAD_RANGE'
             };
         }
 
@@ -120,7 +127,7 @@ export class BIValidators {
         if (!_.isInteger(Number(control.value))) {
             return {
                 invalid: true,
-                msg: 'value must be int'
+                msg: 'VALIDATOR.MUST_BE_INT'
             };
         }
 
@@ -131,7 +138,7 @@ export class BIValidators {
         if (_.isNaN(Number(control.value))) {
             return {
                 invalid: true,
-                msg: 'value must be float'
+                msg: 'VALIDATOR.MUST_BE_FLOAT'
             };
         }
 
@@ -144,7 +151,7 @@ export class BIValidators {
         if (!control.value.match('-')) {
             return {
                 invalid: true,
-                msg: 'bad format, use 9999999999.9999-9999999999.9999'
+                msg: 'VALIDATOR.FLOAT_BAD_FORMAT'
             };
         }
         let errors;
@@ -156,21 +163,21 @@ export class BIValidators {
         if (_.isNaN(Number(tokens[0]))) {
             return {
                 invalid: true,
-                msg: 'first value isn\'t number'
+                msg: 'VALIDATOR.FLOAT_BAD_FIRST'
             };
         }
 
         if (_.isNaN(Number(tokens[1]))) {
             return {
                 invalid: true,
-                msg: 'second value isn\'t number'
+                msg: 'VALIDATOR.'
             };
         }
 
         if (Number(tokens[0]) >= Number(tokens[1]))
             return {
                 invalid: true,
-                msg: 'second value less first'
+                msg: 'VALIDATOR.FLOAT_BAD_RANGE'
             };
         return null;
     }
@@ -181,7 +188,7 @@ export class BIValidators {
         if (!control.value.match('-')) {
             return {
                 invalid: true,
-                msg: 'bad format, use 9999999999-9999999999'
+                msg: 'VALIDATOR.INT_BAD_FORMAT'
             };
         }
         let errors;
@@ -193,21 +200,21 @@ export class BIValidators {
         if (!_.isInteger(Number(tokens[0]))) {
             return {
                 invalid: true,
-                msg: 'first value isn\'t int'
+                msg: 'VALIDATOR.INT_BAD_FIRST'
             };
         }
 
         if (!_.isInteger(Number(tokens[1]))) {
             return {
                 invalid: true,
-                msg: 'second value isn\'t int'
+                msg: 'VALIDATOR.INT_BAD_SECOND'
             };
         }
 
         if (Number(tokens[0]) >= Number(tokens[1]))
             return {
                 invalid: true,
-                msg: 'second value less first'
+                msg: 'VALIDATOR.INT_BAD_RANGE'
             };
         return null;
     }
@@ -245,21 +252,21 @@ function isIPv4BI(value: string): ValidationErrors | null {
     if (tokens.length !== 4) {
         return {
             invalid: true,
-            msg: 'is not ip address'
+            msg: 'VALIDATOR.NOT_IP'
         };
     }
 
     if (tokens.filter((item) => _.toNumber(item) > 254).length > 0) {
         return {
             invalid: true,
-            msg: 'value bigger 254'
+            msg: 'VALIDATOR.IP_BIG'
         };
     }
 
     if (_.toNumber(tokens[0]) === 0 || _.toNumber(tokens[3]) === 0) {
         return {
             invalid: true,
-            msg: 'start or end to 0'
+            msg: 'VALIDATOR.IP_ZERO'
         };
     }
 
@@ -279,7 +286,7 @@ function checkRangeQty(tokens) {
     if ((tokens.length !== 2 || tokens[0].length === 0 || tokens[1].length === 0)) {
         return {
             invalid: true,
-            msg: 'must be two value'
+            msg: 'VALIDATOR.MUST_TWO_VALUES'
         };
     }
     return null;
@@ -292,12 +299,12 @@ function isDate(input, format, prefix: string = '') {
     if (!value.isValid()) {
         return {
             invalid: true,
-            msg: `${prefix}is not date`
+            msg: `VALIDATOR.${prefix}IS_NOT_DATE`
         };
     } else if (value.year() < 2000) {
         return {
             invalid: true,
-            msg: 'year < 2000'
+            msg: 'VALIDATOR.YEAR_LESS_2000'
         };
     }
 }
@@ -309,7 +316,7 @@ function checkDateRange(tokens: string[], format: string) {
     if (start.isAfter(end)) {
         return {
             invalid: true,
-            msg: 'second value less first'
+            msg: 'VALIDATOR.SECOND_LESS_FIRST'
         };
     }
     return null;
@@ -323,7 +330,7 @@ function _dateRange(control: AbstractControl, format: string): ValidationErrors 
     if (!control.value.match('-')) {
         return {
             invalid: true,
-            msg: 'bad format'
+            msg: 'VALIDATOR.BAD_FORMAT'
         };
     }
 
@@ -331,9 +338,9 @@ function _dateRange(control: AbstractControl, format: string): ValidationErrors 
     errors = checkRangeQty(tokens);
     if (errors) return errors;
 
-    errors = isDate(tokens[0], format, 'first ');
+    errors = isDate(tokens[0], format, 'FIRST_');
     if (errors) return errors;
-    errors = isDate(tokens[1], format, 'second ');
+    errors = isDate(tokens[1], format, 'SECOND_');
     if (errors) return errors;
     errors = checkDateRange(tokens, format);
     if (errors) return errors;

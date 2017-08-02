@@ -6,9 +6,11 @@
                     <div class="bootstrap-dialog-close-button" style="display: block;">
                         <button class="close" (click)="onCancel()">×</button>
                     </div>
-                    <div class="bootstrap-dialog-title title-left">Share Report : {{ title }}</div>
-                    <div class="title-right" style="color: white;padding-right: 25px;">
-                        Selected : {{ preSelected.length }}
+                    <div class="bootstrap-dialog-title title-left" translate
+                         [translateParams]="{value: title}">SHARE.TITLE
+                    </div>
+                    <div class="title-right" style="color: white;padding-right: 25px;" translate
+                         [translateParams]="{value: preSelected.length}">SHARE.SELECTED
                     </div>
                 </div>
             </div>
@@ -21,13 +23,13 @@
                                     <input type="radio"
                                            id="object-user" value="user"
                                            formControlName="object">
-                                    <label for="object-user">By User</label>
+                                    <label for="object-user" translate>SHARE.BY_USER</label>
                                 </div>
                                 <div class="radio radio-primary">
                                     <input type="radio"
                                            id="object-group" value="group"
                                            formControlName="object">
-                                    <label for="object-group">By Group</label>
+                                    <label for="object-group" translate>SHARE.BY_GROUP</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -35,19 +37,19 @@
                                     <input type="radio"
                                            id="access-read" value="0"
                                            formControlName="access">
-                                    <label for="access-read">Read Only</label>
+                                    <label for="access-read" translate>SHARE.READ_ONLY</label>
                                 </div>
                                 <div class="radio radio-primary">
                                     <input type="radio"
                                            id="access-modify" value="1"
                                            formControlName="access">
-                                    <label for="access-modify">Modify</label>
+                                    <label for="access-modify" translate>SHARE.MODIFY</label>
                                 </div>
                                 <div class="radio radio-primary">
                                     <input type="radio"
                                            id="access-admin" value="2"
                                            formControlName="access">
-                                    <label for="access-admin">Admin</label>
+                                    <label for="access-admin" translate>SHARE.ADMIN</label>
                                 </div>
                             </div>
                         </form>
@@ -61,26 +63,24 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" (click)="onShare()"
-                        [disabled]="accessCache.length === 0">Share
+                        [disabled]="accessCache.length === 0" translate>SHARE.SHARE_BTN
                     <span [ngClass]="{'shared-rotate': shareSpin, 'shared' : !shareSpin}"></span>
                 </button>
                 <button type="button" class="btn btn-default" (click)="onRemoveAll()"
-                        [disabled]="accessCache.length === 0">Remove Access From All
+                        [disabled]="accessCache.length === 0" translate>SHARE.REMOVE_BTN
                     <span [ngClass]="{'shared-rotate': trashSpin, 'trash' : !trashSpin}"></span>
                 </button>
-                <button type="button" class="btn btn-default" (click)="onCancel()">Exit</button>
+                <button type="button" class="btn btn-default" (click)="onCancel()" translate>SHARE.EXIT_BTN</button>
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
 <bi-modal #unsavedConfirmDlg (onClose)="onCloseConfirm()">
-    <bi-modal-header>Unsaved data</bi-modal-header>
-    <bi-modal-content>
-        Discard changes?<br/>Are you sure to leave without save?
-    </bi-modal-content>
+    <bi-modal-header translate>SHARE.TITLE_DLG</bi-modal-header>
+    <bi-modal-content [innerHTML]="'SHARE.BODY_DLG' | translate"></bi-modal-content>
     <bi-modal-footer>
-        <button class="btn btn-primary" (click)="onConfirm(true)">Yes</button>
-        <button class="btn btn-default" (click)="onConfirm(false)">No</button>
+        <button class="btn btn-primary" (click)="onConfirm(true)" translate>SHARE.YES_BTN</button>
+        <button class="btn btn-default" (click)="onConfirm(false)" translate>SHARE.NO_BTN</button>
     </bi-modal-footer>
 </bi-modal>

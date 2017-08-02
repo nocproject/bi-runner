@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 @Component({
     selector: 'bi-access-level',
     template: `
-        <span>access level : {{ text$ | async }}</span>
+        <span> : {{ text$ | async | translate }}</span>
     `
 })
 export class AccessLevelComponent implements OnInit {
@@ -17,13 +17,13 @@ export class AccessLevelComponent implements OnInit {
         this.text$ = this.level$.map(level => {
             switch (level) {
                 case 0:
-                    return 'read only';
+                    return 'ACCESS.READ';
                 case 1:
-                    return 'modify';
+                    return 'ACCESS.MODIFY';
                 case 2:
-                    return 'admin';
+                    return 'ACCESS.ADMIN';
                 default:
-                    return 'undefined';
+                    return 'ACCESS.UNDEFINED';
             }
         });
     }

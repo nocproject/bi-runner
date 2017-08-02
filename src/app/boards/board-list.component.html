@@ -6,7 +6,7 @@
                     <div class="bootstrap-dialog-close-button" style="display: block;">
                         <button class="close" (click)="onCancel()">×</button>
                     </div>
-                    <div class="bootstrap-dialog-title">Select Report</div>
+                    <div class="bootstrap-dialog-title" translate>LIST.TITLE</div>
                 </div>
             </div>
             <div class="modal-body">
@@ -18,9 +18,9 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" (click)="onOpen()"
-                        [disabled]="selected.length === 0">Open
+                        [disabled]="selected.length === 0" translate>LIST.OPEN_BTN
                 </button>
-                <button type="button" class="btn btn-default" (click)="onCancel()">Cancel
+                <button type="button" class="btn btn-default" (click)="onCancel()" translate>LIST.CANCEL_BTN
                 </button>
             </div>
         </div><!-- /.modal-content -->

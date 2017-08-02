@@ -8,7 +8,7 @@ import { FieldConfig } from '../../models/form-config.interface';
     selector: 'bi-form-model',
     template: `
         <div class="form-group" [formGroup]="form">
-            <label class="control-label">{{ config.label }}:</label>
+            <label class="control-label" translate>{{ config.label }}:</label>
             <bi-form-dropdown *ngFor="let dict of dicts"
                               [config]="dict"
                               [showRemove]="'true'"

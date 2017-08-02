@@ -5,7 +5,7 @@
     <div class="form-group">
         <input type="search"
                class="form-control"
-               placeholder="Enter search string"
+               [placeholder]="'GRID.SEARCH' | translate"
                [formControl]="searchField">
     </div>
 </form>
@@ -13,7 +13,7 @@
     <table class="table table-striped table-hover" cellspacing="0">
         <thead>
         <tr>
-            <th *ngFor="let header of config.headers">{{ header }}</th>
+            <th *ngFor="let header of config.headers" translate>{{ header }}</th>
         </tr>
         </thead>
         <tbody>

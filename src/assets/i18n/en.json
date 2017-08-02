@@ -1,0 +1,125 @@
+{
+  "HEADER": {
+    "OPEN": "Open",
+    "REPORTS": "Reports",
+    "SHARE": "Share",
+    "REMOVE": "Remove",
+    "SAVE_AS": "Save As",
+    "SAVE": "Save",
+    "EXPORT": "Export",
+    "LOGOUT": "Logout",
+    "ABOUT": "About",
+    "ISSUE": "Create issue",
+    "ABOUT_DLG": {
+      "TITLE": "Application NOC BI",
+      "CONTENT": "NOC BI version {{value}}",
+      "CLOSE": "Close"
+    },
+    "REMOVE_DLG": {
+      "TITLE": "Remove Board",
+      "CONTENT": "Are you sure to delete dashboard?",
+      "YES": "Yes",
+      "NO": "No"
+    },
+    "SAVE_DLG": {
+      "TITLE": "Save As",
+      "NAME": "Name",
+      "DESCRIPTION": "Description",
+      "SAVE_AS": "Save As",
+      "CLOSE": "Close"
+    }
+  },
+  "VALIDATOR": {
+    "REQUIRED": "value is required",
+    "NOT_IP": "is not ip address",
+    "IP_BIG": "value bigger 254",
+    "IP_ZERO": "first or end is 0",
+    "MUST_TWO_VALUES": "must be two value",
+    "YEAR_LESS_2000": "year < 2000",
+    "IS_NOT_DATE": "is not date",
+    "FIRST_IS_NOT_DATE": "first is not date",
+    "SECOND_IS_NOT_DATE": "second is not date",
+    "SECOND_LESS_FIRST": "second value less first",
+    "BAD_FORMAT": "bad format",
+    "CONDITION_NOT_FOUND": "condition not found",
+    "NOT_ALL_FIELDS": "not all fields",
+    "START_END_NOT_IP": "start or end is not IPv4 address",
+    "IP_BAD_RANGE": "the start of the range is bigger than end",
+    "BAD_MINUTES": "minutes should be in the range from 0 to 59",
+    "PERIODIC_NOT_NUMBER": "star or end isn't number",
+    "PERIODIC_EXCEED": "one or both of the values exceed 23:59",
+    "PERIODIC_BAD_RANGE": "the start of the range is bigger than end",
+    "MUST_BE_INT": "value must be int",
+    "MUST_BE_FLOAT": "value must be float",
+    "FLOAT_BAD_FORMAT": "bad format, use 9999999999.9999-9999999999.9999",
+    "FLOAT_BAD_RANGE": "second value less first",
+    "FLOAT_BAD_FIRST": "first value isn't number",
+    "FLOAT_BAD_SECOND": "second value isn't number",
+    "INT_BAD_FORMAT": "bad format, use 9999999999-9999999999",
+    "INT_BAD_RANGE": "second value less first",
+    "INT_BAD_FIRST": "first value isn't int",
+    "INT_BAD_SECOND": "second value isn't int"
+  },
+  "LIST": {
+    "NAME": "Name",
+    "DESCRIPTION": "Description",
+    "OWNER": "Owner",
+    "CREATED": "Created",
+    "CHANGED": "Changed",
+    "OPEN_BTN": "Open",
+    "CANCEL_BTN": "Cancel",
+    "TITLE": "Select Report"
+  },
+  "GRID": {
+    "SEARCH": "enter search string"
+  },
+  "SHARE": {
+    "BY_USER": "By User",
+    "BY_GROUP": "By Group",
+    "READ_ONLY": "Read Only",
+    "MODIFY": "Modify",
+    "ADMIN": "Admin",
+    "GROUP_NAME": "Group Name",
+    "USERNAME": "Username",
+    "FULL_NAME": "Full Name",
+    "TITLE": "Share Report : {{value}}",
+    "SHARE_BTN": "Share",
+    "EXIT_BTN": "Exit",
+    "REMOVE_BTN": "Remove Access From All",
+    "SELECTED": "Selected : {{value}}",
+    "TITLE_DLG": "Unsaved data",
+    "YES_BTN": "Yes",
+    "NO_BTN": "No",
+    "BODY_DLG": "Discard changes?<br/>Are you sure to leave without save?"
+  },
+  "ACCESS": {
+    "ACCESS": "access level",
+    "READ": "read only",
+    "MODIFY": "modify",
+    "ADMIN": "admin",
+    "UNDEFINED": "undefined"
+  },
+  "WIDGET": {
+    "RESET": "reset"
+  },
+  "SELECTOR": {
+    "TITLE": "Selector",
+    "NOTES": "Selector",
+    "RANGE": "Report Range:",
+    "UPDATED": "last update: {{value}}",
+    "GROUP": {
+      "NAME": "Name",
+      "TYPE": "Type",
+      "GROUP_BY": "GroupBy"
+    },
+    "FORM": {
+      "DISABLE_BTN": "Disable",
+      "APPLY_BTN": "Apply",
+      "DISABLE_ALL_BTN": "Disable All",
+      "APPLY_ALL_BTN": "Apply All",
+      "ADD_GROUP": "Add Group",
+      "GROUP_N": "group {{value}}",
+      "ASSOCIATION": "association"
+    }
+  }
+}

@@ -4,7 +4,7 @@
     </div>
     <button class="btn btn-default pull-right clearfix"
             (click)="onAddGroup()"
-            style="margin-bottom: 5px">Add Group
+            style="margin-bottom: 5px" translate>SELECTOR.FORM.ADD_GROUP
     </button>
 </div>
 <div class="row">
@@ -24,13 +24,13 @@
     <div class="pull-right">
         <button class="btn btn-default"
                 (click)="onApplyDisableAll(false)"
-                style="margin-bottom: 5px">Disable All
+                style="margin-bottom: 5px" translate>SELECTOR.FORM.DISABLE_ALL_BTN
         </button>
         <button class="btn clearfix"
                 [ngClass]="{'btn-default': !active, 'btn-primary' : active}"
                 [disabled]="!form.valid"
                 (click)="onApplyDisableAll(true)"
-                style="margin-bottom: 5px">Apply All
+                style="margin-bottom: 5px" translate>SELECTOR.FORM.APPLY_BTN
         </button>
     </div>
 </div>

@@ -11,6 +11,9 @@ import { AccessLevel, Methods, QueryBuilder } from '../model';
 import { APIService } from '../services/api.service';
 import { GridConfig, GridConfigBuilder } from '../shared/data-grid/data-grid.component';
 import { ModalComponent } from '../shared/modal/modal';
+import { MessageService } from '../services/message.service';
+import { MessageType } from '../model/message-type.enum';
+import { Message } from '../model/message';
 
 @Component({
     selector: 'bi-share',
@@ -37,6 +40,7 @@ export class ShareComponent implements OnInit, OnDestroy {
     trashSpin = false;
 
     constructor(private api: APIService,
+                private messages: MessageService,
                 private route: ActivatedRoute,
                 private router: Router) {
     }
@@ -45,7 +49,7 @@ export class ShareComponent implements OnInit, OnDestroy {
         const init: Choose = {object: 'group', access: AccessLevel.READ_ONLY};
 
         this.userConfig = new GridConfigBuilder()
-            .headers(['Username', 'Full Name'])
+            .headers(['SHARE.USERNAME', 'SHARE.FULL_NAME'])
             .names(['username', 'full_name'])
             .data(this.api
                 .execute(new QueryBuilder().method(Methods.LIST_USERS).build())
@@ -55,7 +59,7 @@ export class ShareComponent implements OnInit, OnDestroy {
             .build();
 
         this.groupConfig = new GridConfigBuilder()
-            .headers(['Name'])
+            .headers(['SHARE.GROUP_NAME'])
             .names(['name'])
             .data(this.api
                 .execute(new QueryBuilder().method(Methods.LIST_GROUPS).build())
@@ -129,6 +133,7 @@ export class ShareComponent implements OnInit, OnDestroy {
             .subscribe(() => {
                     this.unsavedData = false;
                     this.shareSpin = false;
+                    this.messages.message(new Message(MessageType.INFO, 'Access level, Saved'))
                 },
                 () => this.shareSpin = false);
     }
@@ -148,6 +153,7 @@ export class ShareComponent implements OnInit, OnDestroy {
                 this.unsavedData = false;
                 this.accessCache = [];
                 this.preSelected = [];
+                this.messages.message(new Message(MessageType.INFO, 'Access level, Removed'))
             });
     }
 

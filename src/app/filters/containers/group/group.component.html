@@ -18,14 +18,14 @@
     <div class="panel" style="border-color: #ccc; margin-bottom: 10px;" formGroupName="group">
         <div class="panel-heading" style="border-color: #ddd;font-size: 16px;padding: 5px 15px 5px 15px;">
             <div class="row vertical-align">
-                <div class="col-md-3"><b>group {{ index }}</b></div>
+                <div class="col-md-3"><b translate [translateParams]="{value: index}">SELECTOR.FORM.GROUP_N</b></div>
                 <div class="col-md-6">
                     <div class="radio rtl radio-primary radio-inline">
                         <input type="radio"
                                id="inner-yes-{{ index }}"
                                formControlName="association"
                                value="$and">
-                        <label for="inner-yes-{{ index }}">association: AND</label>
+                        <label for="inner-yes-{{ index }}" translate>SELECTOR.FORM.ASSOCIATION<span>: AND</span></label>
                     </div>
                     <div class="radio rtl radio-primary radio-inline">
                         <input type="radio"
@@ -56,11 +56,11 @@
             <div class="pull-right" style="margin: 0 10px 10px;">
                 <button class="btn btn-default clean-filter btn-sm"
                    [disabled]="!group.value.active"
-                   (click)="onDisable()">Disable</button>
+                   (click)="onDisable()" translate>SELECTOR.FORM.DISABLE_BTN</button>
                 <button class="btn apply-filter btn-sm"
                    [ngClass]="{'btn-default': !group.value.active, 'btn-primary' : group.value.active}"
                    [disabled]="!group.valid"
-                   (click)="onApply()">Apply</button>
+                   (click)="onApply()" translate>SELECTOR.FORM.APPLY_BTN</button>
             </div>
         </div>
     </div>

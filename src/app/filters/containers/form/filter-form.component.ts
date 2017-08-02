@@ -185,8 +185,10 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                                     .filter(name => name !== 'name')
                                     .forEach(name => filterControls.removeControl(name));
 
-                                this.addControlToFilter(event.group, event.filter,
-                                    this.conditionService.field(event.value.split('.')[0], event.value.split('.')[1], JSON.parse(event.value.split('.')[2])));
+                                if (event.value.match('\\.')) {
+                                    this.addControlToFilter(event.group, event.filter,
+                                        this.conditionService.field(event.value.split('.')[0], event.value.split('.')[1], JSON.parse(event.value.split('.')[2])));
+                                }
                                 break;
                             }
                             case 'condition': {

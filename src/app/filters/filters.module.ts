@@ -1,8 +1,10 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import { Http } from '@angular/http';
 
 import { NgxErrorsModule } from '@ultimate/ngxerrors';
+import { TranslateLoader, TranslateModule, TranslateParser } from '@ngx-translate/core';
 
 import { GroupComponent } from './containers/group/group.component';
 import { FilterComponent } from './containers/filter/filter.component';
@@ -22,12 +24,25 @@ import { DictDirective } from './components/dict.directive';
 import { ConditionService } from './services/condition.service';
 import { EventService } from './services/event.service';
 import { ValueService } from './services/value.service';
+import { HttpLoaderFactory } from '../app.module';
+import { TranslateParserService } from '../shared/translate/translate-parser.service';
 
 @NgModule({
     imports: [
         CommonModule,
         ReactiveFormsModule,
-        NgxErrorsModule
+        NgxErrorsModule,
+        TranslateModule.forRoot({
+            loader: {
+                provide: TranslateLoader,
+                useFactory: HttpLoaderFactory,
+                deps: [Http]
+            },
+            parser: {
+                provide: TranslateParser,
+                useClass: TranslateParserService
+            }
+        })
     ],
     declarations: [
         DynamicFieldDirective,

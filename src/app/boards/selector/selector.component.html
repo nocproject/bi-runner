@@ -2,7 +2,7 @@
     <div class="col-md-12">
         <div class="chart-wrapper">
             <div class="chart-title" (click)="collapsed = !collapsed">
-                <div class="title-left">Selector</div>
+                <div class="title-left" translate>SELECTOR.TITLE</div>
                 <div class="title-right"
                      [ngClass]="{'collapsed': collapsed, 'expanded': !collapsed}">
                 </div>
@@ -11,8 +11,7 @@
             <div class="chart-stage" [ngClass]="{'collapse': collapsed}">
                 <div class="container-fluid">
                     <div class="row vertical-align">
-                        <div class="col-md-2">
-                            Report Range:
+                        <div class="col-md-2" translate>SELECTOR.RANGE
                         </div>
                         <div class="col-md-7">
                             <bi-datetime-range
@@ -20,8 +19,9 @@
                                     [toControlName]="this.END_DATE">
                             </bi-datetime-range>
                         </div>
-                        <div class="col-md-3 text-right">
-                            last update: {{ lastUpdate$ | async | date:'dd.MM.yyyy' }}
+                        <div class="col-md-3 text-right" translate
+                        [translateParams]="{value: (lastUpdate$ | async | date:'dd.MM.yyyy')}">
+                            SELECTOR.UPDATED
                         </div>
                     </div>
                     <hr>
@@ -44,7 +44,7 @@
                     </div>
                 </div>
             </div>
-            <div class="chart-notes">Selector</div>
+            <div class="chart-notes" translate>SELECTOR.NOTES</div>
         </div>
     </div>
 </div>

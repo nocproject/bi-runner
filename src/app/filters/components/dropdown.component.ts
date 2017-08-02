@@ -1,4 +1,7 @@
-import { Component, EventEmitter, forwardRef, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import {
+    Component, ElementRef, EventEmitter, forwardRef, HostListener, Input, OnDestroy, OnInit,
+    Output
+} from '@angular/core';
 import { ControlValueAccessor, FormControl, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { Observable } from 'rxjs/Observable';
@@ -64,7 +67,8 @@ export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAcc
     search = false;
     notFound = false;
 
-    constructor(private api: APIService) {
+    constructor(private api: APIService,
+                private _element: ElementRef) {
     }
 
     ngOnInit(): void {
@@ -130,6 +134,20 @@ export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAcc
 
     ngOnDestroy(): void {
         this.subscription.unsubscribe();
+    }
+
+    @HostListener('document:click', ['$event'])
+    onDocumentClick(event: any): void {
+
+        if (event.button !== 2 &&
+            !this._element.nativeElement.contains(event.target)) {
+            this.open = false;
+        }
+    }
+
+    @HostListener('keyup.esc')
+    onEsc(): void {
+        this.open = false;
     }
 
     writeValue(obj: any): void {
