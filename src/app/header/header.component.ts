@@ -14,7 +14,7 @@ import { Board, Message, MessageType, Methods, QueryBuilder, User } from '../mod
 import { ModalComponent } from '../shared/modal/modal';
 import { Export } from './export';
 import { AuthenticationService } from '../api/services/authentication.service';
-import { TranslateService } from '@ngx-translate/core';
+import { LanguageService } from '../services/language.service';
 
 @Component({
     selector: 'bi-header',
@@ -30,7 +30,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     accessLevel$: Observable<number>;
     exportSpin: boolean = false;
     version = environment.version;
-    lang = 'ru';
+    lang;
     // save as form
     saveForm: FormGroup;
     boardTitle: string;
@@ -40,13 +40,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
                 private messages: MessageService,
                 private api: APIService,
                 private route: Router,
-                private translate: TranslateService,
-                private filterService: FilterService) {
-        // this language will be used as a fallback when a translation isn't found in the current language
-        translate.setDefaultLang('en');
-
-        // the lang to use, if the lang isn't available, it will use the current loader to get them
-        translate.use(this.lang);
+                private filterService: FilterService,
+                private languageService: LanguageService) {
     }
 
     ngOnInit() {
@@ -70,6 +65,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
             'title': new FormControl(null, [Validators.required]),
             'description': new FormControl(null, [Validators.required])
         });
+        this.lang = this.languageService.current;
     }
 
     ngOnDestroy(): void {
@@ -147,6 +143,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     onChangeLang(lang: string){
         this.lang = lang;
-        this.translate.use(lang);
+        this.languageService.use(lang);
     }
 }

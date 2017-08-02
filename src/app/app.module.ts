@@ -10,7 +10,7 @@ import { TranslateLoader, TranslateModule, TranslateParser } from '@ngx-translat
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
-import { APIService, DebugService, FilterService, MessageService } from './services';
+import { APIService, DebugService, FilterService, LanguageService, MessageService } from './services';
 import { MessagesComponent } from './shared/messages/messages.component';
 import { HttpModule } from './shared/interceptor/module/http.module';
 import { BoardListComponent } from './boards/board-list.component';
@@ -90,6 +90,7 @@ import { MessageComponent } from './shared/messages/message.component';
         DebugService,
         FilterService,
         ShareCanDeactivateGuard,
+        LanguageService,
         MessageService
     ],
     bootstrap: [AppComponent]

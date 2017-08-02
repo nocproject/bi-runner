@@ -46,8 +46,9 @@
                         {{ lang }}<span class="caret"></span>
                     </a>
                     <ul *dropdownMenu class="dropdown-menu" role="menu">
-                        <li><a class="hand" (click)="onChangeLang('en')">en</a></li>
-                        <li><a class="hand" (click)="onChangeLang('ru')">ru</a></li>
+                        <li><a class="hand"
+                               *ngFor="let l of languageService.languages"
+                               (click)="onChangeLang(l)">{{ l }}</a></li>
                     </ul>
                 </li>
                 <li class="dropdown" dropdown>
@@ -118,8 +119,10 @@
     <bi-modal-content translate>HEADER.REMOVE_DLG.CONTENT</bi-modal-content>
     <bi-modal-footer>
         <button class="btn btn-primary"
-                (click)="onRemoveBoard(removeConfirm)" translate>HEADER.REMOVE_DLG.YES</button>
+                (click)="onRemoveBoard(removeConfirm)" translate>HEADER.REMOVE_DLG.YES
+        </button>
         <button class="btn btn-default"
-                (click)="removeConfirm.close()" translate>HEADER.REMOVE_DLG.NO</button>
+                (click)="removeConfirm.close()" translate>HEADER.REMOVE_DLG.NO
+        </button>
     </bi-modal-footer>
 </bi-modal>
