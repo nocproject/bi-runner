@@ -89,7 +89,6 @@ export class AuthenticationService {
 
         return this.http.post('/api/login/', JSON.stringify(query))
             .map(response => response.json().result)
-            .do(result => console.log(result))
             .catch(response => {
                 this.messagesService.message(new Message(MessageType.DANGER, response.toString()));
                 return Observable.throw(response.toString());

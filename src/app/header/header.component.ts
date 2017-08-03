@@ -30,7 +30,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     accessLevel$: Observable<number>;
     exportSpin: boolean = false;
     version = environment.version;
-    lang;
+    lang: string;
     // save as form
     saveForm: FormGroup;
     boardTitle: string;

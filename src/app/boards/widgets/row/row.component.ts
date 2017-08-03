@@ -14,7 +14,7 @@ import { Utils } from '../../../shared/utils';
 })
 export class RowComponent extends WidgetComponent {
     draw(response: Result): BaseMixin<RowChart> {
-        const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        const days = this.languageService.days;
         const chart: RowChart = dc.rowChart(`#${this.data.cell.name}`);
         const ndx = crossfilter(response.zip(false));
         const dimension = ndx.dimension(d => new Value(d.day, days[d.day - 1]));

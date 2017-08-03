@@ -7,7 +7,7 @@ import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/debounceTime';
 
 import { CellAndWidget, Filter, GroupBuilder, Result, Value, WhereBuilder } from '../../model';
-import { APIService, FilterService } from '../../services';
+import { APIService, FilterService, LanguageService } from '../../services';
 
 export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestroy {
     private subscription: Subscription;
@@ -25,7 +25,8 @@ export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestro
     yLabelOffset = 20;
 
     constructor(@Inject(forwardRef(() => APIService)) private api: APIService,
-                @Inject(forwardRef(() => FilterService)) private filterService: FilterService) {
+                @Inject(forwardRef(() => FilterService)) private filterService: FilterService,
+                @Inject(forwardRef(() => LanguageService)) public languageService: LanguageService) {
     }
 
     ngAfterViewInit(): void {

@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import * as _ from 'lodash';
 
 import { Observable } from 'rxjs/Rx';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import { APIService } from './api.service';
 import { Board, Field, IOption, Methods, QueryBuilder } from '../model';
