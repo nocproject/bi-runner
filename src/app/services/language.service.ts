@@ -15,7 +15,7 @@ export class LanguageService {
 
         // the lang to use, if the lang isn't available, it will use the current loader to get them
         translate.use(this.current);
-        translate.stream('DAYS').subscribe(value => {
+        translate.stream('WIDGET.DAYS').subscribe(value => {
             this._days = JSON.parse(value);
         });
     }

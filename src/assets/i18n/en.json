@@ -100,7 +100,8 @@
     "UNDEFINED": "undefined"
   },
   "WIDGET": {
-    "RESET": "reset"
+    "RESET": "reset",
+    "DAYS": "[\"Mon\", \"Tue\", \"Wed\", \"Thu\", \"Fri\", \"Sat\", \"Sun\"]"
   },
   "SELECTOR": {
     "TITLE": "Selector",
@@ -121,6 +122,5 @@
       "GROUP_N": "group {{value}}",
       "ASSOCIATION": "association"
     }
-  },
-  "DAYS": "[\"Mon\", \"Tue\", \"Wed\", \"Thu\", \"Fri\", \"Sat\", \"Sun\"]"
+  }
 }
