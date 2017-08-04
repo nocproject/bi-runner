@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -41,6 +42,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
                 private api: APIService,
                 private route: Router,
                 private filterService: FilterService,
+                private location: Location,
                 private languageService: LanguageService) {
     }
 
@@ -85,10 +87,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
                 this.messages.message(new Message(MessageType.INFO, 'Saved'));
             }
         );
-        // .toPromise()
-        //     .then(() => {
-        //         this.messages.message(new Message(MessageType.INFO, 'Saved'));
-        //     });
     }
 
     onSaveAsBoard(modal: ModalComponent) {
@@ -103,14 +101,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
             .method(Methods.SET_DASHBOARD)
             .params([board.prepare()])
             .build();
-        modal.close();
         this.api.execute(query).first()
             .subscribe(response => {
                 this.messages.message(new Message(MessageType.INFO, 'Saved'));
-                // this.route.navigate(['']);
-                // ToDo problem
-                console.log(response.result);
-                this.route.navigate(['board', response.result]);
+                modal.close();
+                this.location.replaceState(`/board/${response.result}`);
+                this.boardTitle = board.title;
+                board.id = response.result;
+                this.filterService.boardSubject.next(board);
             });
     }
 
@@ -124,7 +122,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.api.execute(query).first()
             .subscribe(() => {
                 this.messages.message(new Message(MessageType.INFO, 'Removed'));
-                this.route.navigate(['']);
+                this.route.navigate([''])
+                    .catch(err => console.log(err));
             });
     }
 
@@ -141,7 +140,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
             );
     }
 
-    onChangeLang(lang: string){
+    onChangeLang(lang: string) {
         this.lang = lang;
         this.languageService.use(lang);
     }

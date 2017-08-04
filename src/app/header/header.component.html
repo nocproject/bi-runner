@@ -1,4 +1,4 @@
-<nav class="navbar navbar-default">
+<nav class="navbar navbar-default navbar-fixed-top">
     <div class="container-fluid">
         <div class="navbar-header">
             <a routerLink="/" class="navbar-brand">NOC BI</a>
@@ -95,11 +95,11 @@
 <bi-modal #saveAs>
     <bi-modal-header translate>HEADER.SAVE_DLG.TITLE</bi-modal-header>
     <bi-modal-content>
-        <form [formGroup]="saveForm">
+        <form id="#saveForm" [formGroup]="saveForm" (ngSubmit)="onSaveAsBoard(saveAs)">
             <div class="form-group">
                 <label for="save-title" class="control-label" translate>HEADER.SAVE_DLG.NAME</label>
-                <input id="save-title" class="form-control"
-                       [ngModel]="boardTitle" formControlName="title" autofocus>
+                <input id="save-title" class="form-control" required autofocus
+                       [ngModel]="boardTitle" formControlName="title">
             </div>
             <div class="form-group">
                 <label for="save-description" class="control-label" translate>HEADER.SAVE_DLG.DESCRIPTION</label>
@@ -109,7 +109,9 @@
         </form>
     </bi-modal-content>
     <bi-modal-footer>
-        <button class="btn btn-primary" (click)="onSaveAsBoard(saveAs)" translate>HEADER.SAVE_DLG.SAVE_AS</button>
+        <button form="#saveForm" class="btn btn-primary" [disabled]="!saveForm.valid"
+                translate>HEADER.SAVE_DLG.SAVE_AS
+        </button>
         <button class="btn btn-default" (click)="saveAs.close()" translate>HEADER.SAVE_DLG.CLOSE</button>
     </bi-modal-footer>
 </bi-modal>
