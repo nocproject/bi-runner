@@ -110,7 +110,7 @@
     </bi-modal-content>
     <bi-modal-footer>
         <button form="#saveForm" class="btn btn-primary" [disabled]="!saveForm.valid"
-                translate>HEADER.SAVE_DLG.SAVE_AS
+                (click)="onSaveAsBoard(saveAs)" translate>HEADER.SAVE_DLG.SAVE_AS
         </button>
         <button class="btn btn-default" (click)="saveAs.close()" translate>HEADER.SAVE_DLG.CLOSE</button>
     </bi-modal-footer>

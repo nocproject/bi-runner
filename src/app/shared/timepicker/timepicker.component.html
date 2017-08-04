@@ -6,9 +6,9 @@
                     style="margin-bottom: -5px;"
                     *ngIf="caretShow"
                     (click)="changeHour(hourStep)">
-                <i class="fa fa-caret-up" aria-hidden="true"></i>
+                <i class="fa fa-caret-up"></i>
             </button>
-            <div *ngIf="readonly">{{model | date: 'HH'}}</div>
+            <div *ngIf="readonly">{{model | datex: 'HH'}}</div>
             <input *ngIf="!readonly"
                    tabindex="1"
                    class="form-control"
@@ -16,14 +16,14 @@
                    maxlength="2" size="3"
                    placeholder="HH"
                    aria-label="Hours"
-                   [value]="model | date: 'HH'"
+                   [value]="model | datex: 'HH'"
                    (change)="onUpdateHours($event.target.value)">
             <button type="button"
                     class="btn-link btn-sm"
                     style="margin-top: -5px;"
                     *ngIf="caretShow"
                     (click)="changeHour(-hourStep)">
-                <i class="fa fa-caret-down" aria-hidden="true"></i>
+                <i class="fa fa-caret-down"></i>
             </button>
         </div>
         <div class="tp-spacer">:</div>
@@ -33,9 +33,9 @@
                     style="margin-bottom: -5px;"
                     *ngIf="caretShow"
                     (click)="changeMinute(minuteStep)">
-                <i class="fa fa-caret-up" aria-hidden="true"></i>
+                <i class="fa fa-caret-up"></i>
             </button>
-            <div *ngIf="readonly">{{model | date: 'mm'}}</div>
+            <div *ngIf="readonly">{{model | datex: 'mm'}}</div>
             <input *ngIf="!readonly"
                    tabindex="2"
                    class="form-control"
@@ -43,14 +43,14 @@
                    maxlength="2" size="3"
                    placeholder="MM"
                    aria-label="Minutes"
-                   [value]="model | date: 'mm'"
+                   [value]="model | datex: 'mm'"
                    (change)="onUpdateMinutes($event.target.value)">
             <button type="button"
                     *ngIf="caretShow"
                     class="btn-link btn-sm"
                     style="margin-top: -5px;"
                     (click)="changeMinute(-minuteStep)">
-                <i class="fa fa-caret-down" aria-hidden="true"></i>
+                <i class="fa fa-caret-down"></i>
             </button>
         </div>
         <div class="tp-spacer"></div>

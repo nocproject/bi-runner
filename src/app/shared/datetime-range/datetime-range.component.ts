@@ -50,7 +50,7 @@ export class DatetimeRangeComponent implements AfterContentInit, OnInit {
 
     public ngOnInit() {
         this.opened = false;
-        this.dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        this.dayNames = ['DATETIME_RANGE.MON', 'DATETIME_RANGE.TUE', 'DATETIME_RANGE.WED', 'DATETIME_RANGE.THU', 'DATETIME_RANGE.FRI', 'DATETIME_RANGE.SAT', 'DATETIME_RANGE.SUN'];
         this.datePick = {
             from: null,
             to: null

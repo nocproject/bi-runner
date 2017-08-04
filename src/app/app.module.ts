@@ -36,6 +36,7 @@ import { AuthenticationService } from './api/services/authentication.service';
 import { TranslateHttpLoader } from './shared/translate/http-loader';
 import { TranslateParserService } from './shared/translate/translate-parser.service';
 import { MessageComponent } from './shared/messages/message.component';
+import { DatexPipe } from './shared/datex.pipe';
 
 @NgModule({
     declarations: [
@@ -59,7 +60,8 @@ import { MessageComponent } from './shared/messages/message.component';
         ShareComponent,
         DataGridComponent,
         AccessLevelComponent,
-        MessageComponent
+        MessageComponent,
+        DatexPipe
     ],
     imports: [
         BrowserModule,
