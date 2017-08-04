@@ -4,8 +4,8 @@ import { Component } from '@angular/core';
     selector: 'bi-root',
     template: `
         <bi-header></bi-header>
-        <bi-messages></bi-messages>
         <router-outlet></router-outlet>
+        <bi-messages class="footer navbar-fixed-bottom"></bi-messages>
     `
 })
 export class AppComponent {
