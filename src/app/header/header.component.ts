@@ -84,7 +84,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
             .build();
         this.api.execute(query).first().subscribe(
             () => {
-                this.messages.message(new Message(MessageType.INFO, 'Saved'));
+                this.messages.message(new Message(MessageType.INFO, 'MESSAGES.SAVED'));
             }
         );
     }
@@ -103,7 +103,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
             .build();
         this.api.execute(query).first()
             .subscribe(response => {
-                this.messages.message(new Message(MessageType.INFO, 'Saved'));
+                this.messages.message(new Message(MessageType.INFO, 'MESSAGES.SAVED'));
                 modal.close();
                 this.location.replaceState(`/board/${response.result}`);
                 this.boardTitle = board.title;
@@ -121,7 +121,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         modal.close();
         this.api.execute(query).first()
             .subscribe(() => {
-                this.messages.message(new Message(MessageType.INFO, 'Removed'));
+                this.messages.message(new Message(MessageType.INFO, 'MESSAGES.REMOVED'));
                 this.route.navigate([''])
                     .catch(err => console.log(err));
             });

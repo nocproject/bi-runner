@@ -133,7 +133,7 @@ export class ShareComponent implements OnInit, OnDestroy {
             .subscribe(() => {
                     this.unsavedData = false;
                     this.shareSpin = false;
-                    this.messages.message(new Message(MessageType.INFO, 'Access level, Saved'))
+                    this.messages.message(new Message(MessageType.INFO, 'MESSAGES.SHARE_SAVED'))
                 },
                 () => this.shareSpin = false);
     }
@@ -153,7 +153,7 @@ export class ShareComponent implements OnInit, OnDestroy {
                 this.unsavedData = false;
                 this.accessCache = [];
                 this.preSelected = [];
-                this.messages.message(new Message(MessageType.INFO, 'Access level, Removed'))
+                this.messages.message(new Message(MessageType.INFO, 'MESSAGES.SHARE_REMOVED'))
             });
     }
 

@@ -122,5 +122,11 @@
       "GROUP_N": "group {{value}}",
       "ASSOCIATION": "association"
     }
+  },
+  "MESSAGES": {
+    "SAVED": "Saved.",
+    "REMOVED": "Removed.",
+    "SHARE_SAVED": "Access level saved.",
+    "SHARE_REMOVED": "Access level removed."
   }
 }
