@@ -103,8 +103,8 @@ function interval(filter: Filter): Object {
             if (filter.condition.match(/periodic/)) {
                 const tokens = filter.values[0].value.split('-');
 
-                from = toPeriodic(tokens[0]);
-                to = toPeriodic(tokens[1]);
+                from = toPeriodicTime(tokens[0]);
+                to = toPeriodicTime(tokens[1]);
                 filter.name = `toTime(${filter.name})`;
             } else {
                 from = toDateTime(filter.values[0]);
@@ -262,7 +262,7 @@ function toDateTime(v: Value) {
     return `toDateTime('${d3.time.format('%Y-%m-%dT%H:%M:%S')(v.value)}')`;
 }
 
-function toPeriodic(param) {
+function toPeriodicTime(param) {
     const [h, m] = param.split(':').map(n => Number(n));
     return `toDateTime('1970-01-02 ${padNumber(h)}:${padNumber(m)}:00')`;
 }
