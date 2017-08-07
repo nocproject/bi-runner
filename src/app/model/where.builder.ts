@@ -1,7 +1,5 @@
 import * as _ from 'lodash';
 import * as d3 from 'd3';
-import * as moment from 'moment';
-import { Moment } from 'moment';
 
 import { Group } from './group';
 import { Filter } from './filter';
@@ -105,9 +103,9 @@ function interval(filter: Filter): Object {
             if (filter.condition.match(/periodic/)) {
                 const tokens = filter.values[0].value.split('-');
 
-                from = toSeconds(tokens[0]);
-                to = toSeconds(tokens[1]);
-                filter.name = `toInt32(toTime(${filter.name}))`;
+                from = toPeriodic(tokens[0]);
+                to = toPeriodic(tokens[1]);
+                filter.name = `toTime(${filter.name})`;
             } else {
                 from = toDateTime(filter.values[0]);
                 to = toDateTime(filter.values[1]);
@@ -264,8 +262,13 @@ function toDateTime(v: Value) {
     return `toDateTime('${d3.time.format('%Y-%m-%dT%H:%M:%S')(v.value)}')`;
 }
 
-function toSeconds(param) {
-    return Number(param.split(':')[0]) * 3600 + Number(param.split(':')[1]) * 60 + 86400;
+function toPeriodic(param) {
+    const [h, m] = param.split(':').map(n => Number(n));
+    return `toDateTime('1970-01-02 ${padNumber(h)}:${padNumber(m)}:00')`;
+}
+
+function padNumber(d: number): string {
+    return d < 10 ? '0' + d : d.toString();
 }
 
 function associationFn(condition: string, filters) {
