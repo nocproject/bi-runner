@@ -144,6 +144,13 @@
     "SAT": "Сб",
     "SUN": "Вс"
   },
+  "DROP_DOWN": {
+    "SEARCHING": "поиск...",
+    "NOT_FOUND": "ничего не найдено",
+    "ENTER_PATTERN": "шаблон для поиска"
+  },
+  "SELECT_CONDITION": "Выбор условия",
+  "SELECT_FIELD": "Выбор поля",
   "Value:": "Значение:",
   "Condition:": "Условие:",
   "Field:": "Название поля:",

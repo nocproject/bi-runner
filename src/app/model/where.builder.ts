@@ -165,25 +165,25 @@ function interval(filter: Filter): Object {
 }
 
 function inCondition(filter: Filter): Object {
-    if (valueLength(filter.values) > 1) {
+    if (_.startsWith(filter.type, 'tree-') && filter.values[0].value.length > 1) {
         return {
             $in: [
                 {
                     $field: filter.name
                 },
-                castToNumberArray(filter)
-            ]
-        };
-    } else {
-        return {
-            $eq: [
-                {
-                    $field: filter.name
-                },
-                castFirstToNumber(filter)
+                filter.values[0].value.map(item => Number(item))
             ]
         };
     }
+
+    return {
+        $eq: [
+            {
+                $field: filter.name
+            },
+            castFirstToNumber(filter)
+        ]
+    };
 }
 
 function castToValue(filter: Filter): Object {
@@ -238,10 +238,6 @@ function castToNumber(item: Value, type: string): any {
 
 function castFirstToNumber(filter: Filter): any {
     return castToNumber(_.first(filter.values), filter.type);
-}
-
-function castToNumberArray(filter: Filter): any[] {
-    return _.flattenDeep(filter.values.map(item => castToNumber(item, filter.type)));
 }
 
 function ipv4StrToNum(value): string {
@@ -309,8 +305,4 @@ function not(value) {
     return {
         $not: value
     };
-}
-
-function valueLength(values: Value[]): number {
-    return values.filter(item => item.value).length;
 }

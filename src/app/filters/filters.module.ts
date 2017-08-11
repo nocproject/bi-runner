@@ -5,6 +5,7 @@ import { Http } from '@angular/http';
 
 import { NgxErrorsModule } from '@ultimate/ngxerrors';
 import { TranslateLoader, TranslateModule, TranslateParser } from '@ngx-translate/core';
+import { TreeviewModule } from 'ngx-treeview';
 
 import { GroupComponent } from './containers/group/group.component';
 import { FilterComponent } from './containers/filter/filter.component';
@@ -32,6 +33,7 @@ import { TranslateParserService } from '../shared/translate/translate-parser.ser
         CommonModule,
         ReactiveFormsModule,
         NgxErrorsModule,
+        TreeviewModule.forRoot(),
         TranslateModule.forRoot({
             loader: {
                 provide: TranslateLoader,

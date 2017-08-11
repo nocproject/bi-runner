@@ -69,7 +69,7 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                     pseudo: false,
                     label: 'Field',
                     value: '',
-                    placeholder: 'Select field',
+                    placeholder: 'SELECT_FIELD',
                     options: this.fieldList.getAsOption(),
                     validation: [Validators.required]
                 }];
@@ -129,7 +129,7 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                                         pseudo: filter.pseudo,
                                         label: 'Field',
                                         value: `${filter.name}.${filter.type}.${filter.pseudo}`,
-                                        placeholder: 'Select field',
+                                        placeholder: 'SELECT_FIELD',
                                         options: this.fieldList.getAsOption(),
                                         validation: [Validators.required]
                                     };
@@ -234,7 +234,7 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                         pseudo: false,
                         label: 'Field',
                         value: '',
-                        placeholder: 'Select field',
+                        placeholder: 'SELECT_FIELD',
                         options: this.fieldList.getAsOption(),
                         validation: [Validators.required]
                     }]
@@ -274,7 +274,7 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                             pseudo: false,
                             validation: [Validators.required],
                             label: 'Field',
-                            placeholder: 'Select field',
+                            placeholder: 'SELECT_FIELD',
                             options: this.fieldList.getAsOption()
                         }]
                     ]

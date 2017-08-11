@@ -143,5 +143,12 @@
     "FRI": "Fri",
     "SAT": "Sat",
     "SUN": "Sun"
-  }
+  },
+  "DROP_DOWN": {
+    "SEARCHING": "searching...",
+    "NOT_FOUND": "not found",
+    "ENTER_PATTERN": "enter pattern"
+  },
+  "SELECT_CONDITION": "Select Condition",
+  "SELECT_FIELD": "Select field"
 }

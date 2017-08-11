@@ -119,7 +119,7 @@ export class ConditionService {
             validation: [Validators.required],
             label: 'Condition',
             options: this.conditions(name, type),
-            placeholder: 'Select Condition'
+            placeholder: 'SELECT_CONDITION'
         };
     }
 }
