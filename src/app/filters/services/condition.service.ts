@@ -19,12 +19,23 @@ export class ConditionService {
             type = 'Dictionary';
         }
 
+        if (_.startsWith(type, 'tree-')) {
+            type = 'Tree';
+        }
+
         if (_.startsWith(type, 'model-')) {
             type = 'Model';
         }
 
         switch (type) {
             case ('Dictionary'): {
+                conditions = [
+                    {value: 'in', text: '=='},
+                    {value: 'not.in', text: '<>'}
+                ];
+                return Observable.of(conditions);
+            }
+            case ('Tree'): {
                 conditions = [
                     {value: 'in', text: '=='},
                     {value: 'not.in', text: '<>'}

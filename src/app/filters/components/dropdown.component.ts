@@ -138,7 +138,6 @@ export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAcc
 
     @HostListener('document:click', ['$event'])
     onDocumentClick(event: any): void {
-
         if (event.button !== 2 &&
             !this._element.nativeElement.contains(event.target)) {
             this.open = false;

@@ -41,11 +41,12 @@ export class FieldListService {
                 }
 
                 if (field.dict) {
-                    // if ('administrative_domain' === field.name) {
-                    //     field.type = 'tree-' + field.dict;
-                    // } else {
-                    field.type = 'dict-' + field.dict;
-                    field.datasource = board.datasource;
+                    if ('administrative_domain' === field.name) {
+                        field.type = 'tree-' + field.dict;
+                    } else {
+                        field.type = 'dict-' + field.dict;
+                        field.datasource = board.datasource;
+                    }
                 }
 
                 if(field.model){

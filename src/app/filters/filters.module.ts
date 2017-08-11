@@ -15,6 +15,7 @@ import { FormDateRangeComponent } from './components/form-date-range/form-date-r
 import { FormDictionaryComponent } from './components/form-dictionary/form-dictionary.component';
 import { FormInputComponent } from './components/form-input/form-input.component';
 import { FormSelectComponent } from './components/form-select/form-select.component';
+import { FormTreeComponent } from './components/form-tree/form-tree.component';
 import { FormModelComponent } from './components/form-model/form-model.component';
 import { FormDropdownComponent } from './components/dropdown.component';
 
@@ -54,6 +55,7 @@ import { TranslateParserService } from '../shared/translate/translate-parser.ser
         FormModelComponent,
         FormDropdownComponent,
         FormSelectComponent,
+        FormTreeComponent,
         GroupComponent,
         FormDictionaryComponent,
         FormCalendarComponent,
@@ -75,7 +77,8 @@ import { TranslateParserService } from '../shared/translate/translate-parser.ser
         FormModelComponent,
         FormDictionaryComponent,
         FormInputComponent,
-        FormSelectComponent
+        FormSelectComponent,
+        FormTreeComponent
     ]
 })
 export class FiltersModule {
