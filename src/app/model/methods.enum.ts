@@ -10,6 +10,7 @@ export class Methods {
     static GET_DATASOURCE_INFO = 'get_datasource_info';
     static GET_DASHBOARD_ACCESS = 'get_dashboard_access';
     static SET_DASHBOARD_ACCESS = 'set_dashboard_access';
+    static GET_HIERARCHY = 'get_hierarchy';
     static SET_DASHBOARD_ACCESS_GROUP = 'set_dashboard_access_group';
     static SET_DASHBOARD_ACCESS_USER = 'set_dashboard_access_user';
 }

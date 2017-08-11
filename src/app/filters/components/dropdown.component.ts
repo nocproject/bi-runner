@@ -43,10 +43,13 @@ import { APIService } from '../../services';
             <ul class="dropdown-menu scrollable-menu"
                 style="width: 100%;"
                 [ngStyle]="{'display': (!notFound && !search && open) ? 'block' : 'none'}">
-                <li><a class="hand" (click)="onSelect(row)"
-                       *ngFor="let row of (list$ | async) as list">{{ row[1] }}</a></li>
+                <li *ngIf="config.type === 'dictionary'; else tree"><a class="hand" (click)="onSelect(row)"
+                                                                       *ngFor="let row of (list$ | async) as list">{{ row[1]
+                    }}</a>
+                </li>
             </ul>
         </div>
+        <ng-template #tree>{{ list$ | async }}</ng-template>
     `
 })
 export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAccessor {
@@ -77,11 +80,7 @@ export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAcc
         });
 
         this.list$ = this.api.execute(
-            new QueryBuilder()
-                .id(1)
-                .method(Methods.QUERY)
-                .params([query(this.config)])
-                .build())
+            this.makeQuery())
             .map(response => response.result.result)
             .do(data => {
                 this.search = false;
@@ -92,11 +91,7 @@ export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAcc
                 this.search = true;
                 this.notFound = false;
                 this.list$ = this.api.execute(
-                    new QueryBuilder()
-                        .id(2)
-                        .method(Methods.QUERY)
-                        .params([query(this.config, data.term)])
-                        .build())
+                    this.makeQuery(data.term))
                     .map(response => response.result.result)
                     .do(data => {
                         this.search = false;
@@ -129,7 +124,27 @@ export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAcc
                 .first()
                 .subscribe(response => this.placeholder = response.result.result[0][0]);
         }
+    }
 
+    private makeQuery(term?: string) {
+        let method;
+        let params;
+
+        switch (this.config.type) {
+            case 'dictionary':
+                method = Methods.QUERY;
+                params = dictionaryQuery(this.config, term);
+                break;
+            case 'tree':
+                method = Methods.GET_HIERARCHY;
+                params = treeQuery(this.config, term);
+                break;
+        }
+        return new QueryBuilder()
+            .id(2)
+            .method(method)
+            .params([params])
+            .build();
     }
 
     ngOnDestroy(): void {
@@ -183,7 +198,7 @@ export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAcc
     }
 }
 
-function query(config: FieldConfig, term?: string) {
+function dictionaryQuery(config: FieldConfig, term?: string) {
     const query = {
         fields: [
             {
@@ -216,5 +231,19 @@ function query(config: FieldConfig, term?: string) {
             ]
         };
     }
+    return query;
+}
+
+function treeQuery(config: FieldConfig, term?: string) {
+    const query = {
+        datasource: config.datasource,
+        field_name: config.expr,
+        dic_name: config.dict
+    };
+
+    if (term) {
+        query['filter'] = term;
+    }
+
     return query;
 }

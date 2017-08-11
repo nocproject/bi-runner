@@ -10,7 +10,6 @@ export interface IDateRange {
 }
 
 @Component({
-    // changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'bi-datetime-range',
     templateUrl: './datetime-range.component.html',
     styleUrls: ['./datetime-range.component.scss']
@@ -25,12 +24,12 @@ export class DatetimeRangeComponent implements AfterContentInit, OnInit {
     public dayNames: string[];
     public dates: Date[];
     public currentDate: Date;
+    public form: FormGroup;
 
     @Input()
     public fromControlName: string;
     @Input()
     public toControlName: string;
-    public form: FormGroup;
 
     get changes(): Observable<any> {
         return this.form.valueChanges;
@@ -253,10 +252,15 @@ export class DatetimeRangeComponent implements AfterContentInit, OnInit {
 
     @HostListener('document:click', ['$event'])
     onDocumentClick(event: any): void {
-
         if (event.button !== 2 &&
             !this._element.nativeElement.contains(event.target)) {
             this.toggleCalendar(false);
         }
+    }
+
+    // fire when in input fields only
+    @HostListener('keyup.esc')
+    onEsc(): void {
+        this.toggleCalendar(false);
     }
 }
