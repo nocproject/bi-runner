@@ -25,8 +25,8 @@ import { DictDirective } from './components/dict.directive';
 import { ConditionService } from './services/condition.service';
 import { EventService } from './services/event.service';
 import { ValueService } from './services/value.service';
-import { HttpLoaderFactory } from '../app.module';
 import { TranslateParserService } from '../shared/translate/translate-parser.service';
+import { TranslateHttpLoader } from '../shared/translate/http-loader';
 
 @NgModule({
     imports: [
@@ -81,4 +81,9 @@ import { TranslateParserService } from '../shared/translate/translate-parser.ser
     ]
 })
 export class FiltersModule {
+}
+
+// AoT requires an exported function for factories
+export function HttpLoaderFactory(http: Http) {
+    return new TranslateHttpLoader(http);
 }

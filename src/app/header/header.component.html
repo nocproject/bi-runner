@@ -95,7 +95,7 @@
 <bi-modal #saveAs>
     <bi-modal-header translate>HEADER.SAVE_DLG.TITLE</bi-modal-header>
     <bi-modal-content>
-        <form id="#saveForm" [formGroup]="saveForm" (ngSubmit)="onSaveAsBoard(saveAs)">
+        <form id="#saveForm" [formGroup]="saveForm">
             <div class="form-group">
                 <label for="save-title" class="control-label" translate>HEADER.SAVE_DLG.NAME</label>
                 <input id="save-title" class="form-control" required autofocus
