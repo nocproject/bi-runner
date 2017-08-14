@@ -35,12 +35,19 @@ import { TreeviewComponent, TreeviewItem } from 'ngx-treeview/src';
             overflow-x: hidden;
             position: relative;
         }
+        .bi-dropdown {
+            -o-text-overflow: ellipsis;
+            text-overflow:    ellipsis;
+            overflow:hidden;
+            white-space:nowrap;
+            width: 100%;text-align: left;
+        }
     `],
     template: `
         <div class="dropdown"
              [ngClass]="{'open': open}">
-            <button class="dropdown-toggle form-control"
-                    style="width: 100%;text-align: left;"
+            <button class="dropdown-toggle form-control bi-dropdown"
+                    [tooltip]="placeholder"
                     [ngClass]="{'open': open}"
                     (click)="openList()">{{ placeholder }}
                 <span *ngIf="showRemove" class="pull-right times" (click)="onClean()"></span>

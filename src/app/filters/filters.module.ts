@@ -6,6 +6,7 @@ import { Http } from '@angular/http';
 import { NgxErrorsModule } from '@ultimate/ngxerrors';
 import { TranslateLoader, TranslateModule, TranslateParser } from '@ngx-translate/core';
 import { TreeviewModule } from 'ngx-treeview';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 import { GroupComponent } from './containers/group/group.component';
 import { FilterComponent } from './containers/filter/filter.component';
@@ -33,6 +34,7 @@ import { TranslateHttpLoader } from '../shared/translate/http-loader';
         CommonModule,
         ReactiveFormsModule,
         NgxErrorsModule,
+        TooltipModule,
         TreeviewModule.forRoot(),
         TranslateModule.forRoot({
             loader: {
