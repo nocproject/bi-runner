@@ -147,8 +147,19 @@
   "DROP_DOWN": {
     "SEARCHING": "searching...",
     "NOT_FOUND": "not found",
-    "ENTER_PATTERN": "enter pattern"
+    "ENTER_PATTERN": "enter pattern",
+    "CHOOSE": "Choose Value"
   },
-  "SELECT_CONDITION": "Select Condition",
+  "CONDITION": {
+    "SELECT_CONDITION": "Select Condition",
+    "SELECT": "select",
+    "INTERVAL": "interval",
+    "NOT_IN_INTERVAL": "not in interval",
+    "PERIODIC_INTERVAL": "periodic interval",
+    "NOT_IN_PERIODIC": "not in periodic",
+    "EMPTY": "empty",
+    "NOT_EMPTY": "not empty",
+    "LIKE": "like"
+  },
   "SELECT_FIELD": "Select field"
 }

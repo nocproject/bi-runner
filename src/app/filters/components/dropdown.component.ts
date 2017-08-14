@@ -35,21 +35,23 @@ import { TreeviewComponent, TreeviewItem } from 'ngx-treeview/src';
             overflow-x: hidden;
             position: relative;
         }
+
         .bi-dropdown {
             -o-text-overflow: ellipsis;
-            text-overflow:    ellipsis;
-            overflow:hidden;
-            white-space:nowrap;
-            width: 100%;text-align: left;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            width: 100%;
+            text-align: left;
         }
     `],
     template: `
         <div class="dropdown"
              [ngClass]="{'open': open}">
             <button class="dropdown-toggle form-control bi-dropdown"
-                    [tooltip]="placeholder"
+                    [tooltip]="placeholder | translate"
                     [ngClass]="{'open': open}"
-                    (click)="openList()">{{ placeholder }}
+                    (click)="openList()" translate>{{ placeholder }}
                 <span *ngIf="showRemove" class="pull-right times" (click)="onClean()"></span>
                 <span class="pull-right caret" style="margin-top: 9px;"></span></button>
             <div [formGroup]="pattern" *ngIf="open">
@@ -127,7 +129,8 @@ export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAcc
                         this.notFound = data.length === 0;
                     });
             });
-        this.placeholder = `Choose ${this.config.description ? this.config.description : 'Value'}`;
+        // this.placeholder = `Choose ${this.config.description ? this.config.description : 'Value'}`;
+        this.placeholder = 'DROP_DOWN.CHOOSE';
         if (this.config.value) { // restore by Id
             if (this.config.type === 'dictionary') {
                 this.api.execute(
@@ -195,7 +198,8 @@ export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAcc
     onClean() {
         this.propagateChange(null);
         this.open = false;
-        this.placeholder = `Choose ${this.config.expr}`;
+        // this.placeholder = `Choose ${this.config.expr}`;
+        this.placeholder = 'DROP_DOWN.CHOOSE';
         this.select.emit();
         event.stopPropagation();
     }
@@ -210,8 +214,8 @@ export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAcc
     onTreeSelect(treeView: TreeviewComponent) {
         traverse(treeView.items, (leaf) => {
             if (leaf.checked) {
-                if(!_.includes(this.config.value, leaf.value)){
-                    this.config.value.push(leaf.value)
+                if (!_.includes(this.config.value, leaf.value)) {
+                    this.config.value.push(leaf.value);
                 }
             } else {
                 _.remove(this.config.value, n => n === leaf.value);

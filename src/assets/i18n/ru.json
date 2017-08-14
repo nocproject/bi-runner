@@ -147,9 +147,20 @@
   "DROP_DOWN": {
     "SEARCHING": "поиск...",
     "NOT_FOUND": "ничего не найдено",
-    "ENTER_PATTERN": "шаблон для поиска"
+    "ENTER_PATTERN": "шаблон для поиска",
+    "CHOOSE": "Выберете значение"
   },
-  "SELECT_CONDITION": "Выбор условия",
+  "CONDITION": {
+    "SELECT_CONDITION": "Выбор условия",
+    "SELECT": "select",
+    "INTERVAL": "интервал",
+    "NOT_IN_INTERVAL": "не в интервале",
+    "PERIODIC_INTERVAL": "периодический интервал",
+    "NOT_IN_PERIODIC": "не в периодическом",
+    "EMPTY": "пусто",
+    "NOT_EMPTY": "не пусто",
+    "LIKE": "содержит"
+  },
   "SELECT_FIELD": "Выбор поля",
   "Value:": "Значение:",
   "Condition:": "Условие:",

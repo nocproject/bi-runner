@@ -44,22 +44,22 @@ export class ConditionService {
             }
             case ('Model'): {
                 conditions = [
-                    {value: '$selector', text: 'select'}
+                    {value: '$selector', text: 'CONDITION.SELECT'}
                 ];
                 return Observable.of(conditions);
             }
             case 'DateTime': {
                 if ('duration_intervals' === name) {
                     conditions = [
-                        {value: 'interval', text: 'interval'},
-                        {value: 'periodic.interval', text: 'periodic interval'}
+                        {value: 'interval', text: 'CONDITION.INTERVAL'},
+                        {value: 'periodic.interval', text: 'CONDITION.PERIODIC_INTERVAL'}
                     ];
                 } else {
                     conditions = conditions.concat([
-                        {value: 'interval', text: 'interval'},
-                        {value: 'not.interval', text: 'not in interval'},
-                        {value: 'periodic.interval', text: 'periodic interval'},
-                        {value: 'not.periodic.interval', text: 'not in periodic'},
+                        {value: 'interval', text: 'CONDITION.INTERVAL'},
+                        {value: 'not.interval', text: 'CONDITION.NOT_IN_INTERVAL'},
+                        {value: 'periodic.interval', text: 'CONDITION.PERIODIC_INTERVAL'},
+                        {value: 'not.periodic.interval', text: 'CONDITION.NOT_IN_PERIODIC'},
                         {value: '$lt', text: '<'},
                         {value: '$lte', text: '<='},
                         {value: '$gt', text: '>'},
@@ -70,8 +70,8 @@ export class ConditionService {
             }
             case 'Date': {
                 conditions = conditions.concat([
-                    {value: 'interval', text: 'interval'},
-                    {value: 'not.interval', text: 'not in interval'},
+                    {value: 'interval', text: 'CONDITION.INTERVAL'},
+                    {value: 'not.interval', text: 'CONDITION.NOT_IN_INTERVAL'},
                     {value: '$lt', text: '<'},
                     {value: '$lte', text: '<='},
                     {value: '$gt', text: '>'},
@@ -81,8 +81,8 @@ export class ConditionService {
             }
             case 'IPv4': {
                 conditions = conditions.concat([
-                    {value: 'interval', text: 'interval'},
-                    {value: 'not.interval', text: 'not in interval'},
+                    {value: 'interval', text: 'CONDITION.INTERVAL'},
+                    {value: 'not.interval', text: 'CONDITION.NOT_IN_INTERVAL'},
                     {value: '$lt', text: '<'},
                     {value: '$gt', text: '>'}
                 ]);
@@ -90,16 +90,16 @@ export class ConditionService {
             }
             case 'String': {
                 conditions = conditions.concat([
-                    {value: 'empty', text: 'empty'},
-                    {value: 'not.empty', text: 'not empty'},
-                    {value: '$like', text: 'like'}
+                    {value: 'empty', text: 'CONDITION.empty'},
+                    {value: 'not.empty', text: 'CONDITION.not empty'},
+                    {value: '$like', text: 'CONDITION.like'}
                 ]);
                 return Observable.of(conditions);
             }
             default: {
                 conditions = conditions.concat([
-                    {value: 'interval', text: 'interval'},
-                    {value: 'not.interval', text: 'not in interval'},
+                    {value: 'interval', text: 'CONDITION.INTERVAL'},
+                    {value: 'not.interval', text: 'CONDITION.NOT_IN_INTERVAL'},
                     {value: '$lt', text: '<'},
                     {value: '$lte', text: '<='},
                     {value: '$gt', text: '>'},
@@ -119,7 +119,7 @@ export class ConditionService {
             validation: [Validators.required],
             label: 'Condition',
             options: this.conditions(name, type),
-            placeholder: 'SELECT_CONDITION'
+            placeholder: 'CONDITION.SELECT_CONDITION'
         };
     }
 }

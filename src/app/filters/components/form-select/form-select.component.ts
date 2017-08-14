@@ -15,7 +15,7 @@ import { FieldConfig } from '../../models/form-config.interface';
                     [formControlName]="config.name">
                 <option [ngValue]="''" translate>{{ config.placeholder }}</option>
                 <option *ngFor="let item of config.options | async"
-                        [value]="item.value">
+                        [value]="item.value" translate>
                     {{ item.text }}
                 </option>
             </select>
