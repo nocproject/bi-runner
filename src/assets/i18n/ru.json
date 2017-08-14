@@ -152,7 +152,7 @@
   },
   "CONDITION": {
     "SELECT_CONDITION": "Выбор условия",
-    "SELECT": "select",
+    "SELECT": "выбор",
     "INTERVAL": "интервал",
     "NOT_IN_INTERVAL": "не в интервале",
     "PERIODIC_INTERVAL": "периодический интервал",
