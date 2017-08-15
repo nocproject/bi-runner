@@ -20,6 +20,7 @@ import { FieldConfig } from '../models/form-config.interface';
 import { Methods, QueryBuilder, Result } from '../../model';
 import { APIService } from '../../services';
 import { TreeviewComponent, TreeviewItem } from 'ngx-treeview/src';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'bi-form-dropdown',
@@ -103,6 +104,7 @@ export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAcc
     };
 
     constructor(private api: APIService,
+                private translate: TranslateService,
                 private _element: ElementRef) {
     }
 
@@ -129,8 +131,7 @@ export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAcc
                         this.notFound = data.length === 0;
                     });
             });
-        // this.placeholder = `Choose ${this.config.description ? this.config.description : 'Value'}`;
-        this.placeholder = 'DROP_DOWN.CHOOSE';
+        this.placeholder = this.translate.instant('DROP_DOWN.CHOOSE') + ` ${this.config.description ? this.config.description : this.translate.instant('DROP_DOWN.VALUE')}`;
         if (this.config.value) { // restore by Id
             if (this.config.type === 'dictionary') {
                 this.api.execute(
@@ -199,7 +200,7 @@ export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAcc
         this.propagateChange(null);
         this.open = false;
         // this.placeholder = `Choose ${this.config.expr}`;
-        this.placeholder = 'DROP_DOWN.CHOOSE';
+        this.placeholder = this.translate.instant('DROP_DOWN.CHOOSE') + ' ' + this.config.expr;
         this.select.emit();
         event.stopPropagation();
     }

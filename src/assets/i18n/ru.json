@@ -10,6 +10,7 @@
     "LOGOUT": "Выход",
     "ABOUT": "О Приложении",
     "ISSUE": "Создать issue",
+    "IMPORT": "Импорт",
     "ABOUT_DLG": {
       "TITLE": "Приложение NOC BI",
       "CONTENT": "NOC BI версия {{value}}",
@@ -148,7 +149,8 @@
     "SEARCHING": "поиск...",
     "NOT_FOUND": "ничего не найдено",
     "ENTER_PATTERN": "шаблон для поиска",
-    "CHOOSE": "Выберете значение"
+    "CHOOSE": "Выберете",
+    "VALUE": "значение"
   },
   "CONDITION": {
     "SELECT_CONDITION": "Выбор условия",
