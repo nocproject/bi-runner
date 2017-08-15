@@ -2,13 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 
-import { Methods, QueryBuilder } from '../model';
+import { Message, MessageType, Methods, QueryBuilder } from '../model';
+import { APIService, MessageService } from '../services';
 import { GridConfig, GridConfigBuilder } from '../shared/data-grid/data-grid.component';
-import { APIService } from '../services/api.service';
 
 @Component({
     selector: 'bi-board-list',
-    templateUrl: './board-list.component.html'
+    templateUrl: './board-list.component.html',
+    styleUrls: ['./board-list.component.scss']
 })
 export class BoardListComponent implements OnInit {
     tableConfig: GridConfig;
@@ -16,6 +17,7 @@ export class BoardListComponent implements OnInit {
 
     constructor(private api: APIService,
                 private route: Router,
+                private messages: MessageService,
                 private location: Location) {
     }
 
@@ -47,6 +49,27 @@ export class BoardListComponent implements OnInit {
 
     onCancel(): void {
         this.location.back();
+    }
+
+    onImport(file) {
+        let reader = new FileReader();
+        reader.onload = () => {
+            const query = JSON.parse(reader.result);
+
+            console.log(query);
+
+            this.api.execute(query).first()
+                .subscribe((response) => {
+                        this.messages.message(new Message(MessageType.INFO, 'MESSAGES.IMPORTED'));
+                        this.route.navigate(['board', response.result])
+                            .catch(msg => this.messages.message(new Message(MessageType.DANGER, msg)));
+                    },
+                    error => {
+                        this.messages.message(new Message(MessageType.DANGER, error));
+                    });
+
+        };
+        reader.readAsText(file.target.files[0]);
     }
 }
 

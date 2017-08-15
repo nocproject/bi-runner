@@ -69,7 +69,8 @@
     "CHANGED": "Changed",
     "OPEN_BTN": "Open",
     "CANCEL_BTN": "Cancel",
-    "TITLE": "Select Report"
+    "TITLE": "Select Report",
+    "IMPORT": "Import"
   },
   "GRID": {
     "SEARCH": "enter search string"
@@ -128,7 +129,8 @@
     "SAVED": "Saved.",
     "REMOVED": "Removed.",
     "SHARE_SAVED": "Access level saved.",
-    "SHARE_REMOVED": "Access level removed."
+    "SHARE_REMOVED": "Access level removed.",
+    "IMPORTED": "Imported"
   },
   "DATETIME_RANGE": {
     "THIS_MONTH": "This Month",

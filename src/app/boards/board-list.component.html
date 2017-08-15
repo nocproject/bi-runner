@@ -20,6 +20,11 @@
                 <button type="button" class="btn btn-primary" (click)="onOpen()"
                         [disabled]="selected.length === 0" translate>LIST.OPEN_BTN
                 </button>
+                <label class="btn btn-default btn-import" translate>LIST.IMPORT
+                    <input type="file" style="display: none;"
+                           accept="text/json"
+                           (change)="onImport($event)">
+                </label>
                 <button type="button" class="btn btn-default" (click)="onCancel()" translate>LIST.CANCEL_BTN
                 </button>
             </div>
