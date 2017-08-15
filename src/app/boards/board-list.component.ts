@@ -54,9 +54,13 @@ export class BoardListComponent implements OnInit {
     onImport(file) {
         let reader = new FileReader();
         reader.onload = () => {
-            const query = JSON.parse(reader.result);
+            let query;
 
-            console.log(query);
+            try {
+                query = JSON.parse(reader.result);
+            } catch (error) {
+                this.messages.message(new Message(MessageType.DANGER, error));
+            }
 
             this.api.execute(query).first()
                 .subscribe((response) => {
