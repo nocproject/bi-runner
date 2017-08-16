@@ -33,7 +33,12 @@ export class FieldListService {
                     field.isSelectable = false;
                     field.group = 999;
                 } else {
-                    field.group = board.filterFields[index].group;
+                    if (field.dict === 'managedobject_platform_bi') {
+                        field.isSelectable = false;
+                        field.group = 999;
+                    } else {
+                        field.group = board.filterFields[index].group;
+                    }
                 }
 
                 if (!field.description) {
@@ -49,7 +54,7 @@ export class FieldListService {
                     }
                 }
 
-                if(field.model){
+                if (field.model) {
                     field.type = 'model-' + field.model.replace('.', '_');
                     field.datasource = board.datasource;
                     field.pseudo = false;
@@ -80,6 +85,7 @@ export class FieldListService {
                 return field;
             })
             .toArray()
+            .do(console.log)
             .map(fields => fields
                 .sort((n1, n2) => {
                     if (`${n1.group}x${n1.description}` > `${n2.group}x${n2.description}`) {
@@ -99,6 +105,7 @@ export class FieldListService {
     getAsOption(): Observable<IOption[]> {
         return this.fields$
             .map(array => array
+                .filter(field => field.isSelectable)
                 .map(field => {
                         return {value: `${field.name}.${field.type}.${field.pseudo}`, text: field.name};
                     }

@@ -192,6 +192,12 @@
       ],
       "filter_fields": [
         {
+          "name": "date"
+        },
+        {
+          "name": "ts"
+        },
+        {
           "name": "managed_object"
         },
         {
@@ -202,6 +208,22 @@
         }
       ],
       "agv_fields": [
+        {
+          "group": 0,
+          "name": "date"
+        },
+        {
+          "group": 0,
+          "name": "ts"
+        },
+        {
+          "group": 1,
+          "name": "attempts"
+        },
+        {
+          "group": 1,
+          "name": "rtt"
+        }
       ],
       "pseudo_fields": [
       ]

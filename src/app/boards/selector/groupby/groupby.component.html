@@ -9,7 +9,7 @@
     <tbody>
     <div *ngFor="let field of fields$ | async">
         <tr [ngClass]="{'disabled-row': !field.isSelectable}"
-            *ngIf="field.isSelectable">
+            *ngIf="field.isGrouping">
             <td>
                 <div class="checkbox rtl checkbox-primary" tooltip="{{ field.description }}" placement="right">
                     <span>{{ field.name }}</span>

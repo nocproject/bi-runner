@@ -635,14 +635,6 @@
           "name": "reboots"
         }
       ],
-      "pseudo_fields": [
-        {
-          "description": "ИП Длительность",
-          "name": "duration_intervals",
-          "type": "DateTime",
-          "pseudo": true
-        }
-      ],
       "agv_fields": [
         {
           "group": 2,
@@ -740,6 +732,14 @@
         {
           "group": 1,
           "name": "root"
+        }
+      ],
+      "pseudo_fields": [
+        {
+          "description": "ИП Длительность",
+          "name": "duration_intervals",
+          "type": "DateTime",
+          "pseudo": true
         }
       ]
     }

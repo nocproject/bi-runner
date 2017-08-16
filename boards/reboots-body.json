@@ -89,68 +89,6 @@
         "method": "query"
       },
       "datasource": "reboots",
-      "filter_fields": [
-        {
-          "group": 2,
-          "name": "administrative_domain"
-        },
-        {
-          "group": 1,
-          "name": "container"
-        },
-        {
-          "group": 1,
-          "name": "ip"
-        },
-        {
-          "group": 1,
-          "name": "managed_object"
-        },
-        {
-          "group": 1,
-          "name": "platform"
-        },
-        {
-          "group": 1,
-          "name": "profile"
-        },
-        {
-          "group": 1,
-          "name": "segment"
-        },
-        {
-          "group": 0,
-          "name": "ts"
-        },
-        {
-          "group": 1,
-          "name": "vendor"
-        },
-        {
-          "group": 1,
-          "name": "version"
-        },
-        {
-          "group": 3,
-          "name": "x"
-        },
-        {
-          "group": 3,
-          "name": "y"
-        },
-        {
-          "group": 0,
-          "name": "ts"
-        },
-        {
-          "group": 2,
-          "name": "pool"
-        },
-        {
-          "group": 0,
-          "name": "date"
-        }
-      ],
       "widgets": [
         {
           "cell": "c11",
@@ -347,6 +285,64 @@
             "id": 0,
             "method": "query"
           }
+        }
+      ],
+      "filter_fields": [
+        {
+          "group": 2,
+          "name": "administrative_domain"
+        },
+        {
+          "group": 1,
+          "name": "container"
+        },
+        {
+          "group": 1,
+          "name": "ip"
+        },
+        {
+          "group": 1,
+          "name": "managed_object"
+        },
+        {
+          "group": 1,
+          "name": "platform"
+        },
+        {
+          "group": 1,
+          "name": "profile"
+        },
+        {
+          "group": 1,
+          "name": "segment"
+        },
+        {
+          "group": 0,
+          "name": "ts"
+        },
+        {
+          "group": 1,
+          "name": "vendor"
+        },
+        {
+          "group": 1,
+          "name": "version"
+        },
+        {
+          "group": 3,
+          "name": "x"
+        },
+        {
+          "group": 3,
+          "name": "y"
+        },
+        {
+          "group": 2,
+          "name": "pool"
+        },
+        {
+          "group": 0,
+          "name": "date"
         }
       ],
       "agv_fields": [
