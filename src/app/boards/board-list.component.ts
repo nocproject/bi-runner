@@ -14,6 +14,7 @@ import { GridConfig, GridConfigBuilder } from '../shared/data-grid/data-grid.com
 export class BoardListComponent implements OnInit {
     tableConfig: GridConfig;
     selected: string[] = [];
+    showSpinner = true;
 
     constructor(private api: APIService,
                 private route: Router,
@@ -28,6 +29,7 @@ export class BoardListComponent implements OnInit {
             .fromJson(tableJson)
             .data(this.api
                 .execute(new QueryBuilder().method(Methods.LIST_DASHBOARDS).build())
+                .do(() => this.showSpinner = false)
                 .map(response => response.result)
                 .flatMap(rows => rows)
                 .filter(row => row['format'] === '2')
@@ -37,6 +39,8 @@ export class BoardListComponent implements OnInit {
 
     onOpen(): void {
         if (this.selected.length === 1) {
+            this.showSpinner = true;
+            this.selected = [];
             this.route.navigate(['board', this.selected[0]])
                 .catch(msg => console.log(msg));
         }

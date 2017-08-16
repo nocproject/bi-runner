@@ -2,6 +2,7 @@
   position: relative;
   overflow: hidden;
 }
+
 .btn-import input[type=file] {
   position: absolute;
   top: 0;
@@ -16,4 +17,15 @@
   background: white;
   cursor: inherit;
   display: block;
+}
+
+.spin:after {
+  content: "\f110";
+  font-family: FontAwesome;
+  font-size: 14px;
+  position: absolute;
+  right: 50px;
+  top: 15px;
+  -webkit-animation: fa-spin 2s infinite linear;
+  animation: fa-spin 2s infinite linear;
 }
