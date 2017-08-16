@@ -40,9 +40,9 @@ export class BoardListComponent implements OnInit {
     onOpen(): void {
         if (this.selected.length === 1) {
             this.showSpinner = true;
-            this.selected = [];
             this.route.navigate(['board', this.selected[0]])
                 .catch(msg => console.log(msg));
+            this.selected = [];
         }
     }
 
