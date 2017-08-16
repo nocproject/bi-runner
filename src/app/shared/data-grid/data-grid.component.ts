@@ -67,7 +67,6 @@ export class DataGridComponent implements AfterViewInit, OnInit, OnChanges, OnDe
 
     ngOnChanges(changes: SimpleChanges): void {
         if (this.searchField) {
-            console.log('changed');
             this.getData().then(_ => this.searchField.setValue(''));
         }
     }

@@ -50,7 +50,6 @@ export class TimepickerComponent {
 
     onUpdateMinutes(minutes: number): void {
         this.model = dateFns.setMinutes(this.model, minutes);
-        console.log(this.model);
         this.updated.emit(this.model);
     }
 }

@@ -45,7 +45,6 @@ export class FilterComponent implements OnInit {
     }
 
     onChange(value, name): void {
-        console.log(`onChange: ${name} = ${value}`);
         this.eventService.next({
             type: EventType.ChangeSelect,
             group: this.group,

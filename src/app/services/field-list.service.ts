@@ -85,7 +85,6 @@ export class FieldListService {
                 return field;
             })
             .toArray()
-            .do(console.log)
             .map(fields => fields
                 .sort((n1, n2) => {
                     if (`${n1.group}x${n1.description}` > `${n2.group}x${n2.description}`) {

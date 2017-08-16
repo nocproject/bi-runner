@@ -225,7 +225,6 @@ export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAcc
         this.propagateChange(this.config.value);
         this.select.emit();
         this.placeholder = `selected: ${this.config.value.length} nodes`;
-        console.log(this.config.value);
     }
 
     private makeQuery(term?: string) {

@@ -47,7 +47,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        console.log('HeaderComponent ngOnInit');
         this.user$ = this.authService.user$;
         this.isLogin$ = this.authService.isLogIn$;
         this.board$ = this.filterService.board$;
@@ -135,7 +134,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
                 (response) => {
                     this.exportSpin = false;
                     Export.save(response.result, this.filterService);
-                    console.log('Exported');
                 }
             );
     }

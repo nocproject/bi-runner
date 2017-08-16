@@ -45,7 +45,6 @@ export class FilterService {
     }
 
     constructor(private eventService: EventService) {
-        console.log('created FilterService...');
     }
 
     cleanFilters() {

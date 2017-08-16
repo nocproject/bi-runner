@@ -171,7 +171,6 @@ export class ShareComponent implements OnInit, OnDestroy {
     }
 
     private initCacheAccess(boardId: string): Observable<Access[]> {
-        console.log('invoke get_dashboard_access');
         return this.api.execute(
             new QueryBuilder()
                 .method(Methods.GET_DASHBOARD_ACCESS)

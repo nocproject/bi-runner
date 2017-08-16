@@ -294,7 +294,6 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                 return JSON.stringify(previous) === JSON.stringify(current);
             })
             .subscribe((data: FormData) => {
-                console.log(`form is valid : ${this.form.valid}`);
                 console.log('FilterFormComponent: subscribe - execute filter!');
 
                 this.filterService.formFilters(data.groups, this.config);

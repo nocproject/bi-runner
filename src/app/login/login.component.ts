@@ -16,12 +16,10 @@ export class LoginComponent implements OnInit, OnDestroy {
     constructor(private authService: AuthenticationService,
                 private route: ActivatedRoute,
                 private router: Router) {
-        console.log('LoginComponent constructor');
         this.authService.logout();
     }
 
     ngOnInit() {
-        console.log('LoginComponent ngOnInit');
         this.loginForm = new FormGroup({
             'user': new FormControl(null, [Validators.required]),
             'password': new FormControl(null, [Validators.required])
@@ -31,7 +29,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        console.log('LoginComponent ngOnDestroy');
         this.authService.isLoginOpen = false;
     }
 

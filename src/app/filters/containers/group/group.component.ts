@@ -26,7 +26,6 @@ export class GroupComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        console.log('GroupComponent: on init');
         this.group = (<FormGroup>(<FormArray>this.parent.get('groups')).at(this.index));
         this.subscription = this.group.statusChanges
             .distinctUntilChanged()
