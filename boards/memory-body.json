@@ -67,10 +67,12 @@
                     "alias": "date",
                     "expr": "date",
                     "label": "Дата",
+                    "group": 0,
                     "format": "dateToString"
                   },
                   {
-                    "expr": "managed_object"
+                    "expr": "managed_object",
+                    "group": 1
                   },
                   {
                     "expr": {
@@ -98,14 +100,17 @@
                   },
                   {
                     "expr": "load_1min",
+                    "group": 2,
                     "label": "Загрузка 1 мин"
                   },
                   {
                     "expr": "usage",
+                    "group": 3,
                     "label": "Использ. %"
                   },
                   {
                     "expr": "usage_5s",
+                    "group": 4,
                     "label": "Использ. 5 сек"
                   }
                 ],

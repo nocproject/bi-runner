@@ -52,6 +52,7 @@ export class ValueService {
                 first.dict = type.replace('tree-', '');
                 first.expr = name;
                 first.datasource = datasource;
+                first.value = [];
                 break;
             }
             case 'Model': {
