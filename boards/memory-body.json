@@ -75,7 +75,7 @@
                   {
                     "expr": {
                       "$lookup": [
-                        "managedobject",
+                        "managedobject_bi",
                         {
                           "$field": "managed_object"
                         }
@@ -83,6 +83,18 @@
                     },
                     "alias": "name",
                     "label": "Оборудование"
+                  },
+                  {
+                    "expr": {
+                      "$lookup": [
+                        "managedobject_platform_bi",
+                        {
+                          "$field": "managed_object"
+                        }
+                      ]
+                    },
+                    "alias": "platform",
+                    "label": "Платформа"
                   },
                   {
                     "expr": "load_1min",
@@ -139,13 +151,6 @@
         }
       ],
       "pseudo_fields": [
-        {
-          "description": "Managed Object",
-          "model": "sa.ManagedObject",
-          "name": "managed_object",
-          "type": "UInt64",
-          "pseudo": true
-        }
       ]
     }
   ]

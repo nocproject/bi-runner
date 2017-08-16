@@ -55,7 +55,7 @@
                     {
                       "$field": "managed_object"
                     }
-                  ],
+                  ]
                 }
               },
               {
@@ -107,6 +107,18 @@
                     }
                   },
                   {
+                    "expr": {
+                      "$lookup": [
+                        "managedobject_platform_bi",
+                        {
+                          "$field": "managed_object"
+                        }
+                      ]
+                    },
+                    "alias": "platform",
+                    "label": "Платформа"
+                  },
+                  {
                     "label": "Среднее количество потерянных пакетов в серии",
                     "expr": "sum(rtt)/count(rtt)",
                     "alias": "value",
@@ -147,6 +159,18 @@
                         }
                       ]
                     }
+                  },
+                  {
+                    "expr": {
+                      "$lookup": [
+                        "managedobject_platform_bi",
+                        {
+                          "$field": "managed_object"
+                        }
+                      ]
+                    },
+                    "alias": "platform",
+                    "label": "Платформа"
                   },
                   {
                     "label": "Средняя круговая задержка пакета",
