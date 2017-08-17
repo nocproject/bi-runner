@@ -66,7 +66,7 @@
                 "desc": true
               },
               {
-                "label": "Средняя круговая задержка пакета (мс)",
+                "label": "Средняя круговая задержка пакета (мкс)",
                 "expr": "sum(rtt)/count(rtt)",
                 "alias": "rtt_value",
                 "order": 1,
