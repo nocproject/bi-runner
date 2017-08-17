@@ -8,6 +8,60 @@
         "uuid": "f2736f99-a568-4820-b746-1e71d48b4374",
         "cells": [
           {
+            "md": 6,
+            "name": "c11",
+            "lg": null,
+            "height": 200,
+            "sm": null,
+            "xs": null,
+            "row": 0
+          },
+          {
+            "md": 6,
+            "name": "c12",
+            "lg": null,
+            "height": 200,
+            "sm": null,
+            "xs": null,
+            "row": 0
+          },
+          {
+            "md": 6,
+            "name": "c21",
+            "lg": null,
+            "height": 200,
+            "sm": null,
+            "xs": null,
+            "row": 0
+          },
+          {
+            "md": 6,
+            "name": "c22",
+            "lg": null,
+            "height": 200,
+            "sm": null,
+            "xs": null,
+            "row": 0
+          },
+          {
+            "md": 6,
+            "name": "c31",
+            "lg": null,
+            "height": 200,
+            "sm": null,
+            "xs": null,
+            "row": 0
+          },
+          {
+            "md": 6,
+            "name": "c32",
+            "lg": null,
+            "height": 200,
+            "sm": null,
+            "xs": null,
+            "row": 0
+          },
+          {
             "md": 12,
             "name": "table2",
             "lg": null,
@@ -34,30 +88,12 @@
       },
       "description": "отчет по метрикам",
       "groups": [],
-      "title": "Ping",
+      "title": "Ping с виджетами",
       "format": 2,
       "export": {
         "params": [
           {
             "fields": [
-              {
-                "label": "Object ID",
-                "alias": "object",
-                "expr": "managed_object",
-                "group": 0
-              },
-              {
-                "label": "Устройство",
-                "alias": "name",
-                "expr": {
-                  "$lookup": [
-                    "managedobject_bi",
-                    {
-                      "$field": "managed_object"
-                    }
-                  ]
-                }
-              },
               {
                 "label": "Среднее количество потерянных пакетов в серии (шт.)",
                 "expr": "sum(attempts)/count(attempts)",
@@ -81,6 +117,182 @@
       },
       "datasource": "ping",
       "widgets": [
+        {
+          "cell": "c11",
+          "note": "по времени",
+          "title": "Количество потерянных пакетов по Времени (шт.)",
+          "type": "lineChart",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "date",
+                    "group": 0,
+                    "order": 0,
+                    "desc": true
+                  },
+                  {
+                    "expr": "sum(attempts)",
+                    "alias": "cnt"
+                  }
+                ],
+                "datasource": "ping"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        },
+        {
+          "cell": "c21",
+          "note": "по дню недели",
+          "title": "Количество потерянных пакетов по дню недели (шт.)",
+          "type": "rowChart",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "toDayOfWeek(date)",
+                    "alias": "day",
+                    "group": 0,
+                    "order": 0,
+                    "desc": true
+                  },
+                  {
+                    "expr": "sum(attempts)",
+                    "alias": "cnt"
+                  }
+                ],
+                "datasource": "ping"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        },
+        {
+          "cell": "c12",
+          "note": "по времени",
+          "title": "Средняя задержка по Времени (мс)",
+          "type": "lineChart",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "date",
+                    "group": 0,
+                    "order": 0,
+                    "desc": true
+                  },
+                  {
+                    "expr": "sum(rtt)/count(rtt) / 1000",
+                    "alias": "cnt"
+                  }
+                ],
+                "datasource": "ping"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        },
+        {
+          "cell": "c22",
+          "note": "по дню недели",
+          "title": "Средняя задержка по дню недели (мс)",
+          "type": "rowChart",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "toDayOfWeek(date)",
+                    "alias": "day",
+                    "group": 0,
+                    "order": 0,
+                    "desc": true
+                  },
+                  {
+                    "expr": "sum(rtt)/count(rtt) / 1000",
+                    "alias": "cnt"
+                  }
+                ],
+                "datasource": "ping"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        },
+        {
+          "cell": "c31",
+          "note": "по времени",
+          "title": "Количество потерянных пакетов по номеру часа (шт.)",
+          "type": "barChart",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "toHour(ts)",
+                    "alias": "hour",
+                    "group": 0,
+                    "order": 0,
+                    "desc": true
+                  },
+                  {
+                    "expr": "sum(attempts)",
+                    "alias": "cnt"
+                  },
+                  {
+                    "expr": "toHour(ts)",
+                    "group": "1",
+                    "alias": "name"
+                  }
+                ],
+                "datasource": "ping"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        },
+        {
+          "cell": "c32",
+          "note": "по времени",
+          "title": "Средняя задержка по по номеру часа (мс)",
+          "type": "barChart",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "toHour(ts)",
+                    "alias": "hour",
+                    "group": 0,
+                    "order": 0,
+                    "desc": true
+                  },
+                  {
+                    "expr": "sum(rtt)/count(rtt) / 1000",
+                    "alias": "cnt"
+                  },
+                  {
+                    "expr": "toHour(ts)",
+                    "group": "1",
+                    "alias": "name"
+                  }
+                ],
+                "datasource": "ping"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        },
         {
           "cell": "table1",
           "note": "оборудование",

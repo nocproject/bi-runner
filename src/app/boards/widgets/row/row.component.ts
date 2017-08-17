@@ -32,6 +32,7 @@ export class RowComponent extends WidgetComponent {
         });
         chart.group(values);
         chart.dimension(dimension);
+        chart.ordering(d => d.key.value);
         chart.ordinalColors(['#3182bd', '#6baed6', '#9ecae1', '#c6dbef', '#dadaeb']);
         chart.label(d => d.key.desc);
         chart.title(d => `${d.key.desc} : ${d.value}`);
