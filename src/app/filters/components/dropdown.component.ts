@@ -61,12 +61,12 @@ import { TranslateService } from '@ngx-translate/core';
     template: `
         <div class="dropdown"
              [ngClass]="{'open': open}">
-            <div class="dropdown-toggle form-control bi-dropdown"
+            <div class="dropdown-toggle form-control"
                  [tooltip]="placeholder | translate"
                  [ngClass]="{'open': open}"
                  (click)="openList()">
                 <ul>
-                    <li translate>{{ placeholder }}</li>
+                    <li class="bi-dropdown" translate>{{ placeholder }}</li>
                     <div style="margin-left: auto; display: flex;align-items: center;">
                         <li *ngIf="showRemove" (click)="onClean($event)">
                             <i class="fa fa-times"></i>
@@ -85,7 +85,7 @@ import { TranslateService } from '@ngx-translate/core';
                 style="width: 100%;"
                 [ngStyle]="{'display': (!notFound && !search && open) ? 'block' : 'none'}">
                 <li *ngIf="config.type === 'dictionary'; else tree">
-                    <a class="hand" (click)="onSelect(row)"
+                    <a class="hand bi-dropdown" (click)="onSelect(row)"
                        *ngFor="let row of (list$ | async) as list">{{ row[1] }}</a>
                 </li>
             </ul>
