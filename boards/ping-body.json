@@ -59,16 +59,16 @@
                 }
               },
               {
-                "label": "Среднее количество потерянных пакетов в серии",
-                "expr": "sum(rtt)/count(rtt)",
-                "alias": "rtt_value",
+                "label": "Среднее количество потерянных пакетов в серии (шт.)",
+                "expr": "sum(attempts)/count(attempts)",
+                "alias": "attempts_value",
                 "order": 0,
                 "desc": true
               },
               {
-                "label": "Средняя круговая задержка пакета",
-                "expr": "sum(attempts)/count(attempts)",
-                "alias": "attempts_value",
+                "label": "Средняя круговая задержка пакета (мс)",
+                "expr": "sum(rtt)/count(rtt)",
+                "alias": "rtt_value",
                 "order": 1,
                 "desc": true
               }
@@ -84,7 +84,7 @@
         {
           "cell": "table1",
           "note": "оборудование",
-          "title": "ICMP Ping round trip time in microseconds, топ 10",
+          "title": "ICMP Ping количество потерянных пакетов в серии, топ 10",
           "type": "dataTable",
           "query": {
             "params": [
@@ -119,8 +119,8 @@
                     "label": "Платформа"
                   },
                   {
-                    "label": "Среднее количество потерянных пакетов в серии",
-                    "expr": "sum(rtt)/count(rtt)",
+                    "label": "Среднее количество потерянных пакетов в серии (шт.)",
+                    "expr": "sum(attempts)/count(attempts)",
                     "alias": "value",
                     "format": "numberFormat",
                     "order": 0,
@@ -138,7 +138,7 @@
         {
           "cell": "table2",
           "note": "оборудование",
-          "title": "ICMP Ping packet loss in per request, топ 10",
+          "title": "ICMP Ping круговая задержка пакета в мс, топ 10",
           "type": "dataTable",
           "query": {
             "params": [
@@ -173,10 +173,10 @@
                     "label": "Платформа"
                   },
                   {
-                    "label": "Средняя круговая задержка пакета",
-                    "expr": "sum(attempts)/count(attempts)",
+                    "label": "Средняя круговая задержка пакета (мс)",
+                    "expr": "sum(rtt)/count(rtt)/1000",
                     "alias": "value",
-                    "format": "numberFormat",
+                    "format": "intFormat",
                     "order": 0,
                     "desc": true
                   }
@@ -218,11 +218,7 @@
         },
         {
           "group": 1,
-          "name": "attempts"
-        },
-        {
-          "group": 1,
-          "name": "rtt"
+          "name": "managed_object"
         }
       ],
       "pseudo_fields": [

@@ -45,16 +45,36 @@ import { TranslateService } from '@ngx-translate/core';
             width: 100%;
             text-align: left;
         }
+
+        ul {
+            display: flex;
+            justify-content: space-between;
+            flex-direction: row;
+            align-items: center;
+            padding: 0;
+        }
+
+        ul li {
+            list-style: none;
+        }
     `],
     template: `
         <div class="dropdown"
              [ngClass]="{'open': open}">
-            <button class="dropdown-toggle form-control bi-dropdown"
-                    [tooltip]="placeholder | translate"
-                    [ngClass]="{'open': open}"
-                    (click)="openList()" translate>{{ placeholder }}
-                <span *ngIf="showRemove" class="pull-right times" (click)="onClean()"></span>
-                <span class="pull-right caret" style="margin-top: 9px;"></span></button>
+            <div class="dropdown-toggle form-control bi-dropdown"
+                 [tooltip]="placeholder | translate"
+                 [ngClass]="{'open': open}"
+                 (click)="openList()">
+                <ul>
+                    <li translate>{{ placeholder }}</li>
+                    <div style="margin-left: auto; display: flex;align-items: center;">
+                        <li *ngIf="showRemove" (click)="onClean($event)">
+                            <i class="fa fa-times"></i>
+                        </li>
+                        <li class="caret"></li>
+                    </div>
+                </ul>
+            </div>
             <div [formGroup]="pattern" *ngIf="open">
                 <input formControlName="term" class="form-control"
                        [placeholder]="'DROP_DOWN.ENTER_PATTERN' | translate">
@@ -196,7 +216,7 @@ export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAcc
         this.open = !this.open;
     }
 
-    onClean() {
+    onClean(event: MouseEvent) {
         this.propagateChange(null);
         this.open = false;
         // this.placeholder = `Choose ${this.config.expr}`;

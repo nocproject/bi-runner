@@ -73,6 +73,9 @@ export class FieldListService {
                 if (_.findIndex(board.agvFields, e => e.name === field.name) === -1) {
                     field.isGrouping = false;
                 }
+                if (field.dict === 'managedobject_platform_bi') {
+                    field.isGrouping = false;
+                }
                 return field;
             })
             .map(field => {

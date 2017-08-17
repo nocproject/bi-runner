@@ -33,6 +33,10 @@ export class Utils {
         return d3.format('.4f')(parseFloat(data));
     }
 
+    static intFormat(data) {
+        return d3.format('.0f')(parseFloat(data));
+    }
+
     // use if property format exist in table query
     static secondsToString(sec) {
         const hours = Math.floor(sec / 3600);
