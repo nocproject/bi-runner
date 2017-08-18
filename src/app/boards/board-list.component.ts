@@ -28,12 +28,9 @@ export class BoardListComponent implements OnInit {
             .names(['title', 'description', 'owner', 'created', 'changed'])
             .fromJson(tableJson)
             .data(this.api
-                .execute(new QueryBuilder().method(Methods.LIST_DASHBOARDS).build())
+                .execute(new QueryBuilder().method(Methods.LIST_DASHBOARDS).params([{version: 2}]).build())
                 .do(() => this.showSpinner = false)
-                .map(response => response.result)
-                .flatMap(rows => rows)
-                .filter(row => row['format'] === '2')
-                .toArray())
+                .map(response => response.result))
             .build();
     }
 
@@ -55,8 +52,9 @@ export class BoardListComponent implements OnInit {
         this.location.back();
     }
 
-    onImport(file) {
+    onImport(file, el: HTMLInputElement) {
         let reader = new FileReader();
+
         reader.onload = () => {
             let query;
 
@@ -67,14 +65,12 @@ export class BoardListComponent implements OnInit {
             }
 
             this.api.execute(query).first()
+                .finally(() => el.value = '')
                 .subscribe((response) => {
-                        this.messages.message(new Message(MessageType.INFO, 'MESSAGES.IMPORTED'));
-                        this.route.navigate(['board', response.result])
-                            .catch(msg => this.messages.message(new Message(MessageType.DANGER, msg)));
-                    },
-                    error => {
-                        this.messages.message(new Message(MessageType.DANGER, error));
-                    });
+                    this.messages.message(new Message(MessageType.INFO, 'MESSAGES.IMPORTED'));
+                    this.route.navigate(['board', response.result])
+                        .catch(msg => this.messages.message(new Message(MessageType.DANGER, msg)));
+                });
 
         };
         reader.readAsText(file.target.files[0]);

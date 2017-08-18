@@ -19,11 +19,13 @@ import { LanguageService } from '../services/language.service';
 
 @Component({
     selector: 'bi-header',
+    styleUrls: ['./header.component.scss'],
     templateUrl: './header.component.html'
 })
 
 export class HeaderComponent implements OnInit, OnDestroy {
     private boardSubscription: Subscription;
+    private saveAsSubscription: Subscription;
     user$: Observable<User>;
     isLogin$: Observable<boolean>;
     board$: Observable<Board>;
@@ -35,6 +37,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     // save as form
     saveForm: FormGroup;
     boardTitle: string;
+    titleError: string;
     boardDesc: string;
 
     constructor(private authService: AuthenticationService,
@@ -67,10 +70,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
             'description': new FormControl(null, [Validators.required])
         });
         this.lang = this.languageService.current;
+        this.saveAsSubscription = this.saveForm.get('title').valueChanges.subscribe(
+            () => this.titleError = ''
+        );
     }
 
     ngOnDestroy(): void {
         this.boardSubscription.unsubscribe();
+        this.saveAsSubscription.unsubscribe();
     }
 
     onSaveBoard() {
@@ -94,7 +101,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
         board.description = this.saveForm.get('description').value;
         board.groups = this.filterService.allFilters();
         delete board['id'];
-        this.filterService.cleanFilters();
 
         const query = new QueryBuilder()
             .method(Methods.SET_DASHBOARD)
@@ -102,12 +108,18 @@ export class HeaderComponent implements OnInit, OnDestroy {
             .build();
         this.api.execute(query).first()
             .subscribe(response => {
+                this.filterService.cleanFilters();
                 this.messages.message(new Message(MessageType.INFO, 'MESSAGES.SAVED'));
                 modal.close();
                 this.location.replaceState(`/board/${response.result}`);
                 this.boardTitle = board.title;
                 board.id = response.result;
                 this.filterService.boardSubject.next(board);
+            }, error => {
+                let responseBody = error.json();
+                if (responseBody.hasOwnProperty('error') && _.includes(responseBody.error, 'name exists')) {
+                    this.titleError = 'VALIDATOR.NAME_EXIST';
+                }
             });
     }
 

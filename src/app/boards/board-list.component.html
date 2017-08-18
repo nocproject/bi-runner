@@ -25,8 +25,8 @@
                 </button>
                 <label class="btn btn-default btn-import" translate>LIST.IMPORT
                     <input type="file" style="display: none;"
-                           accept="text/json"
-                           (change)="onImport($event)">
+                           accept="text/json" #import
+                           (change)="onImport($event, import)">
                 </label>
                 <button type="button" class="btn btn-default" (click)="onCancel()" translate>LIST.CANCEL_BTN
                 </button>

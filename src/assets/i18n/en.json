@@ -59,7 +59,8 @@
     "INT_BAD_FORMAT": "bad format, use 9999999999-9999999999",
     "INT_BAD_RANGE": "second value less first",
     "INT_BAD_FIRST": "first value isn't int",
-    "INT_BAD_SECOND": "second value isn't int"
+    "INT_BAD_SECOND": "second value isn't int",
+    "NAME_EXIST": "name exists"
   },
   "LIST": {
     "NAME": "Name",

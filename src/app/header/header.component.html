@@ -42,7 +42,7 @@
             <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown" dropdown>
                     <a dropdownToggle class="dropdown-toggle">
-                        <i class="fa fa-language icon-offset" aria-hidden="true"></i>
+                        <i class="fa fa-language icon-offset"></i>
                         {{ lang }}<span class="caret"></span>
                     </a>
                     <ul *dropdownMenu class="dropdown-menu" role="menu">
@@ -53,21 +53,18 @@
                 </li>
                 <li class="dropdown" dropdown>
                     <a dropdownToggle class="dropdown-toggle">
-                        <i class='fa fa-user icon-offset'
-                           aria-hidden='true'></i>{{ (user$ | async).display() }}<span class="caret"></span>
+                        <i class='fa fa-user icon-offset'></i>{{ (user$ | async).display() }}<span class="caret"></span>
                     </a>
                     <ul *dropdownMenu class="dropdown-menu" role="menu">
                         <li><a class="hand" (click)="about.open()" translate>
-                            <i class="fa fa-question-circle icon-offset"
-                               aria-hidden="true"></i>HEADER.ABOUT</a>
+                            <i class="fa fa-question-circle icon-offset"></i>HEADER.ABOUT</a>
                         </li>
                         <li><a href="https://code.getnoc.com/noc/bi-runner/issues" target="_blank" translate>
-                            <i class="fa fa-external-link icon-offset" aria-hidden="true">
+                            <i class="fa fa-external-link icon-offset">
                             </i>HEADER.ISSUE</a></li>
                         <li role="separator" class="divider"></li>
                         <li><a routerLink="login" translate>
-                            <i class="fa fa-sign-out icon-offset"
-                               aria-hidden="true"></i>HEADER.LOGOUT</a>
+                            <i class="fa fa-sign-out icon-offset"></i>HEADER.LOGOUT</a>
                     </ul>
                 </li>
             </ul>
@@ -96,16 +93,18 @@
     <bi-modal-header translate>HEADER.SAVE_DLG.TITLE</bi-modal-header>
     <bi-modal-content>
         <form id="#saveForm" [formGroup]="saveForm">
-            <div class="form-group">
                 <label for="save-title" class="control-label" translate>HEADER.SAVE_DLG.NAME</label>
                 <input id="save-title" class="form-control" required autofocus
                        [ngModel]="boardTitle" formControlName="title">
-            </div>
-            <div class="form-group">
+                <div *ngIf="saveForm.get('title').hasError('required')">
+                    <div class="ng-invalid" translate>VALIDATOR.REQUIRED</div>
+                </div>
+                <div *ngIf="titleError">
+                    <div class="ng-invalid" translate>{{ titleError }}</div>
+                </div>
                 <label for="save-description" class="control-label" translate>HEADER.SAVE_DLG.DESCRIPTION</label>
                 <input id="save-description" class="form-control"
                        [ngModel]="boardDesc" formControlName="description">
-            </div>
         </form>
     </bi-modal-content>
     <bi-modal-footer>
