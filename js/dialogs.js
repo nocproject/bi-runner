@@ -20,7 +20,7 @@ var NocDialog = (function() {
                 }
             },
             queryParams: JSON.stringify({
-                params: [],
+                params: [{version: 1}],
                 id: 0,
                 method: 'list_dashboards'
             }),
