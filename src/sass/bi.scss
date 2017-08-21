@@ -75,3 +75,43 @@ body {
 .navbar-nav > .disabled > a{
   pointer-events: none;
 }
+
+.dc-chart path.line {
+  fill: none;
+  stroke-width: 1.5px;
+}
+
+.dc-chart path.area {
+  fill-opacity: .3;
+  stroke: none;
+}
+
+.dc-chart path.highlight {
+  stroke-width: 3;
+  fill-opacity: 1;
+  stroke-opacity: 1;
+}
+
+.dc-chart .selected path {
+  stroke-width: 3;
+  stroke: #ccc;
+  fill-opacity: 1;
+}
+
+.dc-chart .deselected path {
+  stroke: none;
+  fill-opacity: .5;
+  fill: #ccc;
+}
+
+.dc-chart g.map {
+  cursor: pointer;
+}
+
+.dc-chart g.map :hover {
+  fill: #d7eff9;
+}
+
+.dc-chart g.map path {
+  stroke: #fff;
+}

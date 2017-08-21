@@ -3,7 +3,10 @@ import { TranslateLoader } from '@ngx-translate/core';
 import 'rxjs/add/operator/map';
 
 export class TranslateHttpLoader implements TranslateLoader {
-    constructor(private http: Http, private prefix: string = './assets/i18n/', private suffix: string = '.json') {
+    private prefix: string = './assets/i18n/';
+    private suffix: string = '.json';
+
+    constructor(private http: Http) {
     }
 
     /**

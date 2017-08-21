@@ -12,6 +12,7 @@ export * from './group';
 export * from './helpers';
 export * from './ioption';
 export * from './layout';
+export * from './map';
 export * from './mean';
 export * from './message';
 export * from './message-type.enum';

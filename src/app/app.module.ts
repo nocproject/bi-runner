@@ -17,7 +17,14 @@ import { BoardListComponent } from './boards/board-list.component';
 import { LoginComponent } from './login/login.component';
 import { BoardComponent } from './boards/board/board.component';
 import { BoardResolver } from './boards/board/board.resolver';
-import { BarComponent, LineComponent, PieComponent, RowComponent, TableComponent } from './boards/widgets';
+import {
+    BarComponent,
+    GeoComponent,
+    LineComponent,
+    PieComponent,
+    RowComponent,
+    TableComponent
+} from './boards/widgets';
 import { SelectorComponent } from './boards/selector/selector.component';
 import { CounterComponent } from './boards/widgets/counter/counter.component';
 import { AnchorDirective } from './shared/anchor.directive';
@@ -50,6 +57,7 @@ import { DatexPipe } from './shared/datex.pipe';
         LineComponent,
         RowComponent,
         BarComponent,
+        GeoComponent,
         TableComponent,
         SelectorComponent,
         CounterComponent,
