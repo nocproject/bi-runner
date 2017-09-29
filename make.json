@@ -1,5 +1,5 @@
 {
-  "name": "bi-runner",
+  "name": "bi-runner-leagacy",
   "version": "0.0.0",
   "dst_prefix": "ui/bi/",
   "src_prefix": "",
