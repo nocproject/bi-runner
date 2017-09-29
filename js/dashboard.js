@@ -655,7 +655,7 @@ var Dashboard = function(element) {
                     })
                 ;
 
-                restoreWidgets(chart.anchorName(), 'date', 'interval');
+                // restoreWidgets(chart.anchorName(), 'date', 'interval');
                 $(chart.anchor()).closest(".chart-wrapper").find("img").remove();
                 chart.render();
             }
@@ -731,7 +731,7 @@ var Dashboard = function(element) {
                 .xAxis()
                 .ticks(4);
 
-                restoreWidgets(chart.anchorName(), 'UInt64', 'in');
+                // restoreWidgets(chart.anchorName(), 'UInt64', 'in');
                 $(chart.anchor()).closest(".chart-wrapper").find("img").remove();
                 chart.render();
             }
@@ -815,7 +815,7 @@ var Dashboard = function(element) {
                 })
                 .on('renderlet', onRenderLet);
 
-                restoreWidgets(chart.anchorName(), 'UInt64', 'in');
+                // restoreWidgets(chart.anchorName(), 'UInt64', 'in');
                 $(chart.anchor()).closest(".chart-wrapper").find("img").remove();
                 chart.render();
             }
@@ -1014,7 +1014,7 @@ var Dashboard = function(element) {
                 .on('renderlet', onRenderLet)
                 ;
 
-                restoreWidgets(chart.anchorName(), 'UInt8', 'interval');
+                // restoreWidgets(chart.anchorName(), 'UInt8', 'interval');
                 $(chart.anchor()).closest(".chart-wrapper").find("img").remove();
                 chart.render();
             }

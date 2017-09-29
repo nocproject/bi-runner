@@ -180,7 +180,7 @@ var NocDialog = (function() {
         BootstrapDialog.show({
             title: __('Application NOC BI'),
             type: dialogType,
-            message: '<p>NOC BI ' + __('version') + ' 0.0.0.0</p><small>Copyright © 2007-2016, The NOC Project</small>',
+            message: '<p>NOC BI ' + __('version') + ' 0.0.0.0</p><small>Copyright © 2007-2017, The NOC Project</small>',
             buttons: [{
                 label: __('Close'),
                 action: function(dialog) {
