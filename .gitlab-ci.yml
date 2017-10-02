@@ -5,7 +5,7 @@ stages:
 
 build_npm:
   stage: build
-  image: node:8
+  image: node:8.4
   script:
     - set -x
     - sed -i s/0.0.0.0/${CI_BUILD_TAG}/ src/environments/environment.prod.ts
