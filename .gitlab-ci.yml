@@ -34,7 +34,7 @@ build:
     - mkdir -p dist2
     - sed -i s/0.0.0/${CI_BUILD_TAG}/ make.json
     - ./build.py make.json
-    - echo ${CI_BUILD_TAG} > dist2/bi-runner.latest
+    - echo ${CI_BUILD_TAG} > dist2/bi-runner-legacy.latest
   tags:
     - docker
   artifacts:
