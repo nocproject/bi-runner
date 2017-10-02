@@ -19,7 +19,7 @@ import * as _ from 'lodash';
 import { FieldConfig } from '../models/form-config.interface';
 import { Methods, QueryBuilder, Result } from '../../model';
 import { APIService } from '../../services';
-import { TreeviewComponent, TreeviewItem } from 'ngx-treeview/src';
+import { TreeviewComponent, TreeviewItem } from 'ngx-treeview';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -234,6 +234,7 @@ export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAcc
 
     onTreeSelect(treeView: TreeviewComponent) {
         traverse(treeView.items, (leaf) => {
+            // ToDo проблема с фильтрацией на сервере, при одном листе на узле выбираются все родители, фильтрацию надо делать на клиенте.
             if (leaf.checked) {
                 if (!_.includes(this.config.value, leaf.value)) {
                     this.config.value.push(leaf.value);

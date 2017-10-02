@@ -35,7 +35,7 @@
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
     "ngx-bootstrap": "^1.8.0",
-    "ngx-treeview": "^1.0.10",
+    "ngx-treeview": "^1.2.3",
     "rxjs": "^5.1.0",
     "typedjson-npm": "^0.1.7",
     "zone.js": "^0.8.4"

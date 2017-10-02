@@ -3504,9 +3504,9 @@ ngx-bootstrap@^1.8.0:
   dependencies:
     moment "2.18.1"
 
-ngx-treeview@^1.0.10:
-  version "1.0.10"
-  resolved "https://registry.yarnpkg.com/ngx-treeview/-/ngx-treeview-1.0.10.tgz#49bf8375572de0c04c6576281c9a039723702da8"
+ngx-treeview@^1.2.3:
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/ngx-treeview/-/ngx-treeview-1.2.3.tgz#32c18212d58e106cc0ceca94bf9008457209fcbd"
 
 no-case@^2.2.0:
   version "2.3.1"

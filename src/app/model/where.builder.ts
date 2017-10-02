@@ -171,11 +171,10 @@ function inCondition(filter: Filter): Object {
                 {
                     $field: filter.name
                 },
-                filter.values[0].value.map(item => Number(item))
+                filter.values[0].value.map(item => item)
             ]
         };
     }
-
 
     if (valueLength(filter.values) > 1) {
         return {
@@ -192,7 +191,7 @@ function inCondition(filter: Filter): Object {
                 {
                     $field: filter.name
                 },
-                castFirstToNumber(filter)
+                castFirstToNumberTree(filter)
             ]
         };
     }
@@ -239,17 +238,15 @@ function castToValue(filter: Filter): Object {
 }
 
 function castToNumber(item: Value, type: string): any {
-    if (_.startsWith(type, 'tree-') || _.startsWith(type, 'dict-')) {
-        return Number(item.value);
-    }
-    if (type.match(/int|float/i)) { // Delete mask prompt
-        return Number(item.value = item.value.replace(/_/g, ''));
-    }
     return item.value;
 }
 
 function castFirstToNumber(filter: Filter): any {
     return castToNumber(_.first(filter.values), filter.type);
+}
+
+function castFirstToNumberTree(filter: Filter): any {
+    return castToNumber(new Value(_.first(_.first(filter.values).value)), filter.type);
 }
 
 function castToNumberArray(filter: Filter): any[] {
