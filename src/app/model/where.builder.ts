@@ -171,7 +171,7 @@ function inCondition(filter: Filter): Object {
                 {
                     $field: filter.name
                 },
-                filter.values[0].value.map(item => item)
+                filter.values[0].value
             ]
         };
     }
