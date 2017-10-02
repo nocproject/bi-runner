@@ -55,7 +55,7 @@ var NocFilter = (function() {
             } else if('String' === type) {
                 values = values[0];
             } else if(type && (!type.indexOf('tree-') || !type.indexOf('dict-') || type.match(/int|float/i))) {
-                values = Number(values);
+                values = values;
             }
 
             if(condition) {
@@ -115,7 +115,7 @@ var NocFilter = (function() {
                     },
                     flat(values.map(function(value) {
                         if(!type.indexOf('tree-') || !type.indexOf('dict-') || type.match(/int|float/i)) {
-                            return Number(value);
+                            return value;
                         }
                         return value;
                     }))

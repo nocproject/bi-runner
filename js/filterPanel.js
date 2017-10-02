@@ -737,14 +737,14 @@ var NocFilterPanel = (function() {
             }
 
             if(type.match(/int|float/i)) {
-                var val1 = Number(firstValue);
+                var val1 = firstValue;
 
                 if(isNaN(val1)) {
                     showErrors([__('value is not number')], []);
                     return;
                 }
 
-                var val2 = Number(secondValue);
+                var val2 = secondValue;
                 if(!$(secondRow).hasClass('hidden')) {
                     if(!val2 || isNaN(val2)) {
                         showErrors([], [__('value is not number')]);
