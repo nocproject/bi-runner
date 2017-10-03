@@ -165,7 +165,7 @@ function interval(filter: Filter): Object {
 }
 
 function inCondition(filter: Filter): Object {
-    if (_.startsWith(filter.type, 'tree-') && filter.values[0].value.length > 1) {
+    if (_.startsWith(filter.type, 'tree-')) {
         return {
             $in: [
                 {
@@ -191,7 +191,7 @@ function inCondition(filter: Filter): Object {
                 {
                     $field: filter.name
                 },
-                castFirstToNumberTree(filter)
+                castFirstToNumber(filter)
             ]
         };
     }
@@ -243,10 +243,6 @@ function castToNumber(item: Value, type: string): any {
 
 function castFirstToNumber(filter: Filter): any {
     return castToNumber(_.first(filter.values), filter.type);
-}
-
-function castFirstToNumberTree(filter: Filter): any {
-    return castToNumber(new Value(_.first(_.first(filter.values).value)), filter.type);
 }
 
 function castToNumberArray(filter: Filter): any[] {
