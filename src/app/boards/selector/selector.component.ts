@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 
 import * as _ from 'lodash';
 
@@ -10,9 +10,9 @@ import { APIService, DebugService, FilterService } from '../../services';
 import { Board, FilterBuilder, GroupBuilder, Methods, QueryBuilder, Value } from '../../model';
 
 import { FilterFormComponent } from '../../filters/containers/form/filter-form.component';
-import { EventService } from '../../filters/services/event.service';
+import { EventService } from '../../filters/services';
 import { EventType } from '../../filters/models/event.interface';
-import { Group } from '../../model/group';
+import { Group } from '../../model';
 import { DatetimeRangeComponent } from '../../shared/datetime-range/datetime-range.component';
 
 @Component({

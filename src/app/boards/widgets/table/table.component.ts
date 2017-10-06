@@ -2,14 +2,13 @@ import { Component } from '@angular/core';
 
 import * as d3 from 'd3';
 import * as dc from 'dc';
+import { BaseMixin, DataTableWidget } from 'dc';
 import * as crossfilter from 'crossfilter';
 import * as _ from 'lodash';
-import { BaseMixin, DataTableWidget } from 'dc';
 
 import { Restore, WidgetComponent } from '../widget.component';
-import { Field, Result } from '../../../model';
+import { Field, Result, Value } from '../../../model';
 import { Utils } from '../../../shared/utils';
-import { Value } from '../../../model/value';
 
 @Component({
     selector: 'bi-table',

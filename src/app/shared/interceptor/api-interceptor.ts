@@ -28,4 +28,13 @@ export class ApiInterceptor implements Interceptor {
         }
         return Observable.of({url, options, response});
     }
+
+    public responseError({url, options, response}: ResponseInterceptorOptions): ResponseInterceptorOptions
+        | Observable<ResponseInterceptorOptions> {
+
+        if (_.includes(response.url, '/api/bi/')) {
+            this.messagesService.message(new Message(MessageType.DANGER, response.statusText));
+        }
+        return Observable.of({url, options, response});
+    }
 }

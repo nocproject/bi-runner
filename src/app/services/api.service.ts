@@ -4,7 +4,7 @@ import { Response } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
-import { Http } from '../shared/interceptor/service/http.service';
+import { Http } from '../shared/interceptor/service';
 import { Query, Result } from '../model';
 
 @Injectable()
