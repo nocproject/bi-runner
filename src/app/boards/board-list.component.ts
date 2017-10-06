@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 
+import * as moment from 'moment';
+
 import { Message, MessageType, Methods, QueryBuilder } from '../model';
 import { APIService, MessageService } from '../services';
 import { GridConfig, GridConfigBuilder } from '../shared/data-grid/data-grid.component';
@@ -30,7 +32,12 @@ export class BoardListComponent implements OnInit {
             .data(this.api
                 .execute(new QueryBuilder().method(Methods.LIST_DASHBOARDS).params([{version: 2}]).build())
                 .do(() => this.showSpinner = false)
-                .map(response => response.result))
+                .map(response => response.result.map(row =>
+                    Object.assign({}, row,
+                        {changed: moment(row.changed).format('DD.MM.YYYY HH:mm')},
+                        {created: moment(row.created).format('DD.MM.YYYY HH:mm')}
+                    )
+                )))
             .build();
     }
 
