@@ -212,7 +212,9 @@ var NocExport = (function() {
             return 'duration_val' !== e.alias
         });
 
-        fields.push(field(values));
+        if(values.length > 0) {
+            fields.push(field(values));
+        }
         dashboard.exportQuery.params[0].fields = fields;
     };
 
