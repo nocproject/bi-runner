@@ -26,79 +26,77 @@ export class FormModelComponent implements FilterControl, OnInit {
     ngOnInit(): void {
         // hardcode
         this.dicts = [{
-            // datasource: this.config.datasource,
-            datasource: 'reboots',
-            dict: 'platform',
+            datasource: 'dictionaries.platform',
+            // dict: 'platform',
             expr: 'platform',
             label: 'Value',
             name: 'valueFirst',
             description: 'Платформа',
             pseudo: false,
-            type: 'dictionary'
+            type: 'string'
         }, {
-            datasource: 'reboots',
-            dict: 'administrativedomain',
+            datasource: 'dictionaries.administrativedomain',
+            // dict: 'administrativedomain',
             expr: 'administrative_domain',
             label: 'Value',
             name: 'valueFirst',
             description: 'З.О.',
             pseudo: false,
-            type: 'dictionary'
+            type: 'string'
         }, {
-            datasource: 'reboots',
-            dict: 'vendor',
+            datasource: 'dictionaries.vendor',
+            // dict: 'vendor',
             expr: 'vendor',
             label: 'Value',
             name: 'valueFirst',
             description: 'Производитель',
             pseudo: false,
-            type: 'dictionary'
+            type: 'string'
         }, {
-            datasource: 'reboots',
-            dict: 'container',
+            datasource: 'dictionaries.container',
+            // dict: 'container',
             expr: 'container',
             label: 'Value',
             name: 'valueFirst',
             description: 'Адрес',
             pseudo: false,
-            type: 'dictionary'
+            type: 'string'
         }, {
-            datasource: 'reboots',
-            dict: 'profile',
+            datasource: 'dictionaries.profile',
+            // dict: 'profile',
             expr: 'profile',
             label: 'Value',
             name: 'valueFirst',
             description: 'Профиль объекта',
             pseudo: false,
-            type: 'dictionary'
+            type: 'string'
         }, {
-            datasource: 'reboots',
-            dict: 'networksegment',
+            datasource: 'dictionaries.networksegment',
+            // dict: 'networksegment',
             expr: 'segment',
             label: 'Value',
             name: 'valueFirst',
             description: 'Сегмент сети',
             pseudo: false,
-            type: 'dictionary'
+            type: 'string'
         }, {
-            datasource: 'reboots',
-            dict: 'pool',
+            datasource: 'dictionaries.pool',
+            // dict: 'pool',
             expr: 'pool',
             label: 'Value',
             name: 'valueFirst',
             description: 'Имя Пула',
             pseudo: false,
-            type: 'dictionary'
+            type: 'string'
         }, {
-            datasource: 'reboots',
-            dict: 'version',
+            datasource: 'dictionaries.version',
+            // dict: 'version',
             expr: 'version',
             label: 'Value',
             name: 'valueFirst',
             description: 'Версия',
             pseudo: false,
-            type: 'dictionary'
-            // value: '384'
+            type: 'string'
         }];
 
         this.dicts.forEach(dict => {

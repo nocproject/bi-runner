@@ -83,7 +83,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     onSaveBoard() {
         const board = _.clone(this.filterService.boardSubject.getValue());
         board.groups = this.filterService.allFilters();
-        board.format = 2;
+        board.sample = this.filterService.ratioSubject.getValue();
         const query = new QueryBuilder()
             .method(Methods.SET_DASHBOARD)
             .params([board.prepare()])
@@ -100,6 +100,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         board.title = this.saveForm.get('title').value;
         board.description = this.saveForm.get('description').value;
         board.groups = this.filterService.allFilters();
+        board.sample = this.filterService.ratioSubject.getValue();
         delete board['id'];
 
         const query = new QueryBuilder()

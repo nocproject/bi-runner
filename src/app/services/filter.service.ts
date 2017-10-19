@@ -8,10 +8,8 @@ import * as d3 from 'd3';
 
 import { Board, Field, Filter, FilterBuilder, Group, GroupBuilder, Value } from '../model';
 
-import { EventService } from '../filters/services/event.service';
-import { Groups } from '../filters/models/form-data.interface';
-import { FormConfig } from '../filters/models/form-config.interface';
-import { EventType } from '../filters/models/event.interface';
+import { EventService } from '../filters/services';
+import { EventType, FormConfig, Groups } from '../filters/models';
 
 @Injectable()
 export class FilterService {
@@ -28,6 +26,9 @@ export class FilterService {
 
     qtySubject = new BehaviorSubject<number>(0);
     qty$: Observable<number> = this.qtySubject.asObservable();
+
+    ratioSubject = new BehaviorSubject<number>(1);
+    ratio$: Observable<number> = this.ratioSubject.asObservable();
 
     isReportOpenSubject = new BehaviorSubject<boolean>(false);
     isReportOpen$: Observable<boolean> = this.isReportOpenSubject.asObservable();
@@ -55,7 +56,7 @@ export class FilterService {
         this.nextFilter(groups);
         this.eventService.next({type: EventType.Restore, value: groups});
         this._initChart = groups
-            .filter(group => group.name !== 'form' && group.name !== 'startEnd')
+            .filter(group => group.name !== this.FORM_GROUP_NAME && group.name !== 'startEnd')
             .map(group => {
                 return {
                     name: group.name.split('.')[1],

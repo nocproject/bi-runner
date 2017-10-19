@@ -84,19 +84,20 @@ import { TranslateService } from '@ngx-translate/core';
             <ul class="dropdown-menu scrollable-menu"
                 style="width: 100%;"
                 [ngStyle]="{'display': (!notFound && !search && open) ? 'block' : 'none'}">
-                <li *ngIf="config.type === 'dictionary'; else tree">
-                    <a class="hand bi-dropdown" (click)="onSelect(row)"
-                       *ngFor="let row of (list$ | async) as list">{{ row[1] }}</a>
-                </li>
+                <ngx-treeview
+                        *ngIf="config.type === 'tree'; else dropdown"
+                        #treeView
+                        [config]="treeConfig"
+                        [items]="(list$ | async)"
+                        (selectedChange)=onTreeSelect(treeView)>
+                </ngx-treeview>
             </ul>
         </div>
-        <ng-template #tree>
-            <ngx-treeview
-                    #treeView
-                    [config]="treeConfig"
-                    [items]="(list$ | async)"
-                    (selectedChange)=onTreeSelect(treeView)>
-            </ngx-treeview>
+        <ng-template #dropdown>
+            <li>
+                <a class="hand bi-dropdown" (click)="onSelect(row)"
+                   *ngFor="let row of (list$ | async) as list">{{ row[1] }}</a>
+            </li>
         </ng-template>
     `
 })
@@ -153,27 +154,56 @@ export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAcc
             });
         this.placeholder = this.translate.instant('DROP_DOWN.CHOOSE') + ` ${this.config.description ? this.config.description : this.translate.instant('DROP_DOWN.VALUE')}`;
         if (this.config.value) { // restore by Id
+            let params;
             if (this.config.type === 'dictionary') {
+                params = [{
+                    fields: [
+                        {
+                            expr: {
+                                $lookup: [
+                                    this.config.dict,
+                                    {
+                                        $field: `toUInt64(${this.config.value})`
+                                    }
+                                ]
+                            },
+                            alias: 'value',
+                            group: 0
+                        }
+                    ],
+                    datasource: this.config.datasource
+                }];
                 this.api.execute(
                     new QueryBuilder()
                         .method(Methods.QUERY)
-                        .params([{
-                            fields: [
-                                {
-                                    expr: {
-                                        $lookup: [
-                                            this.config.dict,
-                                            {
-                                                $field: `toUInt64(${this.config.value})`
-                                            }
-                                        ]
-                                    },
-                                    alias: 'value',
-                                    group: 0
-                                }
-                            ],
-                            datasource: this.config.datasource
-                        }])
+                        .params(params)
+                        .build())
+                    .first()
+                    .subscribe(response => this.placeholder = response.result.result[0][0]);
+            } else if (this.config.type === 'string') {
+                params = [{
+                    fields: [
+                        {
+                            expr: 'name',
+                            alias: 'value',
+                            order: 0
+                        }
+                    ],
+                    filter: {
+                        $eq: [
+                            {
+                                $field: 'id'
+                            }, {
+                                $field: `'${this.config.value}'`
+                            }
+                        ]
+                    },
+                    datasource: this.config.datasource
+                }];
+                this.api.execute(
+                    new QueryBuilder()
+                        .method(Methods.QUERY)
+                        .params(params)
                         .build())
                     .first()
                     .subscribe(response => this.placeholder = response.result.result[0][0]);
@@ -257,6 +287,10 @@ export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAcc
                 method = Methods.QUERY;
                 params = dictionaryQuery(this.config, term);
                 break;
+            case 'string':
+                method = Methods.QUERY;
+                params = stringQuery(this.config, term);
+                break;
             case 'tree':
                 method = Methods.GET_HIERARCHY;
                 params = treeQuery(this.config, term);
@@ -271,9 +305,7 @@ export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAcc
 
     // ToDo after delete first version of BI, refactor 'get_hierarchy' backend method!!!!
     private response(response: Result) {
-        if (this.config.type === 'dictionary') {
-            return response.result.result;
-        } else {
+        if (this.config.type === 'tree') {
             if (_.isEmpty(response.result)) {
                 return [];
             }
@@ -282,8 +314,41 @@ export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAcc
                 leaf.checked = _.includes(this.config.value, leaf.id);
             });
             return [new TreeviewItem(response.result)];
+        } else {
+            return response.result.result;
         }
     }
+}
+
+function stringQuery(config: FieldConfig, term?: string) {
+    const query = {
+        fields: [
+            {
+                expr: 'id',
+                alias: config.expr
+            },
+            {
+                expr: 'name',
+                alias: 'value',
+                order: 0
+            }
+        ],
+        datasource: config.datasource,
+        limit: 500
+    };
+
+    if (term) {
+        query['filter'] = {
+            $like: [
+                {
+                    $lower: {$field: 'value'}
+                }, {
+                    $lower: `%${term}%`
+                }
+            ]
+        };
+    }
+    return query;
 }
 
 function dictionaryQuery(config: FieldConfig, term?: string) {

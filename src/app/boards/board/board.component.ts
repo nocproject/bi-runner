@@ -34,6 +34,7 @@ export class BoardComponent implements OnInit, OnDestroy {
                     this.filterService.groupsNext(board.exportQry.params[0].fields);
                     this.board = board;
                     this.cells = this.cellsByRow(board.layout.cells, board.widgets);
+                    this.filterService.ratioSubject.next(board.sample ? board.sample : 1);
                     this.filterService.boardSubject.next(board);
                     this.filterService.isReportOpenSubject.next(true);
                 }

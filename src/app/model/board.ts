@@ -24,6 +24,8 @@ export class Board {
     @JsonMember
     public format: number;
     @JsonMember
+    public sample: number;
+    @JsonMember
     public owner: string;
     @JsonMember
     public created: string;
@@ -46,6 +48,7 @@ export class Board {
     // version 0.2, may be
     // @JsonMapMember(String, Filter)
     public filter: Map<String, Filter>;
+    public isSample: boolean;
 
     static fromJSON(json: any): Board {
         const board = TypedJSON.parse(json, Board);

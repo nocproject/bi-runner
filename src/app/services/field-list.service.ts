@@ -22,6 +22,13 @@ export class FieldListService {
                 .method(Methods.GET_DATASOURCE_INFO)
                 .params([board.datasource])
                 .build())
+            .do(result => {
+                if(result.data['sample']){
+                    board.isSample = result.data['sample'];
+                } else {
+                    board.isSample = false;
+                }
+            })
             .flatMap(result => result.data['fields'])
             .map(item => Field.fromJSON(item))
             .concat(board.pseudoFields)

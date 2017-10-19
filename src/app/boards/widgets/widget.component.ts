@@ -10,7 +10,7 @@ import { CellAndWidget, Filter, GroupBuilder, Result, Value, WhereBuilder } from
 import { APIService, FilterService, LanguageService } from '../../services';
 
 export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestroy {
-    private subscription: Subscription;
+    private filterSubscription: Subscription;
     // private eventSubscription: Subscription;
 
     @Input()
@@ -39,7 +39,7 @@ export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestro
     }
 
     ngOnDestroy(): void {
-        this.subscription.unsubscribe();
+        this.filterSubscription.unsubscribe();
     }
 
     catchEvents(chart: BaseMixin<any>, nextFilter?: Filter): void {
@@ -90,7 +90,7 @@ export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestro
     abstract restore(values: Value[]): Restore;
 
     private filtersSubscription() {
-        this.subscription = this.filterService.filters$
+        this.filterSubscription = this.filterService.filters$
             .debounceTime(500)
             // .distinctUntilChanged()
             // .do(data => console.log('filters changed', data))
@@ -102,6 +102,10 @@ export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestro
                     this.data.widget.query.params[0].filter = updated;
                 } else {
                     delete this.data.widget.query.params[0].filter;
+                }
+                let ratio = this.filterService.ratioSubject.getValue();
+                if (ratio !== 1) {
+                    this.data.widget.query.params[0].sample = ratio;
                 }
                 return this.api.execute(this.data.widget.query);
             })

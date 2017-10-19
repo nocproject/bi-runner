@@ -19,8 +19,20 @@
                                     [toControlName]="this.END_DATE">
                             </bi-datetime-range>
                         </div>
+                        <div *ngIf="board.isSample" class="col-md-2 text-right">Ratio:</div>
+                        <div *ngIf="board.isSample" class="col-md-1" [formGroup]="ratioForm">
+                            <select class="form-control"
+                                    [formControl]="ratio"
+                                    (change)="onChangeRatio($event.target.value)"
+                                    title="ratio of sample from 0.1 to 1">
+                                <option [value]="0.1">0.1</option>
+                                <option [value]="0.3">0.3</option>
+                                <option [value]="0.5">0.5</option>
+                                <option [value]="1">1</option>
+                            </select>
+                        </div>
                         <div class="col-md-3 text-right" translate
-                        [translateParams]="{value: (lastUpdate$ | async | datex:'DD.MM.YYYY')}">
+                             [translateParams]="{value: (lastUpdate$ | async | datex:'DD.MM.YYYY')}">
                             SELECTOR.UPDATED
                         </div>
                     </div>
