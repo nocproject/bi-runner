@@ -91,11 +91,13 @@
                   {
                     "expr": {
                       "$lookup": [
-                        "platform",
+                        "managedobject",
                         {
                           "$field": "managed_object"
-                        }
-                      ]
+                        },
+                        "platform"
+                      ],
+                      "__type": "Expression"
                     },
                     "alias": "platform",
                     "label": "Платформа"
@@ -145,11 +147,13 @@
                   {
                     "expr": {
                       "$lookup": [
-                        "platform",
+                        "managedobject",
                         {
                           "$field": "managed_object"
-                        }
-                      ]
+                        },
+                        "platform"
+                      ],
+                      "__type": "Expression"
                     },
                     "alias": "platform",
                     "label": "Платформа"

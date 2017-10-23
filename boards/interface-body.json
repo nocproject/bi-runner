@@ -23,9 +23,9 @@
         "id": "580e1ba498601c0f96b7e809",
         "name": "c2x2"
       },
-      "description": "отчет по интерфайсам",
+      "description": "отчет по интерфейсам",
       "groups": [],
-      "title": "Интерфейсы",
+      "title": "Загрузка портов",
       "format": 2,
       "export": {
         "params": [
@@ -57,7 +57,7 @@
         {
           "cell": "table1",
           "note": "оборудование",
-          "title": ", топ 10",
+          "title": "Интерфейсы, топ 10",
           "type": "dataTable",
           "query": {
             "params": [
@@ -73,15 +73,16 @@
                     "expr": "managed_object"
                   },
                   {
-                    "expr": "path",
-                    "label": "Path"
+                    "expr": "arrayStringConcat(path)",
+                    "label": "Path",
+                    "alias": "path"
                   },
                   {
-                    "label": "Оборудование",
+                    "label": "Устройство",
                     "alias": "name",
                     "expr": {
                       "$lookup": [
-                        "managedobject_bi",
+                        "managedobject",
                         {
                           "$field": "managed_object"
                         }
@@ -91,14 +92,30 @@
                   {
                     "expr": {
                       "$lookup": [
-                        "managedobject_platform_bi",
+                        "managedobject",
                         {
                           "$field": "managed_object"
-                        }
-                      ]
+                        },
+                        "platform"
+                      ],
+                      "__type": "Expression"
                     },
                     "alias": "platform",
                     "label": "Платформа"
+                  },
+                  {
+                    "label": "Load In",
+                    "expr": "load_in",
+                    "format": "intFormat",
+                    "order": 0,
+                    "desc": true
+                  },
+                  {
+                    "label": "Load Out",
+                    "expr": "load_out",
+                    "format": "intFormat",
+                    "order": 1,
+                    "desc": true
                   }
                 ],
                 "limit": 10,
@@ -117,6 +134,10 @@
         },
         {
           "name": "cinr",
+          "group": 0
+        },
+        {
+          "name": "managed_object",
           "group": 0
         },
         {
@@ -171,6 +192,10 @@
         },
         {
           "name": "cinr",
+          "group": 0
+        },
+        {
+          "name": "managed_object",
           "group": 0
         },
         {
