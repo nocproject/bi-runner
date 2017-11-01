@@ -21,6 +21,7 @@ export * from './methods.enum';
 export * from './parameter'
 export * from './query';
 export * from './query.builder';
+export * from './range';
 export * from './result';
 export * from './user';
 export * from './value';

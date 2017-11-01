@@ -14,7 +14,9 @@
                         <div class="col-md-3" translate>SELECTOR.RANGE
                         </div>
                         <div class="col-md-3">
-                            <button type="button" class="btn btn-default" (click)="openRangeDlg(selectRange)">
+                            <button type="button" class="btn btn-default"
+                                    (click)="openRangeDlg(selectRange)"
+                                    translate>
                                 {{reportRangeText}}
                             </button>
                         </div>
@@ -71,7 +73,7 @@
         </bi-report-range>
     </bi-modal-content>
     <bi-modal-footer>
-        <button class="btn btn-primary" [disabled]="!rangeForm.valid"
+        <button class="btn btn-default" [disabled]="!rangeForm.valid"
                 (click)="applyRange(selectRange)" translate>SELECTOR.RANGE_DLG.APPLY_BTN
         </button>
         <button class="btn btn-default"

@@ -9,7 +9,7 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { environment } from '../../../environments/environment';
 import { APIService, DebugService, FilterService, LanguageService } from '../../services';
-import { Board, FilterBuilder, Group, GroupBuilder, Methods, QueryBuilder, Value } from '../../model';
+import { Board, FilterBuilder, Group, GroupBuilder, Methods, QueryBuilder, Range, Value } from '../../model';
 
 import { ReportRangeComponent } from '../../shared/report-range/report-range.component';
 import { FilterFormComponent } from '../../filters/containers/form/filter-form.component';
@@ -104,7 +104,7 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
         this.locale = this.languageService.current;
         this.values = {
             [this.START_DATE]: rangeGroup.filters[0].values[0].value,
-            [this.END_DATE]: rangeGroup.filters[0].values[1].value,
+            [this.END_DATE]: rangeGroup.filters[0].values[1] ? rangeGroup.filters[0].values[1].value : null,
             text: this.reportRangeText
         };
         modal.open();
@@ -113,6 +113,14 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
     applyRange(modal: ModalComponent) {
         const from = this.rangeForm.values[this.START_DATE];
         const to = this.rangeForm.values[this.END_DATE];
+        let range;
+        if (this.rangeForm.range) {
+            range = [new Value(this.rangeForm.range)];
+            this.reportRangeText = `DATETIME_RANGE.${Range.getDates(this.rangeForm.range, false).text}`;
+        } else {
+            range = [new Value(from), new Value(to)];
+            this.reportRangeText = SelectorComponent.rangeText(from, to);
+        }
         this.filterService.filtersNext(
             new GroupBuilder()
                 .name('startEnd')
@@ -121,13 +129,11 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
                         .name('ts')
                         .type('DateTime')
                         .condition('interval')
-                        .values([new Value(from),
-                            new Value(to)])
+                        .values(range)
                         .build()
                 ])
                 .build()
         );
-        this.reportRangeText = SelectorComponent.rangeText(from, to);
         modal.close();
     }
 
@@ -139,19 +145,28 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
             .filter((group: Group) => group.name === 'startEnd')
             .subscribe(
                 (group: Group) => {
-                    const from = new Date(group.filters[0].values[0].value);
-                    const to = new Date(group.filters[0].values[1].value);
-                    this.reportRangeText = SelectorComponent.rangeText(from, to);
+                    let from = null;
+                    let to = null;
+                    if (Range.isNotRange(group.filters[0].values[0].value)) {
+                        from = new Date(group.filters[0].values[0].value);
+                        to = new Date(group.filters[0].values[1].value);
+                        this.reportRangeText = SelectorComponent.rangeText(from, to)
+                    } else {
+                        from = group.filters[0].values[0].value;
+                        this.reportRangeText = `DATETIME_RANGE.${Range.getDates(from, false).text}`;
+                    }
                     this.values = {
                         [this.START_DATE]: from,
-                        [this.END_DATE]: to,
-                        text: this.reportRangeText
+                        [this.END_DATE]: to
                     };
                 }
             );
     }
 
-    private static rangeText(from: Date, to: Date): string {
-        return `${moment(from).format('DD.MM.YYYY HH:mm')}-${moment(to).format('DD.MM.YYYY HH:mm')}`;
+    private static rangeText(from: any, to: Date): string {
+        if (Range.isNotRange(from)) {
+            return `${moment(from).format('DD.MM.YYYY HH:mm')}-${moment(to).format('DD.MM.YYYY HH:mm')}`;
+        }
+        return from;
     }
 }

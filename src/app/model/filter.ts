@@ -1,6 +1,7 @@
 import { JsonMember, JsonObject } from 'typedjson-npm/src/typed-json';
 
 import { Value } from './value';
+import { Range } from './range';
 
 @JsonObject({initializer: Filter.fromJSON})
 export class Filter {
@@ -37,9 +38,11 @@ export class Filter {
         if (json.hasOwnProperty('type') && json.hasOwnProperty('values')) {
             if (json.type.match(/Date/)) {
                 if (!json.condition.match(/periodic/)) {
-                    json.values[0].value = new Date(json.values[0].value);
+                    if(Range.isNotRange(json.values[0].value)) {
+                        json.values[0].value = new Date(json.values[0].value);
+                    }
                 }
-                if (json.condition.match(/interval/) && !json.condition.match(/periodic/)) {
+                if (json.values[1] && json.condition.match(/interval/) && !json.condition.match(/periodic/)) {
                     json.values[1].value = new Date(json.values[1].value);
                 }
             }

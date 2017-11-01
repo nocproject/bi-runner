@@ -5,6 +5,7 @@ import { Group } from './group';
 import { Filter } from './filter';
 import { FilterBuilder } from './filter.builder';
 import { Value } from './value';
+import { Range } from './range';
 
 export class WhereBuilder {
     static makeWhere(groups: Group[]): Object {
@@ -106,6 +107,11 @@ function interval(filter: Filter): Object {
                 from = toPeriodicTime(tokens[0]);
                 to = toPeriodicTime(tokens[1]);
                 filter.name = `toTime(${filter.name})`;
+            }
+            if (filter.values.length === 1) {
+                const dates: Value[] = Range.getValues(filter.values[0].value);
+                from = toDateTime(dates[0]);
+                to = toDateTime(dates[1]);
             } else {
                 from = toDateTime(filter.values[0]);
                 to = toDateTime(filter.values[1]);

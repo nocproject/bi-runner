@@ -6,13 +6,11 @@ import * as d3 from 'd3';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Rx';
 
-import { EventType } from '../../models/event.interface';
-import { FieldConfig, FiltersConfig, FormConfig, GroupConfig } from '../../models/form-config.interface';
+import { EventType, FieldConfig, FiltersConfig, FormConfig, FormData, GroupConfig } from '../../models';
 import { APIService, FieldListService, FilterService } from '../../../services';
 import { ConditionService, EventService, ValueService } from '../../services';
 import { BIValidators } from '../../components/validators';
-import { Group } from '../../../model';
-import { FormData } from '../../models/form-data.interface';
+import { Group, Range } from '../../../model';
 
 @Component({
     exportAs: 'filterForm',
@@ -151,7 +149,11 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                                         if (filter.condition.match(/periodic/i)) {
                                             valuesField[0].value = filter.values[0].value;
                                         } else if (filter.condition.match(/interval/i)) {
-                                            valuesField[0].value = `${d3.time.format('%d.%m.%Y %H:%M')(filter.values[0].value)}-${d3.time.format('%d.%m.%Y %H:%M')(filter.values[1].value)}`;
+                                            if(Range.isNotRange(filter.values[0].value)) {
+                                                valuesField[0].value = `${d3.time.format('%d.%m.%Y %H:%M')(filter.values[0].value)}-${d3.time.format('%d.%m.%Y %H:%M')(filter.values[1].value)}`;
+                                            } else {
+                                                valuesField[0].value =filter.values[0].value;
+                                            }
                                         } else {
                                             valuesField[0].value = d3.time.format('%d.%m.%Y %H:%M')(filter.values[0].value);
                                         }

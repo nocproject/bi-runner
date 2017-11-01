@@ -4,11 +4,10 @@ import { IMyDate, IMyDateModel, IMyDpOptions } from '../my-date-picker/interface
 
 import * as d3 from 'd3';
 import * as _ from 'lodash';
-import * as dateFns from 'date-fns';
 
 import { BIValidators } from '../../filters/components/validators';
 import { Subscription } from 'rxjs/Subscription';
-import days = d3.time.days;
+import { IDateRange, Range } from '../../model';
 
 @Component({
     selector: 'bi-report-range',
@@ -16,9 +15,9 @@ import days = d3.time.days;
     styleUrls: ['./report-range.component.scss']
 })
 export class ReportRangeComponent implements OnInit, OnDestroy, OnChanges {
-    private WEEK_STARTS_ON = 1;
     private data: Data;
     private subscription: Subscription;
+    private _range: string;
 
     @Input()
     public fromControlName: string;
@@ -56,10 +55,12 @@ export class ReportRangeComponent implements OnInit, OnDestroy, OnChanges {
         this.data = new Data(this.controlValues);
         this.subscription = this.form.valueChanges
             .subscribe(values => {
-                this.form.setValue(this.data.next(values, this.form.get('rangeInput')).values(), {
-                    emitEvent: false,
-                    onlySelf: true
-                });
+                this._range = null;
+                this.form.setValue(this.data.next(values, this.form.get('rangeInput')).values(),
+                    {
+                        emitEvent: false,
+                        onlySelf: true
+                    });
             });
     }
 
@@ -74,6 +75,9 @@ export class ReportRangeComponent implements OnInit, OnDestroy, OnChanges {
                     emitEvent: false,
                     onlySelf: true
                 });
+            if(!changes.initValues.currentValue[this.toControlName]){
+                this._range = changes.initValues.currentValue[this.fromControlName];
+            }
         }
     }
 
@@ -88,57 +92,17 @@ export class ReportRangeComponent implements OnInit, OnDestroy, OnChanges {
         return this.form.valid;
     }
 
-    public selectRange(range: string): void {
-        let dateRange;
-        let today = dateFns.startOfDay(new Date());
+    get range() {
+        return this._range;
+    }
 
-        if (range === 'tm') {
-            dateRange = {
-                from: dateFns.startOfMonth(today),
-                to: dateFns.endOfMonth(today)
-            };
-        } else if (range === 'lm') {
-            today = dateFns.subMonths(today, 1);
-            dateRange = {
-                from: dateFns.startOfMonth(today),
-                to: dateFns.endOfMonth(today)
-            };
-        } else if (range === 'lw') {
-            today = dateFns.subWeeks(today, 1);
-            dateRange = {
-                from: dateFns.startOfWeek(today, {weekStartsOn: this.WEEK_STARTS_ON}),
-                to: dateFns.endOfWeek(today, {weekStartsOn: this.WEEK_STARTS_ON})
-            };
-        } else if (range === 'tw') {
-            dateRange = {
-                from: dateFns.startOfWeek(today, {weekStartsOn: this.WEEK_STARTS_ON}),
-                to: dateFns.endOfWeek(today, {weekStartsOn: this.WEEK_STARTS_ON})
-            };
-        } else if (range === 'ty') {
-            dateRange = {
-                from: dateFns.startOfYear(today),
-                to: dateFns.endOfYear(today)
-            };
-        } else if (range === 'ly') {
-            today = dateFns.subYears(today, 1);
-            dateRange = {
-                from: dateFns.startOfYear(today),
-                to: dateFns.endOfYear(today)
-            };
-        } else if (range === 'ld') {
-            dateRange = {
-                from: dateFns.startOfYesterday(),
-                to: dateFns.endOfYesterday()
-            };
-        } else if (range.startsWith('l')) {
-            const today = dateFns.startOfDay(new Date());
-            const days = +range.replace('l', '');
-            dateRange = {
-                from: dateFns.subDays(today, days),
-                to: dateFns.endOfDay(today)
-            };
-        }
-        this.form.setValue(this.data.set(dateRange).values());
+    public selectRange(range: string): void {
+        this._range = range;
+        this.form.setValue(this.data.set(Range.getDates(range)).values(),
+            {
+                emitEvent: false,
+                onlySelf: true
+            });
     }
 }
 
@@ -152,8 +116,16 @@ class Data {
     }
 
     public restore(data, fromControlName, toControlName): Data {
-        const fromDate = data[fromControlName];
-        const toDate = data[toControlName];
+        let fromDate;
+        let toDate;
+        if (!data[toControlName]) { // relative range
+            const dates: IDateRange = Range.getDates(data[fromControlName]);
+            fromDate = dates.from;
+            toDate = dates.to;
+        } else {
+            fromDate = data[fromControlName];
+            toDate = data[toControlName];
+        }
         this.prev = _.cloneDeep(this.data);
         this.data.fromPick = {
             date: Data.toMyDate(fromDate),
@@ -169,7 +141,7 @@ class Data {
         };
         this.data.fromTime = fromDate;
         this.data.toTime = toDate;
-        this.data.rangeInput = data.text;
+        this.data.rangeInput = this.textRange();
         return this;
     };
 
@@ -227,10 +199,6 @@ class Data {
         this.data.toPick.date = Data.toMyDate(values.to);
         this.data.rangeInput = this.textRange();
         return this;
-    }
-
-    public diff(): string[] {
-        return this._diff(this.data, this.prev);
     }
 
     private _diff(a, b): string[] {

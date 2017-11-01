@@ -33,7 +33,6 @@
         "name": "c2x2"
       },
       "description": "отчет по метрикам",
-      "groups": [],
       "title": "Ping только таблицы",
       "format": 2,
       "export": {
@@ -62,6 +61,26 @@
         "method": "query"
       },
       "datasource": "ping",
+      "groups": [
+        {
+          "active": true,
+          "association": "$and",
+          "filters": [
+            {
+              "type": "DateTime",
+              "association": "$and",
+              "values": [
+                {
+                  "value": "l7"
+                }
+              ],
+              "name": "ts",
+              "condition": "interval"
+            }
+          ],
+          "name": "startEnd"
+        }
+      ],
       "widgets": [
         {
           "cell": "table1",

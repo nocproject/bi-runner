@@ -87,7 +87,26 @@
         "name": "c2x2"
       },
       "description": "отчет по метрикам",
-      "groups": [],
+      "groups": [
+        {
+          "active": true,
+          "association": "$and",
+          "filters": [
+            {
+              "type": "DateTime",
+              "association": "$and",
+              "values": [
+                {
+                  "value": "l7"
+                }
+              ],
+              "name": "ts",
+              "condition": "interval"
+            }
+          ],
+          "name": "startEnd"
+        }
+      ],
       "title": "Ping с виджетами",
       "format": 2,
       "export": {
