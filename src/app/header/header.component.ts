@@ -10,12 +10,11 @@ import * as _ from 'lodash';
 
 import { environment } from '../../environments/environment';
 
-import { APIService, FilterService, MessageService } from '../services';
+import { APIService, FilterService, LanguageService, MessageService } from '../services';
 import { Board, Message, MessageType, Methods, QueryBuilder, User } from '../model';
 import { ModalComponent } from '../shared/modal/modal';
 import { Export } from './export';
 import { AuthenticationService } from '../api/services/authentication.service';
-import { LanguageService } from '../services/language.service';
 
 @Component({
     selector: 'bi-header',

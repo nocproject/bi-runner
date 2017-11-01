@@ -2,18 +2,20 @@ import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
 import * as _ from 'lodash';
+import * as moment from 'moment';
 
 import { Observable } from 'rxjs/Rx';
 import { Subscription } from 'rxjs/Subscription';
 
 import { environment } from '../../../environments/environment';
-import { APIService, DebugService, FilterService } from '../../services';
+import { APIService, DebugService, FilterService, LanguageService } from '../../services';
 import { Board, FilterBuilder, Group, GroupBuilder, Methods, QueryBuilder, Value } from '../../model';
 
+import { ReportRangeComponent } from '../../shared/report-range/report-range.component';
 import { FilterFormComponent } from '../../filters/containers/form/filter-form.component';
 import { EventService } from '../../filters/services';
 import { EventType } from '../../filters/models';
-import { DatetimeRangeComponent } from '../../shared/datetime-range/datetime-range.component';
+import { ModalComponent } from '../../shared/modal/modal';
 
 @Component({
     // changeDetection: ChangeDetectionStrategy.OnPush,
@@ -21,7 +23,7 @@ import { DatetimeRangeComponent } from '../../shared/datetime-range/datetime-ran
     templateUrl: './selector.component.html'
 })
 export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
-    private rangeSubscription: Subscription;
+    // private rangeSubscription: Subscription;
     private eventSubscription: Subscription;
     private ratioSubscription: Subscription;
 
@@ -29,11 +31,14 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
     board: Board;
     @ViewChild(FilterFormComponent)
     filters: FilterFormComponent;
-    @ViewChild(DatetimeRangeComponent)
-    rangeForm: DatetimeRangeComponent;
+    @ViewChild(ReportRangeComponent)
+    rangeForm: ReportRangeComponent;
 
     START_DATE = 'startDate';
     END_DATE = 'endDate';
+    locale = 'en';
+    values;
+    reportRangeText: string = '-';
     production = environment.production;
     lastUpdate$: Observable<any>;
 
@@ -46,17 +51,20 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
                 private fb: FormBuilder,
                 private api: APIService,
                 private eventService: EventService,
-                private filterService: FilterService) {
+                private filterService: FilterService,
+                private languageService: LanguageService) {
         this.ratio = new FormControl(this.filterService.ratioSubject.getValue());
     }
 
     ngAfterViewInit() {
-        this.ratio.setValue(this.filterService.ratioSubject.getValue());
-        this.filterChangeSub();
+        setTimeout(() => {
+            this.ratio.setValue(this.filterService.ratioSubject.getValue());
+            this.filterChangeSub();
+        });
     }
 
     ngOnDestroy(): void {
-        this.rangeSubscription.unsubscribe();
+        // this.rangeSubscription.unsubscribe();
         this.eventSubscription.unsubscribe();
         this.ratioSubscription.unsubscribe();
     }
@@ -90,24 +98,40 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
         this.ratioForm.setValue({ratio: value});
     }
 
-    private filterChangeSub() {
-        this.rangeSubscription = this.rangeForm.changes
-            .filter(() => this.rangeForm.valid)
-            .subscribe(data => {
-                this.filterService.filtersNext(
-                    new GroupBuilder()
-                        .name('startEnd')
-                        .filters([
-                            new FilterBuilder()
-                                .name('ts')
-                                .type('DateTime')
-                                .condition('interval')
-                                .values([new Value(data[this.START_DATE]), new Value(data[this.END_DATE])])
-                                .build()
-                        ])
+    openRangeDlg(modal: ModalComponent) {
+        const rangeGroup = _.first(this.filterService.getFilter('startEnd'));
+
+        this.locale = this.languageService.current;
+        this.values = {
+            [this.START_DATE]: rangeGroup.filters[0].values[0].value,
+            [this.END_DATE]: rangeGroup.filters[0].values[1].value,
+            text: this.reportRangeText
+        };
+        modal.open();
+    }
+
+    applyRange(modal: ModalComponent) {
+        const from = this.rangeForm.values[this.START_DATE];
+        const to = this.rangeForm.values[this.END_DATE];
+        this.filterService.filtersNext(
+            new GroupBuilder()
+                .name('startEnd')
+                .filters([
+                    new FilterBuilder()
+                        .name('ts')
+                        .type('DateTime')
+                        .condition('interval')
+                        .values([new Value(from),
+                            new Value(to)])
                         .build()
-                );
-            });
+                ])
+                .build()
+        );
+        this.reportRangeText = SelectorComponent.rangeText(from, to);
+        modal.close();
+    }
+
+    private filterChangeSub() {
         this.eventSubscription = this.eventService.event$
             .filter(event => event !== null)
             .filter(event => event.type === EventType.Restore)
@@ -115,11 +139,19 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
             .filter((group: Group) => group.name === 'startEnd')
             .subscribe(
                 (group: Group) => {
-                    this.rangeForm.restoreValue({
-                        [this.START_DATE]: new Date(group.filters[0].values[0].value),
-                        [this.END_DATE]: new Date(group.filters[0].values[1].value)
-                    });
+                    const from = new Date(group.filters[0].values[0].value);
+                    const to = new Date(group.filters[0].values[1].value);
+                    this.reportRangeText = SelectorComponent.rangeText(from, to);
+                    this.values = {
+                        [this.START_DATE]: from,
+                        [this.END_DATE]: to,
+                        text: this.reportRangeText
+                    };
                 }
             );
+    }
+
+    private static rangeText(from: Date, to: Date): string {
+        return `${moment(from).format('DD.MM.YYYY HH:mm')}-${moment(to).format('DD.MM.YYYY HH:mm')}`;
     }
 }

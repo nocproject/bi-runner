@@ -11,13 +11,12 @@
             <div class="chart-stage" [ngClass]="{'collapse': collapsed}">
                 <div class="container-fluid">
                     <div class="row vertical-align">
-                        <div class="col-md-2" translate>SELECTOR.RANGE
+                        <div class="col-md-3" translate>SELECTOR.RANGE
                         </div>
-                        <div class="col-md-7">
-                            <bi-datetime-range
-                                    [fromControlName]="this.START_DATE"
-                                    [toControlName]="this.END_DATE">
-                            </bi-datetime-range>
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-default" (click)="openRangeDlg(selectRange)">
+                                {{reportRangeText}}
+                            </button>
                         </div>
                         <div *ngIf="board.isSample" class="col-md-2 text-right">Ratio:</div>
                         <div *ngIf="board.isSample" class="col-md-1" [formGroup]="ratioForm">
@@ -31,6 +30,7 @@
                                 <option [value]="1">1</option>
                             </select>
                         </div>
+                        <div *ngIf="!board.isSample" class="col-md-offset-3"></div>
                         <div class="col-md-3 text-right" translate
                              [translateParams]="{value: (lastUpdate$ | async | datex:'DD.MM.YYYY')}">
                             SELECTOR.UPDATED
@@ -60,3 +60,22 @@
         </div>
     </div>
 </div>
+
+<bi-modal #selectRange [modalClass]="'modal-lg'">
+    <bi-modal-header translate>SELECTOR.RANGE_DLG.TITLE</bi-modal-header>
+    <bi-modal-content>
+        <bi-report-range
+                [locale]="locale" [initValues]="values"
+                [fromControlName]="this.START_DATE"
+                [toControlName]="this.END_DATE">
+        </bi-report-range>
+    </bi-modal-content>
+    <bi-modal-footer>
+        <button class="btn btn-primary" [disabled]="!rangeForm.valid"
+                (click)="applyRange(selectRange)" translate>SELECTOR.RANGE_DLG.APPLY_BTN
+        </button>
+        <button class="btn btn-default"
+                (click)="selectRange.close()" translate>SELECTOR.RANGE_DLG.CLOSE_BTN
+        </button>
+    </bi-modal-footer>
+</bi-modal>

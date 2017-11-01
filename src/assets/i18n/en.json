@@ -124,6 +124,11 @@
       "ADD_GROUP": "Add Group",
       "GROUP_N": "group {{value}}",
       "ASSOCIATION": "association"
+    },
+    "RANGE_DLG": {
+      "TITLE": "Choose report range",
+      "APPLY_BTN": "Apply",
+      "CLOSE_BTN": "Close"
     }
   },
   "MESSAGES": {
@@ -140,6 +145,12 @@
     "LAST_WEEK": "Last Week",
     "THIS_YEAR": "This Year",
     "LAST_YEAR": "Last Year",
+    "TODAY": "Today",
+    "YESTERDAY": "Yesterday",
+    "LAST_7": "Last 7 days",
+    "LAST_14": "Last 14 days",
+    "LAST_30": "Last 30 days",
+    "LAST_60": "Last 60 days",
     "MON": "Mon",
     "TUE": "Tue",
     "WED": "Wed",

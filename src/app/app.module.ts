@@ -12,7 +12,7 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { APIService, DebugService, FilterService, LanguageService, MessageService } from './services';
 import { MessagesComponent } from './shared/messages/messages.component';
-import { HttpModule } from './shared/interceptor/module/http.module';
+import { HttpModule } from './shared/interceptor/module';
 import { BoardListComponent } from './boards/board-list.component';
 import { LoginComponent } from './login/login.component';
 import { BoardComponent } from './boards/board/board.component';
@@ -28,7 +28,6 @@ import {
 import { SelectorComponent } from './boards/selector/selector.component';
 import { CounterComponent } from './boards/widgets/counter/counter.component';
 import { AnchorDirective } from './shared/anchor.directive';
-import { DatetimeRangeComponent } from './shared/datetime-range/datetime-range.component';
 import { TimepickerComponent } from './shared/timepicker/timepicker.component';
 import { GroupByComponent } from './boards/selector/groupby/groupby.component';
 
@@ -44,6 +43,8 @@ import { TranslateHttpLoader } from './shared/translate/http-loader';
 import { TranslateParserService } from './shared/translate/translate-parser.service';
 import { MessageComponent } from './shared/messages/message.component';
 import { DatexPipe } from './shared/datex.pipe';
+import { ReportRangeComponent } from './shared/report-range/report-range.component';
+import { MyDatePickerModule } from './shared/my-date-picker';
 
 @NgModule({
     declarations: [
@@ -62,14 +63,14 @@ import { DatexPipe } from './shared/datex.pipe';
         SelectorComponent,
         CounterComponent,
         AnchorDirective,
-        DatetimeRangeComponent,
         GroupByComponent,
         TimepickerComponent,
         ShareComponent,
         DataGridComponent,
         AccessLevelComponent,
         MessageComponent,
-        DatexPipe
+        DatexPipe,
+        ReportRangeComponent
     ],
     imports: [
         BrowserModule,
@@ -78,6 +79,7 @@ import { DatexPipe } from './shared/datex.pipe';
         ModalModule,
         FiltersModule,
         ReactiveFormsModule,
+        MyDatePickerModule,
         BsDropdownModule.forRoot(),
         TooltipModule.forRoot(),
         TranslateModule.forRoot({
