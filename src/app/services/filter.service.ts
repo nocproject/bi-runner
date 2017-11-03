@@ -190,7 +190,7 @@ export class FilterService {
 
                 if (filter.type === 'Date' && typeof filter.values[0].value === 'string') {
                     if (filter.condition.match(/interval/i)) {
-                        const raw = filter.values[0].value.split('-');
+                        const raw = filter.values[0].value.split(' - ');
                         values = [
                             new Value(d3.time.format('%d.%m.%Y').parse(raw[0])),
                             new Value(d3.time.format('%d.%m.%Y').parse(raw[1]))
@@ -203,7 +203,7 @@ export class FilterService {
                 if (filter.type === 'DateTime' && typeof filter.values[0].value === 'string') {
                     if (!filter.condition.match(/periodic/)) {
                         if (filter.condition.match(/interval/i)) {
-                            const raw = filter.values[0].value.split('-');
+                            const raw = filter.values[0].value.split(' - ');
                             if(raw.length === 2) {
                                 values = [
                                     new Value(d3.time.format('%d.%m.%Y %H:%M').parse(raw[0])),

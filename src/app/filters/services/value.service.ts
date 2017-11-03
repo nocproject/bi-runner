@@ -72,7 +72,7 @@ export class ValueService {
             case 'Int64': {
                 first.type = 'input';
                 if (_.includes(condition, 'interval')) {
-                    first.placeholder = '9999999999-9999999999';
+                    first.placeholder = '9999999999 - 9999999999';
                     first.validation.push(BIValidators.intRange);
                 } else {
                     first.placeholder = '9999999999';
@@ -84,7 +84,7 @@ export class ValueService {
             case 'Float64': {
                 first.type = 'input';
                 if (_.includes(condition, 'interval')) {
-                    first.placeholder = '9999999999.9999-9999999999.9999';
+                    first.placeholder = '9999999999.9999 - 9999999999.9999';
                     first.validation.push(BIValidators.floatRange);
                 } else {
                     first.placeholder = '9999999999.9999';
@@ -95,7 +95,7 @@ export class ValueService {
             case 'DateTime': {
                 if (name === 'duration_intervals' && !_.includes(condition, 'periodic')) {
                     first.type = 'input';
-                    first.placeholder = 'dd.mm.yyyy HH:mm-dd.mm.yyyy HH:mm';
+                    first.placeholder = 'dd.mm.yyyy HH:mm - dd.mm.yyyy HH:mm';
                     first.validation.push(BIValidators.dateTimeRange);
                     return [first];
                 }
@@ -106,7 +106,7 @@ export class ValueService {
                         first.validation.push(BIValidators.hours);
                     } else {
                         first.type = 'input';
-                        first.placeholder = 'dd.mm.yyyy HH:mm-dd.mm.yyyy HH:mm';
+                        first.placeholder = 'dd.mm.yyyy HH:mm - dd.mm.yyyy HH:mm';
                         first.validation.push(BIValidators.dateTimeRange);
                     }
                     return [first];
@@ -120,7 +120,7 @@ export class ValueService {
             case 'IPv4': {
                 first.type = 'input';
                 if (_.includes(condition, 'interval')) {
-                    first.placeholder = '299.299.299.299-299.299.299.299';
+                    first.placeholder = '299.299.299.299 - 299.299.299.299';
                     first.validation.push(BIValidators.ipV4Range);
                     return [first];
                 }
@@ -130,7 +130,7 @@ export class ValueService {
             }
             case 'Date': {
                 if (_.includes(condition, 'interval')) {
-                    first.placeholder = 'dd.mm.yyyy-dd.mm.yyyy';
+                    first.placeholder = 'dd.mm.yyyy - dd.mm.yyyy';
                     first.validation.push(BIValidators.dateRange);
                     return [first];
                 }

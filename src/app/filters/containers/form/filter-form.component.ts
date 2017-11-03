@@ -150,7 +150,7 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                                             valuesField[0].value = filter.values[0].value;
                                         } else if (filter.condition.match(/interval/i)) {
                                             if(Range.isNotRange(filter.values[0].value)) {
-                                                valuesField[0].value = `${d3.time.format('%d.%m.%Y %H:%M')(filter.values[0].value)}-${d3.time.format('%d.%m.%Y %H:%M')(filter.values[1].value)}`;
+                                                valuesField[0].value = `${d3.time.format('%d.%m.%Y %H:%M')(filter.values[0].value)} - ${d3.time.format('%d.%m.%Y %H:%M')(filter.values[1].value)}`;
                                             } else {
                                                 valuesField[0].value =filter.values[0].value;
                                             }

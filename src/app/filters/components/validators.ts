@@ -57,12 +57,12 @@ export class BIValidators {
         }
 
         let errors;
-        const tokens = control.value.split('-');
+        const tokens = control.value.split(' - ');
 
         errors = checkRangeQty(tokens);
         if (errors) return errors;
 
-        const [start, end] = control.value.split('-');
+        const [start, end] = control.value.split(' - ');
         if (isIPv4BI(start) || isIPv4BI(end)) {
             return {
                 invalid: true,
@@ -85,10 +85,10 @@ export class BIValidators {
 
         let errors;
 
-        errors = checkRangeQty(control.value.split('-'));
+        errors = checkRangeQty(control.value.split(' - '));
         if (errors) return errors;
 
-        const [first, second] = control.value.split('-');
+        const [first, second] = control.value.split(' - ');
         if (isRightMinutes(first) || isRightMinutes(second)) {
             return {
                 invalid: true,
@@ -155,7 +155,7 @@ export class BIValidators {
             };
         }
         let errors;
-        const tokens = control.value.split('-');
+        const tokens = control.value.split(' - ');
 
         errors = checkRangeQty(tokens);
         if (errors) return errors;
@@ -192,7 +192,7 @@ export class BIValidators {
             };
         }
         let errors;
-        const tokens = control.value.split('-');
+        const tokens = control.value.split(' - ');
 
         errors = checkRangeQty(tokens);
         if (errors) return errors;
@@ -334,7 +334,7 @@ function _dateRange(control: AbstractControl, format: string): ValidationErrors 
         };
     }
 
-    const tokens = control.value.split('-');
+    const tokens = control.value.split(' - ');
     errors = checkRangeQty(tokens);
     if (errors) return errors;
 

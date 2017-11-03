@@ -119,7 +119,7 @@ function makeIntervals(reportRange, filters) {
         .filter(element => !element.condition.match(/periodic/))
         // ToDo check interval is in range report, may be DB cut - test
         .map(element => {
-            const values = element.values[0].value.split('-');
+            const values = element.values[0].value.split(' - ');
             return {
                 start: d3.time.format('%d.%m.%Y %H:%M').parse(values[0]),
                 end: d3.time.format('%d.%m.%Y %H:%M').parse(values[1])
@@ -159,8 +159,8 @@ function makeIntervals(reportRange, filters) {
 function generateIntervals(reportRange, interval) {
     const start = reportRange[0];
     const end = reportRange[1];
-    const from = interval.split('-')[0].split(':');
-    const to = interval.split('-')[1].split(':');
+    const from = interval.split(' - ')[0].split(':');
+    const to = interval.split(' - ')[1].split(':');
     const result = [];
     let nextFirst = new Date(start.getFullYear(), start.getMonth(), start.getDate(), Number(from[0]), Number(from[1]));
 

@@ -53,7 +53,7 @@ export class BarComponent extends WidgetComponent {
     restore(values: Value[]): Restore {
         return {
             title: values[0].value,
-            filter: [values[0].value.split('-').map(item => Math.ceil(item))]
+            filter: [values[0].value.split(' - ').map(item => Math.ceil(item))]
         };
     }
 }

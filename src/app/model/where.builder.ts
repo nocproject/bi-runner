@@ -102,7 +102,7 @@ function interval(filter: Filter): Object {
         }
         case 'DateTime': {
             if (filter.condition.match(/periodic/)) {
-                const tokens = filter.values[0].value.split('-');
+                const tokens = filter.values[0].value.split(' - ');
 
                 from = toPeriodicTime(tokens[0]);
                 to = toPeriodicTime(tokens[1]);
@@ -119,7 +119,7 @@ function interval(filter: Filter): Object {
             break;
         }
         case 'IPv4': {
-            const tokens = filter.values[0].value.split('-');
+            const tokens = filter.values[0].value.split(' - ');
 
             from = ipv4StrToNum(tokens[0]);
             to = ipv4StrToNum(tokens[1]);
@@ -135,7 +135,7 @@ function interval(filter: Filter): Object {
         case 'Int64':
         case 'Float32':
         case 'Float64': {
-            const tokens = filter.values[0].value.split('-');
+            const tokens = filter.values[0].value.split(' - ');
             from = castToNumber(new Value(tokens[0]), filter.type);
             to = castToNumber(new Value(tokens[1]), filter.type);
             break;
