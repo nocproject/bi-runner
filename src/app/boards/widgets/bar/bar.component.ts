@@ -47,7 +47,7 @@ export class BarComponent extends WidgetComponent {
     }
 
     getValue(widget: BaseMixin<any>, filter): Value[] {
-        return filter ? [new Value(`${Math.ceil(filter[0])}-${Math.ceil(filter[1])}`)] : [];
+        return filter ? [new Value(`${Math.ceil(filter[0])} - ${Math.ceil(filter[1])}`)] : [];
     }
 
     restore(values: Value[]): Restore {

@@ -259,7 +259,7 @@
                   },
                   {
                     "expr": "toHour(ts)",
-                    "group": "1",
+                    "group": 1,
                     "alias": "name"
                   }
                 ],
