@@ -102,7 +102,7 @@ export class ValueService {
                 if (_.includes(condition, 'interval')) {
                     if (_.includes(condition, 'periodic')) {
                         first.type = 'input';
-                        first.placeholder = '29:59-29:59';
+                        first.placeholder = '29:59 - 29:59';
                         first.validation.push(BIValidators.hours);
                     } else {
                         first.type = 'input';
