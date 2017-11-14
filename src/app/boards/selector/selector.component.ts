@@ -165,7 +165,7 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
 
     private static rangeText(from: any, to: Date): string {
         if (Range.isNotRange(from)) {
-            return `${moment(from).format('DD.MM.YYYY HH:mm')}-${moment(to).format('DD.MM.YYYY HH:mm')}`;
+            return `${moment(from).format('DD.MM.YYYY HH:mm')} - ${moment(to).format('DD.MM.YYYY HH:mm')}`;
         }
         return from;
     }
