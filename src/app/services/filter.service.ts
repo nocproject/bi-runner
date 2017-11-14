@@ -100,10 +100,14 @@ export class FilterService {
                                     const valueField = _.first(config.groups[groupIndex].group.filters[filterIndex]
                                         .filter(f => f.name === 'valueFirst'));
 
+                                    filter.pseudo = conditionField.pseudo;
+                                    if(filter.condition.match('empty')) {
+                                      console.log(filter.pseudo);
+                                      return true;
+                                    }
                                     if (!filter.hasOwnProperty('valueFirst')) {
                                         return false;
                                     }
-                                    filter.pseudo = conditionField.pseudo;
                                     filter.datasource = valueField.datasource;
                                     // detect change fields name or condition
                                     if (filter.condition === conditionField.value && filter.name === nameField.value) {

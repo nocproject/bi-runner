@@ -121,6 +121,9 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                                 const formControl = this.createGroup(groupConfig);
                                 this.config.groups.push(groupConfig);
                                 group.filters.forEach(filter => {
+                                    if(filter.condition.match('empty')) {
+                                      filter.pseudo = false;
+                                    }
                                     const nameField: FieldConfig = {
                                         name: 'name',
                                         type: 'select',
@@ -157,6 +160,8 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                                         } else {
                                             valuesField[0].value = d3.time.format('%d.%m.%Y %H:%M')(filter.values[0].value);
                                         }
+                                    } else if (filter.condition.match('empty')) {
+                                        // skip empty value
                                     } else {
                                         valuesField[0].value = filter.values[0].value;
                                     }

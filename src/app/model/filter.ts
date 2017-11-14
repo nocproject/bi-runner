@@ -27,7 +27,7 @@ export class Filter {
     public datasource: string;
 
     public isEmpty(): boolean {
-        return this.values.length === 0;
+        return this.values.length === 0 ;
     }
 
     public isPseudo(): boolean {

@@ -3,9 +3,8 @@ import { FormArray, FormGroup } from '@angular/forms';
 
 import * as _ from 'lodash';
 
-import { FieldConfig } from '../../models/form-config.interface';
-import { EventType } from '../../models/event.interface';
-import { EventService } from '../../services/event.service';
+import { EventType, FieldConfig } from '../../models';
+import { EventService } from '../../services';
 
 @Component({
     selector: 'bi-filter',

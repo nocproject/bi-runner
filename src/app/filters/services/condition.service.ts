@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Rx';
 import * as _ from 'lodash';
 
 import { IOption } from '../../model';
-import { FieldConfig } from '../models/form-config.interface';
+import { FieldConfig } from '../models';
 
 @Injectable()
 export class ConditionService {
@@ -90,9 +90,9 @@ export class ConditionService {
             }
             case 'String': {
                 conditions = conditions.concat([
-                    {value: 'empty', text: 'CONDITION.empty'},
-                    {value: 'not.empty', text: 'CONDITION.not empty'},
-                    {value: '$like', text: 'CONDITION.like'}
+                    {value: 'empty', text: 'CONDITION.EMPTY'},
+                    {value: 'not.empty', text: 'CONDITION.NOT_EMPTY'},
+                    {value: '$like', text: 'CONDITION.LIKE'}
                 ]);
                 return Observable.of(conditions);
             }

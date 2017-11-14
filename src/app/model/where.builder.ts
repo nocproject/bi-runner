@@ -78,15 +78,17 @@ function where(filter: Filter): Object {
         case 'not.in':
             return not(inCondition(clonedFilter));
         case 'empty':
-            return not(empty(clonedFilter));
+            return empty(clonedFilter);
         case 'not.empty':
             return notEmpty(clonedFilter);
         case '$selector':
-            return {
-                $selector: clonedFilter.values[0].value
-            };
+          return {
+            $selector: clonedFilter.values[0].value
+          };
+        case '$like':
+          return like(clonedFilter);
         default:
-            return castToValue(clonedFilter);
+          return castToValue(clonedFilter);
     }
 }
 
@@ -319,6 +321,18 @@ function not(value) {
     return {
         $not: value
     };
+}
+
+function like(filter: Filter) {
+  return {
+    $like: [
+      {
+        $lower: { $field: filter.name }
+      }, {
+        $lower: `%${filter.values[0].value}%`
+      }
+    ]
+  }
 }
 
 function valueLength(values: Value[]): number {
