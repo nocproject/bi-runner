@@ -14,7 +14,8 @@
                 <bi-group *ngFor="let group of config.groups; let groupIndex = index"
                           [index]="groupIndex"
                           [groupConfig]="group"
-                          [parent]="form">
+                          [parent]="form"
+                          [formConfig]="config">
                 </bi-group>
             </div>
         </div>
@@ -23,13 +24,14 @@
 <div class="row" *ngIf="config.groups.length > 0">
     <div class="pull-right">
         <button class="btn btn-default"
-                (click)="onApplyDisableAll(false)"
+                (click)="onAllButtonClick(false)"
+                [disabled]="!hasActiveGroup"
                 style="margin-bottom: 5px" translate>SELECTOR.FORM.DISABLE_ALL_BTN
         </button>
         <button class="btn clearfix"
                 [ngClass]="{'btn-default': !active, 'btn-primary' : active}"
-                [disabled]="!form.valid"
-                (click)="onApplyDisableAll(true)"
+                [disabled]="!hasInactiveGroup"
+                (click)="onAllButtonClick(true)"
                 style="margin-bottom: 5px" translate>SELECTOR.FORM.APPLY_ALL_BTN
         </button>
     </div>

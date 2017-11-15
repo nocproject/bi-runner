@@ -102,7 +102,6 @@ export class FilterService {
 
                                     filter.pseudo = conditionField.pseudo;
                                     if(filter.condition.match('empty')) {
-                                      console.log(filter.pseudo);
                                       return true;
                                     }
                                     if (!filter.hasOwnProperty('valueFirst')) {

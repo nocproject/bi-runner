@@ -6,7 +6,7 @@ import * as d3 from 'd3';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Rx';
 
-import { EventType, FieldConfig, FiltersConfig, FormConfig, FormData, GroupConfig } from '../../models';
+import { EventType, FieldConfig, FiltersConfig, FormConfig, GroupConfig } from '../../models';
 import { APIService, FieldListService, FilterService } from '../../../services';
 import { ConditionService, EventService, ValueService } from '../../services';
 import { BIValidators } from '../../components/validators';
@@ -26,7 +26,7 @@ export class FilterFormComponent implements OnDestroy, OnInit {
     form: FormGroup;
     requestQty$: Observable<number>;
     private eventSubscription: Subscription;
-    private formSubscription: Subscription;
+    // private formSubscription: Subscription;
 
     get changes(): Observable<any> {
         return this.form.valueChanges;
@@ -38,6 +38,14 @@ export class FilterFormComponent implements OnDestroy, OnInit {
 
     get value() {
         return this.form.value;
+    }
+
+    get hasInactiveGroup(): boolean {
+      return this.form.value.groups.filter(group => !group.active).length > 0;
+    }
+
+    get hasActiveGroup(): boolean {
+      return this.form.value.groups.filter(group => group.active).length > 0;
     }
 
     constructor(private fb: FormBuilder,
@@ -52,7 +60,7 @@ export class FilterFormComponent implements OnDestroy, OnInit {
     ngOnDestroy(): void {
         // ToDo check all subscription, may be use .toPromise()
         this.eventSubscription.unsubscribe();
-        this.formSubscription.unsubscribe();
+        // this.formSubscription.unsubscribe();
     }
 
     ngOnInit() {
@@ -255,7 +263,7 @@ export class FilterFormComponent implements OnDestroy, OnInit {
         (<FormArray>this.form.get('groups')).push(this.createGroup(fresh));
     }
 
-    onApplyDisableAll(active: boolean) {
+    onAllButtonClick(active: boolean) {
         const data = _.clone(this.form.value);
 
         data.groups = data.groups.map(group => {
@@ -263,6 +271,7 @@ export class FilterFormComponent implements OnDestroy, OnInit {
             return group;
         });
         this.form.patchValue(data);
+        this.filterService.formFilters(data.groups, this.config);
     }
 
     private createForm() {
@@ -295,16 +304,16 @@ export class FilterFormComponent implements OnDestroy, OnInit {
             groups: new FormArray(groups)
         }, BIValidators.form);
 
-        this.formSubscription = this.changes
-            .filter(() => this.form.valid)
-            .distinctUntilChanged((previous, current) => {
-                return JSON.stringify(previous) === JSON.stringify(current);
-            })
-            .subscribe((data: FormData) => {
-                console.log('FilterFormComponent: subscribe - execute filter!');
-
-                this.filterService.formFilters(data.groups, this.config);
-            });
+        // this.formSubscription = this.changes
+        //     .filter(() => this.form.valid)
+        //     .distinctUntilChanged((previous, current) => {
+        //         return JSON.stringify(previous) === JSON.stringify(current);
+        //     })
+        //     .subscribe((data: FormData) => {
+        //         console.log('FilterFormComponent: subscribe - execute filter!');
+        //
+        //         this.filterService.formFilters(data.groups, this.config);
+        //     });
     }
 
     private createGroup(config: GroupConfig): FormGroup {

@@ -51,6 +51,10 @@ body {
   border: 0;
 }
 
+.not-active-group {
+  background-color: rgba(245, 245, 245, 0);
+}
+
 .not-active {
   pointer-events: none;
   cursor: default;

@@ -2,10 +2,11 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 
 import { Subscription } from 'rxjs/Subscription';
+import * as _ from 'lodash';
 
-import { GroupConfig } from '../../models/form-config.interface';
-import { EventService } from '../../services/event.service';
-import { EventType } from '../../models/event.interface';
+import { EventType, FormConfig, GroupConfig } from '../../models';
+import { EventService } from '../../services';
+import { FilterService } from '../../../services';
 
 @Component({
     selector: 'bi-group',
@@ -18,11 +19,18 @@ export class GroupComponent implements OnInit, OnDestroy {
     groupConfig: GroupConfig;
     @Input()
     parent: FormGroup;
+    @Input()
+    formConfig: FormConfig;
 
     private subscription: Subscription;
     group: FormGroup;
 
-    constructor(private eventService: EventService) {
+    get hasFilters(): boolean{
+      return (<FormArray>this.group.get('group.filters')).length > 0;
+    }
+
+    constructor(private eventService: EventService,
+                private filterService: FilterService,) {
     }
 
     ngOnInit() {
@@ -30,10 +38,8 @@ export class GroupComponent implements OnInit, OnDestroy {
         this.subscription = this.group.statusChanges
             .distinctUntilChanged()
             .subscribe(status => {
-                if (status === 'VALID') {
-                    this.group.patchValue({active: true}, {emitEvent: false});
-                } else {
-                    this.group.patchValue({active: false}, {emitEvent: false});
+                if (status !== 'VALID') {
+                    this.group.patchValue({active: false});
                 }
             });
     }
@@ -52,9 +58,18 @@ export class GroupComponent implements OnInit, OnDestroy {
 
     onApply(): void {
         this.group.patchValue({active: true});
+        this.applyChanges();
     }
 
     onDisable(): void {
-        this.group.patchValue({active: false}, {emitEvent: true, onlySelf: false});
+        this.group.patchValue({active: false});
+        this.applyChanges();
+    }
+
+    private applyChanges(){
+      const data = _.clone(this.parent.value);
+
+      console.log(data.groups);
+      this.filterService.formFilters(data.groups, this.formConfig);
     }
 }

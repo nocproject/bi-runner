@@ -15,7 +15,8 @@
             <label for="no-{{ index }}">OR</label>
         </div>
     </div>
-    <div class="panel" style="border-color: #ccc; margin-bottom: 10px;" formGroupName="group">
+    <div class="panel" style="border-color: #ccc; margin-bottom: 10px;" formGroupName="group"
+         [ngClass]="{'not-active-group': !group.value.active}">
         <div class="panel-heading" style="border-color: #ddd;font-size: 16px;padding: 5px 15px 5px 15px;">
             <div class="row vertical-align">
                 <div class="col-md-3"><b translate [translateParams]="{value: index}">SELECTOR.FORM.GROUP_N</b></div>
@@ -54,12 +55,12 @@
                 </bi-filter>
             </div>
             <div class="pull-right" style="margin: 0 10px 10px;">
-                <button class="btn btn-default clean-filter btn-sm"
-                   [disabled]="!group.value.active"
+                <button class="btn btn-default btn-sm"
+                   *ngIf="hasFilters && group.value.active"
                    (click)="onDisable()" translate>SELECTOR.FORM.DISABLE_BTN</button>
-                <button class="btn apply-filter btn-sm"
+                <button class="btn btn-default btn-sm"
                    [ngClass]="{'btn-default': !group.value.active, 'btn-primary' : group.value.active}"
-                   [disabled]="!group.valid"
+                   *ngIf="hasFilters && group.valid && !group.value.active"
                    (click)="onApply()" translate>SELECTOR.FORM.APPLY_BTN</button>
             </div>
         </div>
