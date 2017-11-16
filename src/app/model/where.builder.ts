@@ -80,7 +80,7 @@ function where(filter: Filter): Object {
         case 'empty':
             return empty(clonedFilter);
         case 'not.empty':
-            return notEmpty(clonedFilter);
+            return not(empty(clonedFilter));
         case '$selector':
           return {
             $selector: clonedFilter.values[0].value
@@ -304,14 +304,6 @@ function orValues(values) {
 function empty(filter: Filter) {
     return {
         '$empty': {
-            '$field': filter.name
-        }
-    };
-}
-
-function notEmpty(filter: Filter) {
-    return {
-        '$notEmpty': {
             '$field': filter.name
         }
     };

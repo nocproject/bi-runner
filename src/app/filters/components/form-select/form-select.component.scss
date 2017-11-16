@@ -16,3 +16,8 @@
 //  /* (for browsers that don't support the syntax used above) */
 //  background-color: #fff;
 //}
+
+select.ng-invalid {
+  border-color: darkred;
+  color: darkred;
+}

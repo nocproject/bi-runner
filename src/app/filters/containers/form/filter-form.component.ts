@@ -110,6 +110,10 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                         const data = _.clone(this.form.value);
                         data.groups[event.group].active = false;
                         this.form.patchValue(data, {emitEvent: false});
+                        if (!this.config.groups[event.group].group.filters.length) {
+                            const data = _.clone(this.form.value);
+                            this.filterService.formFilters(data.groups, this.config);
+                        }
                         break;
                     }
                     case EventType.Restore: {
