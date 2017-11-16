@@ -59,7 +59,6 @@
                    *ngIf="hasFilters && group.value.active"
                    (click)="onDisable()" translate>SELECTOR.FORM.DISABLE_BTN</button>
                 <button class="btn btn-default btn-sm"
-                   [ngClass]="{'btn-default': !group.value.active, 'btn-primary' : group.value.active}"
                    *ngIf="hasFilters && group.valid && !group.value.active"
                    (click)="onApply()" translate>SELECTOR.FORM.APPLY_BTN</button>
             </div>

@@ -92,6 +92,7 @@ export class FilterService {
                         .association(item.association)
                         .filters(
                             item.group.filters
+                                .filter(filter => filter.condition)
                                 .filter((filter, filterIndex) => {
                                     const nameField = _.first(config.groups[groupIndex].group.filters[filterIndex]
                                         .filter(f => f.name === 'name'));
@@ -100,6 +101,7 @@ export class FilterService {
                                     const valueField = _.first(config.groups[groupIndex].group.filters[filterIndex]
                                         .filter(f => f.name === 'valueFirst'));
 
+                                    // ToDo side effect, refactoring !!!
                                     filter.pseudo = conditionField.pseudo;
                                     if(filter.condition.match('empty')) {
                                       return true;
@@ -107,14 +109,17 @@ export class FilterService {
                                     if (!filter.hasOwnProperty('valueFirst')) {
                                         return false;
                                     }
+                                    // ToDo side effect, refactoring !!!
                                     filter.datasource = valueField.datasource;
                                     // detect change fields name or condition
                                     if (filter.condition === conditionField.value && filter.name === nameField.value) {
                                         return true;
                                     } else if (filter.condition !== conditionField.value) {
+                                        // ToDo side effect, refactoring !!!
                                         conditionField.value = filter.condition;
                                         return false;
                                     } else if (filter.name !== nameField.value) {
+                                        // ToDo side effect, refactoring !!!
                                         nameField.value = filter.name;
                                         return false;
                                     }

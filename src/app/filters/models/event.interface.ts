@@ -11,5 +11,6 @@ export enum EventType {
     ChangeSelect,
     DeleteFilter,
     DeleteGroup,
+    FilterChanged,
     Restore
 }

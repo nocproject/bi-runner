@@ -69,7 +69,6 @@ export class GroupComponent implements OnInit, OnDestroy {
     private applyChanges(){
       const data = _.clone(this.parent.value);
 
-      console.log(data.groups);
       this.filterService.formFilters(data.groups, this.formConfig);
     }
 }

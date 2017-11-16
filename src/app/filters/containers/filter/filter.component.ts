@@ -1,6 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 
+import { Subscription } from 'rxjs/Subscription';
 import * as _ from 'lodash';
 
 import { EventType, FieldConfig } from '../../models';
@@ -10,7 +11,7 @@ import { EventService } from '../../services';
     selector: 'bi-filter',
     templateUrl: './filter.component.html'
 })
-export class FilterComponent implements OnInit {
+export class FilterComponent implements OnInit, OnDestroy {
     @Input()
     index: number;
     @Input()
@@ -19,6 +20,8 @@ export class FilterComponent implements OnInit {
     parent: FormGroup;
     @Input()
     filterConfig: FieldConfig[];
+
+    private changeSubscription: Subscription;
 
     filter: FormGroup;
     fieldFieldName = 'name';
@@ -37,6 +40,18 @@ export class FilterComponent implements OnInit {
         this.conditionConfig = _.find(this.filterConfig, ['name', this.conditionFieldName]);
         this.valueFirstConfig = _.find(this.filterConfig, ['name', 'valueFirst']);
         this.valueSecondConfig = _.find(this.filterConfig, ['name', 'valueSecond']);
+        this.changeSubscription = this.filter.valueChanges.subscribe((data) => {
+          this.eventService.next({
+              type: EventType.FilterChanged,
+              group: this.group,
+              filter: this.index,
+              value: data
+          });
+        });
+    }
+
+    ngOnDestroy(): void {
+        this.changeSubscription.unsubscribe();
     }
 
     onFilterClose(): void {

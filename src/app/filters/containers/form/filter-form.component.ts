@@ -41,11 +41,13 @@ export class FilterFormComponent implements OnDestroy, OnInit {
     }
 
     get hasInactiveGroup(): boolean {
-      return this.form.value.groups.filter(group => !group.active).length > 0;
+      const filterQty = this.form.value.groups.reduce((acc, i) => i.group.filters.length + acc, 0);
+      return this.form.valid && filterQty && this.form.value.groups.filter(group => !group.active).length > 0;
     }
 
     get hasActiveGroup(): boolean {
-      return this.form.value.groups.filter(group => group.active).length > 0;
+      const filterQty = this.form.value.groups.reduce((acc, i) => i.group.filters.length + acc, 0);
+      return this.form.valid && filterQty && this.form.value.groups.filter(group => group.active).length > 0;
     }
 
     constructor(private fb: FormBuilder,
@@ -86,6 +88,7 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                         this.config.groups.splice(event.group, 1);
                         // Form controls
                         (<FormArray>this.form.get('groups')).removeAt(event.group);
+                        this.applyData(_.clone(this.form.value));
                         break;
                     }
                     case EventType.AddFilter: {
@@ -103,6 +106,10 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                         (<FormArray>(<FormArray>this.form.get('groups'))
                             .at(event.group).get('group.filters'))
                             .removeAt(event.filter);
+
+                        const data = _.clone(this.form.value);
+                        data.groups[event.group].active = false;
+                        this.form.patchValue(data, {emitEvent: false});
                         break;
                     }
                     case EventType.Restore: {
@@ -208,11 +215,14 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                             }
                             case 'condition': {
                                 const filterControls = (<FormGroup>(<FormArray>(<FormArray>this.form.get('groups'))
-                                    .at(event.group).get('group.filters')).at(event.filter));
+                                  .at(event.group).get('group.filters')).at(event.filter));
+                                const data = _.clone(this.form.value);
 
+                                data.groups[event.group].active = false;
+                                this.form.patchValue(data, { emitEvent: false });
                                 this.config.groups[event.group].group.filters[event.filter] =
-                                    this.config.groups[event.group].group.filters[event.filter]
-                                        .filter(field => field.name === 'name' || field.name === 'condition');
+                                  this.config.groups[event.group].group.filters[event.filter]
+                                    .filter(field => field.name === 'name' || field.name === 'condition');
 
                                 // set value for catch change field name & condition
                                 _.filter(this.config.groups[event.group].group.filters[event.filter], ['name', 'name'])[0].value = filterControls.get('name').value;
@@ -230,6 +240,14 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                                 break;
                             }
                         }
+                        break;
+                    }
+                    case EventType.FilterChanged: {
+                        const data = _.clone(this.form.value);
+
+                        data.groups[event.group].active = false;
+                        data.groups[event.group].group.filters[event.filter] = event.value;
+                        this.form.patchValue(data, {emitEvent: false});
                         break;
                     }
                 }
@@ -270,51 +288,55 @@ export class FilterFormComponent implements OnDestroy, OnInit {
             group.active = active;
             return group;
         });
-        this.form.patchValue(data);
-        this.filterService.formFilters(data.groups, this.config);
+      this.applyData(data);
+    }
+
+    private applyData(data: any) {
+      this.form.patchValue(data, {emitEvent: false});
+      this.filterService.formFilters(data.groups, this.config);
     }
 
     private createForm() {
-        // init state
-        this.config = {
-            groups: [{
-                association: '$and',
-                active: false,
-                group: {
-                    association: '$and',
-                    filters: [
-                        [{
-                            name: 'name',
-                            type: 'select',
-                            value: '',
-                            pseudo: false,
-                            validation: [Validators.required],
-                            label: 'Field',
-                            placeholder: 'SELECT_FIELD',
-                            options: this.fieldList.getAsOption()
-                        }]
-                    ]
-                }
-            }]
-        };
+          // init state
+          this.config = {
+              groups: [{
+                  association: '$and',
+                  active: false,
+                  group: {
+                      association: '$and',
+                      filters: [
+                          [{
+                              name: 'name',
+                              type: 'select',
+                              value: '',
+                              pseudo: false,
+                              validation: [Validators.required],
+                              label: 'Field',
+                              placeholder: 'SELECT_FIELD',
+                              options: this.fieldList.getAsOption()
+                          }]
+                      ]
+                  }
+              }]
+          };
 
-        const groups: FormGroup[] = this.config.groups.map(g => this.createGroup(g));
+          const groups: FormGroup[] = this.config.groups.map(g => this.createGroup(g));
 
-        this.form = new FormGroup({
-            groups: new FormArray(groups)
-        }, BIValidators.form);
+          this.form = new FormGroup({
+              groups: new FormArray(groups)
+          }, BIValidators.form);
 
-        // this.formSubscription = this.changes
-        //     .filter(() => this.form.valid)
-        //     .distinctUntilChanged((previous, current) => {
-        //         return JSON.stringify(previous) === JSON.stringify(current);
-        //     })
-        //     .subscribe((data: FormData) => {
-        //         console.log('FilterFormComponent: subscribe - execute filter!');
-        //
-        //         this.filterService.formFilters(data.groups, this.config);
-        //     });
-    }
+          // this.formSubscription = this.changes
+          //     .filter(() => this.form.valid)
+          //     .distinctUntilChanged((previous, current) => {
+          //         return JSON.stringify(previous) === JSON.stringify(current);
+          //     })
+          //     .subscribe((data: FormData) => {
+          //         console.log('FilterFormComponent: subscribe - execute filter!');
+          //
+          //         this.filterService.formFilters(data.groups, this.config);
+          //     });
+      }
 
     private createGroup(config: GroupConfig): FormGroup {
         const filters = this.fb.array(
