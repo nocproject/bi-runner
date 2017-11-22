@@ -24,6 +24,16 @@ export class Utils {
         return d3.time.format(format)(date);
     };
 
+    static dateToDateTimeString(date, format?: string): string {
+        format = typeof format !== 'undefined' ? format : '%d.%m.%y %H:%M';
+
+        return d3.time.format(format)(date);
+    };
+
+    static spanView(id: number): string {
+        return `<a href="/api/card/view/span/${id}/" target="_blank" title="open"><ins>${id}</ins></a>`
+    }
+
     static stringDateTimeToTimeString(date: string): string {
         const time = date.split(' ')[1];
         return `${time.split(':')[0]}:${time.split(':')[1]}`;

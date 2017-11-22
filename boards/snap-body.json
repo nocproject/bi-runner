@@ -1,0 +1,402 @@
+{
+  "id": "0",
+  "method": "set_dashboard",
+  "params": [
+    {
+      "layoutId": "580e1ba498601c0f96b7e809",
+      "layout": {
+        "uuid": "f2736f99-a568-4820-b746-1e71d48b4374",
+        "cells": [
+          {
+            "md": 6,
+            "name": "c12",
+            "lg": null,
+            "height": 200,
+            "sm": null,
+            "xs": null,
+            "row": 0
+          },
+          {
+            "md": 6,
+            "name": "c21",
+            "lg": null,
+            "height": 200,
+            "sm": null,
+            "xs": null,
+            "row": 1
+          },
+          {
+            "md": 6,
+            "name": "c22",
+            "lg": null,
+            "height": 200,
+            "sm": null,
+            "xs": null,
+            "row": 1
+          },
+          {
+            "md": 12,
+            "name": "table1",
+            "lg": null,
+            "height": 360,
+            "sm": null,
+            "xs": null,
+            "row": 4
+          }
+        ],
+        "description": "",
+        "fav_status": false,
+        "is_builtin": false,
+        "id": "580e1ba498601c0f96b7e809",
+        "name": "c2x2"
+      },
+      "description": "Телеметрия эскалаций во внешние системы",
+      "groups": [
+        {
+          "active": true,
+          "association": "$and",
+          "filters": [
+            {
+              "type": "DateTime",
+              "association": "$and",
+              "values": [
+                {
+                  "value": "l7"
+                }
+              ],
+              "name": "ts",
+              "condition": "interval"
+            }
+          ],
+          "name": "startEnd"
+        },
+        {
+          "active": true,
+          "association": "$and",
+          "filters": [
+            {
+              "association": "$and",
+              "name": "server",
+              "type": "String",
+              "condition": "$eq",
+              "pseudo": false,
+              "values": [
+                {
+                  "value": "TG"
+                },
+                {}
+              ]
+            }
+          ],
+          "name": "form"
+        }
+      ],
+      "title": "Телеметрия",
+      "format": 2,
+      "export": {
+        "params": [
+          {
+            "fields": [
+              {
+                "alias": "date",
+                "expr": "date",
+                "group": 0,
+                "format": "dateToString",
+                "label": "Дата"
+              },
+              {
+                "alias": "qty",
+                "desc": true,
+                "expr": "count()",
+                "order": 0,
+                "label": "Кол-во"
+              }
+            ],
+            "datasource": "span"
+          }
+        ],
+        "id": 0,
+        "method": "query"
+      },
+      "datasource": "span",
+      "widgets": [
+        {
+          "cell": "c12",
+          "note": "по дню недели",
+          "title": "Распределение по дням недели (кол-во)",
+          "type": "rowChart",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "toDayOfWeek(date)",
+                    "alias": "day",
+                    "group": 0,
+                    "order": 0,
+                    "desc": true
+                  },
+                  {
+                    "expr": "count()",
+                    "alias": "cnt"
+                  }
+                ],
+                "datasource": "span"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        },
+        {
+          "cell": "c21",
+          "note": "процент успешных",
+          "title": "Процент успешных/неуспешных, топ 10",
+          "type": "pieChart",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "error_code",
+                    "group": 0
+                  },
+                  {
+                    "expr": "error_text",
+                    "group": 1,
+                    "alias": "name"
+                  },
+                  {
+                    "expr": "count()",
+                    "alias": "cnt",
+                    "order": 0,
+                    "desc": true
+                  }
+                ],
+                "limit": 10,
+                "datasource": "span"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        },
+        {
+          "cell": "c22",
+          "note": "по времени",
+          "title": "Распределение по часам (кол-во)",
+          "type": "barChart",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "toHour(ts)",
+                    "alias": "hour",
+                    "group": 0,
+                    "order": 0,
+                    "desc": true
+                  },
+                  {
+                    "expr": "count()",
+                    "alias": "cnt"
+                  },
+                  {
+                    "expr": "toHour(ts)",
+                    "group": 1,
+                    "alias": "name"
+                  }
+                ],
+                "datasource": "span"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        },
+        {
+          "cell": "table1",
+          "note": "телеметрия",
+          "title": ", топ 10",
+          "type": "dataTable",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "alias": "date",
+                    "expr": "ts",
+                    "label": "Дата",
+                    "format": "dateToDateTimeString",
+                    "group": 0
+                  },
+                  {
+                    "alias": "in",
+                    "expr": "in_label",
+                    "label": "In",
+                    "group": 1
+                  },
+                  {
+                    "alias": "out",
+                    "expr": "out_label",
+                    "label": "Out",
+                    "group": 2
+                  },
+                  {
+                    "alias": "code",
+                    "expr": "error_code",
+                    "label": "Code",
+                    "group": 3
+                  },
+                  {
+                    "alias": "text",
+                    "expr": "error_text",
+                    "label": "Text",
+                    "group": 4
+                  },
+                  {
+                    "alias": "duration",
+                    "expr": "duration",
+                    "label": "Duration",
+                    "format": "intFormat",
+                    "order": 0,
+                    "desc": true,
+                    "group": 5
+                  },
+                  {
+                    "alias": "ctx",
+                    "expr": "ctx",
+                    "label": "Context",
+                    "format": "spanView",
+                    "group": 6
+                  }
+                ],
+                "limit": 10,
+                "datasource": "span"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        }
+      ],
+      "filter_fields": [
+        {
+          "name": "date",
+          "group": 2
+        },
+        {
+          "name": "ts",
+          "group": 1
+        },
+        {
+          "name": "ctx",
+          "group": 1
+        },
+        {
+          "name": "id",
+          "group": 1
+        },
+        {
+          "name": "parent",
+          "group": 1
+        },
+        {
+          "name": "server",
+          "group": 1
+        },
+        {
+          "name": "service",
+          "group": 1
+        },
+        {
+          "name": "client",
+          "group": 1
+        },
+        {
+          "name": "duration",
+          "group": 1
+        },
+        {
+          "name": "sample",
+          "group": 1
+        },
+        {
+          "name": "error_code",
+          "group": 1
+        },
+        {
+          "name": "error_text",
+          "group": 1
+        },
+        {
+          "name": "in_label",
+          "group": 1
+        },
+        {
+          "name": "out_label",
+          "group": 1
+        }
+      ],
+      "agv_fields": [
+        {
+          "name": "date",
+          "group": 2
+        },
+        {
+          "name": "ts",
+          "group": 1
+        },
+        {
+          "name": "ctx",
+          "group": 1
+        },
+        {
+          "name": "id",
+          "group": 1
+        },
+        {
+          "name": "parent",
+          "group": 1
+        },
+        {
+          "name": "server",
+          "group": 1
+        },
+        {
+          "name": "service",
+          "group": 1
+        },
+        {
+          "name": "client",
+          "group": 1
+        },
+        {
+          "name": "duration",
+          "group": 1
+        },
+        {
+          "name": "sample",
+          "group": 1
+        },
+        {
+          "name": "error_code",
+          "group": 1
+        },
+        {
+          "name": "error_text",
+          "group": 1
+        },
+        {
+          "name": "in_label",
+          "group": 1
+        },
+        {
+          "name": "out_label",
+          "group": 1
+        }
+      ],
+      "pseudo_fields": []
+    }
+  ]
+}
