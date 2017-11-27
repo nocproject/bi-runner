@@ -162,7 +162,7 @@
                     "group": 0
                   },
                   {
-                    "expr": "error_text",
+                    "expr": "error_code = 0 ? 'Ok' : 'Error'",
                     "group": 1,
                     "alias": "name"
                   },
@@ -217,7 +217,7 @@
         {
           "cell": "table1",
           "note": "телеметрия",
-          "title": ", топ 10",
+          "title": "Телеметрия, топ 10",
           "type": "dataTable",
           "query": {
             "params": [
@@ -250,7 +250,7 @@
                   },
                   {
                     "alias": "text",
-                    "expr": "error_text",
+                    "expr": "error_code = 0 ? 'Ok' : error_text",
                     "label": "Text",
                     "group": 4
                   },
@@ -258,16 +258,14 @@
                     "alias": "duration",
                     "expr": "duration",
                     "label": "Duration",
-                    "format": "intFormat",
                     "order": 0,
                     "desc": true,
                     "group": 5
                   },
                   {
                     "alias": "ctx",
-                    "expr": "ctx",
+                    "expr": "concat('<a href=\"/api/card/view/span/', toString(ctx), '/\" target=\"_blank\" title=\"open\"><ins>', toString(ctx), '</ins></a>')",
                     "label": "Context",
-                    "format": "spanView",
                     "group": 6
                   }
                 ],
