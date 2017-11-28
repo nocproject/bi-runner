@@ -1,10 +1,8 @@
 import { Component } from '@angular/core';
 
-import * as d3 from 'd3';
 import * as dc from 'dc';
 import { BaseMixin, DataTableWidget } from 'dc';
 import * as crossfilter from 'crossfilter';
-import * as _ from 'lodash';
 
 import { Restore, WidgetComponent } from '../widget.component';
 import { Field, Result, Value } from '../../../model';
@@ -29,25 +27,11 @@ export class TableComponent extends WidgetComponent {
                     return (d) => d[param];
                 }
             });
-        const sort = _.head(
-            this.data.widget.query.getFields()
-                .filter(field => 'desc' in field)
-                .map(field => {
-                    if (field.desc) {
-                        return {field: 'alias' in field ? field.alias : field.expr, direct: d3.descending};
-                    }
-                    return {field: 'alias' in field ? field.alias : field.expr, direct: d3.ascending};
-                })
-        );
 
         chart.dimension(dimension);
         chart.group(() => 'click on column header to switch');
         chart.showGroups(false);
         chart.columns(cols);
-        if (sort) {
-            chart.sortBy(d => parseInt(d[sort.field], 10));
-            chart.order(sort.direct);
-        }
         this.catchEvents(chart);
         chart.render();
 
