@@ -1,0 +1,186 @@
+{
+  "result": {
+    "sample": false,
+    "fields": [
+      {
+        "dict": null,
+        "type": "Date",
+        "name": "date",
+        "description": "\u0414\u0430\u0442\u0430"
+      },
+      {
+        "dict": null,
+        "type": "DateTime",
+        "name": "ts",
+        "description": "\u0421\u043e\u0437\u0434\u0430\u043d\u043e"
+      },
+      {
+        "dict": null,
+        "type": "DateTime",
+        "name": "close_ts",
+        "description": "\u0412\u0440\u0435\u043c\u044f \u0437\u0430\u043a\u0440\u044b\u0442\u0438\u044f"
+      },
+      {
+        "dict": null,
+        "type": "Int32",
+        "name": "duration",
+        "description": "\u041f\u0440\u043e\u0434\u043e\u043b\u0436\u0438\u0442\u0435\u043b\u044c\u043d\u043e\u0441\u0442\u044c"
+      },
+      {
+        "dict": null,
+        "type": "String",
+        "name": "alarm_id",
+        "description": "\u0418\u0434\u0435\u043d\u0442\u0438\u0444\u0438\u043a\u0430\u0442\u043e\u0440"
+      },
+      {
+        "dict": null,
+        "type": "String",
+        "name": "root",
+        "description": "\u041a\u043e\u0440\u0435\u043d\u044c \u0430\u0432\u0430\u0440\u0438\u0438"
+      },
+      {
+        "dict": "alarmclass",
+        "type": "UInt64",
+        "name": "alarm_class",
+        "description": "\u041a\u043b\u0430\u0441\u0441 \u0430\u0432\u0430\u0440\u0438\u0438"
+      },
+      {
+        "dict": null,
+        "type": "Int32",
+        "name": "severity",
+        "description": "\u0412\u0430\u0436\u043d\u043e\u0441\u0442\u044c"
+      },
+      {
+        "dict": null,
+        "type": "Int32",
+        "name": "reopens",
+        "description": "\u041f\u0435\u0440\u0435\u043e\u0442\u043a\u0440\u044b\u0442\u0438\u044f"
+      },
+      {
+        "dict": null,
+        "type": "Int64",
+        "name": "direct_services",
+        "description": "\u041f\u043e\u0432\u043b\u0438\u044f\u043b\u043e \u043d\u0430 \u0441\u0435\u0440\u0432\u0438\u0441\u044b"
+      },
+      {
+        "dict": null,
+        "type": "Int64",
+        "name": "direct_subscribers",
+        "description": "\u041f\u043e\u0432\u043b\u0438\u044f\u043b\u043e \u043d\u0430 \u0430\u0431\u043e\u043d\u0435\u043d\u0442\u043e\u0432"
+      },
+      {
+        "dict": null,
+        "type": "Int64",
+        "name": "total_objects",
+        "description": "\u041e\u0431\u0449\u0435\u0435 \u043a\u043e\u043b-\u0432\u043e \u043e\u0431\u044a\u0435\u043a\u0442\u043e\u0432"
+      },
+      {
+        "dict": null,
+        "type": "Int64",
+        "name": "total_services",
+        "description": "\u041e\u0431\u0449\u0435\u0435 \u043a\u043e\u043b-\u0432\u043e \u0441\u0435\u0440\u0432\u0438\u0441\u043e\u0432"
+      },
+      {
+        "dict": null,
+        "type": "Int64",
+        "name": "total_subscribers",
+        "description": "\u041e\u0431\u0449\u0435\u0435 \u043a\u043e\u043b-\u0432\u043e \u0430\u0431\u043e\u043d\u0435\u043d\u0442\u043e\u0432"
+      },
+      {
+        "dict": null,
+        "type": "DateTime",
+        "name": "escalation_ts",
+        "description": "\u0412\u0440\u0435\u043c\u044f \u043a\u043e\u0433\u0434\u0430 \u044d\u0441\u043a\u0430\u043b\u0438\u0440\u043e\u0432\u0430\u043d\u043e"
+      },
+      {
+        "dict": null,
+        "type": "String",
+        "name": "escalation_tt",
+        "description": "\u041d\u043e\u043c\u0435\u0440 \u0422\u0422"
+      },
+      {
+        "dict": null,
+        "type": "Int16",
+        "name": "reboots",
+        "description": "\u0427\u0438\u0441\u043b\u043e \u043f\u0435\u0440\u0435\u0437\u0430\u0433\u0440\u0443\u0437\u043e\u043a"
+      },
+      {
+        "dict": "managedobject",
+        "type": "UInt64",
+        "name": "managed_object",
+        "description": "\u0418\u043c\u044f \u043e\u0431\u044a\u0435\u043a\u0442\u0430"
+      },
+      {
+        "dict": "pool",
+        "type": "UInt64",
+        "name": "pool",
+        "description": "\u0418\u043c\u044f \u043f\u0443\u043b\u0430"
+      },
+      {
+        "dict": null,
+        "type": "UInt32",
+        "name": "ip",
+        "description": "IP \u0430\u0434\u0440\u0435\u0441"
+      },
+      {
+        "dict": "profile",
+        "type": "UInt64",
+        "name": "profile",
+        "description": "\u041f\u0440\u043e\u0444\u0438\u043b\u044c \u043e\u0431\u044a\u0435\u043a\u0442\u0430"
+      },
+      {
+        "dict": "vendor",
+        "type": "UInt64",
+        "name": "vendor",
+        "description": "\u041f\u0440\u043e\u0438\u0437\u0432\u043e\u0434\u0438\u0442\u0435\u043b\u044c"
+      },
+      {
+        "dict": "platform",
+        "type": "UInt64",
+        "name": "platform",
+        "description": "\u041f\u043b\u0430\u0442\u0444\u043e\u0440\u043c\u0430"
+      },
+      {
+        "dict": "version",
+        "type": "UInt64",
+        "name": "version",
+        "description": "\u0412\u0435\u0440\u0441\u0438\u044f"
+      },
+      {
+        "dict": "administrativedomain",
+        "type": "UInt64",
+        "name": "administrative_domain",
+        "description": "\u0417.\u041e."
+      },
+      {
+        "dict": "networksegment",
+        "type": "UInt64",
+        "name": "segment",
+        "description": "\u0421\u0435\u0433\u043c\u0435\u043d\u0442 \u0441\u0435\u0442\u0438"
+      },
+      {
+        "dict": "container",
+        "type": "UInt64",
+        "name": "container",
+        "description": "\u0410\u0434\u0440\u0435\u0441"
+      },
+      {
+        "dict": null,
+        "type": "Float64",
+        "name": "x",
+        "description": "\u0414\u043e\u043b\u0433\u043e\u0442\u0430"
+      },
+      {
+        "dict": null,
+        "type": "Float64",
+        "name": "y",
+        "description": "\u0428\u0438\u0440\u043e\u0442\u0430"
+      }
+    ],
+    "tags": null,
+    "name": "alarms",
+    "description": null
+  },
+  "id": 0,
+  "error": null
+}

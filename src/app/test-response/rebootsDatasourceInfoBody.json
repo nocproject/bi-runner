@@ -1,0 +1,96 @@
+{
+  "id": 0,
+  "error": null,
+  "result": {
+    "name": "reboots",
+    "description": null,
+    "tags": null,
+    "sample": false,
+    "fields": [
+      {
+        "name": "date",
+        "description": "Date",
+        "type": "Date",
+        "dict": null
+      },
+      {
+        "name": "ts",
+        "description": "Created",
+        "type": "DateTime",
+        "dict": null
+      },
+      {
+        "name": "managed_object",
+        "description": "Object Name",
+        "type": "UInt64",
+        "dict": "managedobject"
+      },
+      {
+        "name": "pool",
+        "description": "Pool Name",
+        "type": "UInt64",
+        "dict": "pool"
+      },
+      {
+        "name": "ip",
+        "description": "IP Address",
+        "type": "UInt32",
+        "dict": null
+      },
+      {
+        "name": "profile",
+        "description": "Profile",
+        "type": "UInt64",
+        "dict": "profile"
+      },
+      {
+        "name": "vendor",
+        "description": "Vendor Name",
+        "type": "UInt64",
+        "dict": "vendor"
+      },
+      {
+        "name": "platform",
+        "description": "Platform",
+        "type": "UInt64",
+        "dict": "platform"
+      },
+      {
+        "name": "version",
+        "description": "Version",
+        "type": "UInt64",
+        "dict": "version"
+      },
+      {
+        "name": "administrative_domain",
+        "description": "Admin. Domain",
+        "type": "UInt64",
+        "dict": "administrativedomain"
+      },
+      {
+        "name": "segment",
+        "description": "Network Segment",
+        "type": "UInt64",
+        "dict": "networksegment"
+      },
+      {
+        "name": "container",
+        "description": "Container",
+        "type": "UInt64",
+        "dict": "container"
+      },
+      {
+        "name": "x",
+        "description": "Longitude",
+        "type": "Float64",
+        "dict": null
+      },
+      {
+        "name": "y",
+        "description": "Latitude",
+        "type": "Float64",
+        "dict": null
+      }
+    ]
+  }
+}

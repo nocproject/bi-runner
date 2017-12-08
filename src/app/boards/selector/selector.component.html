@@ -20,8 +20,8 @@
                                 {{reportRangeText}}
                             </button>
                         </div>
-                        <div *ngIf="board.isSample" class="col-md-2 text-right">Ratio:</div>
-                        <div *ngIf="board.isSample" class="col-md-1" [formGroup]="ratioForm">
+                        <div *ngIf="isSample$ | async" class="col-md-2 text-right">Ratio:</div>
+                        <div *ngIf="isSample$ | async" class="col-md-1" [formGroup]="ratioForm">
                             <select class="form-control"
                                     [formControl]="ratio"
                                     (change)="onChangeRatio($event.target.value)"
@@ -32,7 +32,7 @@
                                 <option [value]="1">1</option>
                             </select>
                         </div>
-                        <div *ngIf="!board.isSample" class="col-md-offset-3"></div>
+                        <div *ngIf="!(isSample$ | async)" class="col-md-offset-3"></div>
                         <div class="col-md-3 text-right" translate
                              [translateParams]="{value: (lastUpdate$ | async | datex:'DD.MM.YYYY')}">
                             SELECTOR.UPDATED

@@ -6,7 +6,7 @@ import { Observable } from 'rxjs/Rx';
 import * as _ from 'lodash';
 import * as d3 from 'd3';
 
-import { Board, Field, Filter, FilterBuilder, Group, GroupBuilder, Value } from '../model';
+import { Field, Filter, FilterBuilder, Group, GroupBuilder, Value } from '../model';
 
 import { EventService } from '../filters/services';
 import { EventType, FormConfig, Groups } from '../filters/models';
@@ -21,14 +21,10 @@ export class FilterService {
     private groupsSubject = new BehaviorSubject<Field[]>([]);
     groups$: Observable<Field[]> = this.groupsSubject.asObservable();
 
-    boardSubject = new BehaviorSubject<Board>(null);
-    board$: Observable<Board> = this.boardSubject.asObservable();
-
     qtySubject = new BehaviorSubject<number>(0);
     qty$: Observable<number> = this.qtySubject.asObservable();
 
     ratioSubject = new BehaviorSubject<number>(1);
-    ratio$: Observable<number> = this.ratioSubject.asObservable();
 
     isReportOpenSubject = new BehaviorSubject<boolean>(false);
     isReportOpen$: Observable<boolean> = this.isReportOpenSubject.asObservable();
@@ -94,46 +90,37 @@ export class FilterService {
                             item.group.filters
                                 .filter(filter => filter.condition)
                                 .filter((filter, filterIndex) => {
-                                    const nameField = _.first(config.groups[groupIndex].group.filters[filterIndex]
-                                        .filter(f => f.name === 'name'));
-                                    const conditionField = _.first(config.groups[groupIndex].group.filters[filterIndex]
-                                        .filter(f => f.name === 'condition'));
-                                    const valueField = _.first(config.groups[groupIndex].group.filters[filterIndex]
-                                        .filter(f => f.name === 'valueFirst'));
-
-                                    // ToDo side effect, refactoring !!!
-                                    filter.pseudo = conditionField.pseudo;
                                     if(filter.condition.match('empty')) {
                                       return true;
                                     }
                                     if (!filter.hasOwnProperty('valueFirst')) {
                                         return false;
                                     }
-                                    // ToDo side effect, refactoring !!!
-                                    filter.datasource = valueField.datasource;
-                                    // detect change fields name or condition
+                                    // SIDE EFFECT: detect change fields name or condition, may be refactoring
+                                    const nameField = _.first(config.groups[groupIndex].group.filters[filterIndex]
+                                        .filter(f => f.name === 'name'));
+                                    const conditionField = _.first(config.groups[groupIndex].group.filters[filterIndex]
+                                        .filter(f => f.name === 'condition'));
                                     if (filter.condition === conditionField.value && filter.name === nameField.value) {
                                         return true;
                                     } else if (filter.condition !== conditionField.value) {
-                                        // ToDo side effect, refactoring !!!
                                         conditionField.value = filter.condition;
                                         return false;
                                     } else if (filter.name !== nameField.value) {
-                                        // ToDo side effect, refactoring !!!
                                         nameField.value = filter.name;
                                         return false;
                                     }
                                 })
                                 .map(filter => {
-                                    const [name, type] = filter.name.split('.');
+                                    const [name, type, pseudo, datasource] = filter.name.split('.');
 
                                     return new FilterBuilder()
                                         .name(name)
                                         .type(type)
                                         .association(item.group.association)
                                         .condition(filter.condition)
-                                        .pseudo(filter.pseudo)
-                                        .datasource(filter.datasource)
+                                        .pseudo(pseudo === 'true')
+                                        .datasource(datasource)
                                         .values([new Value(filter.valueFirst), new Value(filter.valueSecond)])
                                         .build();
                                 })

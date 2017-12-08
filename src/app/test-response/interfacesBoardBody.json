@@ -1,0 +1,402 @@
+{
+  "result": {
+    "layoutId": "580e1ba498601c0f96b7e809",
+    "pseudo_fields": [],
+    "layout": {
+      "favStatus": false,
+      "description": "",
+      "cells": [
+        {
+          "md": 12,
+          "height": 360,
+          "name": "table1",
+          "row": 4
+        }
+      ],
+      "name": "c2x2",
+      "isBuiltin": false,
+      "id": "580e1ba498601c0f96b7e809",
+      "uuid": "f2736f99-a568-4820-b746-1e71d48b4374"
+    },
+    "description": "\u043e\u0442\u0447\u0435\u0442 \u043f\u043e \u0438\u043d\u0442\u0435\u0440\u0444\u0435\u0439\u0441\u0430\u043c",
+    "title": "\u0417\u0430\u0433\u0440\u0443\u0437\u043a\u0430 \u043f\u043e\u0440\u0442\u043e\u0432",
+    "format": 2,
+    "sample": 1,
+    "agv_fields": [
+      {
+        "grouped": false,
+        "isSelectable": true,
+        "name": "path",
+        "isGrouping": true,
+        "group": 0
+      },
+      {
+        "grouped": false,
+        "isSelectable": true,
+        "name": "cinr",
+        "isGrouping": true,
+        "group": 0
+      },
+      {
+        "grouped": false,
+        "isSelectable": true,
+        "name": "managed_object",
+        "isGrouping": true,
+        "group": 0
+      },
+      {
+        "grouped": false,
+        "isSelectable": true,
+        "name": "discards_in",
+        "isGrouping": true,
+        "group": 1
+      },
+      {
+        "grouped": false,
+        "isSelectable": true,
+        "name": "discards_out",
+        "isGrouping": true,
+        "group": 1
+      },
+      {
+        "grouped": false,
+        "isSelectable": true,
+        "name": "errors_in",
+        "isGrouping": true,
+        "group": 2
+      },
+      {
+        "grouped": false,
+        "isSelectable": true,
+        "name": "errors_out",
+        "isGrouping": true,
+        "group": 2
+      },
+      {
+        "grouped": false,
+        "isSelectable": true,
+        "name": "load_in",
+        "isGrouping": true,
+        "group": 3
+      },
+      {
+        "grouped": false,
+        "isSelectable": true,
+        "name": "load_out",
+        "isGrouping": true,
+        "group": 3
+      },
+      {
+        "grouped": false,
+        "isSelectable": true,
+        "name": "packets_in",
+        "isGrouping": true,
+        "group": 4
+      },
+      {
+        "grouped": false,
+        "isSelectable": true,
+        "name": "packets_out",
+        "isGrouping": true,
+        "group": 4
+      },
+      {
+        "grouped": false,
+        "isSelectable": true,
+        "name": "rssi",
+        "isGrouping": true,
+        "group": 0
+      },
+      {
+        "grouped": false,
+        "isSelectable": true,
+        "name": "status_admin",
+        "isGrouping": true,
+        "group": 0
+      },
+      {
+        "grouped": false,
+        "isSelectable": true,
+        "name": "status_oper",
+        "isGrouping": true,
+        "group": 0
+      }
+    ],
+    "datasource": "interface",
+    "groups": [
+      {
+        "active": true,
+        "association": "$and",
+        "name": "startEnd",
+        "filters": [
+          {
+            "type": "DateTime",
+            "association": "$and",
+            "values": [
+              {
+                "value": "2017-10-15T21:00:00.000Z"
+              },
+              {
+                "value": "2017-10-22T20:59:59.999Z"
+              }
+            ],
+            "name": "ts",
+            "condition": "interval"
+          }
+        ]
+      }
+    ],
+    "filter_fields": [
+      {
+        "grouped": false,
+        "isSelectable": true,
+        "name": "path",
+        "isGrouping": true,
+        "group": 0
+      },
+      {
+        "grouped": false,
+        "isSelectable": true,
+        "name": "cinr",
+        "isGrouping": true,
+        "group": 0
+      },
+      {
+        "grouped": false,
+        "isSelectable": true,
+        "name": "managed_object",
+        "isGrouping": true,
+        "group": 0
+      },
+      {
+        "grouped": false,
+        "isSelectable": true,
+        "name": "discards_in",
+        "isGrouping": true,
+        "group": 1
+      },
+      {
+        "grouped": false,
+        "isSelectable": true,
+        "name": "discards_out",
+        "isGrouping": true,
+        "group": 1
+      },
+      {
+        "grouped": false,
+        "isSelectable": true,
+        "name": "errors_in",
+        "isGrouping": true,
+        "group": 2
+      },
+      {
+        "grouped": false,
+        "isSelectable": true,
+        "name": "errors_out",
+        "isGrouping": true,
+        "group": 2
+      },
+      {
+        "grouped": false,
+        "isSelectable": true,
+        "name": "load_in",
+        "isGrouping": true,
+        "group": 3
+      },
+      {
+        "grouped": false,
+        "isSelectable": true,
+        "name": "load_out",
+        "isGrouping": true,
+        "group": 3
+      },
+      {
+        "grouped": false,
+        "isSelectable": true,
+        "name": "packets_in",
+        "isGrouping": true,
+        "group": 4
+      },
+      {
+        "grouped": false,
+        "isSelectable": true,
+        "name": "packets_out",
+        "isGrouping": true,
+        "group": 4
+      },
+      {
+        "grouped": false,
+        "isSelectable": true,
+        "name": "rssi",
+        "isGrouping": true,
+        "group": 0
+      },
+      {
+        "grouped": false,
+        "isSelectable": true,
+        "name": "status_admin",
+        "isGrouping": true,
+        "group": 3
+      },
+      {
+        "grouped": false,
+        "isSelectable": true,
+        "name": "status_oper",
+        "isGrouping": true,
+        "group": 3
+      }
+    ],
+    "widgets": [
+      {
+        "cell": "table1",
+        "note": "\u043e\u0431\u043e\u0440\u0443\u0434\u043e\u0432\u0430\u043d\u0438\u0435",
+        "query": {
+          "params": [
+            {
+              "filter": {
+                "$and": [
+                  {
+                    "$and": [
+                      {
+                        "$between": [
+                          {
+                            "$field": "ts"
+                          },
+                          {
+                            "$field": "toDateTime('2017-10-16T00:00:00')"
+                          },
+                          {
+                            "$field": "toDateTime('2017-10-22T23:59:59')"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "fields": [
+                {
+                  "isGrouping": true,
+                  "grouped": false,
+                  "expr": "date",
+                  "format": "dateToString",
+                  "label": "\u0414\u0430\u0442\u0430",
+                  "alias": "date",
+                  "isSelectable": true
+                },
+                {
+                  "expr": "managed_object",
+                  "isSelectable": true,
+                  "isGrouping": true,
+                  "grouped": false
+                },
+                {
+                  "isGrouping": true,
+                  "grouped": false,
+                  "expr": "arrayStringConcat(path)",
+                  "label": "Path",
+                  "alias": "path",
+                  "isSelectable": true
+                },
+                {
+                  "isGrouping": true,
+                  "grouped": false,
+                  "expr": {
+                    "$lookup": [
+                      "managedobject",
+                      {
+                        "$field": "managed_object"
+                      }
+                    ],
+                    "__type": "Expression"
+                  },
+                  "label": "\u0423\u0441\u0442\u0440\u043e\u0439\u0441\u0442\u0432\u043e",
+                  "alias": "name",
+                  "isSelectable": true
+                },
+                {
+                  "isGrouping": true,
+                  "grouped": false,
+                  "expr": {
+                    "$lookup": [
+                      "managedobject",
+                      {
+                        "$field": "managed_object"
+                      },
+                      "platform"
+                    ],
+                    "__type": "Expression"
+                  },
+                  "label": "\u041f\u043b\u0430\u0442\u0444\u043e\u0440\u043c\u0430",
+                  "alias": "platform",
+                  "isSelectable": true
+                },
+                {
+                  "isGrouping": true,
+                  "format": "intFormat",
+                  "expr": "load_in",
+                  "label": "Load In",
+                  "grouped": false,
+                  "isSelectable": true,
+                  "order": 0,
+                  "desc": true
+                },
+                {
+                  "isGrouping": true,
+                  "format": "intFormat",
+                  "expr": "load_out",
+                  "label": "Load Out",
+                  "grouped": false,
+                  "isSelectable": true,
+                  "order": 1,
+                  "desc": true
+                }
+              ],
+              "limit": 10,
+              "datasource": "interface"
+            }
+          ],
+          "id": 0,
+          "method": "query"
+        },
+        "type": "dataTable",
+        "title": "\u0418\u043d\u0442\u0435\u0440\u0444\u0435\u0439\u0441\u044b, \u0442\u043e\u043f 10"
+      }
+    ],
+    "export": {
+      "params": [
+        {
+          "fields": [
+            {
+              "group": 0,
+              "isGrouping": true,
+              "format": "dateToString",
+              "expr": "date",
+              "label": "\u0414\u0430\u0442\u0430",
+              "grouped": false,
+              "alias": "date",
+              "isSelectable": true
+            },
+            {
+              "isGrouping": true,
+              "grouped": false,
+              "expr": "count()",
+              "label": "\u041a\u043e\u043b-\u0432\u043e",
+              "alias": "qty",
+              "isSelectable": true,
+              "order": 0,
+              "desc": true
+            }
+          ],
+          "datasource": "interface"
+        }
+      ],
+      "id": 0,
+      "method": "query"
+    },
+    "isSample": false,
+    "id": "59ef89c01e95f8224d008a69"
+  },
+  "id": 0,
+  "error": null
+}

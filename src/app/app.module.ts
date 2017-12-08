@@ -7,16 +7,25 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { TranslateLoader, TranslateModule, TranslateParser } from '@ngx-translate/core';
 
+import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
-import { APIService, DebugService, FilterService, LanguageService, MessageService } from './services';
+import {
+    APIService,
+    AuthenticationService,
+    AuthGuard,
+    DebugService,
+    FilterService,
+    LanguageService,
+    MessageService
+} from './services';
 import { MessagesComponent } from './shared/messages/messages.component';
 import { HttpModule } from './shared/interceptor/module';
 import { BoardListComponent } from './boards/board-list.component';
 import { LoginComponent } from './login/login.component';
 import { BoardComponent } from './boards/board/board.component';
-import { BoardResolver } from './boards/board/board.resolver';
+import { BoardResolver } from './boards/board/services/board.resolver';
 import {
     BarComponent,
     GeoComponent,
@@ -37,14 +46,21 @@ import { ShareComponent } from './share/share.component';
 import { DataGridComponent } from './shared/data-grid/data-grid.component';
 import { AccessLevelComponent } from './header/access-level.component';
 import { ShareCanDeactivateGuard } from './share/share-can-deactivate.guard';
-import { AuthGuard } from './api/auth.guard';
-import { AuthenticationService } from './api/services/authentication.service';
 import { TranslateHttpLoader } from './shared/translate/http-loader';
 import { TranslateParserService } from './shared/translate/translate-parser.service';
 import { MessageComponent } from './shared/messages/message.component';
 import { DatexPipe } from './shared/datex.pipe';
 import { ReportRangeComponent } from './shared/report-range/report-range.component';
 import { MyDatePickerModule } from './shared/my-date-picker';
+
+export const APP_SERVICES = [
+    APIService,
+    AuthGuard,
+    AuthenticationService,
+    FilterService,
+    LanguageService,
+    MessageService
+];
 
 @NgModule({
     declarations: [
@@ -95,15 +111,11 @@ import { MyDatePickerModule } from './shared/my-date-picker';
         })
     ],
     providers: [
-        AuthGuard,
-        AuthenticationService,
-        APIService,
         BoardResolver,
-        DebugService,
-        FilterService,
         ShareCanDeactivateGuard,
-        LanguageService,
-        MessageService
+        // Application services
+        ...APP_SERVICES,
+        !environment.production ? DebugService : [],
     ],
     bootstrap: [AppComponent]
 })

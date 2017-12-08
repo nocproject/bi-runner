@@ -1,22 +1,26 @@
-import { async, inject, TestBed } from '@angular/core/testing';
+import { async, TestBed } from '@angular/core/testing';
 
 import { ConditionService } from './condition.service';
 
 describe('ConditionService', () => {
-    beforeEach(() => {
+    let service: ConditionService;
+
+    beforeAll(() => {
         TestBed.configureTestingModule({
             providers: [ConditionService]
         });
+
+        service = TestBed.get(ConditionService);
     });
 
-    it('service should be created', inject([ConditionService], (service: ConditionService) => {
+    it('service should be created', () => {
         expect(service).toBeTruthy();
-    }));
+    });
 
-    it('retrieve duration_intervals conditions', async(inject([ConditionService], (service) => {
+    it('retrieve duration_intervals conditions', async(() => {
         service.conditions('duration_intervals', 'Dictionary')
             .subscribe(result =>
                 expect(result.length).toEqual(2)
             );
-    })));
+    }));
 });

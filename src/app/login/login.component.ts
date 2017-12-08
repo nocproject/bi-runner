@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { AuthenticationService } from '../api/services/authentication.service';
+import { AuthenticationService } from '../services';
 
 @Component({
     selector: 'bi-login',

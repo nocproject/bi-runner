@@ -6,11 +6,14 @@ import * as d3 from 'd3';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Rx';
 
+import { ConditionService, EventService } from '../../services';
+import { APIService, FilterService } from '../../../services';
+import { DatasourceService } from '../../../boards/board/services/datasource-info.service';
+
 import { EventType, FieldConfig, FiltersConfig, FormConfig, GroupConfig } from '../../models';
-import { APIService, FieldListService, FilterService } from '../../../services';
-import { ConditionService, EventService, ValueService } from '../../services';
-import { BIValidators } from '../../components/validators';
 import { Group, Range } from '../../../model';
+
+import { BIValidators } from '../../components/validators';
 
 @Component({
     exportAs: 'filterForm',
@@ -18,14 +21,15 @@ import { Group, Range } from '../../../model';
     templateUrl: './filter-form.component.html'
 })
 export class FilterFormComponent implements OnDestroy, OnInit {
-    config: FormConfig;
+    private eventSubscription: Subscription;
 
     @Output()
     submit: EventEmitter<any> = new EventEmitter<any>();
 
+    config: FormConfig;
     form: FormGroup;
     requestQty$: Observable<number>;
-    private eventSubscription: Subscription;
+
     // private formSubscription: Subscription;
 
     get changes(): Observable<any> {
@@ -41,28 +45,21 @@ export class FilterFormComponent implements OnDestroy, OnInit {
     }
 
     get hasInactiveGroup(): boolean {
-      const filterQty = this.form.value.groups.reduce((acc, i) => i.group.filters.length + acc, 0);
-      return this.form.valid && filterQty && this.form.value.groups.filter(group => !group.active).length > 0;
+        const filterQty = this.form.value.groups.reduce((acc, i) => i.group.filters.length + acc, 0);
+        return this.form.valid && filterQty && this.form.value.groups.filter(group => !group.active).length > 0;
     }
 
     get hasActiveGroup(): boolean {
-      const filterQty = this.form.value.groups.reduce((acc, i) => i.group.filters.length + acc, 0);
-      return this.form.valid && filterQty && this.form.value.groups.filter(group => group.active).length > 0;
+        const filterQty = this.form.value.groups.reduce((acc, i) => i.group.filters.length + acc, 0);
+        return this.form.valid && filterQty && this.form.value.groups.filter(group => group.active).length > 0;
     }
 
     constructor(private fb: FormBuilder,
                 private api: APIService,
                 private eventService: EventService,
                 private filterService: FilterService,
-                private fieldList: FieldListService,
-                private conditionService: ConditionService,
-                private valueService: ValueService) {
-    }
-
-    ngOnDestroy(): void {
-        // ToDo check all subscription, may be use .toPromise()
-        this.eventSubscription.unsubscribe();
-        // this.formSubscription.unsubscribe();
+                private datasourceService: DatasourceService,
+                private conditionService: ConditionService) {
     }
 
     ngOnInit() {
@@ -78,7 +75,7 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                     label: 'Field',
                     value: '',
                     placeholder: 'SELECT_FIELD',
-                    options: this.fieldList.getAsOption(),
+                    options: this.datasourceService.fieldsAsOption(),
                     validation: [Validators.required]
                 }];
 
@@ -140,23 +137,22 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                                 const formControl = this.createGroup(groupConfig);
                                 this.config.groups.push(groupConfig);
                                 group.filters.forEach(filter => {
-                                    if(filter.condition.match('empty')) {
-                                      filter.pseudo = false;
+                                    if (filter.condition.match('empty')) {
+                                        filter.pseudo = false;
                                     }
                                     const nameField: FieldConfig = {
                                         name: 'name',
                                         type: 'select',
                                         pseudo: filter.pseudo,
                                         label: 'Field',
-                                        value: `${filter.name}.${filter.type}.${filter.pseudo}`,
+                                        value: `${filter.name}.${filter.type}.${filter.pseudo}.${filter.datasource}`,
                                         placeholder: 'SELECT_FIELD',
-                                        options: this.fieldList.getAsOption(),
+                                        options: this.datasourceService.fieldsAsOption(),
                                         validation: [Validators.required]
                                     };
                                     const conditionField: FieldConfig = this.conditionService
                                         .field(filter.name, filter.type, filter.pseudo);
-                                    const valuesField: FieldConfig[] = this.valueService
-                                        .fields(`${filter.name}.${filter.type}`, filter.condition, filter.datasource)
+                                    const valuesField: FieldConfig[] = FilterFormComponent.fieldValues(nameField.value, filter.condition)
                                         .map(field => field);
 
                                     conditionField.value = filter.condition;
@@ -171,10 +167,10 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                                         if (filter.condition.match(/periodic/i)) {
                                             valuesField[0].value = filter.values[0].value;
                                         } else if (filter.condition.match(/interval/i)) {
-                                            if(Range.isNotRange(filter.values[0].value)) {
+                                            if (Range.isNotRange(filter.values[0].value)) {
                                                 valuesField[0].value = `${d3.time.format('%d.%m.%Y %H:%M')(filter.values[0].value)} - ${d3.time.format('%d.%m.%Y %H:%M')(filter.values[1].value)}`;
                                             } else {
-                                                valuesField[0].value =filter.values[0].value;
+                                                valuesField[0].value = filter.values[0].value;
                                             }
                                         } else {
                                             valuesField[0].value = d3.time.format('%d.%m.%Y %H:%M')(filter.values[0].value);
@@ -213,20 +209,23 @@ export class FilterFormComponent implements OnDestroy, OnInit {
 
                                 if (event.value.match('\\.')) {
                                     this.addControlToFilter(event.group, event.filter,
-                                        this.conditionService.field(event.value.split('.')[0], event.value.split('.')[1], JSON.parse(event.value.split('.')[2])));
+                                        this.conditionService.field(
+                                            event.value.split('.')[0],
+                                            event.value.split('.')[1],
+                                            JSON.parse(event.value.split('.')[2])));
                                 }
                                 break;
                             }
                             case 'condition': {
                                 const filterControls = (<FormGroup>(<FormArray>(<FormArray>this.form.get('groups'))
-                                  .at(event.group).get('group.filters')).at(event.filter));
+                                    .at(event.group).get('group.filters')).at(event.filter));
                                 const data = _.clone(this.form.value);
 
                                 data.groups[event.group].active = false;
-                                this.form.patchValue(data, { emitEvent: false });
+                                this.form.patchValue(data, {emitEvent: false});
                                 this.config.groups[event.group].group.filters[event.filter] =
-                                  this.config.groups[event.group].group.filters[event.filter]
-                                    .filter(field => field.name === 'name' || field.name === 'condition');
+                                    this.config.groups[event.group].group.filters[event.filter]
+                                        .filter(field => field.name === 'name' || field.name === 'condition');
 
                                 // set value for catch change field name & condition
                                 _.filter(this.config.groups[event.group].group.filters[event.filter], ['name', 'name'])[0].value = filterControls.get('name').value;
@@ -237,7 +236,7 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                                     .filter(name => name !== 'condition')
                                     .forEach(name => filterControls.removeControl(name));
 
-                                this.valueService.fields(filterControls.get('name').value, event.value, this.fieldList.datasource)
+                                FilterFormComponent.fieldValues(filterControls.get('name').value, event.value)
                                     .forEach(control => {
                                         this.addControlToFilter(event.group, event.filter, control);
                                     });
@@ -258,6 +257,12 @@ export class FilterFormComponent implements OnDestroy, OnInit {
             });
     }
 
+    ngOnDestroy(): void {
+        // ToDo check all subscription, may be use .toPromise()
+        this.eventSubscription.unsubscribe();
+        // this.formSubscription.unsubscribe();
+    }
+
     onAddGroup() {
         const fresh: GroupConfig = {
             association: '$and',
@@ -272,7 +277,7 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                         label: 'Field',
                         value: '',
                         placeholder: 'SELECT_FIELD',
-                        options: this.fieldList.getAsOption(),
+                        options: this.datasourceService.fieldsAsOption(),
                         validation: [Validators.required]
                     }]
                 ]
@@ -292,55 +297,55 @@ export class FilterFormComponent implements OnDestroy, OnInit {
             group.active = active;
             return group;
         });
-      this.applyData(data);
+        this.applyData(data);
     }
 
     private applyData(data: any) {
-      this.form.patchValue(data, {emitEvent: false});
-      this.filterService.formFilters(data.groups, this.config);
+        this.form.patchValue(data, {emitEvent: false});
+        this.filterService.formFilters(data.groups, this.config);
     }
 
     private createForm() {
-          // init state
-          this.config = {
-              groups: [{
-                  association: '$and',
-                  active: false,
-                  group: {
-                      association: '$and',
-                      filters: [
-                          [{
-                              name: 'name',
-                              type: 'select',
-                              value: '',
-                              pseudo: false,
-                              validation: [Validators.required],
-                              label: 'Field',
-                              placeholder: 'SELECT_FIELD',
-                              options: this.fieldList.getAsOption()
-                          }]
-                      ]
-                  }
-              }]
-          };
+        // init state
+        this.config = {
+            groups: [{
+                association: '$and',
+                active: false,
+                group: {
+                    association: '$and',
+                    filters: [
+                        [{
+                            name: 'name',
+                            type: 'select',
+                            value: '',
+                            pseudo: false,
+                            validation: [Validators.required],
+                            label: 'Field',
+                            placeholder: 'SELECT_FIELD',
+                            options: this.datasourceService.fieldsAsOption()
+                        }]
+                    ]
+                }
+            }]
+        };
 
-          const groups: FormGroup[] = this.config.groups.map(g => this.createGroup(g));
+        const groups: FormGroup[] = this.config.groups.map(g => this.createGroup(g));
 
-          this.form = new FormGroup({
-              groups: new FormArray(groups)
-          }, BIValidators.form);
+        this.form = new FormGroup({
+            groups: new FormArray(groups)
+        }, BIValidators.form);
 
-          // this.formSubscription = this.changes
-          //     .filter(() => this.form.valid)
-          //     .distinctUntilChanged((previous, current) => {
-          //         return JSON.stringify(previous) === JSON.stringify(current);
-          //     })
-          //     .subscribe((data: FormData) => {
-          //         console.log('FilterFormComponent: subscribe - execute filter!');
-          //
-          //         this.filterService.formFilters(data.groups, this.config);
-          //     });
-      }
+        // this.formSubscription = this.changes
+        //     .filter(() => this.form.valid)
+        //     .distinctUntilChanged((previous, current) => {
+        //         return JSON.stringify(previous) === JSON.stringify(current);
+        //     })
+        //     .subscribe((data: FormData) => {
+        //         console.log('FilterFormComponent: subscribe - execute filter!');
+        //
+        //         this.filterService.formFilters(data.groups, this.config);
+        //     });
+    }
 
     private createGroup(config: GroupConfig): FormGroup {
         const filters = this.fb.array(
@@ -383,5 +388,143 @@ export class FilterFormComponent implements OnDestroy, OnInit {
         this.config.groups[group].group.filters[filter].push(field);
         // Add control
         filterControls.addControl(field.name, this.createControl(field));
+    }
+
+    private static fieldValues(nameAndType: string, condition: string): FieldConfig[] {
+        const first: FieldConfig = {
+            name: 'valueFirst',
+            type: 'input',
+            pseudo: false,
+            value: '',
+            validation: [Validators.required],
+            label: 'Value'
+        };
+        const [name, type, pseudo, datasource] = nameAndType.split('.');
+        let widgetType = type;
+
+        if (_.startsWith(type, 'dict-')) {
+            widgetType = 'Dictionary';
+        }
+        if (_.startsWith(type, 'tree-')) {
+            widgetType = 'Tree';
+        }
+        if (_.startsWith(type, 'model-')) {
+            widgetType = 'Model';
+        }
+
+        // console.log(`${name} ${widgetType} ${condition}`);
+
+        switch (widgetType) {
+            case 'String': {
+                if (_.includes(condition, 'empty')) {
+                    return [];
+                }
+                break;
+            }
+            case 'Dictionary': {
+                first.type = 'dictionary';
+                first.dict = type.replace('dict-', '');
+                first.expr = name;
+                first.datasource = datasource;
+                break;
+            }
+            case 'Tree': {
+                first.type = 'tree';
+                first.dict = type.replace('tree-', '');
+                first.expr = name;
+                first.datasource = datasource;
+                first.value = [];
+                break;
+            }
+            case 'Model': {
+                first.type = 'model';
+                first.model = type.replace('model-', '').replace('_', '.');
+                first.expr = name;
+                first.datasource = datasource;
+                break;
+            }
+            case 'UInt8':
+            case 'UInt16':
+            case 'UInt32':
+            case 'UInt64':
+            case 'Int8':
+            case 'Int16':
+            case 'Int32':
+            case 'Int64': {
+                first.type = 'input';
+                if (_.includes(condition, 'interval')) {
+                    first.placeholder = '9999999999 - 9999999999';
+                    first.validation.push(BIValidators.intRange);
+                } else {
+                    first.placeholder = '9999999999';
+                    first.validation.push(BIValidators.int);
+                }
+                return [first];
+            }
+            case 'Float32':
+            case 'Float64': {
+                first.type = 'input';
+                if (_.includes(condition, 'interval')) {
+                    first.placeholder = '9999999999.9999 - 9999999999.9999';
+                    first.validation.push(BIValidators.floatRange);
+                } else {
+                    first.placeholder = '9999999999.9999';
+                    first.validation.push(BIValidators.float);
+                }
+                return [first];
+            }
+            case 'DateTime': {
+                if (name === 'duration_intervals' && !_.includes(condition, 'periodic')) {
+                    first.type = 'input';
+                    first.placeholder = 'dd.mm.yyyy HH:mm - dd.mm.yyyy HH:mm';
+                    first.validation.push(BIValidators.dateTimeRange);
+                    return [first];
+                }
+                if (_.includes(condition, 'interval')) {
+                    if (_.includes(condition, 'periodic')) {
+                        first.type = 'input';
+                        first.placeholder = '29:59 - 29:59';
+                        first.validation.push(BIValidators.hours);
+                    } else {
+                        first.type = 'input';
+                        first.placeholder = 'dd.mm.yyyy HH:mm - dd.mm.yyyy HH:mm';
+                        first.validation.push(BIValidators.dateTimeRange);
+                    }
+                    return [first];
+                }
+                first.type = 'input';
+                first.placeholder = 'dd.mm.yyyy HH:mm';
+                first.validation.push(BIValidators.dateTime);
+                // first.type = 'calendar';
+                break;
+            }
+            case 'IPv4': {
+                first.type = 'input';
+                if (_.includes(condition, 'interval')) {
+                    first.placeholder = '299.299.299.299 - 299.299.299.299';
+                    first.validation.push(BIValidators.ipV4Range);
+                    return [first];
+                }
+                first.placeholder = '299.299.299.299';
+                first.validation.push(BIValidators.ipV4);
+                break;
+            }
+            case 'Date': {
+                if (_.includes(condition, 'interval')) {
+                    first.placeholder = 'dd.mm.yyyy - dd.mm.yyyy';
+                    first.validation.push(BIValidators.dateRange);
+                    return [first];
+                }
+                first.type = 'input';
+                first.placeholder = 'dd.mm.yyyy';
+                first.validation.push(BIValidators.date);
+                break;
+            }
+            default: {
+                console.error('unknowns widget type!');
+            }
+        }
+
+        return [first];
     }
 }

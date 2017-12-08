@@ -16,7 +16,7 @@ import { Subscription } from 'rxjs/Subscription';
 
 import * as _ from 'lodash';
 
-import { FieldConfig } from '../models/form-config.interface';
+import { FieldConfig } from '../models';
 import { Methods, QueryBuilder, Result } from '../../model';
 import { APIService } from '../../services';
 import { TreeviewComponent, TreeviewItem } from 'ngx-treeview';
@@ -24,11 +24,13 @@ import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'bi-form-dropdown',
-    providers: [{
-        provide: NG_VALUE_ACCESSOR,
-        useExisting: forwardRef(() => FormDropdownComponent),
-        multi: true
-    }],
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => FormDropdownComponent),
+            multi: true
+        }
+    ],
     styles: [`
         .scrollable-menu {
             height: auto;

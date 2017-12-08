@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit, Optional, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
 import * as _ from 'lodash';
@@ -16,6 +16,7 @@ import { FilterFormComponent } from '../../filters/containers/form/filter-form.c
 import { EventService } from '../../filters/services';
 import { EventType } from '../../filters/models';
 import { ModalComponent } from '../../shared/modal/modal';
+import { DatasourceService } from '../board/services/datasource-info.service';
 
 @Component({
     // changeDetection: ChangeDetectionStrategy.OnPush,
@@ -41,15 +42,17 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
     reportRangeText: string = '-';
     production = environment.production;
     lastUpdate$: Observable<any>;
+    isSample$: Observable<boolean>;
 
     ratioForm: FormGroup;
     ratio: FormControl;
 
     collapsed = true;
 
-    constructor(public debug: DebugService,
+    constructor(@Optional() public debug: DebugService,
                 private fb: FormBuilder,
                 private api: APIService,
+                private datasourceService: DatasourceService,
                 private eventService: EventService,
                 private filterService: FilterService,
                 private languageService: LanguageService) {
@@ -92,6 +95,7 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
             this.filterService.ratioSubject.next(+data.ratio);
             this.filterService.initFilters(this.filterService.allFilters());
         });
+        this.isSample$ = this.datasourceService.isSample();
     }
 
     onChangeRatio(value) {

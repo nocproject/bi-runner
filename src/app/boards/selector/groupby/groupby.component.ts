@@ -3,8 +3,9 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
 import * as _ from 'lodash';
 
-import { FieldListService, FilterService } from '../../../services';
 import { Board, Field } from '../../../model';
+import { FilterService } from '../../../services';
+import { DatasourceService } from '../../board/services/datasource-info.service';
 
 @Component({
     selector: 'bi-groupby',
@@ -12,17 +13,16 @@ import { Board, Field } from '../../../model';
     styleUrls: ['./groupby.component.scss']
 })
 export class GroupByComponent implements OnInit {
-
     @Input()
     board: Board;
     fields$: Observable<Field[]>;
 
-    constructor(private fieldList: FieldListService,
+    constructor(private datasourceService: DatasourceService,
                 private filterService: FilterService) {
     }
 
     ngOnInit() {
-        this.fields$ = this.fieldList.getFieldList();
+        this.fields$ = this.datasourceService.fields();
     }
 
     onGroupBy(field: Field, control: any): void {

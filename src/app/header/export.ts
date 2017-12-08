@@ -4,13 +4,16 @@ import * as d3 from 'd3';
 import * as saver from 'file-saver';
 
 import { APIService, FilterService } from '../services';
+import { BoardResolver } from '../boards/board/services/board.resolver';
+//
 import { Board, Field, Filter, Group, Methods, Query, QueryBuilder, Result, WhereBuilder } from '../model';
 
 export class Export {
 
     static query(api: APIService,
+                 boardResolver: BoardResolver,
                  filterService: FilterService): Observable<Result> {
-        const board: Board = _.clone(filterService.boardSubject.getValue());
+        const board: Board = _.clone(boardResolver.getBoard());
         const where = WhereBuilder.makeWhere(filterService.allFilters());
         const params = _.clone(board.exportQry.params);
         const durationFilters: Filter[] = filterService.allFiltersByName('duration_intervals');
@@ -42,9 +45,10 @@ export class Export {
         return api.execute(query);
     }
 
-    static save(data, filterService) {
-        const fields: Field[] = _.clone(filterService.boardSubject.getValue().exportQry.params[0].fields);
-        const title: string = _.clone(filterService.boardSubject.getValue().title);
+    static save(data,
+                boardResolver: BoardResolver) {
+        const fields: Field[] = _.clone(boardResolver.getBoard().exportQry.params[0].fields);
+        const title: string = _.clone(boardResolver.getBoard().title);
         const pairs = _.clone(fields
             .map(field => [field.alias ? field.alias : field.expr, field.label]))
             .reduce((acc, [key, value]) => {

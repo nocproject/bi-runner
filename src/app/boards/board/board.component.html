@@ -1,5 +1,5 @@
 <div class="container-fluid">
-    <bi-selector [board]="board"></bi-selector>
+    <bi-selector [board]="boardResolver.board$ | async"></bi-selector>
     <div class="row" *ngFor="let row of cells">
         <div *ngFor="let cell of row"
              [ngSwitch]="cell.widget.type">

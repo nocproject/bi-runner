@@ -10,11 +10,12 @@ import * as _ from 'lodash';
 
 import { environment } from '../../environments/environment';
 
-import { APIService, FilterService, LanguageService, MessageService } from '../services';
+import { APIService, AuthenticationService, FilterService, LanguageService, MessageService } from '../services';
+import { BoardResolver } from '../boards/board/services/board.resolver';
+
 import { Board, Message, MessageType, Methods, QueryBuilder, User } from '../model';
 import { ModalComponent } from '../shared/modal/modal';
 import { Export } from './export';
-import { AuthenticationService } from '../api/services/authentication.service';
 
 @Component({
     selector: 'bi-header',
@@ -43,6 +44,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
                 private messages: MessageService,
                 private api: APIService,
                 private route: Router,
+                private boardResolver: BoardResolver,
                 private filterService: FilterService,
                 private location: Location,
                 private languageService: LanguageService) {
@@ -51,12 +53,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.user$ = this.authService.user$;
         this.isLogin$ = this.authService.isLogIn$;
-        this.board$ = this.filterService.board$;
+        this.board$ = this.boardResolver.board$;
         this.isReportOpen$ = this.filterService.isReportOpen$;
         this.accessLevel$ = this.authService.accessLevel$;
 
-        this.boardSubscription = this.filterService.board$
+        this.boardSubscription = this.board$
             .subscribe(board => {
+                    console.log('board sub');
                     if (board && board.id) {
                         setTimeout(() => this.boardTitle = board.title, 0);
                         setTimeout(() => this.boardDesc = board.description, 0);
@@ -80,7 +83,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
 
     onSaveBoard() {
-        const board = _.clone(this.filterService.boardSubject.getValue());
+        const board = _.clone(this.boardResolver.getBoard());
+
         board.groups = this.filterService.allFilters();
         board.sample = this.filterService.ratioSubject.getValue();
         const query = new QueryBuilder()
@@ -95,7 +99,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
 
     onSaveAsBoard(modal: ModalComponent) {
-        const board = _.clone(this.filterService.boardSubject.getValue());
+        const board = _.clone(this.boardResolver.getBoard());
+
         board.title = this.saveForm.get('title').value;
         board.description = this.saveForm.get('description').value;
         board.groups = this.filterService.allFilters();
@@ -114,7 +119,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
                 this.location.replaceState(`/board/${response.result}`);
                 this.boardTitle = board.title;
                 board.id = response.result;
-                this.filterService.boardSubject.next(board);
+                this.boardResolver.next(board);
             }, error => {
                 let responseBody = error.json();
                 if (responseBody.hasOwnProperty('error') && _.includes(responseBody.error, 'name exists')) {
@@ -124,7 +129,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
 
     onRemoveBoard(modal: ModalComponent) {
-        const board = _.clone(this.filterService.boardSubject.getValue());
+        const board = _.clone(this.boardResolver.getBoard());
         const query = new QueryBuilder()
             .method(Methods.REMOVE_DASHBOARD)
             .params([board.id])
@@ -140,12 +145,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     onExport(): void {
         this.exportSpin = true;
-        Export.query(this.api, this.filterService)
+        Export.query(this.api, this.boardResolver, this.filterService)
             .first()
             .subscribe(
                 (response) => {
                     this.exportSpin = false;
-                    Export.save(response.result, this.filterService);
+                    Export.save(response.result, this.boardResolver);
                 }
             );
     }

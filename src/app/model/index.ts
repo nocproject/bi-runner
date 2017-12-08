@@ -4,6 +4,7 @@ export * from './cell';
 export * from './cell.widget';
 export * from './chart-type.enum';
 export * from './condition';
+export * from './datasource';
 export * from './field';
 export * from './filter';
 export * from './filter.builder';

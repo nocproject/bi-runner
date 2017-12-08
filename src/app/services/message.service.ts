@@ -4,7 +4,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Rx';
 import * as _ from 'lodash';
 
-import { Message } from '../model/message';
+import { Message } from '../model';
 
 @Injectable()
 export class MessageService {

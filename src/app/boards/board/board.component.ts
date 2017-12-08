@@ -4,22 +4,30 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import * as _ from 'lodash';
 
+import { APIService, FilterService } from '../../services';
+import { BoardResolver } from './services/board.resolver';
+import { DatasourceService } from './services/datasource-info.service';
+
 import { Board, Cell, CellAndWidget, Widget } from '../../model';
-import { FieldListService, FilterService } from '../../services';
 
 @Component({
     selector: 'bi-board',
     templateUrl: './board.component.html',
-    providers: [FieldListService]
+    providers: [
+        {
+            provide: DatasourceService,
+            useClass: DatasourceService,
+            deps: [APIService, BoardResolver]
+        }
+    ]
 })
-
 export class BoardComponent implements OnInit, OnDestroy {
     private subscription: Subscription;
     public cells: CellAndWidget[][];
     public board: Board;
 
-    constructor(private route: ActivatedRoute,
-                private fieldListService: FieldListService,
+    constructor(public boardResolver: BoardResolver,
+                private route: ActivatedRoute,
                 private filterService: FilterService) {
     }
 
@@ -29,13 +37,12 @@ export class BoardComponent implements OnInit, OnDestroy {
         this.subscription = this.route.data.map(data => data['detail'])
             .subscribe(
                 (board: Board) => {
-                    this.fieldListService.init(board);
                     this.filterService.initFilters(board.groups);
                     this.filterService.groupsNext(board.exportQry.params[0].fields);
                     this.board = board;
                     this.cells = this.cellsByRow(board.layout.cells, board.widgets);
                     this.filterService.ratioSubject.next(board.sample ? board.sample : 1);
-                    this.filterService.boardSubject.next(board);
+                    this.boardResolver.next(board);
                     this.filterService.isReportOpenSubject.next(true);
                 }
             );
@@ -43,7 +50,6 @@ export class BoardComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.subscription.unsubscribe();
-        this.filterService.boardSubject.next(null);
         this.filterService.isReportOpenSubject.next(false);
     }
 

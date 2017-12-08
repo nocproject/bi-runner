@@ -1,0 +1,226 @@
+{
+  "result": {
+    "sample": false,
+    "fields": [
+      {
+        "dict": null,
+        "type": "Date",
+        "name": "date",
+        "description": "Date"
+      },
+      {
+        "dict": null,
+        "type": "DateTime",
+        "name": "ts",
+        "description": "Timestamp"
+      },
+      {
+        "dict": "managedobject",
+        "model": "sa.ManagedObject",
+        "type": "UInt64",
+        "name": "managed_object",
+        "description": "managed_object"
+      },
+      {
+        "name": "name",
+        "dict_id": "managed_object",
+        "dict": "managedobject",
+        "model": "sa.ManagedObject",
+        "ro": true,
+        "type": "UInt64",
+        "description": "name"
+      },
+      {
+        "name": "address",
+        "dict_id": "managed_object",
+        "dict": "managedobject",
+        "model": "sa.ManagedObject",
+        "ro": true,
+        "type": "UInt64",
+        "description": "address"
+      },
+      {
+        "name": "profile",
+        "dict_id": "managed_object",
+        "dict": "managedobject",
+        "model": "sa.ManagedObject",
+        "ro": true,
+        "type": "UInt64",
+        "description": "profile"
+      },
+      {
+        "name": "platform",
+        "dict_id": "managed_object",
+        "dict": "managedobject",
+        "model": "sa.ManagedObject",
+        "ro": true,
+        "type": "UInt64",
+        "description": "platform"
+      },
+      {
+        "name": "version",
+        "dict_id": "managed_object",
+        "dict": "managedobject",
+        "model": "sa.ManagedObject",
+        "ro": true,
+        "type": "UInt64",
+        "description": "version"
+      },
+      {
+        "dict": null,
+        "type": "Array(String)",
+        "name": "path",
+        "description": "Metric path"
+      },
+      {
+        "dict": null,
+        "type": "UInt64",
+        "name": "broadcast_in",
+        "description": "Broadcast packets on input interface"
+      },
+      {
+        "dict": null,
+        "type": "UInt64",
+        "name": "broadcast_out",
+        "description": "Broadcast packets on output interface"
+      },
+      {
+        "dict": null,
+        "type": "UInt16",
+        "name": "cinr",
+        "description": "Carrier to Interference + Noise Ratio"
+      },
+      {
+        "dict": null,
+        "type": "Int16",
+        "name": "current_ma",
+        "description": "Laser bias current"
+      },
+      {
+        "dict": null,
+        "type": "UInt32",
+        "name": "discards_in",
+        "description": "Discard packet on input interface"
+      },
+      {
+        "dict": null,
+        "type": "UInt32",
+        "name": "discards_out",
+        "description": "Discard packet on output interface"
+      },
+      {
+        "dict": null,
+        "type": "UInt32",
+        "name": "errors_in",
+        "description": "Errors when receive packet"
+      },
+      {
+        "dict": null,
+        "type": "UInt32",
+        "name": "errors_out",
+        "description": "Errors when transmit packet"
+      },
+      {
+        "dict": null,
+        "type": "UInt64",
+        "name": "load_in",
+        "description": "Interface input throughput"
+      },
+      {
+        "dict": null,
+        "type": "UInt64",
+        "name": "load_out",
+        "description": "Interface output throughput"
+      },
+      {
+        "dict": null,
+        "type": "UInt64",
+        "name": "multicast_in",
+        "description": "Multicast packets on input interface"
+      },
+      {
+        "dict": null,
+        "type": "UInt64",
+        "name": "multicast_out",
+        "description": "Multicast packets on output interface"
+      },
+      {
+        "dict": null,
+        "type": "Int32",
+        "name": "noise_level",
+        "description": "Noise Level"
+      },
+      {
+        "dict": null,
+        "type": "Int16",
+        "name": "optical_rx_dbm",
+        "description": "Signal Receive Power on transmitter"
+      },
+      {
+        "dict": null,
+        "type": "Int16",
+        "name": "optical_tx_dbm",
+        "description": "Signal Transmit Power on transmitter"
+      },
+      {
+        "dict": null,
+        "type": "UInt64",
+        "name": "packets_in",
+        "description": "Packets on input interface"
+      },
+      {
+        "dict": null,
+        "type": "UInt64",
+        "name": "packets_out",
+        "description": "Packets on output interface"
+      },
+      {
+        "dict": null,
+        "type": "UInt16",
+        "name": "rssi",
+        "description": "Received signal strength indicator"
+      },
+      {
+        "dict": null,
+        "type": "Int32",
+        "name": "signal_level",
+        "description": "Signal Level"
+      },
+      {
+        "dict": null,
+        "type": "UInt8",
+        "name": "status_admin",
+        "description": "Interface admin status"
+      },
+      {
+        "dict": null,
+        "type": "UInt8",
+        "name": "status_oper",
+        "description": "Interface admin status"
+      },
+      {
+        "dict": null,
+        "type": "Int16",
+        "name": "temp_c",
+        "description": "Temparature, in Celsius"
+      },
+      {
+        "dict": null,
+        "type": "Int32",
+        "name": "tx_power",
+        "description": "Signal Tx Power on transmitter"
+      },
+      {
+        "dict": null,
+        "type": "Int16",
+        "name": "voltage_v",
+        "description": "Transceiver supply voltage"
+      }
+    ],
+    "tags": [],
+    "name": "interface",
+    "description": "Interface-related metrics"
+  },
+  "id": 0,
+  "error": null
+}

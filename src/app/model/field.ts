@@ -24,12 +24,16 @@ export class Field {
     public dict: string;
     @JsonMember
     public type: string;
-    public hide: boolean;
+    @JsonMember
+    public model: string;
     @JsonMember
     public pseudo: boolean;
+    //
+    public hide: boolean;
     public isSelectable: boolean;
     public isGrouping: boolean;
     public grouped: boolean;
+    public datasource: string;
 
     static fromJSON(json) {
         if (json.hasOwnProperty('expr')) {

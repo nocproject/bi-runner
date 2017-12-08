@@ -1,12 +1,13 @@
-import { Injectable } from '@angular/core';
+import { forwardRef, Inject, Injectable } from '@angular/core';
 import { Response } from '@angular/http';
 
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Rx';
 
-import { Message, MessageType, Methods, QueryBuilder, User } from '../../model';
-import { APIService, MessageService } from '../../services';
-import { Http } from '../../shared/interceptor/service/http.service';
+import { APIService, MessageService } from './';
+import { Http } from '../shared/interceptor/service';
+
+import { Message, MessageType, Methods, QueryBuilder, User } from '../model';
 
 @Injectable()
 export class AuthenticationService {
@@ -40,6 +41,7 @@ export class AuthenticationService {
 
     constructor(private http: Http,
                 private api: APIService,
+                @Inject(forwardRef(() => MessageService))
                 private messagesService: MessageService) {
     }
 
