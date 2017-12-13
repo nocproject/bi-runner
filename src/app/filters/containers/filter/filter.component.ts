@@ -40,14 +40,15 @@ export class FilterComponent implements OnInit, OnDestroy {
         this.conditionConfig = _.find(this.filterConfig, ['name', this.conditionFieldName]);
         this.valueFirstConfig = _.find(this.filterConfig, ['name', 'valueFirst']);
         this.valueSecondConfig = _.find(this.filterConfig, ['name', 'valueSecond']);
-        this.changeSubscription = this.filter.valueChanges.subscribe((data) => {
-          this.eventService.next({
-              type: EventType.FilterChanged,
-              group: this.group,
-              filter: this.index,
-              value: data
-          });
-        });
+        this.changeSubscription = this.filter.valueChanges
+            .subscribe((data) => {
+                this.eventService.next({
+                    type: EventType.FilterChanged,
+                    group: this.group,
+                    filter: this.index,
+                    value: data
+                });
+            });
     }
 
     ngOnDestroy(): void {

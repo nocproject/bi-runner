@@ -4,9 +4,10 @@ import { FormArray, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs/Subscription';
 import * as _ from 'lodash';
 
-import { EventType, FormConfig, GroupConfig } from '../../models';
 import { EventService } from '../../services';
 import { FilterService } from '../../../services';
+//
+import { EventType, FormConfig, GroupConfig } from '../../models';
 
 @Component({
     selector: 'bi-group',
@@ -25,12 +26,12 @@ export class GroupComponent implements OnInit, OnDestroy {
     private subscription: Subscription;
     group: FormGroup;
 
-    get hasFilters(): boolean{
-      return (<FormArray>this.group.get('group.filters')).length > 0;
+    get hasFilters(): boolean {
+        return (<FormArray>this.group.get('group.filters')).length > 0;
     }
 
     constructor(private eventService: EventService,
-                private filterService: FilterService,) {
+                private filterService: FilterService) {
     }
 
     ngOnInit() {
@@ -66,9 +67,9 @@ export class GroupComponent implements OnInit, OnDestroy {
         this.applyChanges();
     }
 
-    private applyChanges(){
-      const data = _.clone(this.parent.value);
+    private applyChanges() {
+        const data = _.clone(this.parent.value);
 
-      this.filterService.formFilters(data.groups, this.formConfig);
+        this.filterService.formFilters(data.groups, this.formConfig);
     }
 }

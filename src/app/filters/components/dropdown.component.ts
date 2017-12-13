@@ -90,8 +90,8 @@ import { TranslateService } from '@ngx-translate/core';
                         *ngIf="config.type === 'tree'; else dropdown"
                         #treeView
                         [config]="treeConfig"
-                        [items]="(list$ | async)"
-                        (selectedChange)=onTreeSelect(treeView)>
+                        [items]="list$ | async"
+                        (selectedChange)="onTreeSelect(treeView, $event)">
                 </ngx-treeview>
             </ul>
         </div>
@@ -105,25 +105,28 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAccessor {
     private propagateChange: (_: any) => void;
-    private subscription: Subscription;
+    private searchSubscription: Subscription;
 
     @Input()
     config: FieldConfig;
     @Input()
     showRemove: boolean = false;
+    @Input()
+    useCache: boolean = false;
     @Output()
     select: EventEmitter<any> = new EventEmitter<any>();
 
-    list$: Observable<any[]>;
+    list$: Observable<any>;
     pattern: FormGroup;
     placeholder: string;
     open = false;
-    search = false;
-    notFound = false;
+    search = true;
+    notFound = true;
     treeConfig = {
         hasAllCheckBox: false,
         hasFilter: false,
-        hasCollapseExpand: false
+        hasCollapseExpand: false,
+        decoupleChildFromParent: false
     };
 
     constructor(private api: APIService,
@@ -142,7 +145,7 @@ export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAcc
                 this.search = false;
                 this.notFound = data.length === 0;
             });
-        this.subscription = this.pattern.valueChanges
+        this.searchSubscription = this.pattern.valueChanges
             .subscribe(data => {
                 this.search = true;
                 this.notFound = false;
@@ -157,64 +160,80 @@ export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAcc
         this.placeholder = this.translate.instant('DROP_DOWN.CHOOSE') + ` ${this.config.description ? this.config.description : this.translate.instant('DROP_DOWN.VALUE')}`;
         if (this.config.value) { // restore by Id
             let params;
-            if (this.config.type === 'dictionary') {
-                params = [{
-                    fields: [
+            switch (this.config.type) {
+                case 'dictionary': {
+                    params = [
                         {
-                            expr: {
-                                $lookup: [
-                                    this.config.dict,
+                            fields: [
+                                {
+                                    expr: {
+                                        $lookup: [
+                                            this.config.dict,
+                                            {
+                                                $field: `toUInt64(${this.config.value})`
+                                            }
+                                        ]
+                                    },
+                                    alias: 'value',
+                                    group: 0
+                                }
+                            ],
+                            datasource: this.config.datasource
+                        }
+                    ];
+                    this.api.execute(
+                        new QueryBuilder()
+                            .method(Methods.QUERY)
+                            .params(params)
+                            .build())
+                        .first()
+                        .subscribe(response => this.placeholder = response.result.result[0][0]);
+                    break;
+                }
+                case 'string': {
+                    params = [
+                        {
+                            fields: [
+                                {
+                                    expr: 'name',
+                                    alias: 'value',
+                                    order: 0
+                                }
+                            ],
+                            filter: {
+                                $eq: [
                                     {
-                                        $field: `toUInt64(${this.config.value})`
+                                        $field: 'id'
+                                    }, {
+                                        $field: `'${this.config.value}'`
                                     }
                                 ]
                             },
-                            alias: 'value',
-                            group: 0
+                            datasource: this.config.datasource
                         }
-                    ],
-                    datasource: this.config.datasource
-                }];
-                this.api.execute(
-                    new QueryBuilder()
-                        .method(Methods.QUERY)
-                        .params(params)
-                        .build())
-                    .first()
-                    .subscribe(response => this.placeholder = response.result.result[0][0]);
-            } else if (this.config.type === 'string') {
-                params = [{
-                    fields: [
-                        {
-                            expr: 'name',
-                            alias: 'value',
-                            order: 0
-                        }
-                    ],
-                    filter: {
-                        $eq: [
-                            {
-                                $field: 'id'
-                            }, {
-                                $field: `'${this.config.value}'`
-                            }
-                        ]
-                    },
-                    datasource: this.config.datasource
-                }];
-                this.api.execute(
-                    new QueryBuilder()
-                        .method(Methods.QUERY)
-                        .params(params)
-                        .build())
-                    .first()
-                    .subscribe(response => this.placeholder = response.result.result[0][0]);
+                    ];
+                    this.api.execute(
+                        new QueryBuilder()
+                            .method(Methods.QUERY)
+                            .params(params)
+                            .build())
+                        .first()
+                        .subscribe(response => this.placeholder = response.result.result[0][0]);
+                    break;
+                }
+                case 'tree': {
+                    this.placeholder = this.treePlaceholder();
+                    break;
+                }
+                default: {
+                    console.log(this.config);
+                }
             }
         }
     }
 
     ngOnDestroy(): void {
-        this.subscription.unsubscribe();
+        this.searchSubscription.unsubscribe();
     }
 
     @HostListener('document:click', ['$event'])
@@ -251,7 +270,6 @@ export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAcc
     onClean(event: MouseEvent) {
         this.propagateChange(null);
         this.open = false;
-        // this.placeholder = `Choose ${this.config.expr}`;
         this.placeholder = this.translate.instant('DROP_DOWN.CHOOSE') + ' ' + this.config.expr;
         this.select.emit();
         event.stopPropagation();
@@ -264,20 +282,29 @@ export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAcc
         this.select.emit();
     }
 
-    onTreeSelect(treeView: TreeviewComponent) {
-        traverse(treeView.items, (leaf) => {
-            // ToDo проблема с фильтрацией на сервере, при одном листе на узле выбираются все родители, фильтрацию надо делать на клиенте.
-            if (leaf.checked) {
-                if (!_.includes(this.config.value, leaf.value)) {
-                    this.config.value.push(leaf.value);
+    onTreeSelect(treeView: TreeviewComponent, downlineItems: any[]) {
+        // hack, skip event on init load items
+        if (downlineItems.length !== this.config.value.length) {
+            traverse(treeView.items, (leaf) => {
+                if (leaf.checked) {
+                    if (!_.includes(this.config.value, leaf.value)) {
+                        if (!leaf.hasOwnProperty('children') || (leaf instanceof TreeviewItem && _.isNil(leaf.children))) {
+                            this.config.value.push(leaf.value);
+                        }
+                    }
+                } else {
+                    _.remove(this.config.value, n => n === leaf.value);
                 }
-            } else {
-                _.remove(this.config.value, n => n === leaf.value);
-            }
-        });
-        this.propagateChange(this.config.value);
-        this.select.emit();
-        this.placeholder = `selected: ${this.config.value.length} nodes`;
+            });
+
+            this.propagateChange(this.config.value);
+            this.select.emit();
+            this.placeholder = this.treePlaceholder();
+        }
+    }
+
+    private treePlaceholder(): string {
+        return this.translate.instant('DROP_DOWN.SELECTED') + `: ${this.config.value.length} ` + this.translate.instant('DROP_DOWN.NODES');
     }
 
     private makeQuery(term?: string) {

@@ -59,7 +59,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
         this.boardSubscription = this.board$
             .subscribe(board => {
-                    console.log('board sub');
                     if (board && board.id) {
                         setTimeout(() => this.boardTitle = board.title, 0);
                         setTimeout(() => this.boardDesc = board.description, 0);

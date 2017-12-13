@@ -164,7 +164,9 @@
     "NOT_FOUND": "ничего не найдено",
     "ENTER_PATTERN": "шаблон для поиска",
     "CHOOSE": "Выберите",
-    "VALUE": "значение"
+    "VALUE": "значение",
+    "SELECTED": "выбрано",
+    "NODES": "узла"
   },
   "CONDITION": {
     "SELECT_CONDITION": "Выбор условия",
