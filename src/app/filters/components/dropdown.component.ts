@@ -286,7 +286,7 @@ export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAcc
             traverse(treeView.items, (leaf) => {
                 if (leaf.checked) {
                     if (!_.includes(this.config.value, leaf.value)) {
-                        if (!leaf.hasOwnProperty('children') || (leaf instanceof TreeviewItem && _.isNil(leaf.children))) {
+                        if (_.isNil(leaf.children)) {
                             this.config.value.push(leaf.value);
                         }
                     }
