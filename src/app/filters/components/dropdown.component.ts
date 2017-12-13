@@ -111,8 +111,6 @@ export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAcc
     config: FieldConfig;
     @Input()
     showRemove: boolean = false;
-    @Input()
-    useCache: boolean = false;
     @Output()
     select: EventEmitter<any> = new EventEmitter<any>();
 

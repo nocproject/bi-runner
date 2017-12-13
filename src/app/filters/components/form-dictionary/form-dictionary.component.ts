@@ -9,7 +9,6 @@ import { FieldConfig, FilterControl } from '../../models';
         <div class="form-group" [formGroup]="form">
             <label class="control-label" translate>{{ config.label }}:</label>
             <bi-form-dropdown [config]="config"
-                              [useCache]="config.type === 'tree'"
                               [formControlName]="config.name"></bi-form-dropdown>
         </div>
     `
