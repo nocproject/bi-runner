@@ -3,7 +3,6 @@
   "method": "set_dashboard",
   "params": [
     {
-      "id": "5a322a2fc165cf65dfd5d15a",
       "layoutId": "580e1ba498601c0f96b7e809",
       "layout": {
         "uuid": "f2736f99-a568-4820-b746-1e71d48b4374",
@@ -111,7 +110,7 @@
           ]
         }
       ],
-      "title": "MO",
+      "title": "MO with selector",
       "format": 2,
       "export": {
         "params": [
@@ -144,7 +143,7 @@
           "cell": "c11",
           "note": "по дате",
           "title": "Срез данных",
-          "type": "dataTable",
+          "type": "selectMenu",
           "query": {
             "params": [
               {
@@ -156,6 +155,12 @@
                     "format": "dateToDateTimeString",
                     "group": 0,
                     "order": 0,
+                    "desc": true
+                  },
+                  {
+                    "expr": "count()",
+                    "alias": "cnt",
+                    "order": 1,
                     "desc": true
                   }
                 ],

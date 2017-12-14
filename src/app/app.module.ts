@@ -12,12 +12,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import {
-    APIService,
-    AuthenticationService,
-    AuthGuard,
-    DebugService,
-    FilterService,
-    LanguageService,
+    APIService, AuthenticationService, AuthGuard, DebugService, FilterService, LanguageService,
     MessageService
 } from './services';
 import { MessagesComponent } from './shared/messages/messages.component';
@@ -25,17 +20,12 @@ import { HttpModule } from './shared/interceptor/module';
 import { BoardListComponent } from './boards/board-list.component';
 import { LoginComponent } from './login/login.component';
 import { BoardComponent } from './boards/board/board.component';
+import { SelectorComponent } from './boards/selector/selector.component';
 import { BoardResolver } from './boards/board/services/board.resolver';
 import {
-    BarComponent,
-    GeoComponent,
-    LineComponent,
-    PieComponent,
-    RowComponent,
+    BarComponent, CounterComponent, GeoComponent, LineComponent, PieComponent, RowComponent, SelectorMenuComponent,
     TableComponent
 } from './boards/widgets';
-import { SelectorComponent } from './boards/selector/selector.component';
-import { CounterComponent } from './boards/widgets/counter/counter.component';
 import { AnchorDirective } from './shared/anchor.directive';
 import { TimepickerComponent } from './shared/timepicker/timepicker.component';
 import { GroupByComponent } from './boards/selector/groupby/groupby.component';
@@ -75,6 +65,7 @@ export const APP_SERVICES = [
         RowComponent,
         BarComponent,
         GeoComponent,
+        SelectorMenuComponent,
         TableComponent,
         SelectorComponent,
         CounterComponent,

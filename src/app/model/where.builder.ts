@@ -82,13 +82,13 @@ function where(filter: Filter): Object {
         case 'not.empty':
             return not(empty(clonedFilter));
         case '$selector':
-          return {
-            $selector: clonedFilter.values[0].value
-          };
+            return {
+                $selector: clonedFilter.values[0].value
+            };
         case '$like':
-          return like(clonedFilter);
+            return like(clonedFilter);
         default:
-          return castToValue(clonedFilter);
+            return castToCondition(clonedFilter);
     }
 }
 
@@ -137,8 +137,8 @@ function interval(filter: Filter): Object {
         case 'Float32':
         case 'Float64': {
             const tokens = filter.values[0].value.split(' - ');
-            from = castToNumber(new Value(tokens[0]), filter.type);
-            to = castToNumber(new Value(tokens[1]), filter.type);
+            from = tokens[0];
+            to = tokens[1];
             break;
         }
         case 'String': {
@@ -189,7 +189,7 @@ function inCondition(filter: Filter): Object {
                 {
                     $field: filter.name
                 },
-                castToNumberArray(filter)
+                castToArray(filter)
             ]
         };
     } else {
@@ -198,33 +198,39 @@ function inCondition(filter: Filter): Object {
                 {
                     $field: filter.name
                 },
-                castFirstToNumber(filter)
+                castToField(filter.values, filter.type)
             ]
         };
     }
 }
 
-function castToValue(filter: Filter): Object {
-    const firstValue = _.first(filter.values);
-    const expression: Object = {};
+function castToValue(value: Value, type: string): any {
+    switch (type) {
+        case 'Date' : {
+            return toDate(value);
+        }
+        case 'DateTime' : {
+            return toDateTime(value);
+        }
+        case 'IPv4' : {
+            return ipv4StrToNum(value.value);
+        }
+        default: {
+            return value.value;
+        }
+    }
+}
+
+function castToField(values: Value[], type: string): Object {
+    const firstValue = _.first(values);
     let fieldValue: Object;
 
-    switch (filter.type) {
-        case 'Date': {
-            fieldValue = {
-                $field: toDate(firstValue)
-            };
-            break;
-        }
-        case 'DateTime': {
-            fieldValue = {
-                $field: toDateTime(firstValue)
-            };
-            break;
-        }
+    switch (type) {
+        case 'Date':
+        case 'DateTime':
         case 'IPv4': {
             fieldValue = {
-                $field: ipv4StrToNum(firstValue.value)
+                $field: castToValue(firstValue, type)
             };
             break;
         }
@@ -233,27 +239,24 @@ function castToValue(filter: Filter): Object {
             break;
         }
         default: {
-            fieldValue = castFirstToNumber(filter);
+            fieldValue = _.first(values).value;
         }
     }
+    return fieldValue;
+}
+
+function castToCondition(filter: Filter) {
+    const expression: Object = {};
 
     expression[filter.condition] = [{
         $field: filter.name
-    }, fieldValue];
+    }, castToField(filter.values, filter.type)];
 
     return expression;
 }
 
-function castToNumber(item: Value, type: string): any {
-    return item.value;
-}
-
-function castFirstToNumber(filter: Filter): any {
-    return castToNumber(_.first(filter.values), filter.type);
-}
-
-function castToNumberArray(filter: Filter): any[] {
-    return _.flattenDeep(filter.values.map(item => castToNumber(item, filter.type)));
+function castToArray(filter: Filter): any[] {
+    return filter.values.map(value => castToValue(value, filter.type));
 }
 
 function ipv4StrToNum(value): string {
@@ -271,7 +274,7 @@ function toDateTime(v: Value) {
     if (typeof v.value === 'string') {
         v.value = new Date(v.value);
     }
-    return `toDateTime('${d3.time.format('%Y-%m-%dT%H:%M:%S')(v.value)}')`;
+    return `'${d3.time.format('%Y-%m-%dT%H:%M:%S')(v.value)}'`;
 }
 
 function toPeriodicTime(param) {
@@ -316,15 +319,15 @@ function not(value) {
 }
 
 function like(filter: Filter) {
-  return {
-    $like: [
-      {
-        $lower: { $field: filter.name }
-      }, {
-        $lower: `%${filter.values[0].value}%`
-      }
-    ]
-  }
+    return {
+        $like: [
+            {
+                $lower: {$field: filter.name}
+            }, {
+                $lower: `%${filter.values[0].value}%`
+            }
+        ]
+    };
 }
 
 function valueLength(values: Value[]): number {
