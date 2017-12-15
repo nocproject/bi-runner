@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 
+import * as d3 from 'd3';
 import * as dc from 'dc';
 import { BaseMixin, SelectMenu } from 'dc';
 import * as crossfilter from 'crossfilter';
 
 import { Restore, WidgetComponent } from '../widget.component';
 import { FilterBuilder, Result, Value } from '../../../model';
-import * as d3 from 'd3';
 
 @Component({
     selector: 'bi-menu',

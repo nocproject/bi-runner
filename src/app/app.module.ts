@@ -23,7 +23,14 @@ import { BoardComponent } from './boards/board/board.component';
 import { SelectorComponent } from './boards/selector/selector.component';
 import { BoardResolver } from './boards/board/services/board.resolver';
 import {
-    BarComponent, CounterComponent, GeoComponent, LineComponent, PieComponent, RowComponent, SelectorMenuComponent,
+    BarComponent,
+    BoxPlotComponent,
+    CounterComponent,
+    GeoComponent,
+    LineComponent,
+    PieComponent,
+    RowComponent,
+    SelectorMenuComponent,
     TableComponent
 } from './boards/widgets';
 import { AnchorDirective } from './shared/anchor.directive';
@@ -61,6 +68,7 @@ export const APP_SERVICES = [
         LoginComponent,
         BoardComponent,
         PieComponent,
+        BoxPlotComponent,
         LineComponent,
         RowComponent,
         BarComponent,
@@ -106,7 +114,7 @@ export const APP_SERVICES = [
         ShareCanDeactivateGuard,
         // Application services
         ...APP_SERVICES,
-        !environment.production ? DebugService : [],
+        !environment.production ? DebugService : []
     ],
     bootstrap: [AppComponent]
 })
