@@ -1,0 +1,16 @@
+{
+  "id": 0,
+  "error": null,
+  "result": {
+    "fields": [
+      "date"
+    ],
+    "result": [
+      [
+        "2017-10-20"
+      ]
+    ],
+    "duration": 0.0088989735,
+    "sql": "SELECT  max(date) AS date FROM alarms"
+  }
+}

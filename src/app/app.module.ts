@@ -7,7 +7,7 @@ import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import {
-    APIService, AuthenticationService, AuthGuard, DebugService, FilterService, LanguageService,
+    APIService, AuthenticationService, AuthGuard, CounterService, DebugService, FilterService, LanguageService,
     MessageService
 } from './services';
 import { HttpModule } from './shared/interceptor/module';
@@ -25,6 +25,7 @@ export const APP_SERVICES = [
     APIService,
     AuthGuard,
     AuthenticationService,
+    CounterService,
     FilterService,
     LanguageService,
     MessageService

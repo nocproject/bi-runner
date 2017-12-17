@@ -13,8 +13,6 @@ import { EventType, FormConfig, Groups } from '../filters/models';
 
 @Injectable()
 export class FilterService {
-    qtySubject = new BehaviorSubject<number>(0);
-    qty$: Observable<number> = this.qtySubject.asObservable();
     ratioSubject = new BehaviorSubject<number>(1);
     isReportOpenSubject = new BehaviorSubject<boolean>(false);
     isReportOpen$: Observable<boolean> = this.isReportOpenSubject.asObservable();
