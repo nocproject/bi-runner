@@ -1,4 +1,4 @@
-import { Request, Response, RequestOptionsArgs } from '@angular/http';
+import { Request, RequestOptionsArgs, Response } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 
 /**
@@ -25,9 +25,11 @@ export interface ResponseInterceptorOptions extends RequestInterceptorOptions {
  */
 export interface Interceptor {
     request?(options: RequestInterceptorOptions): Observable<RequestInterceptorOptions> | RequestInterceptorOptions;
+
     requestError?(options: RequestInterceptorOptions): Observable<RequestInterceptorOptions> | RequestInterceptorOptions;
 
     response?(options: ResponseInterceptorOptions): Observable<ResponseInterceptorOptions> | ResponseInterceptorOptions;
+
     responseError?(options: ResponseInterceptorOptions): Observable<ResponseInterceptorOptions> | ResponseInterceptorOptions;
 }
 

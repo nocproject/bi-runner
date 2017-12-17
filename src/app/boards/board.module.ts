@@ -1,0 +1,61 @@
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
+
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+
+import { DataGridModule } from '../shared/data-grid/data-grid.module';
+import { FiltersModule } from '../filters/filters.module';
+import { ModalModule } from '../shared/modal/modal.module';
+import { MyDatePickerModule } from '../shared/my-date-picker';
+import { SharedModule } from '../shared/shared.module';
+import { TimepickerModule } from '../shared/timepicker/timepicker.module';
+import { WidgetsModule } from '../widgets/widgets.module';
+//
+import { BoardComponent, BoardListComponent, GroupByComponent, ReportRangeComponent, SelectorComponent } from './index';
+import { TranslateLoader, TranslateModule, TranslateParser } from '@ngx-translate/core';
+import { Http } from '@angular/http';
+import { TranslateParserService } from '../shared/translate/translate-parser.service';
+import { HttpLoaderFactory } from '../app.module';
+
+export const COMPONENTS = [
+    BoardComponent,
+    BoardListComponent,
+    GroupByComponent,
+    ReportRangeComponent,
+    SelectorComponent
+];
+
+@NgModule({
+    imports: [
+        CommonModule,
+        FiltersModule,
+        DataGridModule,
+        ModalModule,
+        MyDatePickerModule,
+        SharedModule,
+        TimepickerModule,
+        WidgetsModule,
+        ReactiveFormsModule,
+        TooltipModule.forRoot(),
+        TranslateModule.forRoot({
+            loader: {
+                provide: TranslateLoader,
+                useFactory: HttpLoaderFactory,
+                deps: [Http]
+            },
+            parser: {
+                provide: TranslateParser,
+                useClass: TranslateParserService
+            }
+        })
+    ],
+    declarations: [
+        ...COMPONENTS
+    ],
+    exports: [
+        ...COMPONENTS
+    ]
+})
+export class BoardModule {
+}

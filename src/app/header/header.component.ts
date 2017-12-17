@@ -24,8 +24,6 @@ import { Export } from './export';
 })
 
 export class HeaderComponent implements OnInit, OnDestroy {
-    private boardSubscription: Subscription;
-    private saveAsSubscription: Subscription;
     user$: Observable<User>;
     isLogin$: Observable<boolean>;
     board$: Observable<Board>;
@@ -39,6 +37,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     boardTitle: string;
     titleError: string;
     boardDesc: string;
+    private boardSubscription: Subscription;
+    private saveAsSubscription: Subscription;
 
     constructor(private authService: AuthenticationService,
                 private messages: MessageService,

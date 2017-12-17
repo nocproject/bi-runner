@@ -117,10 +117,10 @@ export class Range {
                     to: dateFns.endOfDay(today)
                 };
             } else {
-                if(days)
-                dateRange = {
-                    text: `LAST_${days}`
-                };
+                if (days)
+                    dateRange = {
+                        text: `LAST_${days}`
+                    };
             }
         }
         return dateRange;

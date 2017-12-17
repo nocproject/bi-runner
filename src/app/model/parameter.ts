@@ -46,7 +46,6 @@ export class Parameter {
         return Object.assign(Object.create(Parameter.prototype), json);
     }
 
-
     // toJSON() {
     //     return Object.assign({}, this, {
     //         filter: SerializationHelper.map<String, String>(this.where),

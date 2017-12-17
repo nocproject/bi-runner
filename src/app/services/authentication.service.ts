@@ -11,6 +11,21 @@ import { Message, MessageType, Methods, QueryBuilder, User } from '../model';
 
 @Injectable()
 export class AuthenticationService {
+    private userSubject = new BehaviorSubject<User>(new User());
+    public user$: Observable<User> = this.userSubject.asObservable();
+    private isLogInSubject = new BehaviorSubject<boolean>(false);
+    public isLogIn$: Observable<boolean> = this.isLogInSubject.asObservable();
+    private accessLevelSubject = new BehaviorSubject<number>(-1);
+    public accessLevel$: Observable<number> = this.accessLevelSubject.asObservable();
+
+    constructor(private http: Http,
+                private api: APIService,
+                @Inject(forwardRef(() => MessageService))
+                private messagesService: MessageService) {
+    }
+
+    private _isLoginOpen = false;
+
     get isLoginOpen(): boolean {
         return this._isLoginOpen;
     }
@@ -19,30 +34,14 @@ export class AuthenticationService {
         this._isLoginOpen = value;
     }
 
+    private _isLogin = false;
+
     get isLogin(): boolean {
         return this._isLogin;
     }
 
     set isLogin(value: boolean) {
         this._isLogin = value;
-    }
-
-    private _isLoginOpen = false;
-    private _isLogin = false;
-
-    private userSubject = new BehaviorSubject<User>(new User());
-    public user$: Observable<User> = this.userSubject.asObservable();
-
-    private isLogInSubject = new BehaviorSubject<boolean>(false);
-    public isLogIn$: Observable<boolean> = this.isLogInSubject.asObservable();
-
-    private accessLevelSubject = new BehaviorSubject<number>(-1);
-    public accessLevel$: Observable<number> = this.accessLevelSubject.asObservable();
-
-    constructor(private http: Http,
-                private api: APIService,
-                @Inject(forwardRef(() => MessageService))
-                private messagesService: MessageService) {
     }
 
     checkConnection(): Observable<boolean> {
@@ -79,7 +78,7 @@ export class AuthenticationService {
                     .build())
             .map(response => response.result)
             .subscribe(level => this.accessLevelSubject.next(level),
-                _ => this.accessLevelSubject.next(-1));
+                () => this.accessLevelSubject.next(-1));
     }
 
     login(param: Object): Observable<boolean> {

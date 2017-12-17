@@ -1,12 +1,5 @@
 import {
-    Component,
-    ElementRef,
-    EventEmitter,
-    forwardRef,
-    HostListener,
-    Input,
-    OnDestroy,
-    OnInit,
+    Component, ElementRef, EventEmitter, forwardRef, HostListener, Input, OnDestroy, OnInit,
     Output
 } from '@angular/core';
 import { ControlValueAccessor, FormControl, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -104,16 +97,12 @@ import { TranslateService } from '@ngx-translate/core';
     `
 })
 export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAccessor {
-    private propagateChange: (_: any) => void;
-    private searchSubscription: Subscription;
-
     @Input()
     config: FieldConfig;
     @Input()
     showRemove: boolean = false;
     @Output()
     select: EventEmitter<any> = new EventEmitter<any>();
-
     list$: Observable<any>;
     pattern: FormGroup;
     placeholder: string;
@@ -126,6 +115,8 @@ export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAcc
         hasCollapseExpand: false,
         decoupleChildFromParent: false
     };
+    private propagateChange: (_: any) => void;
+    private searchSubscription: Subscription;
 
     constructor(private api: APIService,
                 private translate: TranslateService,

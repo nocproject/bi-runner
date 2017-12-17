@@ -1,9 +1,9 @@
-import { IMyDayLabels } from "./my-day-labels.interface";
-import { IMyMonthLabels } from "./my-month-labels.interface";
-import { IMyDate } from "./my-date.interface";
-import { IMyDateRange } from "./my-date-range.interface";
-import { IMyMarkedDates } from "./my-marked-dates.interface";
-import { IMyMarkedDate } from "./my-marked-date.interface";
+import { IMyDayLabels } from './my-day-labels.interface';
+import { IMyMonthLabels } from './my-month-labels.interface';
+import { IMyDate } from './my-date.interface';
+import { IMyDateRange } from './my-date-range.interface';
+import { IMyMarkedDates } from './my-marked-dates.interface';
+import { IMyMarkedDate } from './my-marked-date.interface';
 
 export interface IMyOptions {
     dayLabels?: IMyDayLabels;
@@ -63,4 +63,5 @@ export interface IMyOptions {
     ariaLabelNextYear?: string;
 }
 
-export interface IMyDpOptions extends IMyOptions {}
+export interface IMyDpOptions extends IMyOptions {
+}

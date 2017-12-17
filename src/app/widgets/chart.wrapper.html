@@ -1,0 +1,25 @@
+<div class="{{ cellClass }}">
+    <div class="chart-wrapper" #wrapper>
+        <div class="chart-title">
+            <div class="title-left">{{ data.widget.title }}</div>
+            <div class="title-right"
+                 [ngClass]="{'spinner': showSpinner, 'spinner-blank' : !showSpinner}">
+            </div>
+            <div style="padding-left: 10px"
+                 class="title-right hand"
+                 *ngIf="showReset"
+                 (click)="onReset()" translate>WIDGET.RESET
+            </div>
+            <div class="title-right"
+                 *ngIf="showReset"
+                 style="padding-left: 5px;">{{ title }}
+            </div>
+            <div style="clear:both;"></div>
+        </div>
+        <div class="chart-stage">
+            <div id="{{ data.cell.name }}" [ngStyle]="{'height.px': data.cell.height}">
+            </div>
+        </div>
+        <div class="chart-notes">{{ data.widget.note }}</div>
+    </div>
+</div>

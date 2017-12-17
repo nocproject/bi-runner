@@ -1,12 +1,5 @@
 import {
-    AfterViewInit,
-    Component,
-    EventEmitter,
-    Input,
-    OnChanges,
-    OnDestroy,
-    OnInit,
-    Output,
+    AfterViewInit, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output,
     SimpleChanges
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
@@ -67,7 +60,7 @@ export class DataGridComponent implements AfterViewInit, OnInit, OnChanges, OnDe
 
     ngOnChanges(changes: SimpleChanges): void {
         if (this.searchField) {
-            this.getData().then(_ => this.searchField.setValue(''));
+            this.getData().then(() => this.searchField.setValue(''));
         }
     }
 

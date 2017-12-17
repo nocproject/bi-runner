@@ -7,26 +7,18 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import * as _ from 'lodash';
 
-import { AccessLevel, Methods, QueryBuilder } from '../model';
-import { APIService } from '../services/api.service';
+import { APIService, MessageService } from '../services';
+import { AccessLevel, Message, MessageType, Methods, QueryBuilder } from '../model';
 import { GridConfig, GridConfigBuilder } from '../shared/data-grid/data-grid.component';
 import { ModalComponent } from '../shared/modal/modal';
-import { MessageService } from '../services/message.service';
-import { MessageType } from '../model/message-type.enum';
-import { Message } from '../model/message';
 
 @Component({
     selector: 'bi-share',
     templateUrl: './share.component.html'
 })
 export class ShareComponent implements OnInit, OnDestroy {
-    private chooseSubscription: Subscription;
-    private confirmAnswerSubject = new BehaviorSubject(null);
-
     @ViewChild(ModalComponent)
     confirmDialog: ModalComponent;
-
-    confirmAnswer$: Observable<boolean> = this.confirmAnswerSubject.asObservable();
     boardId: string;
     title: string;
     userConfig: GridConfig;
@@ -38,6 +30,9 @@ export class ShareComponent implements OnInit, OnDestroy {
     chooseForm: FormGroup;
     shareSpin = false;
     trashSpin = false;
+    private chooseSubscription: Subscription;
+    private confirmAnswerSubject = new BehaviorSubject(null);
+    confirmAnswer$: Observable<boolean> = this.confirmAnswerSubject.asObservable();
 
     constructor(private api: APIService,
                 private messages: MessageService,
@@ -133,7 +128,7 @@ export class ShareComponent implements OnInit, OnDestroy {
             .subscribe(() => {
                     this.unsavedData = false;
                     this.shareSpin = false;
-                    this.messages.message(new Message(MessageType.INFO, 'MESSAGES.SHARE_SAVED'))
+                    this.messages.message(new Message(MessageType.INFO, 'MESSAGES.SHARE_SAVED'));
                 },
                 () => this.shareSpin = false);
     }
@@ -153,7 +148,7 @@ export class ShareComponent implements OnInit, OnDestroy {
                 this.unsavedData = false;
                 this.accessCache = [];
                 this.preSelected = [];
-                this.messages.message(new Message(MessageType.INFO, 'MESSAGES.SHARE_REMOVED'))
+                this.messages.message(new Message(MessageType.INFO, 'MESSAGES.SHARE_REMOVED'));
             });
     }
 

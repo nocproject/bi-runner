@@ -1,20 +1,15 @@
-import { Injectable } from "@angular/core";
-import { IMyDate } from "../interfaces/my-date.interface";
-import { IMyDateRange } from "../interfaces/my-date-range.interface";
-import { IMyMonth } from "../interfaces/my-month.interface";
-import { IMyMonthLabels } from "../interfaces/my-month-labels.interface";
-import { IMyMarkedDates } from "../interfaces/my-marked-dates.interface";
-import { IMyMarkedDate } from "../interfaces/my-marked-date.interface";
+import { Injectable } from '@angular/core';
+import { IMyDate, IMyDateRange, IMyMarkedDate, IMyMarkedDates, IMyMonth, IMyMonthLabels } from '../interfaces';
 
-const M = "m";
-const MM = "mm";
-const MMM = "mmm";
-const DD = "dd";
-const YYYY = "yyyy";
+const M = 'm';
+const MM = 'mm';
+const MMM = 'mmm';
+const DD = 'dd';
+const YYYY = 'yyyy';
 
 @Injectable()
 export class UtilService {
-    weekDays: Array<string> = ["su", "mo", "tu", "we", "th", "fr", "sa"];
+    weekDays: Array<string> = ['su', 'mo', 'tu', 'we', 'th', 'fr', 'sa'];
 
     isDateValid(dateStr: string, dateFormat: string, minYear: number, maxYear: number, disableUntil: IMyDate, disableSince: IMyDate, disableWeekends: boolean, disableWeekDays: Array<string>, disableDays: Array<IMyDate>, disableDateRanges: Array<IMyDateRange>, monthLabels: IMyMonthLabels, enableDays: Array<IMyDate>): IMyDate {
         let returnDate: IMyDate = {day: 0, month: 0, year: 0};
@@ -65,7 +60,7 @@ export class UtilService {
     }
 
     changeDateFormat(dateFormat: string, len: number): string {
-        let mp: string = "";
+        let mp: string = '';
         for (let i = 0; i < len; i++) {
             mp += M;
         }
@@ -101,7 +96,7 @@ export class UtilService {
     }
 
     parseDatePartMonthName(dateFormat: string, dateString: string, datePart: string, monthLabels: IMyMonthLabels): number {
-        let monthLabel: string = "";
+        let monthLabel: string = '';
         let start: number = dateFormat.indexOf(datePart);
         if (dateFormat.substr(dateFormat.length - 3) === MMM) {
             monthLabel = dateString.substring(start);
@@ -118,8 +113,8 @@ export class UtilService {
     }
 
     parseDefaultMonth(monthString: string): IMyMonth {
-        let month: IMyMonth = {monthTxt: "", monthNbr: 0, year: 0};
-        if (monthString !== "") {
+        let month: IMyMonth = {monthTxt: '', monthNbr: 0, year: 0};
+        if (monthString !== '') {
             let split = monthString.split(monthString.match(/[^0-9]/)[0]);
             month.monthNbr = split[0].length === 2 ? parseInt(split[0]) : parseInt(split[1]);
             month.year = split[0].length === 2 ? parseInt(split[1]) : parseInt(split[0]);
@@ -191,7 +186,7 @@ export class UtilService {
                 return {marked: true, color: markWeekends.color};
             }
         }
-        return {marked: false, color: ""};
+        return {marked: false, color: ''};
     }
 
     isHighlightedDate(date: IMyDate, sunHighlight: boolean, satHighlight: boolean, highlightDates: Array<IMyDate>): boolean {

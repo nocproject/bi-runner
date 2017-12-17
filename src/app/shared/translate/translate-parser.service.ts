@@ -20,7 +20,7 @@ export class TranslateParserService extends TranslateParser {
 
     getValue(target: any, key: string): string {
         let keys = key.split('.');
-        if ( target instanceof Response) {
+        if (target instanceof Response) {
             target = target.json();
         }
 

@@ -12,13 +12,8 @@ import { GroupComponent } from './containers/group/group.component';
 import { FilterComponent } from './containers/filter/filter.component';
 import { FilterFormComponent } from './containers/form/filter-form.component';
 import {
-    FormButtonComponent,
-    FormCalendarComponent,
-    FormDateRangeComponent,
-    FormDictionaryComponent,
-    FormInputComponent,
-    FormModelComponent,
-    FormSelectComponent
+    FormButtonComponent, FormCalendarComponent, FormDateRangeComponent, FormDictionaryComponent,
+    FormInputComponent, FormModelComponent, FormSelectComponent
 } from './components';
 import { FormDropdownComponent } from './components/dropdown.component';
 

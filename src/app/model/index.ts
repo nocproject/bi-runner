@@ -19,7 +19,7 @@ export * from './message';
 export * from './message-type.enum';
 export * from './method';
 export * from './methods.enum';
-export * from './parameter'
+export * from './parameter';
 export * from './query';
 export * from './query.builder';
 export * from './range';
