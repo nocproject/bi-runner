@@ -1,13 +1,13 @@
-import { JsonMember, JsonObject } from 'typedjson-npm/src/typed-json';
+import { JsonMember, JsonObject } from '../typed-json';
 
-@JsonObject
+@JsonObject()
 export class Map {
-    @JsonMember
+    @JsonMember()
     public name: string;
     @JsonMember({elements: Number})
     public rotate: [number, number, number];
     @JsonMember({elements: Number})
     public center: [number, number];
-    @JsonMember
+    @JsonMember()
     public scale: number;
 }

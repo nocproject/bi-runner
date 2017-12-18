@@ -1,4 +1,4 @@
-import { JsonMember, JsonObject, TypedJSON } from 'typedjson-npm/src/typed-json';
+import { JsonMember, JsonObject, TypedJSON } from '../typed-json';
 import * as _ from 'lodash';
 
 import { Field } from './field';
@@ -19,11 +19,11 @@ import { DeserializationHelper } from './helpers';
 
 @JsonObject({initializer: Parameter.fromJSON})
 export class Parameter {
-    @JsonMember
+    @JsonMember()
     public datasource: string;
-    @JsonMember
+    @JsonMember()
     public limit: number;
-    @JsonMember
+    @JsonMember()
     public sample: number;
     @JsonMember({elements: Field})
     public fields: Field[];

@@ -1,4 +1,4 @@
-import { JsonMember, JsonObject, TypedJSON } from 'typedjson-npm/src/typed-json';
+import { JsonMember, JsonObject, TypedJSON } from '../typed-json';
 import * as _ from 'lodash';
 
 import { Field } from './field';
@@ -11,25 +11,25 @@ import { DeserializationHelper } from './helpers';
 
 @JsonObject()
 export class Board {
-    @JsonMember
+    @JsonMember()
     public id: string;
-    @JsonMember
+    @JsonMember()
     public layoutId: string;
-    @JsonMember
+    @JsonMember()
     public title: string;
-    @JsonMember
+    @JsonMember()
     public description: string;
-    @JsonMember
+    @JsonMember()
     public datasource: string;
-    @JsonMember
+    @JsonMember()
     public format: number;
-    @JsonMember
+    @JsonMember()
     public sample: number;
-    @JsonMember
+    @JsonMember()
     public owner: string;
-    @JsonMember
+    @JsonMember()
     public created: string;
-    @JsonMember
+    @JsonMember()
     public changed: string;
     @JsonMember({elements: Widget})
     public widgets: Widget[];
@@ -39,7 +39,7 @@ export class Board {
     public filterFields: Field[];
     @JsonMember({elements: Field, name: 'pseudo_fields'})
     public pseudoFields: Field[];
-    @JsonMember
+    @JsonMember()
     public layout: Layout;
     @JsonMember({name: 'export'})
     public exportQry: Query;
@@ -47,22 +47,24 @@ export class Board {
     public groups: Group[];
     // version 0.2, may be
     // @JsonMapMember(String, Filter)
-    public filter: Map<String, Filter>;
+    @JsonMember({elements: Object})
+    public filter: Object[];
     public isSample: boolean;
 
     static fromJSON(json: any): Board {
         const board = TypedJSON.parse(json, Board);
-        if (json.hasOwnProperty('filter')) {
-            board.filter = DeserializationHelper.map<String, Filter>(
-                _.toPairs(json.filter).map(item => [TypedJSON.stringify(item[0]), item[1]]),
-                String, Filter
-            );
-        }
+
+        // if (json.hasOwnProperty('filter')) {
+        //     board.filter = DeserializationHelper.map<String, Filter>(
+        //         _.toPairs(json.filter).map(item => [TypedJSON.stringify(item[0]), item[1]]),
+        //         String, Filter
+        //     );
+        // }
         return board;
     }
 
     prepare() {
-        // DoTo take from @JsonMember
+        // ToDo take from @JsonMember
         const obj = Object.assign({}, this,
             {
                 agv_fields: this.agvFields,

@@ -1,5 +1,5 @@
-import { JsonObject } from 'typedjson-npm/src/typed-json';
+import { JsonObject } from '../typed-json';
 
-@JsonObject
+@JsonObject()
 export class Expression {
 }

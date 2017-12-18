@@ -1,4 +1,4 @@
-import { JsonMember, JsonObject } from 'typedjson-npm/src/typed-json';
+import { JsonMember, JsonObject } from '../typed-json';
 
 import { Value } from './value';
 import { Range } from './range';
@@ -7,23 +7,23 @@ import { Range } from './range';
 export class Filter {
     @JsonMember({elements: Value})
     public values: Value[];
-    @JsonMember
+    @JsonMember()
     public condition: string;
-    @JsonMember
+    @JsonMember()
     public type: string;
-    @JsonMember
+    @JsonMember()
     public name: string;
-    @JsonMember
+    @JsonMember()
     public association: '$and' | '$or';
-    @JsonMember
+    @JsonMember()
     public alias: string;
-    @JsonMember
+    @JsonMember()
     public pseudo: boolean;
     // form data
     public valueFirst: string;
     public valueSecond: string;
     public hide: string;
-    @JsonMember
+    @JsonMember()
     public datasource: string;
 
     static fromJSON(json: any): Filter {

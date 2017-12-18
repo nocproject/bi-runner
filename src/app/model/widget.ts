@@ -1,22 +1,22 @@
-import { JsonMember, JsonObject } from 'typedjson-npm/src/typed-json';
+import { JsonMember, JsonObject } from '../typed-json';
 
 import { Map } from './map';
 import { Query } from './query';
 
-@JsonObject
+@JsonObject()
 export class Widget {
-    @JsonMember
+    @JsonMember()
     public id: number;
-    @JsonMember
+    @JsonMember()
     public cell: string;
-    @JsonMember
+    @JsonMember()
     public note: string;
-    @JsonMember
+    @JsonMember()
     public title: string;
     @JsonMember({name: 'type'})
     public type: string;
-    @JsonMember
+    @JsonMember()
     public query: Query;
-    @JsonMember
+    @JsonMember()
     public map?: Map;
 }

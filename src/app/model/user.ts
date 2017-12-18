@@ -1,8 +1,8 @@
-import { JsonMember, JsonObject, TypedJSON } from 'typedjson-npm/src/typed-json';
+import { JsonMember, JsonObject, TypedJSON } from '../typed-json';
 
-@JsonObject
+@JsonObject()
 export class User {
-    @JsonMember
+    @JsonMember()
     public username: string;
     @JsonMember({name: 'last_name'})
     public lastName?: string;

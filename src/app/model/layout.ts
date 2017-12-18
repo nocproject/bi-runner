@@ -1,16 +1,16 @@
-import { JsonMember, JsonObject } from 'typedjson-npm/src/typed-json';
+import { JsonMember, JsonObject } from '../typed-json';
 
 import { Cell } from './cell';
 
-@JsonObject
+@JsonObject()
 export class Layout {
-    @JsonMember
+    @JsonMember()
     public id: string;
-    @JsonMember
+    @JsonMember()
     public name: string;
-    @JsonMember
+    @JsonMember()
     public description: string;
-    @JsonMember
+    @JsonMember()
     public uuid: string;
     @JsonMember({elements: Cell})
     public cells: Cell[];

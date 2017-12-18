@@ -1,4 +1,4 @@
-import { JsonMember, JsonObject } from 'typedjson-npm/src/typed-json';
+import { JsonMember, JsonObject } from '../typed-json';
 
 import { Expression } from './expression';
 
@@ -6,27 +6,27 @@ import { Expression } from './expression';
 export class Field {
     // @JsonMember
     public expr: Expression | string;
-    @JsonMember
+    @JsonMember()
     public label: string;
-    @JsonMember
+    @JsonMember()
     public alias: string;
-    @JsonMember
+    @JsonMember()
     public desc: boolean;
     @JsonMember({type: Number})
     public group: number;
-    @JsonMember
+    @JsonMember()
     public format: string;
-    @JsonMember
+    @JsonMember()
     public name: string;
-    @JsonMember
+    @JsonMember()
     public description: string;
-    @JsonMember
+    @JsonMember()
     public dict: string;
-    @JsonMember
+    @JsonMember()
     public type: string;
-    @JsonMember
+    @JsonMember()
     public model: string;
-    @JsonMember
+    @JsonMember()
     public pseudo: boolean;
     //
     public hide: boolean;

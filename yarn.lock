@@ -5042,10 +5042,6 @@ type-is@~1.6.15:
     media-typer "0.3.0"
     mime-types "~2.1.15"
 
-typedjson-npm@^0.1.7:
-  version "0.1.7"
-  resolved "https://registry.yarnpkg.com/typedjson-npm/-/typedjson-npm-0.1.7.tgz#4ac7d5e3717a2cd54bc4adb471e4667ff169b6d3"
-
 "typescript@>=2.0.0 <2.3.0", typescript@~2.2.0:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.2.2.tgz#606022508479b55ffa368b58fee963a03dfd7b0c"

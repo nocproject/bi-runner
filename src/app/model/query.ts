@@ -1,13 +1,13 @@
-import { JsonMember, JsonObject } from 'typedjson-npm/src/typed-json';
+import { JsonMember, JsonObject } from '../typed-json';
 
 import { Parameter } from './parameter';
 import { Field } from './field';
 
-@JsonObject
+@JsonObject()
 export class Query {
-    @JsonMember
+    @JsonMember()
     public id: number;
-    @JsonMember
+    @JsonMember()
     public method: string;
     @JsonMember({elements: Parameter})
     params: Parameter[];
