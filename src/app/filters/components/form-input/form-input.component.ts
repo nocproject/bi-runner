@@ -19,7 +19,7 @@ import { FieldConfig, FilterControl } from '../../models';
                     VALIDATOR.REQUIRED
                 </div>
                 <div *ngIf="form.get(config.name).hasError('invalid')"
-                     [translate]="form.get(config.name).errors.msg">
+                     [translate]="form.get(config.name).errors['msg']">
                 </div>
             </div>
         </div>

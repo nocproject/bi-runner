@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 
-import { AnchorDirective } from './anchor.directive';
 import { DatexPipe } from './datex.pipe';
 
 export const PIPES = [
@@ -8,7 +7,6 @@ export const PIPES = [
 ];
 
 export const DIRECTIVES = [
-    AnchorDirective
 ];
 
 @NgModule({

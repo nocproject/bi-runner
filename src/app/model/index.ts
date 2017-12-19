@@ -3,7 +3,6 @@ export * from './bi-request';
 export * from './board';
 export * from './cell';
 export * from './cell.widget';
-export * from './chart-type.enum';
 export * from './condition';
 export * from './datasource';
 export * from './field';
