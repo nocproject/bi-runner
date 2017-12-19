@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 
 import * as moment from 'moment';
 
-import { Message, MessageType, Methods, QueryBuilder } from '../../model';
+import { Message, MessageType, Methods, BiRequestBuilder } from '../../model';
 import { APIService, MessageService } from '../../services';
 import { GridConfig, GridConfigBuilder } from '../../shared/data-grid/data-grid.component';
 
@@ -30,7 +30,7 @@ export class BoardListComponent implements OnInit {
             .names(['title', 'description', 'owner', 'created', 'changed'])
             .fromJson(tableJson)
             .data(this.api
-                .execute(new QueryBuilder().method(Methods.LIST_DASHBOARDS).params([{version: 2}]).build())
+                .execute(new BiRequestBuilder().method(Methods.LIST_DASHBOARDS).params([{version: 2}]).build())
                 .do(() => this.showSpinner = false)
                 .map(response => response.result.map(row =>
                     Object.assign({}, row,

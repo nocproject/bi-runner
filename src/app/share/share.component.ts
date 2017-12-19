@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs/Subscription';
 import * as _ from 'lodash';
 
 import { APIService, MessageService } from '../services';
-import { AccessLevel, Message, MessageType, Methods, QueryBuilder } from '../model';
+import { AccessLevel, Message, MessageType, Methods, BiRequestBuilder } from '../model';
 import { GridConfig, GridConfigBuilder } from '../shared/data-grid/data-grid.component';
 import { ModalComponent } from '../shared/modal/modal';
 
@@ -47,7 +47,7 @@ export class ShareComponent implements OnInit, OnDestroy {
             .headers(['SHARE.USERNAME', 'SHARE.FULL_NAME'])
             .names(['username', 'full_name'])
             .data(this.api
-                .execute(new QueryBuilder().method(Methods.LIST_USERS).build())
+                .execute(new BiRequestBuilder().method(Methods.LIST_USERS).build())
                 .map(response => response.result)
             )
             .fromJson(userJson)
@@ -57,7 +57,7 @@ export class ShareComponent implements OnInit, OnDestroy {
             .headers(['SHARE.GROUP_NAME'])
             .names(['name'])
             .data(this.api
-                .execute(new QueryBuilder().method(Methods.LIST_GROUPS).build())
+                .execute(new BiRequestBuilder().method(Methods.LIST_GROUPS).build())
                 .map(response => response.result)
             )
             .fromJson(groupJson)
@@ -116,7 +116,7 @@ export class ShareComponent implements OnInit, OnDestroy {
     // buttons
     onShare() {
         this.shareSpin = true;
-        this.api.execute(new QueryBuilder()
+        this.api.execute(new BiRequestBuilder()
         // .method(`set_dashboard_access_${this.chooseForm.value.object}`)
             .method(Methods.SET_DASHBOARD_ACCESS)
             .params([
@@ -135,7 +135,7 @@ export class ShareComponent implements OnInit, OnDestroy {
 
     onRemoveAll() {
         this.trashSpin = true;
-        this.api.execute(new QueryBuilder()
+        this.api.execute(new BiRequestBuilder()
             .method(Methods.SET_DASHBOARD_ACCESS)
             .params([
                 {id: this.boardId},
@@ -167,7 +167,7 @@ export class ShareComponent implements OnInit, OnDestroy {
 
     private initCacheAccess(boardId: string): Observable<Access[]> {
         return this.api.execute(
-            new QueryBuilder()
+            new BiRequestBuilder()
                 .method(Methods.GET_DASHBOARD_ACCESS)
                 .params([{id: boardId}])
                 .build())

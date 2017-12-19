@@ -6,7 +6,7 @@ import * as saver from 'file-saver';
 import { APIService, FilterService } from '../services';
 import { BoardResolver } from '../boards/board/services/board.resolver';
 //
-import { Board, Field, Filter, Group, Methods, Query, QueryBuilder, Result, WhereBuilder } from '../model';
+import { Board, Field, Filter, Group, Methods, BiRequest, BiRequestBuilder, Result, WhereBuilder } from '../model';
 
 export class Export {
 
@@ -38,7 +38,7 @@ export class Export {
             }
             return field;
         });
-        const query: Query = new QueryBuilder()
+        const query: BiRequest = new BiRequestBuilder()
             .method(Methods.QUERY)
             .params(params)
             .build();

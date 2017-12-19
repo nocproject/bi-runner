@@ -1,7 +1,7 @@
-import { JsonMember, JsonObject } from '../typed-json';
+import { JsonMember, JsonObject } from '@upe/typedjson';
 
 import { Map } from './map';
-import { Query } from './query';
+import { BiRequest } from './bi-request';
 
 @JsonObject()
 export class Widget {
@@ -16,7 +16,7 @@ export class Widget {
     @JsonMember({name: 'type'})
     public type: string;
     @JsonMember()
-    public query: Query;
+    public query: BiRequest;
     @JsonMember()
     public map?: Map;
 }

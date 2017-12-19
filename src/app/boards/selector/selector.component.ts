@@ -9,7 +9,7 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { environment } from '../../../environments/environment';
 import { APIService, DebugService, FilterService, LanguageService } from '../../services';
-import { Board, FilterBuilder, Group, GroupBuilder, Methods, QueryBuilder, Range, Value } from '../../model';
+import { Board, FilterBuilder, Group, GroupBuilder, Methods, BiRequestBuilder, Range, Value } from '../../model';
 
 import { ReportRangeComponent } from '../report-range/report-range.component';
 import { FilterFormComponent } from '../../filters/containers/form/filter-form.component';
@@ -77,7 +77,7 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
 
     ngOnInit() {
         this.lastUpdate$ = this.api.execute(
-            new QueryBuilder()
+            new BiRequestBuilder()
                 .method(Methods.QUERY)
                 .params([{
                     fields: [

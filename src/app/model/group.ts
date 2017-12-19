@@ -1,4 +1,4 @@
-import { JsonMember, JsonObject } from '../typed-json';
+import { JsonMember, JsonObject } from '@upe/typedjson';
 
 import { Filter } from './filter';
 

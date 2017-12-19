@@ -1,16 +1,17 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { Http } from '@angular/http';
+import { BrowserModule } from '@angular/platform-browser';
+import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
+
 import { TranslateLoader, TranslateModule, TranslateParser } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import {
-    APIService, AuthenticationService, AuthGuard, CounterService, DebugService, FilterService, LanguageService,
-    MessageService
+    APIInterceptor, APIService, AuthenticationService, AuthGuard, CounterService, DebugService, FilterService,
+    LanguageService, MessageService
 } from './services';
-import { HttpModule } from './shared/interceptor/module';
 import { BoardResolver } from './boards/board/services/board.resolver';
 import { BoardModule } from './boards/board.module';
 import { HeaderModule } from './header/header.module';
@@ -18,7 +19,6 @@ import { LoginModule } from './login/login.module';
 import { ShareModule } from './share/share.module';
 import { MessagesModule } from './shared/messages/messages.module';
 import { ShareCanDeactivateGuard } from './share/share-can-deactivate.guard';
-import { TranslateHttpLoader } from './shared/translate/http-loader';
 import { TranslateParserService } from './shared/translate/translate-parser.service';
 
 export const APP_SERVICES = [
@@ -36,19 +36,19 @@ export const APP_SERVICES = [
         AppComponent
     ],
     imports: [
+        BrowserModule,
+        HttpClientModule,
         BoardModule,
         MessagesModule,
         HeaderModule,
         LoginModule,
         ShareModule,
-        BrowserModule,
-        HttpModule,
         AppRoutingModule,
         TranslateModule.forRoot({
             loader: {
                 provide: TranslateLoader,
                 useFactory: HttpLoaderFactory,
-                deps: [Http]
+                deps: [HttpClient]
             },
             parser: {
                 provide: TranslateParser,
@@ -61,6 +61,15 @@ export const APP_SERVICES = [
         ShareCanDeactivateGuard,
         // Application services
         ...APP_SERVICES,
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: APIInterceptor,
+            deps: [
+                MessageService,
+                DebugService
+            ],
+            multi: true
+        },
         !environment.production ? DebugService : []
     ],
     bootstrap: [AppComponent]
@@ -69,6 +78,6 @@ export class AppModule {
 }
 
 // AoT requires an exported function for factories
-export function HttpLoaderFactory(http: Http) {
+export function HttpLoaderFactory(http: HttpClient) {
     return new TranslateHttpLoader(http);
 }

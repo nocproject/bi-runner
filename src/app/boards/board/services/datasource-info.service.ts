@@ -6,7 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { APIService } from '../../../services';
 import { BoardResolver } from './board.resolver';
 
-import { Board, Datasource, Field, IOption, Methods, QueryBuilder } from '../../../model';
+import { Board, Datasource, Field, IOption, Methods, BiRequestBuilder } from '../../../model';
 
 @Injectable()
 export class DatasourceService {
@@ -17,7 +17,7 @@ export class DatasourceService {
         this.datasource$ = this.boardResolver.board$
             .switchMap((board: Board) => {
                 return this.api.execute(
-                    new QueryBuilder()
+                    new BiRequestBuilder()
                         .method(Methods.GET_DATASOURCE_INFO)
                         .params([board.datasource])
                         .build())

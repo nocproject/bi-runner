@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Response } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Rx';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
-import { Http } from '../shared/interceptor/service';
-import { Query, Result } from '../model';
+import { BiRequest, Result } from '../model';
 
 @Injectable()
 export class APIService {
@@ -13,14 +12,14 @@ export class APIService {
     private subject = new BehaviorSubject<number>(0);
     requestQty$: Observable<number> = this.subject.asObservable();
 
-    constructor(private http: Http) {
+    constructor(private http: HttpClient) {
     }
 
-    execute(query: Query): Observable<Result> {
+    execute(query: BiRequest): Observable<Result> {
         this.subject.next(this.subject.getValue() + 1);
-        return this.http.post(this.url, query)
-            .first()
-            .map(extractData)
+        return this.http.post<Result>(this.url, query)
+            // .first()
+            .map(result => Result.fromJSON(result))
             .finally(() => this.decreaseQty());
     }
 
@@ -29,6 +28,6 @@ export class APIService {
     }
 }
 
-function extractData(response: Response): Result {
-    return Result.fromJSON(response.json() || {});
-}
+// function extractData(response: Response): Result {
+//     return Result.fromJSON(response.json() || {});
+// }

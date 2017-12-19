@@ -13,7 +13,7 @@ import { environment } from '../../environments/environment';
 import { APIService, AuthenticationService, FilterService, LanguageService, MessageService } from '../services';
 import { BoardResolver } from '../boards/board/services/board.resolver';
 
-import { Board, Message, MessageType, Methods, QueryBuilder, User } from '../model';
+import { Board, Message, MessageType, Methods, BiRequestBuilder, User } from '../model';
 import { ModalComponent } from '../shared/modal/modal';
 import { Export } from './export';
 
@@ -40,14 +40,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private boardSubscription: Subscription;
     private saveAsSubscription: Subscription;
 
-    constructor(private authService: AuthenticationService,
+    constructor(public languageService: LanguageService,
+                private authService: AuthenticationService,
                 private messages: MessageService,
                 private api: APIService,
                 private route: Router,
                 private boardResolver: BoardResolver,
                 private filterService: FilterService,
-                private location: Location,
-                private languageService: LanguageService) {
+                private location: Location) {
     }
 
     ngOnInit() {
@@ -86,7 +86,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
         board.groups = this.filterService.allFilters();
         board.sample = this.filterService.ratioSubject.getValue();
-        const query = new QueryBuilder()
+        const query = new BiRequestBuilder()
             .method(Methods.SET_DASHBOARD)
             .params([board.prepare()])
             .build();
@@ -106,7 +106,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         board.sample = this.filterService.ratioSubject.getValue();
         delete board['id'];
 
-        const query = new QueryBuilder()
+        const query = new BiRequestBuilder()
             .method(Methods.SET_DASHBOARD)
             .params([board.prepare()])
             .build();
@@ -129,7 +129,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     onRemoveBoard(modal: ModalComponent) {
         const board = _.clone(this.boardResolver.getBoard());
-        const query = new QueryBuilder()
+        const query = new BiRequestBuilder()
             .method(Methods.REMOVE_DASHBOARD)
             .params([board.id])
             .build();

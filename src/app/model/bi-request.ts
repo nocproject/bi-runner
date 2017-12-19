@@ -1,10 +1,10 @@
-import { JsonMember, JsonObject } from '../typed-json';
+import { JsonMember, JsonObject } from '@upe/typedjson';
 
 import { Parameter } from './parameter';
 import { Field } from './field';
 
 @JsonObject()
-export class Query {
+export class BiRequest {
     @JsonMember()
     public id: number;
     @JsonMember()
@@ -39,4 +39,32 @@ export class Query {
                 }));
         return (maxGroup === -Infinity || isNaN(maxGroup)) ? 1 : maxGroup + 1;
     };
+}
+
+export class BiRequestBuilder {
+    private request: BiRequest = new BiRequest();
+
+    constructor() {
+        this.request.id = 0;
+        this.request.params = [];
+    }
+
+    public id(id: number) {
+        this.request.id = id;
+        return this;
+    }
+
+    public method(method: string): BiRequestBuilder {
+        this.request.method = method;
+        return this;
+    }
+
+    public params(params: any[]): BiRequestBuilder {
+        this.request.params = params;
+        return this;
+    }
+
+    public build(): BiRequest {
+        return this.request;
+    }
 }

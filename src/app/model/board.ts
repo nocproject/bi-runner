@@ -1,11 +1,11 @@
-import { JsonMember, JsonObject, TypedJSON } from '../typed-json';
+import { JsonMember, JsonObject, TypedJSON } from '@upe/typedjson';
 import * as _ from 'lodash';
 
 import { Field } from './field';
 import { Filter } from './filter';
 import { Group } from './group';
 import { Layout } from './layout';
-import { Query } from './query';
+import { BiRequest } from './bi-request';
 import { Widget } from './widget';
 import { DeserializationHelper } from './helpers';
 
@@ -42,11 +42,9 @@ export class Board {
     @JsonMember()
     public layout: Layout;
     @JsonMember({name: 'export'})
-    public exportQry: Query;
+    public exportQry: BiRequest;
     @JsonMember({elements: Group})
     public groups: Group[];
-    // version 0.2, may be
-    // @JsonMapMember(String, Filter)
     @JsonMember({elements: Object})
     public filter: Object[];
     public isSample: boolean;
@@ -54,12 +52,12 @@ export class Board {
     static fromJSON(json: any): Board {
         const board = TypedJSON.parse(json, Board);
 
-        // if (json.hasOwnProperty('filter')) {
-        //     board.filter = DeserializationHelper.map<String, Filter>(
-        //         _.toPairs(json.filter).map(item => [TypedJSON.stringify(item[0]), item[1]]),
-        //         String, Filter
-        //     );
-        // }
+        if (json.hasOwnProperty('filter')) {
+            board.filter = DeserializationHelper.map<String, Filter>(
+                _.toPairs(json.filter).map(item => [TypedJSON.stringify(item[0]), item[1]]),
+                String, Filter
+            );
+        }
         return board;
     }
 

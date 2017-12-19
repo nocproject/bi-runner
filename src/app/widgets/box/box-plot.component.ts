@@ -18,27 +18,26 @@ export class BoxPlotComponent extends WidgetComponent {
         const dimension = ndx.dimension(() => 'duration');
         const values = dimension.group().reduce(
             (p, v) => {
-                p.push(v.d);
+                p.push(parseInt(v.d));
                 return p;
             },
             (p, v) => {
-                p.splice(p.indexOf(v.d), 1);
+                p.splice(p.indexOf(parseInt(v.d)), 1);
                 return p;
             },
             () => []);
 
         this.initialState(chart);
 
-        chart.margins({top: 10, right: 50, bottom: 30, left: 50});
+        // chart.margins({top: 50, bottom: 0, left: 0, right: 0});
         chart.yAxisLabel(null, this.yLabelOffset + 20);
+        // chart.boxWidth(200);
         chart.width(this.wrapperView.nativeElement.scrollWidth);
-        chart.height(this.data.cell.height);
         chart.dimension(dimension);
         chart.group(values);
         chart.elasticY(true);
         chart.elasticX(true);
         // chart.tickFormat(d3.format('.2f'));
-
         this.catchEvents(chart);
         chart.render();
 

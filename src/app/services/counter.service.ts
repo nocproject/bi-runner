@@ -3,8 +3,10 @@ import { forwardRef, Inject, Injectable } from '@angular/core';
 import * as _ from 'lodash';
 import { Observable } from 'rxjs/Rx';
 
-import { APIService, FilterService } from './index';
-import { Board, Field, Group, Methods, QueryBuilder, WhereBuilder } from '../model';
+import { APIService } from './api.service';
+import { FilterService } from './filter.service';
+
+import { Board, Field, Group, Methods, BiRequestBuilder, WhereBuilder } from '../model';
 
 @Injectable()
 export class CounterService {
@@ -52,7 +54,7 @@ export class CounterService {
             params['filter'] = where;
         }
 
-        const query = new QueryBuilder()
+        const query = new BiRequestBuilder()
             .method(Methods.QUERY)
             .params([params])
             .build();

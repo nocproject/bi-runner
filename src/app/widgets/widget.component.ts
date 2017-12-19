@@ -42,20 +42,21 @@ export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestro
     }
 
     catchEvents(chart: BaseMixin<any>, nextFilter?: Filter): void {
-        chart.on('filtered', (widget: BaseMixin<any>, filter) => {
-            const key = `${nextFilter.alias ? nextFilter.alias : nextFilter.name}.${chart.anchorName()}`;
+        if (nextFilter) {
+            chart.on('filtered', (widget: BaseMixin<any>, filter) => {
+                const key = `${nextFilter.alias ? nextFilter.alias : nextFilter.name}.${chart.anchorName()}`;
 
-            this.showReset = true;
-            this.title = this.getTitle(widget, filter);
-            nextFilter.values = this.getValue(widget, filter);
-            if (nextFilter.isEmpty()) {
-                this.filterService.lastUpdatedWidget = '';
-            } else {
-                this.filterService.lastUpdatedWidget = chart.anchorName();
-            }
-            this.filterService.filtersNext(new GroupBuilder().name(key).filters([nextFilter]).build());
-        });
-
+                this.showReset = true;
+                this.title = this.getTitle(widget, filter);
+                nextFilter.values = this.getValue(widget, filter);
+                if (nextFilter.isEmpty()) {
+                    this.filterService.lastUpdatedWidget = '';
+                } else {
+                    this.filterService.lastUpdatedWidget = chart.anchorName();
+                }
+                this.filterService.filtersNext(new GroupBuilder().name(key).filters([nextFilter]).build());
+            });
+        }
         // spinner on/off
         chart.on('pretransition', () => this.showSpinner = true);
         chart.on('renderlet', () => this.showSpinner = false);

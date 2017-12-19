@@ -1,13 +1,13 @@
 import { forwardRef, Inject, Injectable } from '@angular/core';
-import { Response } from '@angular/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Rx';
 
-import { APIService, MessageService } from './';
-import { Http } from '../shared/interceptor/service';
+import { APIService } from './api.service';
+import { MessageService } from './message.service';
 
-import { Message, MessageType, Methods, QueryBuilder, User } from '../model';
+import { Message, MessageType, Methods, BiRequestBuilder, Result, User } from '../model';
 
 @Injectable()
 export class AuthenticationService {
@@ -18,7 +18,7 @@ export class AuthenticationService {
     private accessLevelSubject = new BehaviorSubject<number>(-1);
     public accessLevel$: Observable<number> = this.accessLevelSubject.asObservable();
 
-    constructor(private http: Http,
+    constructor(private http: HttpClient,
                 private api: APIService,
                 @Inject(forwardRef(() => MessageService))
                 private messagesService: MessageService) {
@@ -54,12 +54,13 @@ export class AuthenticationService {
 
     userInfo(): Observable<boolean> {
         return this.http.get('/main/desktop/user_settings/')
-            .map(
-                (response: Response) => {
+            .map((response: HttpResponse<User>) => {
                     if (response) {
-                        const user = User.fromJSON(response.json());
+                        const user = User.fromJSON(response);
+
                         this.userSubject.next(user);
                         this.isLogInSubject.next(true);
+
                         return true;
                     }
                     return false;
@@ -72,7 +73,7 @@ export class AuthenticationService {
     initAccessLevel(id: string): void {
         this.api
             .execute(
-                new QueryBuilder()
+                new BiRequestBuilder()
                     .method(Methods.GET_USER_ACCESS)
                     .params([{id: id}])
                     .build())
@@ -88,8 +89,8 @@ export class AuthenticationService {
             params: [param]
         };
 
-        return this.http.post('/api/login/', JSON.stringify(query))
-            .map(response => response.json().result)
+        return this.http.post<Result>('/api/login/', JSON.stringify(query))
+            .map(response => response.result)
             .catch(response => {
                 this.messagesService.message(new Message(MessageType.DANGER, response.toString()));
                 return Observable.throw(response.toString());

@@ -1,4 +1,4 @@
-import { TypedJSON } from '../typed-json';
+import { TypedJSON } from '@upe/typedjson';
 
 export class SerializationHelper {
     public static map<K, V>(map: Map<K, V>) {

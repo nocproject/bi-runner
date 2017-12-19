@@ -6,7 +6,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import { APIService } from '../../../services';
 
-import { Board, Methods, QueryBuilder } from '../../../model';
+import { Board, Methods, BiRequestBuilder } from '../../../model';
 
 @Injectable()
 export class BoardResolver implements Resolve<Board> {
@@ -19,7 +19,7 @@ export class BoardResolver implements Resolve<Board> {
     resolve(route: ActivatedRouteSnapshot,
             state: RouterStateSnapshot): Board | Observable<Board> | Promise<Board> {
         const board$ = this.api.execute(
-            new QueryBuilder()
+            new BiRequestBuilder()
                 .method(Methods.GET_DASHBOARD)
                 .params([route.params['id']])
                 .build())
