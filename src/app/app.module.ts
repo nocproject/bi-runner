@@ -4,9 +4,19 @@ import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common
 
 import { TranslateLoader, TranslateModule, TranslateParser } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-
+// @ngrx
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import {
+    StoreRouterConnectingModule,
+    RouterStateSerializer,
+} from '@ngrx/router-store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+//
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
+import { reducers, metaReducers } from './reducers';
+import { CustomRouterStateSerializer } from './shared/utils';
 import { AppComponent } from './app.component';
 import {
     APIInterceptor, APIService, AuthenticationService, AuthGuard, CounterService, DebugService, FilterService,
@@ -44,6 +54,13 @@ export const APP_SERVICES = [
         LoginModule,
         ShareModule,
         AppRoutingModule,
+        // @ngrx
+        StoreModule.forRoot(reducers, { metaReducers }),
+        StoreRouterConnectingModule,
+        !environment.production
+            ? StoreDevtoolsModule.instrument()
+            : [],
+        EffectsModule.forRoot([]),
         TranslateModule.forRoot({
             loader: {
                 provide: TranslateLoader,
@@ -69,6 +86,10 @@ export const APP_SERVICES = [
                 DebugService
             ],
             multi: true
+        },
+        {
+            provide: RouterStateSerializer,
+            useClass: CustomRouterStateSerializer
         },
         !environment.production ? DebugService : []
     ],
