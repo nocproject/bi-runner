@@ -474,7 +474,7 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                 return [first];
             }
             case 'DateTime': {
-                if (name === 'duration_intervals' && !_.includes(condition, 'periodic')) {
+                if (name === 'exclusion_intervals' && !_.includes(condition, 'periodic')) {
                     first.type = 'input';
                     first.placeholder = 'dd.mm.yyyy HH:mm - dd.mm.yyyy HH:mm';
                     first.validation.push(BIValidators.dateTimeRange);

@@ -17,8 +17,8 @@ describe('ConditionService', () => {
         expect(service).toBeTruthy();
     });
 
-    it('retrieve duration_intervals conditions', async(() => {
-        service.conditions('duration_intervals', 'Dictionary')
+    it('retrieve exclusion_intervals conditions', async(() => {
+        service.conditions('exclusion_intervals', 'Dictionary')
             .subscribe(result =>
                 expect(result.length).toEqual(2)
             );

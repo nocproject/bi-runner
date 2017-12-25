@@ -16,7 +16,7 @@ export class Export {
         const board: Board = _.clone(boardResolver.getBoard());
         const where = WhereBuilder.makeWhere(filterService.allFilters());
         const params = _.clone(board.exportQry.params);
-        const durationFilters: Filter[] = filterService.allFiltersByName('duration_intervals');
+        const durationFilters: Filter[] = filterService.allFiltersByName('exclusion_intervals');
 
         if (durationFilters.length > 0) {
             const rangeGroup = _.first(filterService.getFilter('startEnd'));
