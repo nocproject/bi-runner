@@ -49,7 +49,7 @@ export class ConditionService {
                 return Observable.of(conditions);
             }
             case 'DateTime': {
-                if ('duration_intervals' === name) {
+                if ('exclusion_intervals' === name) {
                     conditions = [
                         {value: 'interval', text: 'CONDITION.INTERVAL'},
                         {value: 'periodic.interval', text: 'CONDITION.PERIODIC_INTERVAL'}

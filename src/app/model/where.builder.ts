@@ -34,7 +34,7 @@ function getFilters(groups: Group[], association: string): Object[] {
             .filter(filter => !filter.isEmpty())
             // hard code, add filter
             .map(filter => {
-                if (filter.name === 'duration_intervals') {
+                if (filter.name === 'exclusion_intervals') {
                     return new FilterBuilder()
                         .name('ts')
                         .condition(`not.${filter.condition}`)

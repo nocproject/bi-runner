@@ -643,7 +643,7 @@
         },
         {
           "group": 0,
-          "name": "duration_intervals"
+          "name": "exclusion_intervals"
         },
         {
           "group": 0,
@@ -756,7 +756,7 @@
       "pseudo_fields": [
         {
           "description": "ИП Длительность",
-          "name": "duration_intervals",
+          "name": "exclusion_intervals",
           "type": "DateTime",
           "pseudo": true
         }
