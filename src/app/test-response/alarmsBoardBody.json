@@ -6,7 +6,7 @@
         "type": "DateTime",
         "pseudo": true,
         "description": "\u0418\u041f \u0414\u043b\u0438\u0442\u0435\u043b\u044c\u043d\u043e\u0441\u0442\u044c",
-        "name": "duration_intervals"
+        "name": "exclusion_intervals"
       }
     ],
     "layout": {
@@ -253,7 +253,7 @@
       },
       {
         "group": 0,
-        "name": "duration_intervals"
+        "name": "exclusion_intervals"
       },
       {
         "group": 0,
