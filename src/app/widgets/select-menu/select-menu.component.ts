@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 
+import * as _ from 'lodash';
 import * as d3 from 'd3';
 import * as dc from 'dc';
 import { BaseMixin, SelectMenu } from 'dc';
@@ -14,6 +15,7 @@ import { FilterBuilder, Result, Value } from '../../model';
 })
 export class SelectMenuComponent extends WidgetComponent {
     draw(response: Result): BaseMixin<SelectMenu> {
+        const prompt = this.languageService.selectMenuPrompt;
         const chart: SelectMenu = dc.selectMenu(`#${this.data.cell.name}`);
         const ndx = crossfilter(response.zip(false));
         const dimension = ndx.dimension(d => d.date);
@@ -21,11 +23,12 @@ export class SelectMenuComponent extends WidgetComponent {
 
         this.initialState(chart);
 
+        chart.filter(_.last(values.all()).key);
         chart.dimension(dimension);
         chart.group(values);
         chart.multiple(true);
         chart.numberVisible(10);
-        chart.promptText(undefined);
+        chart.promptText(prompt);
         // chart.filterDisplayed((d, b) =>
         //     d.value < 3000
         // );

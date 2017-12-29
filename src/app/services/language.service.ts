@@ -14,6 +14,9 @@ export class LanguageService {
         translate.stream('WIDGET.DAYS').subscribe(value => {
             this._days = JSON.parse(value);
         });
+        translate.stream('SELECT_MENU.PROMPT').subscribe(value => {
+            this._selectMenuPrompt = value;
+        });
     }
 
     private _languages: string[] = ['ru', 'en'];
@@ -33,9 +36,14 @@ export class LanguageService {
     }
 
     private _days: string[];
+    private _selectMenuPrompt: string;
 
     get days(): string[] {
         return this._days;
+    }
+
+    get selectMenuPrompt() {
+      return this._selectMenuPrompt;
     }
 
     use(lang: string) {

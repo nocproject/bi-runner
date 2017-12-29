@@ -16,6 +16,8 @@ export class Cell {
     public xs: number;
     @JsonMember()
     public row: number;
+    @JsonMember()
+    public  offset: number;
 
     public getClasses(): string {
         const classes: string[] = [];
