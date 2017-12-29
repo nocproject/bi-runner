@@ -23,7 +23,7 @@
     "@angular/router": "^5.0.0",
     "@ngx-translate/core": "^9.0.2",
     "@ngx-translate/http-loader": "^2.0.0",
-    "@types/dc": "^0.0.24",
+    "@types/dc": "^0.0.26",
     "@types/file-saver": "^0.0.1",
     "@ultimate/ngxerrors": "^1.4.0",
     "@upe/typedjson": "^0.2.2",
