@@ -3731,9 +3731,9 @@ ngx-bootstrap@^1.8.0:
   version "1.9.3"
   resolved "https://registry.yarnpkg.com/ngx-bootstrap/-/ngx-bootstrap-1.9.3.tgz#28e75d14fb1beaee609383d7694de4eb3ba03b26"
 
-ngx-treeview@^1.2.5:
-  version "1.2.5"
-  resolved "https://registry.yarnpkg.com/ngx-treeview/-/ngx-treeview-1.2.5.tgz#ac7b66f2c003294bb73e7bfb0e970629b067dad2"
+ngx-treeview@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/ngx-treeview/-/ngx-treeview-2.0.1.tgz#6d8c87a71083b7e834b22994a2335c8b00959461"
 
 no-case@^2.2.0:
   version "2.3.2"
