@@ -7,20 +7,17 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 // @ngrx
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
-import {
-    StoreRouterConnectingModule,
-    RouterStateSerializer,
-} from '@ngrx/router-store';
+import { RouterStateSerializer, StoreRouterConnectingModule } from '@ngrx/router-store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 //
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
-import { reducers, metaReducers } from './reducers';
+import { metaReducers, reducers } from './reducers';
 import { CustomRouterStateSerializer } from './shared/utils';
 import { AppComponent } from './app.component';
 import {
-    APIInterceptor, APIService, AuthenticationService, AuthGuard, CounterService, DebugService, FilterService,
-    LanguageService, MessageService
+    APIInterceptor, APIService, AuthenticationService, AuthGuard, CounterService, FilterService, LanguageService,
+    MessageService
 } from './services';
 import { BoardResolver } from './boards/board/services/board.resolver';
 import { BoardModule } from './boards/board.module';
@@ -55,7 +52,7 @@ export const APP_SERVICES = [
         ShareModule,
         AppRoutingModule,
         // @ngrx
-        StoreModule.forRoot(reducers, { metaReducers }),
+        StoreModule.forRoot(reducers, {metaReducers}),
         StoreRouterConnectingModule,
         !environment.production
             ? StoreDevtoolsModule.instrument()
@@ -82,16 +79,14 @@ export const APP_SERVICES = [
             provide: HTTP_INTERCEPTORS,
             useClass: APIInterceptor,
             deps: [
-                MessageService,
-                DebugService
+                MessageService
             ],
             multi: true
         },
         {
             provide: RouterStateSerializer,
             useClass: CustomRouterStateSerializer
-        },
-        !environment.production ? DebugService : []
+        }
     ],
     bootstrap: [AppComponent]
 })

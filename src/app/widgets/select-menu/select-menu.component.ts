@@ -20,10 +20,13 @@ export class SelectMenuComponent extends WidgetComponent {
         const ndx = crossfilter(response.zip(false));
         const dimension = ndx.dimension(d => d.date);
         const values = dimension.group().reduceSum(d => d.cnt);
+        const data = values.all();
 
         this.initialState(chart);
 
-        chart.filter(_.last(values.all()).key);
+        if(data.length) {
+            chart.filter(_.last(data).key);
+        }
         chart.dimension(dimension);
         chart.group(values);
         chart.multiple(true);
