@@ -220,9 +220,9 @@
   version "3.5.40"
   resolved "https://registry.yarnpkg.com/@types/d3/-/d3-3.5.40.tgz#277b575d79445a6dccc017d9bea71b72344c6e5f"
 
-"@types/dc@^0.0.24":
-  version "0.0.24"
-  resolved "https://registry.yarnpkg.com/@types/dc/-/dc-0.0.24.tgz#4405e3e09a8dd9e798a2aa3ff06aa2226db39190"
+"@types/dc@^0.0.26":
+  version "0.0.26"
+  resolved "https://registry.yarnpkg.com/@types/dc/-/dc-0.0.26.tgz#c58c513c548b1a5124e01b5a9ab87191d8a0dfde"
   dependencies:
     "@types/crossfilter" "*"
     "@types/d3" "^3"
