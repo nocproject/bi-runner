@@ -1,22 +1,22 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, Optional, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import {AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
 
 import * as _ from 'lodash';
 import * as moment from 'moment';
 
-import { Observable } from 'rxjs/Rx';
-import { Subscription } from 'rxjs/Subscription';
+import {Observable} from 'rxjs/Rx';
+import {Subscription} from 'rxjs/Subscription';
 
-import { environment } from '../../../environments/environment';
-import { APIService, DebugService, FilterService, LanguageService } from '../../services';
-import { Board, FilterBuilder, Group, GroupBuilder, Methods, BiRequestBuilder, Range, Value } from '../../model';
+import {environment} from '../../../environments/environment';
+import {APIService, FilterService, LanguageService} from '../../services';
+import {BiRequestBuilder, Board, FilterBuilder, Group, GroupBuilder, Methods, Range, Value} from '../../model';
 
-import { ReportRangeComponent } from '../report-range/report-range.component';
-import { FilterFormComponent } from '../../filters/containers/form/filter-form.component';
-import { EventService } from '../../filters/services';
-import { EventType } from '../../filters/models';
-import { ModalComponent } from '../../shared/modal/modal';
-import { DatasourceService } from '../board/services/datasource-info.service';
+import {ReportRangeComponent} from '../report-range/report-range.component';
+import {FilterFormComponent} from '../../filters/containers/form/filter-form.component';
+import {EventService} from '../../filters/services';
+import {EventType} from '../../filters/models';
+import {ModalComponent} from '../../shared/modal/modal';
+import {DatasourceService} from '../board/services/datasource-info.service';
 
 @Component({
     // changeDetection: ChangeDetectionStrategy.OnPush,
@@ -45,8 +45,7 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
     private eventSubscription: Subscription;
     private ratioSubscription: Subscription;
 
-    constructor(@Optional() public debug: DebugService,
-                private fb: FormBuilder,
+    constructor(private fb: FormBuilder,
                 private api: APIService,
                 private datasourceService: DatasourceService,
                 private eventService: EventService,

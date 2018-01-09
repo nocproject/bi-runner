@@ -1,4 +1,4 @@
-import { Injectable, Optional } from '@angular/core';
+import { Injectable } from '@angular/core';
 import {
     HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest,
     HttpResponse
@@ -10,13 +10,11 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/throw';
 
 import { Message, MessageType } from '../model';
-import { DebugService} from './debug.service';
 import { MessageService } from './message.service';
 
 @Injectable()
 export class APIInterceptor implements HttpInterceptor {
-    constructor(private messagesService: MessageService,
-                @Optional() private debug: DebugService) {
+    constructor(private messagesService: MessageService) {
     }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -32,9 +30,6 @@ export class APIInterceptor implements HttpInterceptor {
                     if (event.url.indexOf('/api/bi/')) {
                         if (event.body.error) {
                             throw({id: 1, message: event.body.error});
-                        }
-                        if (event.body.result && event.body.result.sql && this.debug) {
-                            this.debug.debug(event.body.result.sql);
                         }
                     }
                 }

@@ -17,7 +17,8 @@
             <div style="clear:both;"></div>
         </div>
         <div class="chart-stage">
-            <div id="{{ data.cell.name }}" [ngStyle]="{'height.px': data.cell.height}">
+            <div id="{{ data.cell.name }}"
+                 [ngStyle]="{'height.px': data.cell.height, 'padding-left.px': data.cell.offset}">
             </div>
         </div>
         <div class="chart-notes">{{ data.widget.note }}</div>

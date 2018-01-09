@@ -4,8 +4,8 @@
   "description": "NOC BI",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --proxy-config proxy.conf.json --progress=false",
-    "build": "ng build --prod --aot --no-sourcemap --base-href=/ui/bi2/ --progress=false",
+    "start": "ng serve --proxy-config proxy.conf.json",
+    "build": "ng build --prod --aot  --base-href=/ui/bi2/ --deploy-url=/ui/bi2/ --sourcemaps=false --progress=false",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -48,7 +48,7 @@
     "zone.js": "^0.8.14"
   },
   "devDependencies": {
-    "@angular/cli": "1.6.0",
+    "@angular/cli": "^1.6.3",
     "@angular/compiler-cli": "^5.0.0",
     "@angular/language-service": "^5.0.0",
     "@types/jasmine": "~2.5.53",

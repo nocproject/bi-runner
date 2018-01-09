@@ -100,5 +100,5 @@ export class AppModule {
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
-    return new TranslateHttpLoader(http);
+    return new TranslateHttpLoader(http, '/ui/bi2/assets/i18n/');
 }

@@ -179,5 +179,8 @@
     "NOT_EMPTY": "not empty",
     "LIKE": "like"
   },
-  "SELECT_FIELD": "Select field"
+  "SELECT_FIELD": "Select field",
+  "SELECT_MENU": {
+    "PROMPT": "Select All"
+  }
 }
