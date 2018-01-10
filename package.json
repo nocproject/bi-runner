@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --proxy-config proxy.conf.json",
-    "build": "ng build --prod --aot  --base-href=/ui/bi2/ --deploy-url=/ui/bi2/ --sourcemaps=false --progress=false",
+    "build": "ng build --prod --aot  --base-href=/ui/bi2/ --sourcemaps=false --progress=false",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
