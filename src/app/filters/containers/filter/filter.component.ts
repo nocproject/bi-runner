@@ -20,9 +20,6 @@ export class FilterComponent implements OnInit, OnDestroy {
     parent: FormGroup;
     @Input()
     filterConfig: FieldConfig[];
-
-    private changeSubscription: Subscription;
-
     filter: FormGroup;
     fieldFieldName = 'name';
     conditionFieldName = 'condition';
@@ -30,6 +27,7 @@ export class FilterComponent implements OnInit, OnDestroy {
     conditionConfig: FieldConfig;
     valueFirstConfig: FieldConfig;
     valueSecondConfig: FieldConfig;
+    private changeSubscription: Subscription;
 
     constructor(private eventService: EventService) {
     }

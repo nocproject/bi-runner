@@ -31,7 +31,7 @@ export class Utils {
     };
 
     static spanView(id: number): string {
-        return `<a href="/api/card/view/span/${id}/" target="_blank" title="open"><ins>${id}</ins></a>`
+        return `<a href="/api/card/view/span/${id}/" target="_blank" title="open"><ins>${id}</ins></a>`;
     }
 
     static stringDateTimeToTimeString(date: string): string {

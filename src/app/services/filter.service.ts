@@ -13,6 +13,10 @@ import { EventType, FormConfig, Groups } from '../filters/models';
 
 @Injectable()
 export class FilterService {
+    ratioSubject = new BehaviorSubject<number>(1);
+    isReportOpenSubject = new BehaviorSubject<boolean>(false);
+    isReportOpen$: Observable<boolean> = this.isReportOpenSubject.asObservable();
+    lastUpdatedWidget: string;
     private FORM_GROUP_NAME = 'form';
     // store filters name is "alias.cell_name", need for restore graphs
     private filtersSubject = new BehaviorSubject<Group[]>([]);
@@ -20,18 +24,11 @@ export class FilterService {
     // store state group by table
     private groupsSubject = new BehaviorSubject<Field[]>([]);
     groups$: Observable<Field[]> = this.groupsSubject.asObservable();
-
-    qtySubject = new BehaviorSubject<number>(0);
-    qty$: Observable<number> = this.qtySubject.asObservable();
-
-    ratioSubject = new BehaviorSubject<number>(1);
-
-    isReportOpenSubject = new BehaviorSubject<boolean>(false);
-    isReportOpen$: Observable<boolean> = this.isReportOpenSubject.asObservable();
-
-    lastUpdatedWidget: string;
     // chart: initial state
     private _initChart: ChartInitState[];
+
+    constructor(private eventService: EventService) {
+    }
 
     initChart(cell: string): Value[] {
         const init = this._initChart.filter(item => item.name === cell);
@@ -39,9 +36,6 @@ export class FilterService {
             this._initChart.filter(item => item.name === cell)[0].use = true;
             return this._initChart.filter(item => item.name === cell)[0].values;
         }
-    }
-
-    constructor(private eventService: EventService) {
     }
 
     cleanFilters() {
@@ -90,8 +84,8 @@ export class FilterService {
                             item.group.filters
                                 .filter(filter => filter.condition)
                                 .filter((filter, filterIndex) => {
-                                    if(filter.condition.match('empty')) {
-                                      return true;
+                                    if (filter.condition.match('empty')) {
+                                        return true;
                                     }
                                     if (!filter.hasOwnProperty('valueFirst')) {
                                         return false;
@@ -145,7 +139,8 @@ export class FilterService {
     allFiltersByName(name: string): Filter[] {
         const groups = _.cloneDeep(this.filtersSubject.getValue());
 
-        return _.flatMap(groups.map(group => group.filters))
+        return _.flatMap(groups.filter(group => group.active)
+            .map(group => group.filters))
             .filter(filter => filter.name === name);
     }
 
@@ -199,7 +194,7 @@ export class FilterService {
                     if (!filter.condition.match(/periodic/)) {
                         if (filter.condition.match(/interval/i)) {
                             const raw = filter.values[0].value.split(' - ');
-                            if(raw.length === 2) {
+                            if (raw.length === 2) {
                                 values = [
                                     new Value(d3.time.format('%d.%m.%Y %H:%M').parse(raw[0])),
                                     new Value(d3.time.format('%d.%m.%Y %H:%M').parse(raw[1]))

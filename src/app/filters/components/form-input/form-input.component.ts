@@ -1,8 +1,7 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
-import { FilterControl } from '../../models/field.interface';
-import { FieldConfig } from '../../models/form-config.interface';
+import { FieldConfig, FilterControl } from '../../models';
 
 @Component({
     selector: 'bi-form-input',
@@ -20,7 +19,7 @@ import { FieldConfig } from '../../models/form-config.interface';
                     VALIDATOR.REQUIRED
                 </div>
                 <div *ngIf="form.get(config.name).hasError('invalid')"
-                     [translate]="form.get(config.name).errors.msg">
+                     [translate]="form.get(config.name).errors['msg']">
                 </div>
             </div>
         </div>

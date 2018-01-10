@@ -3,14 +3,24 @@
   "method": "set_dashboard",
   "params": [
     {
-      "id": "5a322a2fc165cf65dfd5d15a",
+      "id": "5a45ee59c165cf65d5dcbd99",
       "layoutId": "580e1ba498601c0f96b7e809",
       "layout": {
         "uuid": "f2736f99-a568-4820-b746-1e71d48b4374",
         "cells": [
           {
-            "md": 12,
+            "md": 6,
             "name": "c11",
+            "lg": null,
+            "height": 200,
+            "sm": null,
+            "xs": null,
+            "row": 0,
+            "offset": 40
+          },
+          {
+            "md": 6,
+            "name": "c12",
             "lg": null,
             "height": 200,
             "sm": null,
@@ -43,24 +53,6 @@
             "sm": null,
             "xs": null,
             "row": 10
-          },
-          {
-            "md": 6,
-            "name": "c32",
-            "lg": null,
-            "height": 200,
-            "sm": null,
-            "xs": null,
-            "row": 10
-          },
-          {
-            "md": 12,
-            "name": "table1",
-            "lg": null,
-            "height": 360,
-            "sm": null,
-            "xs": null,
-            "row": 15
           }
         ],
         "description": "",
@@ -111,7 +103,7 @@
           ]
         }
       ],
-      "title": "MO",
+      "title": "MO with selector",
       "format": 2,
       "export": {
         "params": [
@@ -144,7 +136,7 @@
           "cell": "c11",
           "note": "по дате",
           "title": "Срез данных",
-          "type": "dataTable",
+          "type": "selectMenu",
           "query": {
             "params": [
               {
@@ -157,6 +149,12 @@
                     "group": 0,
                     "order": 0,
                     "desc": true
+                  },
+                  {
+                    "expr": "count()",
+                    "alias": "cnt",
+                    "order": 1,
+                    "desc": true
                   }
                 ],
                 "limit": 10,
@@ -168,7 +166,7 @@
           }
         },
         {
-          "cell": "c21",
+          "cell": "c22",
           "note": "по количеству",
           "title": "Платформа количество объектов, топ 10",
           "type": "pieChart",
@@ -208,7 +206,7 @@
           }
         },
         {
-          "cell": "c22",
+          "cell": "c31",
           "note": "по количеству",
           "title": "Версии количество объектов, топ 10",
           "type": "pieChart",
@@ -248,7 +246,7 @@
           }
         },
         {
-          "cell": "c31",
+          "cell": "c21",
           "note": "по количеству",
           "title": "Производители количество объектов, топ 10",
           "type": "pieChart",
@@ -288,7 +286,7 @@
           }
         },
         {
-          "cell": "c32",
+          "cell": "c12",
           "note": "по количеству",
           "title": "Зона Ответственности количество объектов, топ 10",
           "type": "pieChart",

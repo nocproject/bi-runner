@@ -1,61 +1,49 @@
-import { BaseRequestOptions, Response, ResponseOptions } from '@angular/http';
-
-import { TestBed } from '@angular/core/testing';
-import { MockBackend } from '@angular/http/testing';
+import { HttpClient } from '@angular/common/http';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { getTestBed, TestBed } from '@angular/core/testing';
 
 import { APIService } from '../services';
-import { Board } from './board';
-import { Http, InterceptorStore } from '../shared/interceptor/service';
 //
+import { Board } from './board';
 import { Methods } from './methods.enum';
-import { QueryBuilder } from './query.builder';
+import { BiRequestBuilder } from './bi-request';
 // Test data
-import * as boardBody from '/Users/dima/Projects/bi-runner/src/app/test-response/rebootsBoardBody.json';
+import * as rebootsBoardBody from '/Users/dima/Projects/bi-runner/src/app/test-response/rebootsBoardBody.json';
 
 describe('Deserialization: Board', () => {
-    let backend: MockBackend;
+    let injector: TestBed;
+    let httpMock: HttpTestingController;
     let board: Board;
     let api: APIService;
 
     beforeAll(() => {
         TestBed.configureTestingModule({
+            imports: [
+                HttpClientTestingModule
+            ],
             providers: [
-                InterceptorStore,
-                MockBackend,
-                BaseRequestOptions,
                 {
                     provide: APIService,
                     useFactory: (backend) => new APIService(backend),
-                    deps: [Http]
-                },
-                {
-                    provide: Http,
-                    useFactory: (backend, options, interceptor) => new Http(backend, options, interceptor),
-                    deps: [MockBackend, BaseRequestOptions, InterceptorStore]
+                    deps: [HttpClient]
                 }
             ]
         });
 
-        // Get the MockBackend
-        backend = TestBed.get(MockBackend);
-
-        // Returns a services with the MockBackend so we can test with dummy responses
-        api = TestBed.get(APIService);
-
-        // When the request subscribes for results on a connection, return a fake response
-        backend.connections.subscribe(connection => {
-            connection.mockRespond(new Response(<ResponseOptions>{
-                body: JSON.stringify(boardBody)
-            }));
-        });
+        injector = getTestBed();
+        api = injector.get(APIService);
+        httpMock = injector.get(HttpTestingController);
 
         // Perform a request and make sure we get the response we expect
-        api.execute(new QueryBuilder()
+        api.execute(new BiRequestBuilder()
             .method(Methods.GET_DASHBOARD)
             .params([])
             .build())
-            .map(response => Board.fromJSON(response.result))
-            .subscribe(_board => board = _board);
+            .subscribe(data => board = Board.fromJSON(data.result));
+
+        const req = httpMock.expectOne('/api/bi/');
+        expect(req.request.method).toBe('POST');
+        req.flush(rebootsBoardBody);
     });
 
     it('should return instance of Board', () => {

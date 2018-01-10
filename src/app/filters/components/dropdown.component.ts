@@ -1,12 +1,5 @@
 import {
-    Component,
-    ElementRef,
-    EventEmitter,
-    forwardRef,
-    HostListener,
-    Input,
-    OnDestroy,
-    OnInit,
+    Component, ElementRef, EventEmitter, forwardRef, HostListener, Input, OnDestroy, OnInit,
     Output
 } from '@angular/core';
 import { ControlValueAccessor, FormControl, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -17,7 +10,7 @@ import { Subscription } from 'rxjs/Subscription';
 import * as _ from 'lodash';
 
 import { FieldConfig } from '../models';
-import { Methods, QueryBuilder, Result } from '../../model';
+import { Methods, BiRequestBuilder, Result } from '../../model';
 import { APIService } from '../../services';
 import { TreeviewComponent, TreeviewItem } from 'ngx-treeview';
 import { TranslateService } from '@ngx-translate/core';
@@ -104,16 +97,12 @@ import { TranslateService } from '@ngx-translate/core';
     `
 })
 export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAccessor {
-    private propagateChange: (_: any) => void;
-    private searchSubscription: Subscription;
-
     @Input()
     config: FieldConfig;
     @Input()
     showRemove: boolean = false;
     @Output()
     select: EventEmitter<any> = new EventEmitter<any>();
-
     list$: Observable<any>;
     pattern: FormGroup;
     placeholder: string;
@@ -126,6 +115,8 @@ export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAcc
         hasCollapseExpand: false,
         decoupleChildFromParent: false
     };
+    private propagateChange: (_: any) => void;
+    private searchSubscription: Subscription;
 
     constructor(private api: APIService,
                 private translate: TranslateService,
@@ -180,7 +171,7 @@ export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAcc
                         }
                     ];
                     this.api.execute(
-                        new QueryBuilder()
+                        new BiRequestBuilder()
                             .method(Methods.QUERY)
                             .params(params)
                             .build())
@@ -211,7 +202,7 @@ export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAcc
                         }
                     ];
                     this.api.execute(
-                        new QueryBuilder()
+                        new BiRequestBuilder()
                             .method(Methods.QUERY)
                             .params(params)
                             .build())
@@ -323,7 +314,7 @@ export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAcc
                 params = treeQuery(this.config, term);
                 break;
         }
-        return new QueryBuilder()
+        return new BiRequestBuilder()
             .id(2)
             .method(method)
             .params([params])

@@ -1,16 +1,31 @@
 import { forwardRef, Inject, Injectable } from '@angular/core';
-import { Response } from '@angular/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Rx';
 
-import { APIService, MessageService } from './';
-import { Http } from '../shared/interceptor/service';
+import { APIService } from './api.service';
+import { MessageService } from './message.service';
 
-import { Message, MessageType, Methods, QueryBuilder, User } from '../model';
+import { Message, MessageType, Methods, BiRequestBuilder, Result, User } from '../model';
 
 @Injectable()
 export class AuthenticationService {
+    private userSubject = new BehaviorSubject<User>(new User());
+    public user$: Observable<User> = this.userSubject.asObservable();
+    private isLogInSubject = new BehaviorSubject<boolean>(false);
+    public isLogIn$: Observable<boolean> = this.isLogInSubject.asObservable();
+    private accessLevelSubject = new BehaviorSubject<number>(-1);
+    public accessLevel$: Observable<number> = this.accessLevelSubject.asObservable();
+
+    constructor(private http: HttpClient,
+                private api: APIService,
+                @Inject(forwardRef(() => MessageService))
+                private messagesService: MessageService) {
+    }
+
+    private _isLoginOpen = false;
+
     get isLoginOpen(): boolean {
         return this._isLoginOpen;
     }
@@ -19,30 +34,14 @@ export class AuthenticationService {
         this._isLoginOpen = value;
     }
 
+    private _isLogin = false;
+
     get isLogin(): boolean {
         return this._isLogin;
     }
 
     set isLogin(value: boolean) {
         this._isLogin = value;
-    }
-
-    private _isLoginOpen = false;
-    private _isLogin = false;
-
-    private userSubject = new BehaviorSubject<User>(new User());
-    public user$: Observable<User> = this.userSubject.asObservable();
-
-    private isLogInSubject = new BehaviorSubject<boolean>(false);
-    public isLogIn$: Observable<boolean> = this.isLogInSubject.asObservable();
-
-    private accessLevelSubject = new BehaviorSubject<number>(-1);
-    public accessLevel$: Observable<number> = this.accessLevelSubject.asObservable();
-
-    constructor(private http: Http,
-                private api: APIService,
-                @Inject(forwardRef(() => MessageService))
-                private messagesService: MessageService) {
     }
 
     checkConnection(): Observable<boolean> {
@@ -55,12 +54,13 @@ export class AuthenticationService {
 
     userInfo(): Observable<boolean> {
         return this.http.get('/main/desktop/user_settings/')
-            .map(
-                (response: Response) => {
+            .map((response: HttpResponse<User>) => {
                     if (response) {
-                        const user = User.fromJSON(response.json());
+                        const user = User.fromJSON(response);
+
                         this.userSubject.next(user);
                         this.isLogInSubject.next(true);
+
                         return true;
                     }
                     return false;
@@ -73,13 +73,13 @@ export class AuthenticationService {
     initAccessLevel(id: string): void {
         this.api
             .execute(
-                new QueryBuilder()
+                new BiRequestBuilder()
                     .method(Methods.GET_USER_ACCESS)
                     .params([{id: id}])
                     .build())
             .map(response => response.result)
             .subscribe(level => this.accessLevelSubject.next(level),
-                _ => this.accessLevelSubject.next(-1));
+                () => this.accessLevelSubject.next(-1));
     }
 
     login(param: Object): Observable<boolean> {
@@ -89,8 +89,8 @@ export class AuthenticationService {
             params: [param]
         };
 
-        return this.http.post('/api/login/', JSON.stringify(query))
-            .map(response => response.json().result)
+        return this.http.post<Result>('/api/login/', JSON.stringify(query))
+            .map(response => response.result)
             .catch(response => {
                 this.messagesService.message(new Message(MessageType.DANGER, response.toString()));
                 return Observable.throw(response.toString());

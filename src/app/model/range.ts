@@ -1,6 +1,6 @@
 import * as dateFns from 'date-fns';
 
-import { Value } from './index';
+import { Value } from './value';
 
 export class Range {
     public static isNotRange(value: string): boolean {
@@ -14,7 +14,7 @@ export class Range {
 
     public static getDates(range: string, returnRange: boolean = true): IDateRange {
         let WEEK_STARTS_ON = 1;
-        let dateRange: IDateRange | string;
+        let dateRange: IDateRange;
         let today = dateFns.startOfDay(new Date());
 
         if (range === 'tm') {
@@ -117,10 +117,10 @@ export class Range {
                     to: dateFns.endOfDay(today)
                 };
             } else {
-                if(days)
-                dateRange = {
-                    text: `LAST_${days}`
-                };
+                if (days)
+                    dateRange = {
+                        text: `LAST_${days}`
+                    };
             }
         }
         return dateRange;

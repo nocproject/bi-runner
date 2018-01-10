@@ -1,22 +1,22 @@
-import { JsonMember, JsonObject } from 'typedjson-npm/src/typed-json';
+import { JsonMember, JsonObject } from '@upe/typedjson';
 
 import { Map } from './map';
-import { Query } from './query';
+import { BiRequest } from './bi-request';
 
-@JsonObject
+@JsonObject()
 export class Widget {
-    @JsonMember
+    @JsonMember()
     public id: number;
-    @JsonMember
+    @JsonMember()
     public cell: string;
-    @JsonMember
+    @JsonMember()
     public note: string;
-    @JsonMember
+    @JsonMember()
     public title: string;
     @JsonMember({name: 'type'})
     public type: string;
-    @JsonMember
-    public query: Query;
-    @JsonMember
+    @JsonMember()
+    public query: BiRequest;
+    @JsonMember()
     public map?: Map;
 }

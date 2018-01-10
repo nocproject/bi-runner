@@ -1,15 +1,15 @@
-import { JsonMember, JsonObject, TypedJSON } from 'typedjson-npm/src/typed-json';
+import { JsonMember, JsonObject, TypedJSON } from '@upe/typedjson';
 import { Field } from './field';
 
-@JsonObject
+@JsonObject()
 export class Datasource {
-    @JsonMember
+    @JsonMember()
     public name: string;
-    @JsonMember
+    @JsonMember()
     public description: string;
     @JsonMember({elements: Field, name: 'fields'})
     public fields: Field[];
-    @JsonMember
+    @JsonMember()
     public sample: boolean;
 
     static fromJSON(json: any): Datasource {

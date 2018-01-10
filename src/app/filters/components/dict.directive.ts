@@ -10,8 +10,8 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
     }]
 })
 export class DictDirective implements ControlValueAccessor {
-    private propagateChange: (_: any) => void;
     input: HTMLInputElement;
+    private propagateChange: (_: any) => void;
 
     constructor(private el: ElementRef) {
         this.input = el.nativeElement;

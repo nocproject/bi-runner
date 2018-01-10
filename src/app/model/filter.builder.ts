@@ -6,6 +6,10 @@ import { Value } from './value';
 export class FilterBuilder {
     private filter: Filter = new Filter();
 
+    constructor() {
+        this.filter.association = '$and';
+    }
+
     static initFilter(fb: FormBuilder): FormGroup {
         return fb.group({
             name: ['', [Validators.required]],
@@ -13,10 +17,6 @@ export class FilterBuilder {
             valueFirst: [''],
             valueSecond: ['']
         });
-    }
-
-    constructor() {
-        this.filter.association = '$and';
     }
 
     public name(name: string): FilterBuilder {

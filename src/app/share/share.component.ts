@@ -7,26 +7,18 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import * as _ from 'lodash';
 
-import { AccessLevel, Methods, QueryBuilder } from '../model';
-import { APIService } from '../services/api.service';
+import { APIService, MessageService } from '../services';
+import { AccessLevel, Message, MessageType, Methods, BiRequestBuilder } from '../model';
 import { GridConfig, GridConfigBuilder } from '../shared/data-grid/data-grid.component';
 import { ModalComponent } from '../shared/modal/modal';
-import { MessageService } from '../services/message.service';
-import { MessageType } from '../model/message-type.enum';
-import { Message } from '../model/message';
 
 @Component({
     selector: 'bi-share',
     templateUrl: './share.component.html'
 })
 export class ShareComponent implements OnInit, OnDestroy {
-    private chooseSubscription: Subscription;
-    private confirmAnswerSubject = new BehaviorSubject(null);
-
     @ViewChild(ModalComponent)
     confirmDialog: ModalComponent;
-
-    confirmAnswer$: Observable<boolean> = this.confirmAnswerSubject.asObservable();
     boardId: string;
     title: string;
     userConfig: GridConfig;
@@ -38,6 +30,9 @@ export class ShareComponent implements OnInit, OnDestroy {
     chooseForm: FormGroup;
     shareSpin = false;
     trashSpin = false;
+    private chooseSubscription: Subscription;
+    private confirmAnswerSubject = new BehaviorSubject(null);
+    confirmAnswer$: Observable<boolean> = this.confirmAnswerSubject.asObservable();
 
     constructor(private api: APIService,
                 private messages: MessageService,
@@ -52,7 +47,7 @@ export class ShareComponent implements OnInit, OnDestroy {
             .headers(['SHARE.USERNAME', 'SHARE.FULL_NAME'])
             .names(['username', 'full_name'])
             .data(this.api
-                .execute(new QueryBuilder().method(Methods.LIST_USERS).build())
+                .execute(new BiRequestBuilder().method(Methods.LIST_USERS).build())
                 .map(response => response.result)
             )
             .fromJson(userJson)
@@ -62,7 +57,7 @@ export class ShareComponent implements OnInit, OnDestroy {
             .headers(['SHARE.GROUP_NAME'])
             .names(['name'])
             .data(this.api
-                .execute(new QueryBuilder().method(Methods.LIST_GROUPS).build())
+                .execute(new BiRequestBuilder().method(Methods.LIST_GROUPS).build())
                 .map(response => response.result)
             )
             .fromJson(groupJson)
@@ -121,7 +116,7 @@ export class ShareComponent implements OnInit, OnDestroy {
     // buttons
     onShare() {
         this.shareSpin = true;
-        this.api.execute(new QueryBuilder()
+        this.api.execute(new BiRequestBuilder()
         // .method(`set_dashboard_access_${this.chooseForm.value.object}`)
             .method(Methods.SET_DASHBOARD_ACCESS)
             .params([
@@ -133,14 +128,14 @@ export class ShareComponent implements OnInit, OnDestroy {
             .subscribe(() => {
                     this.unsavedData = false;
                     this.shareSpin = false;
-                    this.messages.message(new Message(MessageType.INFO, 'MESSAGES.SHARE_SAVED'))
+                    this.messages.message(new Message(MessageType.INFO, 'MESSAGES.SHARE_SAVED'));
                 },
                 () => this.shareSpin = false);
     }
 
     onRemoveAll() {
         this.trashSpin = true;
-        this.api.execute(new QueryBuilder()
+        this.api.execute(new BiRequestBuilder()
             .method(Methods.SET_DASHBOARD_ACCESS)
             .params([
                 {id: this.boardId},
@@ -153,7 +148,7 @@ export class ShareComponent implements OnInit, OnDestroy {
                 this.unsavedData = false;
                 this.accessCache = [];
                 this.preSelected = [];
-                this.messages.message(new Message(MessageType.INFO, 'MESSAGES.SHARE_REMOVED'))
+                this.messages.message(new Message(MessageType.INFO, 'MESSAGES.SHARE_REMOVED'));
             });
     }
 
@@ -172,7 +167,7 @@ export class ShareComponent implements OnInit, OnDestroy {
 
     private initCacheAccess(boardId: string): Observable<Access[]> {
         return this.api.execute(
-            new QueryBuilder()
+            new BiRequestBuilder()
                 .method(Methods.GET_DASHBOARD_ACCESS)
                 .params([{id: boardId}])
                 .build())

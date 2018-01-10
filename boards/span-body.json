@@ -9,6 +9,15 @@
         "cells": [
           {
             "md": 6,
+            "name": "c11",
+            "lg": null,
+            "height": 200,
+            "sm": null,
+            "xs": null,
+            "row": 0
+          },
+          {
+            "md": 6,
             "name": "c12",
             "lg": null,
             "height": 200,
@@ -61,7 +70,7 @@
               "association": "$and",
               "values": [
                 {
-                  "value": "l7"
+                  "value": "l30"
                 }
               ],
               "name": "ts",
@@ -77,6 +86,7 @@
             {
               "association": "$and",
               "name": "server",
+              "datasource": "none",
               "type": "String",
               "condition": "$eq",
               "pseudo": false,
@@ -120,6 +130,27 @@
       },
       "datasource": "span",
       "widgets": [
+        {
+          "cell": "c11",
+          "note": "boxPlot",
+          "title": "boxPlot по duration",
+          "type": "boxPlot",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "round(duration)",
+                    "alias": "d"
+                  }
+                ],
+                "datasource": "span"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        },
         {
           "cell": "c12",
           "note": "по дню недели",

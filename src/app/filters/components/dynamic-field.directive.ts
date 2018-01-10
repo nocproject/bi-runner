@@ -1,11 +1,5 @@
 import {
-    ComponentFactoryResolver,
-    ComponentRef,
-    Directive,
-    Input,
-    OnChanges,
-    OnInit,
-    Type,
+    ComponentFactoryResolver, ComponentRef, Directive, Input, OnChanges, OnInit, Type,
     ViewContainerRef
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
@@ -18,8 +12,7 @@ import { FormInputComponent } from './form-input/form-input.component';
 import { FormSelectComponent } from './form-select/form-select.component';
 import { FormModelComponent } from './form-model/form-model.component';
 
-import { FilterControl } from '../models/field.interface';
-import { FieldConfig } from '../models/form-config.interface';
+import { FieldConfig, FilterControl } from '../models';
 
 const components: { [type: string]: Type<FilterControl> } = {
     button: FormButtonComponent,

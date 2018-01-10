@@ -6,7 +6,10 @@ import * as saver from 'file-saver';
 import { APIService, FilterService } from '../services';
 import { BoardResolver } from '../boards/board/services/board.resolver';
 //
-import { Board, Field, Filter, Group, Methods, Query, QueryBuilder, Result, WhereBuilder } from '../model';
+import {
+    BiRequest, BiRequestBuilder, Board, Field, Filter, Group, Methods, Range, Result,
+    WhereBuilder
+} from '../model';
 
 export class Export {
 
@@ -16,6 +19,7 @@ export class Export {
         const board: Board = _.clone(boardResolver.getBoard());
         const where = WhereBuilder.makeWhere(filterService.allFilters());
         const params = _.clone(board.exportQry.params);
+        const fields = params[0].fields.filter(f => f.alias !== 'duration_se' && f.alias !== 'duration_ei');
         const durationFilters: Filter[] = filterService.allFiltersByName('exclusion_intervals');
 
         if (durationFilters.length > 0) {
@@ -24,21 +28,21 @@ export class Export {
                 return Observable.throw('You must set report range!');
             }
             const range = reportRange(rangeGroup);
-            params[0].fields.push(durationByReport(range));
-            params[0].fields.push(durationByZebra(range, durationFilters));
+            fields.push(durationByReport(range));
+            fields.push(durationByZebra(range, durationFilters));
         }
 
         if (where) {
             params[0].filter = where;
         }
         // ToDo change backend (use boolean) and remove
-        params[0].fields = params[0].fields.map(field => {
+        params[0].fields = fields.map(field => {
             if (field.hide) {
                 field.hide = 'yes';
             }
             return field;
         });
-        const query: Query = new QueryBuilder()
+        const query: BiRequest = new BiRequestBuilder()
             .method(Methods.QUERY)
             .params(params)
             .build();
@@ -123,10 +127,9 @@ function makeIntervals(reportRange, filters) {
         .filter(element => !element.condition.match(/periodic/))
         // ToDo check interval is in range report, may be DB cut - test
         .map(element => {
-            const values = element.values[0].value.split(' - ');
             return {
-                start: d3.time.format('%d.%m.%Y %H:%M').parse(values[0]),
-                end: d3.time.format('%d.%m.%Y %H:%M').parse(values[1])
+                start: element.values[0].value,
+                end: element.values[1].value
             };
         }).concat(
             _.flatMap(
@@ -199,7 +202,11 @@ function generateIntervals(reportRange, interval) {
 }
 
 function reportRange(group: Group): any[] {
-    return [group.filters[0].values[0].value, group.filters[0].values[1].value];
+    if (group.filters[0].values.length > 1) {
+        return [group.filters[0].values[0].value, group.filters[0].values[1].value];
+    }
+    const dates = Range.getDates(group.filters[0].values[0].value);
+    return [dates.from, dates.to];
 }
 
 function toDateTime(value) {

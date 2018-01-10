@@ -1,13 +1,5 @@
 export class Result {
 
-    static fromJSON(json: Object): Result {
-        return new Result(
-            json['id'],
-            json['error'],
-            json['result']
-        );
-    }
-
     constructor(private id?: number,
                 private error?: string,
                 public result?: any) {
@@ -19,6 +11,14 @@ export class Result {
 
     set data(value: any) {
         this.result = value;
+    }
+
+    static fromJSON(json: Object): Result {
+        return new Result(
+            json['id'],
+            json['error'],
+            json['result']
+        );
     }
 
     zip(dateParse: boolean) {

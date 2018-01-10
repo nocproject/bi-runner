@@ -1,5 +1,5 @@
-import { IMyDate } from "./my-date.interface";
-import { IMyMarkedDate } from "./my-marked-date.interface";
+import { IMyDate } from './my-date.interface';
+import { IMyMarkedDate } from './my-marked-date.interface';
 
 export interface IMyCalendarDay {
     dateObj: IMyDate;

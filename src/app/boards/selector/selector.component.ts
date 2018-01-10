@@ -1,22 +1,22 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit, Optional, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import {AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
 
 import * as _ from 'lodash';
 import * as moment from 'moment';
 
-import { Observable } from 'rxjs/Rx';
-import { Subscription } from 'rxjs/Subscription';
+import {Observable} from 'rxjs/Rx';
+import {Subscription} from 'rxjs/Subscription';
 
-import { environment } from '../../../environments/environment';
-import { APIService, DebugService, FilterService, LanguageService } from '../../services';
-import { Board, FilterBuilder, Group, GroupBuilder, Methods, QueryBuilder, Range, Value } from '../../model';
+import {environment} from '../../../environments/environment';
+import {APIService, FilterService, LanguageService} from '../../services';
+import {BiRequestBuilder, Board, FilterBuilder, Group, GroupBuilder, Methods, Range, Value} from '../../model';
 
-import { ReportRangeComponent } from '../../shared/report-range/report-range.component';
-import { FilterFormComponent } from '../../filters/containers/form/filter-form.component';
-import { EventService } from '../../filters/services';
-import { EventType } from '../../filters/models';
-import { ModalComponent } from '../../shared/modal/modal';
-import { DatasourceService } from '../board/services/datasource-info.service';
+import {ReportRangeComponent} from '../report-range/report-range.component';
+import {FilterFormComponent} from '../../filters/containers/form/filter-form.component';
+import {EventService} from '../../filters/services';
+import {EventType} from '../../filters/models';
+import {ModalComponent} from '../../shared/modal/modal';
+import {DatasourceService} from '../board/services/datasource-info.service';
 
 @Component({
     // changeDetection: ChangeDetectionStrategy.OnPush,
@@ -24,17 +24,12 @@ import { DatasourceService } from '../board/services/datasource-info.service';
     templateUrl: './selector.component.html'
 })
 export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
-    // private rangeSubscription: Subscription;
-    private eventSubscription: Subscription;
-    private ratioSubscription: Subscription;
-
     @Input()
     board: Board;
     @ViewChild(FilterFormComponent)
     filters: FilterFormComponent;
     @ViewChild(ReportRangeComponent)
     rangeForm: ReportRangeComponent;
-
     START_DATE = 'startDate';
     END_DATE = 'endDate';
     locale = 'en';
@@ -43,20 +38,27 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
     production = environment.production;
     lastUpdate$: Observable<any>;
     isSample$: Observable<boolean>;
-
     ratioForm: FormGroup;
     ratio: FormControl;
-
     collapsed = true;
+    // private rangeSubscription: Subscription;
+    private eventSubscription: Subscription;
+    private ratioSubscription: Subscription;
 
-    constructor(@Optional() public debug: DebugService,
-                private fb: FormBuilder,
+    constructor(private fb: FormBuilder,
                 private api: APIService,
                 private datasourceService: DatasourceService,
                 private eventService: EventService,
                 private filterService: FilterService,
                 private languageService: LanguageService) {
         this.ratio = new FormControl(this.filterService.ratioSubject.getValue());
+    }
+
+    private static rangeText(from: any, to: Date): string {
+        if (Range.isNotRange(from)) {
+            return `${moment(from).format('DD.MM.YYYY HH:mm')} - ${moment(to).format('DD.MM.YYYY HH:mm')}`;
+        }
+        return from;
     }
 
     ngAfterViewInit() {
@@ -74,7 +76,7 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
 
     ngOnInit() {
         this.lastUpdate$ = this.api.execute(
-            new QueryBuilder()
+            new BiRequestBuilder()
                 .method(Methods.QUERY)
                 .params([{
                     fields: [
@@ -154,7 +156,7 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
                     if (Range.isNotRange(group.filters[0].values[0].value)) {
                         from = new Date(group.filters[0].values[0].value);
                         to = new Date(group.filters[0].values[1].value);
-                        this.reportRangeText = SelectorComponent.rangeText(from, to)
+                        this.reportRangeText = SelectorComponent.rangeText(from, to);
                     } else {
                         from = group.filters[0].values[0].value;
                         this.reportRangeText = `DATETIME_RANGE.${Range.getDates(from, false).text}`;
@@ -165,12 +167,5 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
                     };
                 }
             );
-    }
-
-    private static rangeText(from: any, to: Date): string {
-        if (Range.isNotRange(from)) {
-            return `${moment(from).format('DD.MM.YYYY HH:mm')} - ${moment(to).format('DD.MM.YYYY HH:mm')}`;
-        }
-        return from;
     }
 }

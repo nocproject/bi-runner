@@ -1,14 +1,14 @@
-import { JsonMember, JsonObject } from 'typedjson-npm/src/typed-json';
+import { JsonMember, JsonObject } from '@upe/typedjson';
 
 import { Filter } from './filter';
 
 @JsonObject()
 export class Group {
-    @JsonMember
+    @JsonMember()
     name: string;
-    @JsonMember
+    @JsonMember()
     active: boolean;
-    @JsonMember
+    @JsonMember()
     association: '$and' | '$or';
     @JsonMember({elements: Filter})
     filters: Filter[];

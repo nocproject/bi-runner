@@ -7,7 +7,7 @@ describe('bi App', () => {
     page = new BiPage();
   });
 
-  it('should display text saying app works', () => {
+  it('should display welcome message', () => {
     page.navigateTo();
     expect(page.getParagraphText()).toEqual('bi works!');
   });

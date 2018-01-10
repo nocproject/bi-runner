@@ -1,0 +1,105 @@
+<div [formGroup]="form">
+    <div class="row vertical-align">
+        <div class="col-md-4">
+            <div class="form-group">
+                <input class="form-control"
+                       type="text"
+                       size="33"
+                       [formControlName]="'rangeInput'"
+                       [placeholder]="'dd.mm.yyyy HH:mm-dd.mm.yyyy HH:mm'">
+            </div>
+        </div>
+        <div class="col-md-6 text-left">
+            <div *ngIf="form.get('rangeInput').hasError('invalid')"
+                 [translate]="form.get('rangeInput').errors['msg']">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <my-date-picker [locale]="locale"
+                            [options]="myDatePickerOptions"
+                            [formControlName]="'fromPick'">
+            </my-date-picker>
+            <bi-timepicker [formControlName]="'fromTime'"
+                           [hourStep]="1"
+                           [minuteStep]="15"
+                           [readonly]="true"
+                           [buttonShow]="false">
+            </bi-timepicker>
+        </div>
+        <div class="col-md-4">
+            <my-date-picker [locale]="locale"
+                            [options]="myDatePickerOptions"
+                            [formControlName]="'toPick'">
+
+            </my-date-picker>
+            <bi-timepicker [formControlName]="'toTime'"
+                           [hourStep]="1"
+                           [minuteStep]="15"
+                           [readonly]="true"
+                           [buttonShow]="false">
+            </bi-timepicker>
+        </div>
+        <div class="col-md-4">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="btn-group-vertical nav-stack">
+                        <a style="margin-bottom: 10px;"
+                           class="btn btn-default"
+                           [ngClass]="{'btn-primary': range === 'tm'}"
+                           (click)="selectRange('tm')" translate>DATETIME_RANGE.THIS_MONTH</a>
+                        <a style="margin-bottom: 10px;"
+                           class="btn btn-default"
+                           [ngClass]="{'btn-primary': range === 'lm'}"
+                           (click)="selectRange('lm')" translate>DATETIME_RANGE.LAST_MONTH</a>
+                        <a style="margin-bottom: 10px;"
+                           class="btn btn-default"
+                           [ngClass]="{'btn-primary': range === 'tw'}"
+                           (click)="selectRange('tw')" translate>DATETIME_RANGE.THIS_WEEK</a>
+                        <a style="margin-bottom: 10px;"
+                           class="btn btn-default"
+                           [ngClass]="{'btn-primary': range === 'lw'}"
+                           (click)="selectRange('lw')" translate>DATETIME_RANGE.LAST_WEEK</a>
+                        <a style="margin-bottom: 10px;"
+                           class="btn btn-default"
+                           [ngClass]="{'btn-primary': range === 'ty'}"
+                           (click)="selectRange('ty')" translate>DATETIME_RANGE.THIS_YEAR</a>
+                        <a style="margin-bottom: 10px;"
+                           class="btn btn-default"
+                           [ngClass]="{'btn-primary': range === 'ly'}"
+                           (click)="selectRange('ly')" translate>DATETIME_RANGE.LAST_YEAR</a>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="btn-group-vertical nav-stack">
+                        <a style="margin-bottom: 10px;"
+                           class="btn btn-default"
+                           [ngClass]="{'btn-primary': range === 'lt'}"
+                           (click)="selectRange('lt')" translate>DATETIME_RANGE.TODAY</a>
+                        <a style="margin-bottom: 10px;"
+                           class="btn btn-default"
+                           [ngClass]="{'btn-primary': range === 'ld'}"
+                           (click)="selectRange('ld')" translate>DATETIME_RANGE.YESTERDAY</a>
+                        <a style="margin-bottom: 10px;"
+                           class="btn btn-default"
+                           [ngClass]="{'btn-primary': range === 'l7'}"
+                           (click)="selectRange('l7')" translate>DATETIME_RANGE.LAST_7</a>
+                        <a style="margin-bottom: 10px;"
+                           class="btn btn-default"
+                           [ngClass]="{'btn-primary': range === 'l14'}"
+                           (click)="selectRange('l14')" translate>DATETIME_RANGE.LAST_14</a>
+                        <a style="margin-bottom: 10px;"
+                           class="btn btn-default"
+                           [ngClass]="{'btn-primary': range === 'l30'}"
+                           (click)="selectRange('l30')" translate>DATETIME_RANGE.LAST_30</a>
+                        <a style="margin-bottom: 10px;"
+                           class="btn btn-default"
+                           [ngClass]="{'btn-primary': range === 'l60'}"
+                           (click)="selectRange('l60')" translate>DATETIME_RANGE.LAST_60</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

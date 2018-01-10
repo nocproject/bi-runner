@@ -1,8 +1,8 @@
-import { CommonModule } from "@angular/common";
-import { FormsModule } from "@angular/forms";
-import { NgModule } from "@angular/core";
-import { MyDatePicker } from "./my-date-picker.component";
-import { FocusDirective } from "./directives/my-date-picker.focus.directive";
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { NgModule } from '@angular/core';
+import { MyDatePicker } from './my-date-picker.component';
+import { FocusDirective } from './directives/my-date-picker.focus.directive';
 
 @NgModule({
     imports: [CommonModule, FormsModule],

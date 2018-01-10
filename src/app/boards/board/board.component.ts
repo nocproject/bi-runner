@@ -22,9 +22,9 @@ import { Board, Cell, CellAndWidget, Widget } from '../../model';
     ]
 })
 export class BoardComponent implements OnInit, OnDestroy {
-    private subscription: Subscription;
     public cells: CellAndWidget[][];
     public board: Board;
+    private subscription: Subscription;
 
     constructor(public boardResolver: BoardResolver,
                 private route: ActivatedRoute,

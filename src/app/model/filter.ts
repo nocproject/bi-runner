@@ -1,4 +1,4 @@
-import { JsonMember, JsonObject } from 'typedjson-npm/src/typed-json';
+import { JsonMember, JsonObject } from '@upe/typedjson';
 
 import { Value } from './value';
 import { Range } from './range';
@@ -7,38 +7,30 @@ import { Range } from './range';
 export class Filter {
     @JsonMember({elements: Value})
     public values: Value[];
-    @JsonMember
+    @JsonMember()
     public condition: string;
-    @JsonMember
+    @JsonMember()
     public type: string;
-    @JsonMember
+    @JsonMember()
     public name: string;
-    @JsonMember
+    @JsonMember()
     public association: '$and' | '$or';
-    @JsonMember
+    @JsonMember()
     public alias: string;
-    @JsonMember
+    @JsonMember()
     public pseudo: boolean;
     // form data
     public valueFirst: string;
     public valueSecond: string;
     public hide: string;
-    @JsonMember
+    @JsonMember()
     public datasource: string;
-
-    public isEmpty(): boolean {
-        return this.values.length === 0 ;
-    }
-
-    public isPseudo(): boolean {
-        return this.pseudo;
-    }
 
     static fromJSON(json: any): Filter {
         if (json.hasOwnProperty('type') && json.hasOwnProperty('values')) {
             if (json.type.match(/Date/)) {
                 if (!json.condition.match(/periodic/)) {
-                    if(Range.isNotRange(json.values[0].value)) {
+                    if (Range.isNotRange(json.values[0].value)) {
                         json.values[0].value = new Date(json.values[0].value);
                     }
                 }
@@ -48,5 +40,13 @@ export class Filter {
             }
         }
         return Object.assign(Object.create(Filter.prototype), json);
+    }
+
+    public isEmpty(): boolean {
+        return this.values.length === 0;
+    }
+
+    public isPseudo(): boolean {
+        return this.pseudo;
     }
 }

@@ -194,5 +194,8 @@
   "September": "Сентябрь",
   "October": "Октябрь",
   "November": "Ноябрь",
-  "December": "Декабрь"
+  "December": "Декабрь",
+  "SELECT_MENU": {
+    "PROMPT": "Выбрать все"
+  }
 }

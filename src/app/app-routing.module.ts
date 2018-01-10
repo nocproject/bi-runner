@@ -4,8 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './services';
 import { BoardResolver } from './boards/board/services/board.resolver';
 
-import { BoardListComponent } from './boards/board-list.component';
-import { BoardComponent } from './boards/board/board.component';
+import { BoardComponent, BoardListComponent } from './boards';
 import { LoginComponent } from './login/login.component';
 import { ShareComponent } from './share/share.component';
 import { ShareCanDeactivateGuard } from './share/share-can-deactivate.guard';

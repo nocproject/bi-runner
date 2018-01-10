@@ -22,16 +22,15 @@ export class GroupComponent implements OnInit, OnDestroy {
     parent: FormGroup;
     @Input()
     formConfig: FormConfig;
-
-    private subscription: Subscription;
     group: FormGroup;
-
-    get hasFilters(): boolean {
-        return (<FormArray>this.group.get('group.filters')).length > 0;
-    }
+    private subscription: Subscription;
 
     constructor(private eventService: EventService,
                 private filterService: FilterService) {
+    }
+
+    get hasFilters(): boolean {
+        return (<FormArray>this.group.get('group.filters')).length > 0;
     }
 
     ngOnInit() {

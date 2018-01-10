@@ -1,4 +1,4 @@
-import { JsonMember, JsonObject, TypedJSON } from 'typedjson-npm/src/typed-json';
+import { JsonMember, JsonObject, TypedJSON } from '@upe/typedjson';
 import * as _ from 'lodash';
 
 import { Field } from './field';
@@ -19,11 +19,11 @@ import { DeserializationHelper } from './helpers';
 
 @JsonObject({initializer: Parameter.fromJSON})
 export class Parameter {
-    @JsonMember
+    @JsonMember()
     public datasource: string;
-    @JsonMember
+    @JsonMember()
     public limit: number;
-    @JsonMember
+    @JsonMember()
     public sample: number;
     @JsonMember({elements: Field})
     public fields: Field[];
@@ -34,7 +34,7 @@ export class Parameter {
     static fromJSON(json: any): Parameter {
         if (json.hasOwnProperty('filter')) {
             json.filter = DeserializationHelper.map<String, String>(
-                _.toPairs(json.filter).map(item => [TypedJSON.stringify(item[0]), item[1]]),
+                _.toPairs(json.filter).map(item => [TypedJSON.stringify(item[0]), TypedJSON.stringify(item[1])]),
                 String, String
             );
             delete json.filter;
@@ -45,7 +45,6 @@ export class Parameter {
 
         return Object.assign(Object.create(Parameter.prototype), json);
     }
-
 
     // toJSON() {
     //     return Object.assign({}, this, {

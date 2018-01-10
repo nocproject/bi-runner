@@ -1,21 +1,23 @@
-import { JsonMember, JsonObject } from 'typedjson-npm/src/typed-json';
+import { JsonMember, JsonObject } from '@upe/typedjson';
 
-@JsonObject
+@JsonObject()
 export class Cell {
-    @JsonMember
+    @JsonMember()
     public md: number;
-    @JsonMember
+    @JsonMember()
     public name: string;
-    @JsonMember
+    @JsonMember()
     public lg: number;
-    @JsonMember
+    @JsonMember()
     public height: number;
-    @JsonMember
+    @JsonMember()
     public sm: number;
-    @JsonMember
+    @JsonMember()
     public xs: number;
-    @JsonMember
+    @JsonMember()
     public row: number;
+    @JsonMember()
+    public  offset: number;
 
     public getClasses(): string {
         const classes: string[] = [];

@@ -1,9 +1,8 @@
-import { BaseRequestOptions, Response, ResponseOptions } from '@angular/http';
+import { ActivatedRouteSnapshot } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { getTestBed, TestBed } from '@angular/core/testing';
 
-import { TestBed } from '@angular/core/testing';
-import { MockBackend } from '@angular/http/testing';
-
-import { Http, InterceptorStore } from '../../../shared/interceptor/service';
 import { APIService } from '../../../services';
 import { BoardResolver } from './board.resolver';
 import { DatasourceService } from './datasource-info.service';
@@ -15,19 +14,21 @@ import * as rebootsDatasourceInfoBody from '../../../test-response/rebootsDataso
 import * as rebootsBoardBody from '../../../test-response/rebootsBoardBody.json';
 import * as interfacesDatasourceInfoBody from '../../../test-response/interfacesDatasourceInfoBody.json';
 import * as interfacesBoardBody from '../../../test-response/interfacesBoardBody.json';
-import { ActivatedRouteSnapshot } from '@angular/router';
 
 describe('Service: DatasourceService for alarms', () => {
+    let injector: TestBed;
+    let httpMock: HttpTestingController;
+    //
+    let api: APIService;
     let service: DatasourceService;
-    let backend: MockBackend;
     let fields: Field[];
 
     beforeAll(() => {
         TestBed.configureTestingModule({
+            imports: [
+                HttpClientTestingModule
+            ],
             providers: [
-                InterceptorStore,
-                MockBackend,
-                BaseRequestOptions,
                 BoardResolver,
                 {
                     provide: DatasourceService,
@@ -37,18 +38,14 @@ describe('Service: DatasourceService for alarms', () => {
                 {
                     provide: APIService,
                     useFactory: (backend) => new APIService(backend),
-                    deps: [Http]
-                },
-                {
-                    provide: Http,
-                    useFactory: (backend, options, interceptor) => new Http(backend, options, interceptor),
-                    deps: [MockBackend, BaseRequestOptions, InterceptorStore]
+                    deps: [HttpClient]
                 }
             ]
         });
 
-        // Get the MockBackend
-        backend = TestBed.get(MockBackend);
+        injector = getTestBed();
+        api = injector.get(APIService);
+        httpMock = injector.get(HttpTestingController);
 
         // Returns a services with the MockBackend so we can test with dummy responses
         let resolver = TestBed.get(BoardResolver);
@@ -56,28 +53,18 @@ describe('Service: DatasourceService for alarms', () => {
         route.params = {id: ''};
         resolver.resolve(route, null);
         service = TestBed.get(DatasourceService);
-
-        // When the request subscribes for results on a connection, return a fake response
-        backend.connections.subscribe(connection => {
-            let method = JSON.parse(connection.request.getBody()).method;
-            switch (method) {
-                case Methods.GET_DATASOURCE_INFO:
-                    connection.mockRespond(new Response(<ResponseOptions>{
-                        body: JSON.stringify(alarmsDatasourceInfoBody)
-                    }));
-                    break;
-                case Methods.GET_DASHBOARD:
-                    connection.mockRespond(new Response(<ResponseOptions>{
-                        body: JSON.stringify(alarmsBoardBody)
-                    }));
-                    break;
-            }
-        });
-
         // Perform a request and make sure we get the response we expect
         service.fields().subscribe(data =>
             fields = data
         );
+
+        // When the request subscribes for results on a connection, return a fake response
+        const dashboardReq = httpMock.expectOne('/api/bi/');
+        expect(dashboardReq.request.body.method).toBe(Methods.GET_DASHBOARD);
+        dashboardReq.flush(alarmsBoardBody);
+        const infoReq = httpMock.expectOne('/api/bi/');
+        expect(infoReq.request.body.method).toBe(Methods.GET_DATASOURCE_INFO);
+        infoReq.flush(alarmsDatasourceInfoBody);
     });
 
     it('should return field list for group by element', () => {
@@ -142,16 +129,19 @@ describe('Service: DatasourceService for alarms', () => {
 });
 
 describe('Service: DatasourceService for reboots', () => {
+    let injector: TestBed;
+    let httpMock: HttpTestingController;
+    //
+    let api: APIService;
     let service: DatasourceService;
-    let backend: MockBackend;
     let fields: Field[];
 
     beforeAll(() => {
         TestBed.configureTestingModule({
+            imports: [
+                HttpClientTestingModule
+            ],
             providers: [
-                InterceptorStore,
-                MockBackend,
-                BaseRequestOptions,
                 BoardResolver,
                 {
                     provide: DatasourceService,
@@ -161,18 +151,14 @@ describe('Service: DatasourceService for reboots', () => {
                 {
                     provide: APIService,
                     useFactory: (backend) => new APIService(backend),
-                    deps: [Http]
-                },
-                {
-                    provide: Http,
-                    useFactory: (backend, options, interceptor) => new Http(backend, options, interceptor),
-                    deps: [MockBackend, BaseRequestOptions, InterceptorStore]
+                    deps: [HttpClient]
                 }
             ]
         });
 
-        // Get the MockBackend
-        backend = TestBed.get(MockBackend);
+        injector = getTestBed();
+        api = injector.get(APIService);
+        httpMock = injector.get(HttpTestingController);
 
         // Returns a services with the MockBackend so we can test with dummy responses
         let resolver = TestBed.get(BoardResolver);
@@ -180,28 +166,18 @@ describe('Service: DatasourceService for reboots', () => {
         route.params = {id: ''};
         resolver.resolve(route, null);
         service = TestBed.get(DatasourceService);
-
-        // When the request subscribes for results on a connection, return a fake response
-        backend.connections.subscribe(connection => {
-            let method = JSON.parse(connection.request.getBody()).method;
-            switch (method) {
-                case Methods.GET_DATASOURCE_INFO:
-                    connection.mockRespond(new Response(<ResponseOptions>{
-                        body: JSON.stringify(rebootsDatasourceInfoBody)
-                    }));
-                    break;
-                case Methods.GET_DASHBOARD:
-                    connection.mockRespond(new Response(<ResponseOptions>{
-                        body: JSON.stringify(rebootsBoardBody)
-                    }));
-                    break;
-            }
-        });
-
         // Perform a request and make sure we get the response we expect
         service.fields().subscribe(data =>
             fields = data
         );
+
+        // When the request subscribes for results on a connection, return a fake response
+        const dashboardReq = httpMock.expectOne('/api/bi/');
+        expect(dashboardReq.request.body.method).toBe(Methods.GET_DASHBOARD);
+        dashboardReq.flush(rebootsBoardBody);
+        const infoReq = httpMock.expectOne('/api/bi/');
+        expect(infoReq.request.body.method).toBe(Methods.GET_DATASOURCE_INFO);
+        infoReq.flush(rebootsDatasourceInfoBody);
     });
 
     it('should return field list for group by element', () => {
@@ -266,16 +242,19 @@ describe('Service: DatasourceService for reboots', () => {
 });
 
 describe('Service: DatasourceService for interfaces', () => {
+    let injector: TestBed;
+    let httpMock: HttpTestingController;
+    //
+    let api: APIService;
     let service: DatasourceService;
-    let backend: MockBackend;
     let fields: Field[];
 
     beforeAll(() => {
         TestBed.configureTestingModule({
+            imports: [
+                HttpClientTestingModule
+            ],
             providers: [
-                InterceptorStore,
-                MockBackend,
-                BaseRequestOptions,
                 BoardResolver,
                 {
                     provide: DatasourceService,
@@ -285,18 +264,14 @@ describe('Service: DatasourceService for interfaces', () => {
                 {
                     provide: APIService,
                     useFactory: (backend) => new APIService(backend),
-                    deps: [Http]
-                },
-                {
-                    provide: Http,
-                    useFactory: (backend, options, interceptor) => new Http(backend, options, interceptor),
-                    deps: [MockBackend, BaseRequestOptions, InterceptorStore]
+                    deps: [HttpClient]
                 }
             ]
         });
 
-        // Get the MockBackend
-        backend = TestBed.get(MockBackend);
+        injector = getTestBed();
+        api = injector.get(APIService);
+        httpMock = injector.get(HttpTestingController);
 
         // Returns a services with the MockBackend so we can test with dummy responses
         let resolver = TestBed.get(BoardResolver);
@@ -304,28 +279,18 @@ describe('Service: DatasourceService for interfaces', () => {
         route.params = {id: ''};
         resolver.resolve(route, null);
         service = TestBed.get(DatasourceService);
-
-        // When the request subscribes for results on a connection, return a fake response
-        backend.connections.subscribe(connection => {
-            let method = JSON.parse(connection.request.getBody()).method;
-            switch (method) {
-                case Methods.GET_DATASOURCE_INFO:
-                    connection.mockRespond(new Response(<ResponseOptions>{
-                        body: JSON.stringify(interfacesDatasourceInfoBody)
-                    }));
-                    break;
-                case Methods.GET_DASHBOARD:
-                    connection.mockRespond(new Response(<ResponseOptions>{
-                        body: JSON.stringify(interfacesBoardBody)
-                    }));
-                    break;
-            }
-        });
-
         // Perform a request and make sure we get the response we expect
         service.fields().subscribe(data =>
             fields = data
         );
+
+        // When the request subscribes for results on a connection, return a fake response
+        const dashboardReq = httpMock.expectOne('/api/bi/');
+        expect(dashboardReq.request.body.method).toBe(Methods.GET_DASHBOARD);
+        dashboardReq.flush(interfacesBoardBody);
+        const infoReq = httpMock.expectOne('/api/bi/');
+        expect(infoReq.request.body.method).toBe(Methods.GET_DATASOURCE_INFO);
+        infoReq.flush(interfacesDatasourceInfoBody);
     });
 
     it('should return field list for group by element', () => {

@@ -1,62 +1,30 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
-import { Http } from '@angular/http';
+import {NgModule} from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
+import {HTTP_INTERCEPTORS, HttpClient, HttpClientModule} from '@angular/common/http';
 
-import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { TranslateLoader, TranslateModule, TranslateParser } from '@ngx-translate/core';
+import {TranslateLoader, TranslateModule, TranslateParser} from '@ngx-translate/core';
+import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 
-import { environment } from '../environments/environment';
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { HeaderComponent } from './header/header.component';
+import {AppRoutingModule} from './app-routing.module';
+import {AppComponent} from './app.component';
 import {
-    APIService,
-    AuthenticationService,
-    AuthGuard,
-    DebugService,
-    FilterService,
-    LanguageService,
-    MessageService
+  APIInterceptor, APIService, AuthenticationService, AuthGuard, CounterService, FilterService, LanguageService,
+  MessageService
 } from './services';
-import { MessagesComponent } from './shared/messages/messages.component';
-import { HttpModule } from './shared/interceptor/module';
-import { BoardListComponent } from './boards/board-list.component';
-import { LoginComponent } from './login/login.component';
-import { BoardComponent } from './boards/board/board.component';
-import { BoardResolver } from './boards/board/services/board.resolver';
-import {
-    BarComponent,
-    GeoComponent,
-    LineComponent,
-    PieComponent,
-    RowComponent,
-    TableComponent
-} from './boards/widgets';
-import { SelectorComponent } from './boards/selector/selector.component';
-import { CounterComponent } from './boards/widgets/counter/counter.component';
-import { AnchorDirective } from './shared/anchor.directive';
-import { TimepickerComponent } from './shared/timepicker/timepicker.component';
-import { GroupByComponent } from './boards/selector/groupby/groupby.component';
-
-import { FiltersModule } from './filters/filters.module';
-import { ModalModule } from './shared/modal';
-import { ShareComponent } from './share/share.component';
-import { DataGridComponent } from './shared/data-grid/data-grid.component';
-import { AccessLevelComponent } from './header/access-level.component';
-import { ShareCanDeactivateGuard } from './share/share-can-deactivate.guard';
-import { TranslateHttpLoader } from './shared/translate/http-loader';
-import { TranslateParserService } from './shared/translate/translate-parser.service';
-import { MessageComponent } from './shared/messages/message.component';
-import { DatexPipe } from './shared/datex.pipe';
-import { ReportRangeComponent } from './shared/report-range/report-range.component';
-import { MyDatePickerModule } from './shared/my-date-picker';
+import {BoardResolver} from './boards/board/services/board.resolver';
+import {BoardModule} from './boards/board.module';
+import {HeaderModule} from './header/header.module';
+import {LoginModule} from './login/login.module';
+import {ShareModule} from './share/share.module';
+import {MessagesModule} from './shared/messages/messages.module';
+import {ShareCanDeactivateGuard} from './share/share-can-deactivate.guard';
+import {TranslateParserService} from './shared/translate/translate-parser.service';
 
 export const APP_SERVICES = [
     APIService,
     AuthGuard,
     AuthenticationService,
+    CounterService,
     FilterService,
     LanguageService,
     MessageService
@@ -64,45 +32,22 @@ export const APP_SERVICES = [
 
 @NgModule({
     declarations: [
-        AppComponent,
-        HeaderComponent,
-        MessagesComponent,
-        BoardListComponent,
-        LoginComponent,
-        BoardComponent,
-        PieComponent,
-        LineComponent,
-        RowComponent,
-        BarComponent,
-        GeoComponent,
-        TableComponent,
-        SelectorComponent,
-        CounterComponent,
-        AnchorDirective,
-        GroupByComponent,
-        TimepickerComponent,
-        ShareComponent,
-        DataGridComponent,
-        AccessLevelComponent,
-        MessageComponent,
-        DatexPipe,
-        ReportRangeComponent
+        AppComponent
     ],
     imports: [
         BrowserModule,
-        HttpModule,
+        HttpClientModule,
+        BoardModule,
+        MessagesModule,
+        HeaderModule,
+        LoginModule,
+        ShareModule,
         AppRoutingModule,
-        ModalModule,
-        FiltersModule,
-        ReactiveFormsModule,
-        MyDatePickerModule,
-        BsDropdownModule.forRoot(),
-        TooltipModule.forRoot(),
         TranslateModule.forRoot({
             loader: {
                 provide: TranslateLoader,
                 useFactory: HttpLoaderFactory,
-                deps: [Http]
+                deps: [HttpClient]
             },
             parser: {
                 provide: TranslateParser,
@@ -115,7 +60,14 @@ export const APP_SERVICES = [
         ShareCanDeactivateGuard,
         // Application services
         ...APP_SERVICES,
-        !environment.production ? DebugService : [],
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: APIInterceptor,
+            deps: [
+                MessageService
+            ],
+            multi: true
+        }
     ],
     bootstrap: [AppComponent]
 })
@@ -123,6 +75,6 @@ export class AppModule {
 }
 
 // AoT requires an exported function for factories
-export function HttpLoaderFactory(http: Http) {
-    return new TranslateHttpLoader(http);
+export function HttpLoaderFactory(http: HttpClient) {
+    return new TranslateHttpLoader(http, '/ui/bi2/assets/i18n/');
 }
