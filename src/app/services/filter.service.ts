@@ -139,7 +139,8 @@ export class FilterService {
     allFiltersByName(name: string): Filter[] {
         const groups = _.cloneDeep(this.filtersSubject.getValue());
 
-        return _.flatMap(groups.map(group => group.filters))
+        return _.flatMap(groups.filter(group => group.active)
+            .map(group => group.filters))
             .filter(filter => filter.name === name);
     }
 
