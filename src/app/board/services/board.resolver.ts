@@ -4,9 +4,9 @@ import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/r
 import { Observable } from 'rxjs/Rx';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
-import { APIService } from '../../services/index';
+import { APIService } from '../../services';
 
-import { BiRequestBuilder, Board, Methods } from '../../model/index';
+import { BiRequestBuilder, Board, Methods } from '../../model';
 
 @Injectable()
 export class BoardResolver implements Resolve<Board> {

@@ -8,11 +8,11 @@ import { FilterService } from '../../services';
 import { DatasourceService } from '../services/datasource-info.service';
 
 @Component({
-    selector: 'bi-groupby',
-    templateUrl: './groupby.component.html',
-    styleUrls: ['./groupby.component.scss']
+    selector: 'bi-left-side',
+    templateUrl: './left-side.component.html',
+    styleUrls: ['./left-side.component.scss']
 })
-export class GroupByComponent implements OnInit {
+export class LeftSideComponent implements OnInit {
     @Input()
     board: Board;
     fields$: Observable<Field[]>;

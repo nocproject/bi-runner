@@ -13,11 +13,11 @@ import { SharedModule } from '../shared/shared.module';
 import { TimepickerModule } from '../shared/timepicker/timepicker.module';
 import { WidgetsModule } from '../widgets/widgets.module';
 //
-import { BoardComponent, GroupByComponent, ReportRangeComponent, SelectorComponent } from './index';
+import { BoardComponent, LeftSideComponent, ReportRangeComponent, SelectorComponent } from './index';
 
 export const COMPONENTS = [
     BoardComponent,
-    GroupByComponent,
+    LeftSideComponent,
     ReportRangeComponent,
     SelectorComponent
 ];
