@@ -1,3 +1,6 @@
+@import "variables";
+@import "../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
+
 //
 // Checkboxes
 // --------------------------------------------------
@@ -255,12 +258,12 @@ input[type="radio"] {
 }
 
 .checkbox.rtl {
-  padding-left: 0px;
+  padding-left: 0;
   padding-right: 20px;
 }
 
 .checkbox.rtl label {
-  padding-left: 0px;
+  padding-left: 0;
   padding-right: 5px;
 }
 
@@ -274,23 +277,23 @@ input[type="radio"] {
 .checkbox.rtl label::after {
   left: auto;
   right: 0;
-  margin-left: 0px;
+  margin-left: 0;
   margin-right: -20px;
-  padding-left: 0px;
+  padding-left: 0;
   padding-right: 3px;
 }
 
 .checkbox.rtl input[type="checkbox"] {
-  margin-left: 0px;
+  margin-left: 0;
 }
 
 .radio.rtl {
-  padding-left: 0px;
+  padding-left: 0;
   padding-right: 20px;
 }
 
 .radio.rtl label {
-  padding-left: 0px;
+  padding-left: 0;
   padding-right: 5px;
 }
 
@@ -304,12 +307,12 @@ input[type="radio"] {
 .radio.rtl label::after {
   left: auto;
   right: 0;
-  margin-left: 0px;
+  margin-left: 0;
   margin-right: -20px;
-  padding-left: 0px;
+  padding-left: 0;
   padding-right: 3px;
 }
 
 .radio.rtl input[type="radio"] {
-  margin-left: 0px;
+  margin-left: 0;
 }
