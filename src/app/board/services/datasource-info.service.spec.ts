@@ -3,17 +3,17 @@ import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { getTestBed, TestBed } from '@angular/core/testing';
 
-import { APIService } from '../../../services';
+import { APIService } from '../../services/index';
 import { BoardResolver } from './board.resolver';
 import { DatasourceService } from './datasource-info.service';
-import { Field, Methods } from '../../../model';
+import { Field, Methods } from '../../model/index';
 // Test data
-import * as alarmsDatasourceInfoBody from '../../../test-response/alarmsDatasourceInfoBody.json';
-import * as alarmsBoardBody from '../../../test-response/alarmsBoardBody.json';
-import * as rebootsDatasourceInfoBody from '../../../test-response/rebootsDatasourceInfoBody.json';
-import * as rebootsBoardBody from '../../../test-response/rebootsBoardBody.json';
-import * as interfacesDatasourceInfoBody from '../../../test-response/interfacesDatasourceInfoBody.json';
-import * as interfacesBoardBody from '../../../test-response/interfacesBoardBody.json';
+import * as alarmsDatasourceInfoBody from '../../test-response/alarmsDatasourceInfoBody.json';
+import * as alarmsBoardBody from '../../test-response/alarmsBoardBody.json';
+import * as rebootsDatasourceInfoBody from '../../test-response/rebootsDatasourceInfoBody.json';
+import * as rebootsBoardBody from '../../test-response/rebootsBoardBody.json';
+import * as interfacesDatasourceInfoBody from '../../test-response/interfacesDatasourceInfoBody.json';
+import * as interfacesBoardBody from '../../test-response/interfacesBoardBody.json';
 
 describe('Service: DatasourceService for alarms', () => {
     let injector: TestBed;

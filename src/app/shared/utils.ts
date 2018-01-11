@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 
 import { RouterStateSerializer } from '@ngrx/router-store';
-import { RouterStateSnapshot, Params } from '@angular/router';
+import { Params, RouterStateSnapshot } from '@angular/router';
 
 export class Utils {
 

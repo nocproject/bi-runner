@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs/Subscription';
 import * as _ from 'lodash';
 
 import { APIService, MessageService } from '../services';
-import { AccessLevel, Message, MessageType, Methods, BiRequestBuilder } from '../model';
+import { AccessLevel, BiRequestBuilder, Message, MessageType, Methods } from '../model';
 import { GridConfig, GridConfigBuilder } from '../shared/data-grid/data-grid.component';
 import { ModalComponent } from '../shared/modal/modal';
 

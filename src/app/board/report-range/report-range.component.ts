@@ -6,7 +6,7 @@ import * as d3 from 'd3';
 import * as _ from 'lodash';
 import { Subscription } from 'rxjs/Subscription';
 
-import { BIValidators } from '../../filters/components/validators';
+import { BIValidators } from '../filters/components/validators';
 import { IDateRange, Range } from '../../model';
 
 @Component({

@@ -8,8 +8,8 @@ import * as d3 from 'd3';
 
 import { Field, Filter, FilterBuilder, Group, GroupBuilder, Value } from '../model';
 
-import { EventService } from '../filters/services';
-import { EventType, FormConfig, Groups } from '../filters/models';
+import { EventService } from '../board/filters/services';
+import { EventType, FormConfig, Groups } from '../board/filters/models';
 
 @Injectable()
 export class FilterService {

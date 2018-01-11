@@ -4,7 +4,7 @@ import { Validators } from '@angular/forms';
 import { Observable } from 'rxjs/Rx';
 import * as _ from 'lodash';
 
-import { IOption } from '../../model';
+import { IOption } from '../../../model';
 import { FieldConfig } from '../models';
 
 @Injectable()

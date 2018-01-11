@@ -19,8 +19,9 @@ import {
     APIInterceptor, APIService, AuthenticationService, AuthGuard, CounterService, FilterService, LanguageService,
     MessageService
 } from './services';
-import { BoardResolver } from './boards/board/services/board.resolver';
-import { BoardModule } from './boards/board.module';
+import { BoardResolver } from './board/services/board.resolver';
+import { BoardListModule } from './board-list/board-list.module';
+import { BoardModule } from './board/board.module';
 import { HeaderModule } from './header/header.module';
 import { LoginModule } from './login/login.module';
 import { ShareModule } from './share/share.module';
@@ -46,6 +47,7 @@ export const APP_SERVICES = [
         BrowserModule,
         HttpClientModule,
         BoardModule,
+        BoardListModule,
         MessagesModule,
         HeaderModule,
         LoginModule,

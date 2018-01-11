@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs/Subscription';
 import * as _ from 'lodash';
 
 import { EventService } from '../../services';
-import { FilterService } from '../../../services';
+import { FilterService } from '../../../../services';
 //
 import { EventType, FormConfig, GroupConfig } from '../../models';
 

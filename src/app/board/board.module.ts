@@ -6,18 +6,17 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { DataGridModule } from '../shared/data-grid/data-grid.module';
-import { FiltersModule } from '../filters/filters.module';
+import { FiltersModule } from './filters/filters.module';
 import { ModalModule } from '../shared/modal/modal.module';
 import { MyDatePickerModule } from '../shared/my-date-picker';
 import { SharedModule } from '../shared/shared.module';
 import { TimepickerModule } from '../shared/timepicker/timepicker.module';
 import { WidgetsModule } from '../widgets/widgets.module';
 //
-import { BoardComponent, BoardListComponent, GroupByComponent, ReportRangeComponent, SelectorComponent } from './index';
+import { BoardComponent, GroupByComponent, ReportRangeComponent, SelectorComponent } from './index';
 
 export const COMPONENTS = [
     BoardComponent,
-    BoardListComponent,
     GroupByComponent,
     ReportRangeComponent,
     SelectorComponent

@@ -4,9 +4,9 @@ import { Router } from '@angular/router';
 
 import * as moment from 'moment';
 
-import { Message, MessageType, Methods, BiRequestBuilder } from '../../model';
-import { APIService, MessageService } from '../../services';
-import { GridConfig, GridConfigBuilder } from '../../shared/data-grid/data-grid.component';
+import { BiRequestBuilder, Message, MessageType, Methods } from '../model';
+import { APIService, MessageService } from '../services';
+import { GridConfig, GridConfigBuilder } from '../shared/data-grid/data-grid.component';
 
 @Component({
     selector: 'bi-board-list',

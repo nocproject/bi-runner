@@ -5,7 +5,7 @@ import * as _ from 'lodash';
 
 import { Board, Field } from '../../model';
 import { FilterService } from '../../services';
-import { DatasourceService } from '../board/services/datasource-info.service';
+import { DatasourceService } from '../services/datasource-info.service';
 
 @Component({
     selector: 'bi-groupby',

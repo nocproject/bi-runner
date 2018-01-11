@@ -4,7 +4,7 @@ import * as d3 from 'd3';
 import * as saver from 'file-saver';
 
 import { APIService, FilterService } from '../services';
-import { BoardResolver } from '../boards/board/services/board.resolver';
+import { BoardResolver } from '../board/services/board.resolver';
 //
 import {
     BiRequest, BiRequestBuilder, Board, Field, Filter, Group, Methods, Range, Result,

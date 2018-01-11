@@ -3,10 +3,10 @@ import { forwardRef, Inject, Injectable } from '@angular/core';
 import * as _ from 'lodash';
 import { Observable } from 'rxjs/Observable';
 
-import { APIService } from '../../../services';
+import { APIService } from '../../services/index';
 import { BoardResolver } from './board.resolver';
 
-import { Board, Datasource, Field, IOption, Methods, BiRequestBuilder } from '../../../model';
+import { BiRequestBuilder, Board, Datasource, Field, IOption, Methods } from '../../model/index';
 
 @Injectable()
 export class DatasourceService {

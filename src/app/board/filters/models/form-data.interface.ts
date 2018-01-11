@@ -1,4 +1,4 @@
-import { Group } from '../../model';
+import { Group } from '../../../model';
 
 export interface FormData {
     groups: Groups[];

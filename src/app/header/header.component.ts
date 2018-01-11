@@ -11,9 +11,9 @@ import * as _ from 'lodash';
 import { environment } from '../../environments/environment';
 
 import { APIService, AuthenticationService, FilterService, LanguageService, MessageService } from '../services';
-import { BoardResolver } from '../boards/board/services/board.resolver';
+import { BoardResolver } from '../board/services/board.resolver';
 
-import { Board, Message, MessageType, Methods, BiRequestBuilder, User } from '../model';
+import { BiRequestBuilder, Board, Message, MessageType, Methods, User } from '../model';
 import { ModalComponent } from '../shared/modal/modal';
 import { Export } from './export';
 
