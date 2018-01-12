@@ -9,7 +9,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/throw';
 
-import { Message, MessageType } from '../model';
+import { Message, MessageType } from 'app/model';
 import { MessageService } from './message.service';
 
 @Injectable()

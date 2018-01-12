@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Rx';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
-import { BiRequest, Result } from '../model';
+import { BiRequest, Result } from 'app/model';
 
 @Injectable()
 export class APIService {

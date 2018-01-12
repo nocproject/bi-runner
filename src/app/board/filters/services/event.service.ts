@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Rx';
 
-import { Event } from '../models';
+import { Event } from '../model';
 
 @Injectable()
 export class EventService {

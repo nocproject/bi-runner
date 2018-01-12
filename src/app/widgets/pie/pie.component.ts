@@ -5,7 +5,7 @@ import * as dc from 'dc';
 import { BaseMixin, Legend, PieChart } from 'dc';
 
 import { Restore, WidgetComponent } from '../widget.component';
-import { FilterBuilder, Result, Value } from '../../model';
+import { FilterBuilder, Result, Value } from 'app/model';
 import { Utils } from '../../shared/utils';
 
 @Component({

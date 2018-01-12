@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
-import { FieldConfig, FilterControl } from '../../models';
+import { FieldConfig, FilterControl } from '../../model';
 
 @Component({
     selector: 'bi-form-input',

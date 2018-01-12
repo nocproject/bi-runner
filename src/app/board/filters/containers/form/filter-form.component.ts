@@ -7,11 +7,11 @@ import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Rx';
 
 import { ConditionService, EventService } from '../../services';
-import { APIService, FilterService } from '../../../../services';
+import { APIService, FilterService } from 'app/services';
 import { DatasourceService } from '../../../services/datasource-info.service';
 
-import { EventType, FieldConfig, FiltersConfig, FormConfig, GroupConfig } from '../../models';
-import { Group, Range } from '../../../../model';
+import { EventType, FieldConfig, FiltersConfig, FormConfig, GroupConfig } from '../../model';
+import { Group, Range } from 'app/model';
 
 import { BIValidators } from '../../components/validators';
 

@@ -3,16 +3,16 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
 import * as _ from 'lodash';
 
-import { Board, Field } from '../../model';
-import { FilterService } from '../../services';
+import { Board, Field } from 'app/model';
+import { FilterService } from 'app/services';
 import { DatasourceService } from '../services/datasource-info.service';
 
 @Component({
-    selector: 'bi-left-side',
-    templateUrl: './left-side.component.html',
-    styleUrls: ['./left-side.component.scss']
+    selector: 'bi-fields',
+    templateUrl: './fields.component.html',
+    styleUrls: ['./fields.component.scss']
 })
-export class LeftSideComponent implements OnInit {
+export class FieldsComponent implements OnInit {
     @Input()
     board: Board;
     fields$: Observable<Field[]>;

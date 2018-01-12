@@ -7,8 +7,8 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import * as _ from 'lodash';
 
-import { APIService, MessageService } from '../services';
-import { AccessLevel, BiRequestBuilder, Message, MessageType, Methods } from '../model';
+import { APIService, MessageService } from 'app/services';
+import { AccessLevel, BiRequestBuilder, Message, MessageType, Methods } from 'app/model';
 import { GridConfig, GridConfigBuilder } from '../shared/data-grid/data-grid.component';
 import { ModalComponent } from '../shared/modal/modal';
 

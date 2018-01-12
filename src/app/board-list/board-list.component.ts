@@ -4,8 +4,8 @@ import { Router } from '@angular/router';
 
 import * as moment from 'moment';
 
-import { BiRequestBuilder, Message, MessageType, Methods } from '../model';
-import { APIService, MessageService } from '../services';
+import { BiRequestBuilder, Message, MessageType, Methods } from 'app/model';
+import { APIService, MessageService } from 'app/services';
 import { GridConfig, GridConfigBuilder } from '../shared/data-grid/data-grid.component';
 
 @Component({

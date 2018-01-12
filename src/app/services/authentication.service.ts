@@ -7,7 +7,7 @@ import { Observable } from 'rxjs/Rx';
 import { APIService } from './api.service';
 import { MessageService } from './message.service';
 
-import { BiRequestBuilder, Message, MessageType, Methods, Result, User } from '../model';
+import { BiRequestBuilder, Message, MessageType, Methods, Result, User } from 'app/model';
 
 @Injectable()
 export class AuthenticationService {

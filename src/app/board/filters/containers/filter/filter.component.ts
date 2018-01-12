@@ -4,7 +4,7 @@ import { FormArray, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs/Subscription';
 import * as _ from 'lodash';
 
-import { EventType, FieldConfig } from '../../models';
+import { EventType, FieldConfig } from '../../model';
 import { EventService } from '../../services';
 
 @Component({

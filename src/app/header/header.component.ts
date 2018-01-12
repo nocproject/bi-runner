@@ -8,12 +8,12 @@ import { Subscription } from 'rxjs/Subscription';
 
 import * as _ from 'lodash';
 
-import { environment } from '../../environments/environment';
+import { environment } from '@env/environment';
 
-import { APIService, AuthenticationService, FilterService, LanguageService, MessageService } from '../services';
+import { APIService, AuthenticationService, FilterService, LanguageService, MessageService } from 'app/services';
 import { BoardResolver } from '../board/services/board.resolver';
 
-import { BiRequestBuilder, Board, Message, MessageType, Methods, User } from '../model';
+import { BiRequestBuilder, Board, Message, MessageType, Methods, User } from 'app/model';
 import { ModalComponent } from '../shared/modal/modal';
 import { Export } from './export';
 

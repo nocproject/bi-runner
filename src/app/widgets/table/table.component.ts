@@ -7,7 +7,7 @@ import { BaseMixin, DataTableWidget } from 'dc';
 import * as crossfilter from 'crossfilter';
 
 import { Restore, WidgetComponent } from '../widget.component';
-import { Field, Result, Value } from '../../model';
+import { Field, Result, Value } from 'app/model';
 import { Utils } from '../../shared/utils';
 
 @Component({

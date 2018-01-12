@@ -5,7 +5,7 @@ import { BaseMixin, RowChart } from 'dc';
 import * as crossfilter from 'crossfilter';
 
 import { Restore, WidgetComponent } from '../widget.component';
-import { FilterBuilder, Result, Value } from '../../model';
+import { FilterBuilder, Result, Value } from 'app/model';
 import { Utils } from '../../shared/utils';
 
 @Component({

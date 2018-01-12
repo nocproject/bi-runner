@@ -7,14 +7,14 @@ import * as moment from 'moment';
 import { Observable } from 'rxjs/Rx';
 import { Subscription } from 'rxjs/Subscription';
 
-import { environment } from '../../../environments/environment';
-import { APIService, FilterService, LanguageService } from '../../services';
-import { BiRequestBuilder, Board, FilterBuilder, Group, GroupBuilder, Methods, Range, Value } from '../../model';
+import { environment } from '@env/environment';
+import { APIService, FilterService, LanguageService } from 'app/services';
+import { BiRequestBuilder, Board, FilterBuilder, Group, GroupBuilder, Methods, Range, Value } from 'app/model';
 
 import { ReportRangeComponent } from '../report-range/report-range.component';
 import { FilterFormComponent } from '../filters/containers/form/filter-form.component';
 import { EventService } from '../filters/services';
-import { EventType } from '../filters/models';
+import { EventType } from '../filters/model';
 import { ModalComponent } from '../../shared/modal/modal';
 import { DatasourceService } from '../services/datasource-info.service';
 

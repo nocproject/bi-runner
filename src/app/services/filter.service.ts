@@ -6,10 +6,10 @@ import { Observable } from 'rxjs/Rx';
 import * as _ from 'lodash';
 import * as d3 from 'd3';
 
-import { Field, Filter, FilterBuilder, Group, GroupBuilder, Value } from '../model';
+import { Field, Filter, FilterBuilder, Group, GroupBuilder, Value } from 'app/model';
 
 import { EventService } from '../board/filters/services';
-import { EventType, FormConfig, Groups } from '../board/filters/models';
+import { EventType, FormConfig, Groups } from '../board/filters/model';
 
 @Injectable()
 export class FilterService {

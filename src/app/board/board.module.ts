@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 
+import { StoreModule } from '@ngrx/store';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -13,11 +14,12 @@ import { SharedModule } from '../shared/shared.module';
 import { TimepickerModule } from '../shared/timepicker/timepicker.module';
 import { WidgetsModule } from '../widgets/widgets.module';
 //
-import { BoardComponent, LeftSideComponent, ReportRangeComponent, SelectorComponent } from './index';
+import { BoardComponent, FieldsComponent, ReportRangeComponent, SelectorComponent } from './index';
+import { reducers } from './reducers';
 
 export const COMPONENTS = [
     BoardComponent,
-    LeftSideComponent,
+    FieldsComponent,
     ReportRangeComponent,
     SelectorComponent
 ];
@@ -34,7 +36,8 @@ export const COMPONENTS = [
         WidgetsModule,
         ReactiveFormsModule,
         TooltipModule.forRoot(),
-        TranslateModule
+        TranslateModule,
+        StoreModule.forFeature('board', reducers),
     ],
     declarations: [
         ...COMPONENTS

@@ -12,7 +12,7 @@ import { FormInputComponent } from './form-input/form-input.component';
 import { FormSelectComponent } from './form-select/form-select.component';
 import { FormModelComponent } from './form-model/form-model.component';
 
-import { FieldConfig, FilterControl } from '../models';
+import { FieldConfig, FilterControl } from '../model';
 
 const components: { [type: string]: Type<FilterControl> } = {
     button: FormButtonComponent,

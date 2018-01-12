@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
 
-import { MessageService } from '../../services';
-import { Message } from '../../model';
+import { MessageService } from 'app/services';
+import { Message } from 'app/model';
 
 @Component({
     selector: 'bi-messages',

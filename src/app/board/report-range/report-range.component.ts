@@ -7,7 +7,7 @@ import * as _ from 'lodash';
 import { Subscription } from 'rxjs/Subscription';
 
 import { BIValidators } from '../filters/components/validators';
-import { IDateRange, Range } from '../../model';
+import { IDateRange, Range } from 'app/model';
 
 @Component({
     selector: 'bi-report-range',

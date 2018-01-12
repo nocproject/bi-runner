@@ -10,7 +10,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { RouterStateSerializer, StoreRouterConnectingModule } from '@ngrx/router-store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 //
-import { environment } from '../environments/environment';
+import { environment } from '@env/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { metaReducers, reducers } from './reducers';
 import { CustomRouterStateSerializer } from './shared/utils';

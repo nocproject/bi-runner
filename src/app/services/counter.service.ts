@@ -6,7 +6,7 @@ import { Observable } from 'rxjs/Rx';
 import { APIService } from './api.service';
 import { FilterService } from './filter.service';
 
-import { BiRequestBuilder, Board, Field, Group, Methods, WhereBuilder } from '../model';
+import { BiRequestBuilder, Board, Field, Group, Methods, WhereBuilder } from 'app/model';
 
 @Injectable()
 export class CounterService {
