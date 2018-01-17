@@ -1,5 +1,6 @@
 import { JsonMember, JsonObject, TypedJSON } from '@upe/typedjson';
 import { Field } from './field';
+import { IOption } from './ioption';
 
 @JsonObject()
 export class Datasource {
@@ -11,6 +12,7 @@ export class Datasource {
     public fields: Field[];
     @JsonMember()
     public sample: boolean;
+    public options: IOption[];
 
     static fromJSON(json: any): Datasource {
         return TypedJSON.parse(json, Datasource);

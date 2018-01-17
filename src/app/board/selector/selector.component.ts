@@ -11,12 +11,14 @@ import { environment } from '@env/environment';
 import { APIService, FilterService, LanguageService } from 'app/services';
 import { BiRequestBuilder, Board, FilterBuilder, Group, GroupBuilder, Methods, Range, Value } from 'app/model';
 
+import { Store } from '@ngrx/store';
+import * as fromBoard from '../reducers';
+
 import { ReportRangeComponent } from '../report-range/report-range.component';
 import { FilterFormComponent } from '../filters/containers/form/filter-form.component';
 import { EventService } from '../filters/services';
 import { EventType } from '../filters/model';
 import { ModalComponent } from '../../shared/modal/modal';
-import { DatasourceService } from '../services/datasource-info.service';
 
 @Component({
     // changeDetection: ChangeDetectionStrategy.OnPush,
@@ -47,7 +49,7 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
 
     constructor(private fb: FormBuilder,
                 private api: APIService,
-                private datasourceService: DatasourceService,
+                private store: Store<fromBoard.BoardState>,
                 private eventService: EventService,
                 private filterService: FilterService,
                 private languageService: LanguageService) {
@@ -97,7 +99,7 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
             this.filterService.ratioSubject.next(+data.ratio);
             this.filterService.initFilters(this.filterService.allFilters());
         });
-        this.isSample$ = this.datasourceService.isSample();
+        this.isSample$ = this.store.select(fromBoard.getSample);
     }
 
     onChangeRatio(value) {

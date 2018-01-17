@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -15,7 +16,10 @@ import { TimepickerModule } from '../shared/timepicker/timepicker.module';
 import { WidgetsModule } from '../widgets/widgets.module';
 //
 import { BoardComponent, FieldsComponent, ReportRangeComponent, SelectorComponent } from './index';
+//
 import { reducers } from './reducers';
+import { FieldsEffects } from './effects/board';
+import { DatasourceService } from './services/datasource-info.service';
 
 export const COMPONENTS = [
     BoardComponent,
@@ -38,12 +42,21 @@ export const COMPONENTS = [
         TooltipModule.forRoot(),
         TranslateModule,
         StoreModule.forFeature('board', reducers),
+        EffectsModule.forFeature([FieldsEffects])
     ],
     declarations: [
         ...COMPONENTS
     ],
     exports: [
         ...COMPONENTS
+    ],
+    providers: [
+        DatasourceService
+    //     {
+    //         provide: DatasourceService,
+    //         useClass: DatasourceService,
+    //         deps: [APIService, BoardResolver]
+    //     }
     ]
 })
 export class BoardModule {

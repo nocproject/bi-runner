@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 
 import * as _ from 'lodash';
 import { Observable } from 'rxjs/Observable';
@@ -12,8 +12,8 @@ import { BiRequestBuilder, Board, Datasource, Field, IOption, Methods } from 'ap
 export class DatasourceService {
     datasource$: Observable<Datasource>;
 
-    constructor(@Inject(forwardRef(() => APIService)) private api: APIService,
-                @Inject(forwardRef(() => BoardResolver)) private boardResolver: BoardResolver) {
+    constructor(private api: APIService,
+                private boardResolver: BoardResolver) {
         this.datasource$ = this.boardResolver.board$
             .switchMap((board: Board) => {
                 return this.api.execute(
@@ -24,11 +24,14 @@ export class DatasourceService {
                     .map(response => {
                         const datasource = Datasource.fromJSON(response.result);
                         datasource.fields = this._fields(board, datasource);
+                        datasource.options = DatasourceService._options(datasource.fields);
                         return datasource;
                     });
-            })
-            .publishLast()
-            .refCount();
+            });
+    }
+
+    info(): Observable<Datasource> {
+        return this.datasource$;
     }
 
     name(): Observable<string> {
@@ -41,21 +44,6 @@ export class DatasourceService {
 
     fields(): Observable<Field[]> {
         return this.datasource$.map(d => d.fields);
-    }
-
-    fieldsAsOption(): Observable<IOption[]> {
-        return this.fields()
-            .map(array => array
-                .filter(field => field.isSelectable)
-                .map(field => {
-                        const ds = field.datasource ? field.datasource : 'none';
-                        return {
-                            value: `${field.name}.${field.type}.${field.pseudo}.${ds}`,
-                            text: field.name
-                        };
-                    }
-                )
-            );
     }
 
     private _fields(board: Board, datasource: Datasource): Field[] {
@@ -119,5 +107,18 @@ export class DatasourceService {
                     return -1;
                 }
             });
+    }
+
+    private static _options(fields: Field[]): IOption[] {
+        return fields
+            .filter(field => field.isSelectable)
+            .map(field => {
+                    const ds = field.datasource ? field.datasource : 'none';
+                    return {
+                        value: `${field.name}.${field.type}.${field.pseudo}.${ds}`,
+                        text: field.name
+                    };
+                }
+            );
     }
 }

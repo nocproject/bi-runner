@@ -4,22 +4,18 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import * as _ from 'lodash';
 
-import { APIService, FilterService } from 'app/services';
+import { Store } from '@ngrx/store';
+import * as boardAction from './actions/board';
+import * as fromBoard from './reducers';
+
+import { FilterService } from 'app/services';
 import { BoardResolver } from './services/board.resolver';
-import { DatasourceService } from './services/datasource-info.service';
 
 import { Board, Cell, CellAndWidget, Widget } from 'app/model';
 
 @Component({
     selector: 'bi-board',
-    templateUrl: './board.component.html',
-    providers: [
-        {
-            provide: DatasourceService,
-            useClass: DatasourceService,
-            deps: [APIService, BoardResolver]
-        }
-    ]
+    templateUrl: './board.component.html'
 })
 export class BoardComponent implements OnInit, OnDestroy {
     public cells: CellAndWidget[][];
@@ -28,7 +24,8 @@ export class BoardComponent implements OnInit, OnDestroy {
 
     constructor(public boardResolver: BoardResolver,
                 private route: ActivatedRoute,
-                private filterService: FilterService) {
+                private filterService: FilterService,
+                private store: Store<fromBoard.BoardState>) {
     }
 
     ngOnInit(): void {
@@ -44,6 +41,7 @@ export class BoardComponent implements OnInit, OnDestroy {
                     this.filterService.ratioSubject.next(board.sample ? board.sample : 1);
                     this.boardResolver.next(board);
                     this.filterService.isReportOpenSubject.next(true);
+                    this.store.dispatch(new boardAction.LoadInfo());
                 }
             );
     }
