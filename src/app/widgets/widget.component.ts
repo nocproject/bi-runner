@@ -21,9 +21,9 @@ export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestro
     showReset = false;
     // default values
     yLabelOffset = 20;
-    private filterSubscription: Subscription;
+    public filterSubscription: Subscription;
 
-    constructor(@Inject(forwardRef(() => APIService)) private api: APIService,
+    constructor(@Inject(forwardRef(() => APIService)) public api: APIService,
                 @Inject(forwardRef(() => FilterService)) private filterService: FilterService,
                 @Inject(forwardRef(() => LanguageService)) public languageService: LanguageService) {
     }

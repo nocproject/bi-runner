@@ -9,12 +9,15 @@ import * as crossfilter from 'crossfilter';
 import { Restore, WidgetComponent } from '../widget.component';
 import { Field, Result, Value } from '../../model';
 import { Utils } from '../../shared/utils';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
     selector: 'bi-table',
     templateUrl: './table.component.html'
 })
 export class TableComponent extends WidgetComponent {
+    private sortSubscription: Subscription;
+
     draw(response: Result): BaseMixin<DataTableWidget> {
         const chart: DataTableWidget = dc.dataTable(`#${this.data.cell.name}`);
         const ndx = crossfilter(response.zip(true));
@@ -52,6 +55,41 @@ export class TableComponent extends WidgetComponent {
         chart.render();
 
         return chart;
+    }
+
+    sort(column: Field): void {
+        if ('desc' in column) {
+            const fields = this.data.widget.query.getFields().map(field => {
+                if ('desc' in field) {
+                    field.order = ++field.order;
+                }
+                if (field.alias === column.alias || field.expr === column.expr) {
+                    field.desc = !field.desc;
+                    field.order = 0;
+                }
+                return field;
+            });
+            const minOrder = _.min(this.data.widget.query.getFields().filter(f => 'desc' in f && f.order).map(f => f.order));
+            this.data.widget.query.setField(fields.map(f => {
+                if (f.order) {
+                    f.order = f.order - minOrder + 1;
+                }
+                return f;
+            }));
+            this.sortSubscription = this.api.execute(this.data.widget.query)
+                .subscribe(
+                    (response: Result) => {
+                        this.chart = this.draw(response);
+                    },
+                    console.error);
+        }
+    }
+
+    ngOnDestroy(): void {
+        this.filterSubscription.unsubscribe();
+        if (this.sortSubscription) {
+            this.sortSubscription.unsubscribe();
+        }
     }
 
     getTitle(widget: BaseMixin<any>, filter): string {

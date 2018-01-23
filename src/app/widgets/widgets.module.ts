@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 //
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 //
 
@@ -24,6 +25,7 @@ export const WIDGETS = [
 @NgModule({
     imports: [
         CommonModule,
+        TooltipModule.forRoot(),
         TranslateModule
     ],
     declarations: [
