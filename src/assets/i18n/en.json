@@ -104,7 +104,8 @@
   },
   "WIDGET": {
     "RESET": "reset",
-    "DAYS": "[\"Mon\", \"Tue\", \"Wed\", \"Thu\", \"Fri\", \"Sat\", \"Sun\"]"
+    "DAYS": "[\"Mon\", \"Tue\", \"Wed\", \"Thu\", \"Fri\", \"Sat\", \"Sun\"]",
+    "ORDER.IN.SORT": "order in sort"
   },
   "SELECTOR": {
     "TITLE": "Selector",

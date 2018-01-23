@@ -13,6 +13,8 @@ export class Field {
     @JsonMember()
     public desc: boolean;
     @JsonMember({type: Number})
+    public order: number;
+    @JsonMember({type: Number})
     public group: number;
     @JsonMember()
     public format: string;
@@ -34,6 +36,10 @@ export class Field {
     public isGrouping: boolean;
     public grouped: boolean;
     public datasource: string;
+
+    public isSortable(): boolean {
+        return 'desc' in this;
+    }
 
     static fromJSON(json) {
         if (json.hasOwnProperty('expr')) {

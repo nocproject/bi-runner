@@ -12,7 +12,15 @@
             <table class="table table=hover" id="{{ data.cell.name }}">
                 <thead>
                 <tr class="header">
-                    <th *ngFor="let column of data.widget.query.getLabeledFields()">{{ column.label }}</th>
+                    <th *ngFor="let column of data.widget.query.getLabeledFields()"
+                        (click)="sort(column)"> {{ column.label }}
+                        <i *ngIf="column.isSortable()"
+                           style="cursor: pointer;"
+                           class="fa fa-sort-up"
+                           [ngClass]="{'fa-sort-desc': column.desc, 'fa-sort-up' : !column.desc}"
+                           aria-hidden="true"></i>
+                        <sup [tooltip]="'WIDGET.ORDER.IN.SORT' | translate" [placement]="'left'">{{column.order}}</sup>
+                    </th>
                 </tr>
                 </thead>
             </table>
