@@ -69,13 +69,15 @@ export class TableComponent extends WidgetComponent {
                 }
                 return field;
             });
-            const minOrder = _.min(this.data.widget.query.getFields().filter(f => 'desc' in f && f.order).map(f => f.order));
-            this.data.widget.query.setField(fields.map(f => {
-                if (f.order) {
-                    f.order = f.order - minOrder + 1;
-                }
-                return f;
-            }));
+            const mapper = fields.filter(f => 'order' in f).map(f=>f.order).sort();
+            this.data.widget.query.setField(
+                fields.map(f => {
+                    if ('order' in f) {
+                        f.order = mapper.indexOf(f.order);
+                    }
+                    return f;
+                })
+            );
             this.sortSubscription = this.api.execute(this.data.widget.query)
                 .subscribe(
                     (response: Result) => {

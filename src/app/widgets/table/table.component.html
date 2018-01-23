@@ -15,6 +15,7 @@
                     <th *ngFor="let column of data.widget.query.getLabeledFields()"
                         (click)="sort(column)"> {{ column.label }}
                         <i *ngIf="column.isSortable()"
+                           style="cursor: pointer;"
                            class="fa fa-sort-up"
                            [ngClass]="{'fa-sort-desc': column.desc, 'fa-sort-up' : !column.desc}"
                            aria-hidden="true"></i>
