@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 
+import { Subscription } from 'rxjs/Subscription';
+
 import * as _ from 'lodash';
 import * as d3 from 'd3';
 import * as dc from 'dc';
@@ -7,9 +9,8 @@ import { BaseMixin, DataTableWidget } from 'dc';
 import * as crossfilter from 'crossfilter';
 
 import { Restore, WidgetComponent } from '../widget.component';
-import { Field, Result, Value } from '../../model';
+import { Field, Result, Value } from '@app/model/index';
 import { Utils } from '../../shared/utils';
-import { Subscription } from 'rxjs/Subscription';
 
 @Component({
     selector: 'bi-table',
@@ -69,11 +70,11 @@ export class TableComponent extends WidgetComponent {
                 }
                 return field;
             });
-            const mapper = fields.filter(f => 'order' in f).map(f=>f.order).sort();
+            const mapper = fields.filter(f => 'order' in f).map(f => f.order).sort();
             this.data.widget.query.setField(
                 fields.map(f => {
                     if ('order' in f) {
-                        f.order = mapper.indexOf(f.order);
+                        f.order = mapper.indexOf(f.order) + 1;
                     }
                     return f;
                 })

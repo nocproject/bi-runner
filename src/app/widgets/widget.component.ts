@@ -6,8 +6,8 @@ import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/debounceTime';
 
-import { CellAndWidget, Filter, GroupBuilder, Result, Value, WhereBuilder } from '../model';
-import { APIService, FilterService, LanguageService } from '../services';
+import { CellAndWidget, Filter, GroupBuilder, Result, Value, WhereBuilder } from '@app/model/index';
+import { APIService, FilterService, LanguageService } from '@app/services/index';
 
 export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestroy {
     @Input()

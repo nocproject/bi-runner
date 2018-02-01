@@ -1,0 +1,81 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="chart-wrapper">
+            <div class="chart-title" (click)="collapsed = !collapsed">
+                <div class="title-left" translate>SELECTOR.TITLE</div>
+                <div class="title-right"
+                     [ngClass]="{'collapsed': collapsed, 'expanded': !collapsed}">
+                </div>
+                <div style="clear:both;"></div>
+            </div>
+            <div class="chart-stage" [ngClass]="{'collapse': collapsed}">
+                <div class="container-fluid">
+                    <div class="row vertical-align">
+                        <div class="col-md-3" translate>SELECTOR.RANGE
+                        </div>
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-default"
+                                    (click)="openRangeDlg(selectRange)"
+                                    translate>
+                                {{reportRangeText}}
+                            </button>
+                        </div>
+                        <div *ngIf="isSample$ | async" class="col-md-2 text-right">Ratio:</div>
+                        <div *ngIf="isSample$ | async" class="col-md-1" [formGroup]="ratioForm">
+                            <select class="form-control"
+                                    [formControl]="ratio"
+                                    (change)="onChangeRatio($event.target.value)"
+                                    title="ratio of sample from 0.1 to 1">
+                                <option [value]="0.1">0.1</option>
+                                <option [value]="0.3">0.3</option>
+                                <option [value]="0.5">0.5</option>
+                                <option [value]="1">1</option>
+                            </select>
+                        </div>
+                        <div *ngIf="!(isSample$ | async)" class="col-md-offset-3"></div>
+                        <div class="col-md-3 text-right" translate
+                             [translateParams]="{value: (lastUpdate$ | async | datex:'DD.MM.YYYY')}">
+                            SELECTOR.UPDATED
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <!-- scrolling -->
+                        <!--style="overflow-y: auto;">-->
+                        <div class="col-md-5" style="height: 550px">
+                            <bi-fields [board]="board"></bi-fields>
+                        </div>
+                        <div class="col-md-7" style="padding-right: 30px;">
+                            <bi-filter-form></bi-filter-form>
+                            <div *ngIf="!production">
+                                is valid : {{ filters.valid }}
+                                <hr>
+                                form params : {{ filters.value | json }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="chart-notes" translate>SELECTOR.NOTES</div>
+        </div>
+    </div>
+</div>
+
+<bi-modal #selectRange [modalClass]="'modal-lg'">
+    <bi-modal-header translate>SELECTOR.RANGE_DLG.TITLE</bi-modal-header>
+    <bi-modal-content>
+        <bi-report-range
+                [locale]="locale" [initValues]="values"
+                [fromControlName]="this.START_DATE"
+                [toControlName]="this.END_DATE">
+        </bi-report-range>
+    </bi-modal-content>
+    <bi-modal-footer>
+        <button class="btn btn-default" [disabled]="!rangeForm.valid"
+                (click)="applyRange(selectRange)" translate>SELECTOR.RANGE_DLG.APPLY_BTN
+        </button>
+        <button class="btn btn-default"
+                (click)="selectRange.close()" translate>SELECTOR.RANGE_DLG.CLOSE_BTN
+        </button>
+    </bi-modal-footer>
+</bi-modal>

@@ -44,7 +44,12 @@ export class Utils {
     }
 
     static intFormat(data) {
-        return d3.format('.0f')(parseFloat(data));
+        const val = parseFloat(data);
+
+        if (val < 1) {
+            return d3.format('.4f')(val);
+        }
+        return d3.format('.0f')(val);
     }
 
     // use if property format exist in table query

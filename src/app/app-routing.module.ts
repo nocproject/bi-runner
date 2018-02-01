@@ -2,9 +2,9 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { AuthGuard } from './services';
-import { BoardResolver } from './boards/board/services/board.resolver';
+import { BoardResolver } from './board/services/board.resolver';
 
-import { BoardComponent, BoardListComponent } from './boards';
+import { BoardComponent, BoardListComponent } from './board/index';
 import { LoginComponent } from './login/login.component';
 import { ShareComponent } from './share/share.component';
 import { ShareCanDeactivateGuard } from './share/share-can-deactivate.guard';
