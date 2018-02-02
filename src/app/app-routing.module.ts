@@ -2,12 +2,13 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { AuthGuard } from './services';
-import { BoardResolver } from './board/services/board.resolver';
+import { BoardResolver } from './board/services';
 
-import { BoardComponent, BoardListComponent } from './board/index';
+import { BoardComponent } from './board';
 import { LoginComponent } from './login/login.component';
 import { ShareComponent } from './share/share.component';
 import { ShareCanDeactivateGuard } from './share/share-can-deactivate.guard';
+import { BoardListComponent } from './board-list/board-list.component';
 
 const routes: Routes = [
     {
