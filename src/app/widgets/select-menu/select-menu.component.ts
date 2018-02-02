@@ -7,7 +7,7 @@ import { BaseMixin, SelectMenu } from 'dc';
 import * as crossfilter from 'crossfilter';
 
 import { Restore, WidgetComponent } from '../widget.component';
-import { FilterBuilder, Result, Value } from '@app/model/index';
+import { FilterBuilder, Result, Value } from '@app/model';
 
 @Component({
     selector: 'bi-menu',

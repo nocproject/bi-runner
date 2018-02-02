@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import * as d3 from 'd3';
 import * as saver from 'file-saver';
 
-import { APIService, FilterService } from '@app/services/index';
+import { APIService, FilterService } from '@app/services';
 import { BoardResolver } from '../board/services/board.resolver';
 //
 import {

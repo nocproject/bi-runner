@@ -4,10 +4,10 @@
     "outDir": "./dist/out-tsc",
     "baseUrl": "src",
     "paths": {
-      "@app/model/*": ["app/model/*"],
-      "@filter/model/*": ["app/board/filters/model/*"],
-      "@app/services/*": ["app/services/*"],
-      "@filter/services/*": ["app/board/filters/services/*"],
+      "@app/model": ["app/model/index"],
+      "@filter/model": ["app/board/filters/model/index"],
+      "@app/services": ["app/services/index"],
+      "@filter/services": ["app/board/filters/services/index"],
       "@env/*": ["environments/*"]
     },
     "sourceMap": true,

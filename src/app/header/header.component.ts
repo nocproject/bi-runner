@@ -10,7 +10,7 @@ import * as _ from 'lodash';
 
 import { environment } from '@env/environment';
 
-import { APIService, AuthenticationService, FilterService, LanguageService, MessageService } from '@app/services/index';
+import { APIService, AuthenticationService, FilterService, LanguageService, MessageService } from '@app/services';
 import { BoardResolver } from '../board/services/board.resolver';
 
 import { Board, Message, MessageType, Methods, BiRequestBuilder, User } from '../model';

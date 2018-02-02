@@ -4,10 +4,10 @@ import { FormArray, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs/Subscription';
 import * as _ from 'lodash';
 
-import { EventService } from '@filter/services/index';
-import { FilterService } from '@app/services/index';
+import { EventService } from '@filter/services';
+import { FilterService } from '@app/services';
 //
-import { EventType, FormConfig, GroupConfig } from '@filter/model/index';
+import { EventType, FormConfig, GroupConfig } from '@filter/model';
 
 @Component({
     selector: 'bi-group',

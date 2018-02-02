@@ -3,8 +3,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
 import * as _ from 'lodash';
 
-import { Board, Field } from '@app/model/index';
-import { FilterService } from '@app/services/index';
+import { Board, Field } from '@app/model';
+import { FilterService } from '@app/services';
 import { DatasourceService } from '../services/datasource-info.service';
 
 @Component({

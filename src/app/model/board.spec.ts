@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { getTestBed, TestBed } from '@angular/core/testing';
 
-import { APIService } from '@app/services/index';
+import { APIService } from '@app/services';
 //
 import { Board } from './board';
 import { Methods } from './methods.enum';

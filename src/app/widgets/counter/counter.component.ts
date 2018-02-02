@@ -2,8 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 
 import { Observable } from 'rxjs/Rx';
 
-import { CounterService, FilterService } from '@app/services/index';
-import { Board } from '@app/model/index';
+import { CounterService, FilterService } from '@app/services';
+import { Board } from '@app/model';
 
 @Component({
     selector: 'bi-counter',

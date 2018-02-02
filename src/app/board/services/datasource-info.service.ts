@@ -1,19 +1,19 @@
-import { forwardRef, Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 
 import * as _ from 'lodash';
 import { Observable } from 'rxjs/Observable';
 
-import { APIService } from '@app/services/index';
+import { APIService } from '@app/services';
 import { BoardResolver } from './board.resolver';
 
-import { Board, Datasource, Field, IOption, Methods, BiRequestBuilder } from '@app/model/index';
+import { BiRequestBuilder, Board, Datasource, Field, IOption, Methods } from '@app/model';
 
 @Injectable()
 export class DatasourceService {
     datasource$: Observable<Datasource>;
 
-    constructor(@Inject(forwardRef(() => APIService)) private api: APIService,
-                @Inject(forwardRef(() => BoardResolver)) private boardResolver: BoardResolver) {
+    constructor(private api: APIService,
+                private boardResolver: BoardResolver) {
         this.datasource$ = this.boardResolver.board$
             .switchMap((board: Board) => {
                 return this.api.execute(
@@ -24,6 +24,7 @@ export class DatasourceService {
                     .map(response => {
                         const datasource = Datasource.fromJSON(response.result);
                         datasource.fields = this._fields(board, datasource);
+                        // this.filterService.fields = datasource.fields;
                         return datasource;
                     });
             })

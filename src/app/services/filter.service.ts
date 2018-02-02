@@ -6,12 +6,9 @@ import { Observable } from 'rxjs/Rx';
 import * as _ from 'lodash';
 import * as d3 from 'd3';
 
-import { Field, Filter, FilterBuilder, Group, GroupBuilder, Value } from '../model';
-
-import { EventService } from '@filter/services/index';
-import { EventType, FormConfig, Groups } from '@filter/model/index';
-
-// import { EventType, FormConfig, Groups } from 'filter/model';
+import { Field, Filter, FilterBuilder, Group, GroupBuilder, Value } from '@app/model';
+import { EventType, FormConfig, Groups } from '@filter/model';
+import { EventService } from '@filter/services';
 
 @Injectable()
 export class FilterService {
@@ -72,7 +69,7 @@ export class FilterService {
         this.nextFilter(groups);
     }
 
-    formFilters(groups: Groups[], config: FormConfig) {
+    formFilters(groups: Groups[], config: FormConfig): void {
         const exist: Group[] = _.cloneDeep(this.filtersSubject.getValue())
             .filter(group => group.name !== this.FORM_GROUP_NAME);
 

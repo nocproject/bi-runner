@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 
-import { FieldConfig, FilterControl } from '@filter/model/index';
+import { FieldConfig, FilterControl } from '@filter/model';
 
 @Component({
     selector: 'bi-form-model',

@@ -2,6 +2,7 @@ import { JsonMember, JsonObject } from '@upe/typedjson';
 
 import { Value } from './value';
 import { Range } from './range';
+import { Field } from './field';
 
 @JsonObject({initializer: Filter.fromJSON})
 export class Filter {
@@ -22,7 +23,7 @@ export class Filter {
     // form data
     public valueFirst: string;
     public valueSecond: string;
-    public hide: string;
+    public field: Field;
     @JsonMember()
     public datasource: string;
 

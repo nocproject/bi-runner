@@ -3,10 +3,10 @@ import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { getTestBed, TestBed } from '@angular/core/testing';
 
-import { APIService } from '@app/services/index';
+import { APIService } from '@app/services';
 import { BoardResolver } from './board.resolver';
 import { DatasourceService } from './datasource-info.service';
-import { Field, Methods } from '@app/model/index';
+import { Field, Methods } from '@app/model';
 // Test data
 import * as alarmsDatasourceInfoBody from '../../test-response/alarmsDatasourceInfoBody.json';
 import * as alarmsBoardBody from '../../test-response/alarmsBoardBody.json';

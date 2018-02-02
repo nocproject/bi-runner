@@ -5,7 +5,7 @@ import { BaseMixin, BoxPlot } from 'dc';
 import * as crossfilter from 'crossfilter';
 
 import { Restore, WidgetComponent } from '../widget.component';
-import { Result, Value } from '@app/model/index';
+import { Result, Value } from '@app/model';
 
 @Component({
     selector: 'bi-box',

@@ -9,9 +9,9 @@ import { Subscription } from 'rxjs/Subscription';
 
 import * as _ from 'lodash';
 
-import { FieldConfig } from '@filter/model/index';
-import { Methods, BiRequestBuilder, Result } from '@app/model/index';
-import { APIService } from '@app/services/index';
+import { FieldConfig } from '@filter/model';
+import { Methods, BiRequestBuilder, Result } from '@app/model';
+import { APIService } from '@app/services';
 import { TreeviewComponent, TreeviewItem } from 'ngx-treeview';
 import { TranslateService } from '@ngx-translate/core';
 

@@ -2,7 +2,7 @@ import { ValidatorFn } from '@angular/forms';
 
 import { Observable } from 'rxjs/Rx';
 
-import { IOption } from '@app/model/index';
+import { IOption } from '@app/model';
 
 export interface FormConfig {
     groups: GroupConfig[];

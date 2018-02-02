@@ -4,8 +4,8 @@ import { Validators } from '@angular/forms';
 import { Observable } from 'rxjs/Rx';
 import * as _ from 'lodash';
 
-import { IOption } from '@app/model/index';
-import { FieldConfig } from '@filter/model/index';
+import { IOption } from '@app/model';
+import { FieldConfig } from '@filter/model';
 
 @Injectable()
 export class ConditionService {

@@ -1,5 +1,6 @@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
+import { Field } from './field';
 import { Filter } from './filter';
 import { Value } from './value';
 
@@ -56,6 +57,11 @@ export class FilterBuilder {
 
     public datasource(datasource: string): FilterBuilder {
         this.filter.datasource = datasource;
+        return this;
+    }
+
+    public field(field: Field): FilterBuilder {
+        this.filter.field = field;
         return this;
     }
 

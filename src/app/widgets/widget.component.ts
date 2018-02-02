@@ -6,8 +6,8 @@ import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/debounceTime';
 
-import { CellAndWidget, Filter, GroupBuilder, Result, Value, WhereBuilder } from '@app/model/index';
-import { APIService, FilterService, LanguageService } from '@app/services/index';
+import { CellAndWidget, Filter, GroupBuilder, Result, Value, WhereBuilder } from '@app/model';
+import { APIService, FilterService, LanguageService } from '@app/services';
 
 export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestroy {
     @Input()
@@ -101,7 +101,7 @@ export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestro
                 if (updated) {
                     this.data.widget.query.params[0].filter = updated;
                 } else {
-                    delete this.data.widget.query.params[0].filter;
+                    delete this.data.widget.query.params[0]['filter'];
                 }
                 let ratio = this.filterService.ratioSubject.getValue();
                 if (ratio !== 1) {

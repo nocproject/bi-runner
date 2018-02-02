@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 
-import { Message } from '@app/model/index';
-import { MessageService } from '@app/services/index';
+import { Message } from '@app/model';
+import { MessageService } from '@app/services';
 
 @Component({
     selector: 'bi-message',
