@@ -4,11 +4,10 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import * as _ from 'lodash';
 
-import { APIService, FilterService } from 'app/services/index';
-import { BoardResolver } from './services/board.resolver';
-import { DatasourceService } from './services/datasource-info.service';
+import { APIService, FilterService } from '@app/services';
+import { BoardResolver, DatasourceService } from './services';
 
-import { Board, Cell, CellAndWidget, Widget } from 'app/model';
+import { Board, Cell, CellAndWidget, Widget } from '@app/model';
 
 @Component({
     selector: 'bi-board',

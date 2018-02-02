@@ -8,7 +8,7 @@ import { Observable } from 'rxjs/Rx';
 
 import { ConditionService, EventService } from '@filter/services';
 import { APIService, FilterService } from '@app/services';
-import { DatasourceService } from '../../../services/datasource-info.service';
+import { DatasourceService } from '../../../services';
 
 import { EventType, FieldConfig, FiltersConfig, FormConfig, GroupConfig } from '@filter/model';
 import { Group, Range } from '@app/model';

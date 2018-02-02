@@ -16,7 +16,7 @@ import { FilterFormComponent } from '../filters/containers/form/filter-form.comp
 import { EventService } from '@filter/services';
 import { EventType } from '@filter/model';
 import { ModalComponent } from '../../shared/modal/modal';
-import { DatasourceService } from '../services/datasource-info.service';
+import { DatasourceService } from '../services';
 
 @Component({
     // changeDetection: ChangeDetectionStrategy.OnPush,

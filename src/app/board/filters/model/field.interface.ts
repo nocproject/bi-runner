@@ -1,6 +1,6 @@
 import { FormGroup } from '@angular/forms';
 
-import { FieldConfig } from './form-config.interface';
+import { FieldConfig } from '@filter/model';
 
 export interface FilterControl {
     config: FieldConfig;

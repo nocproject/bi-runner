@@ -5,7 +5,7 @@ import * as _ from 'lodash';
 
 import { Board, Field } from '@app/model';
 import { FilterService } from '@app/services';
-import { DatasourceService } from '../services/datasource-info.service';
+import { DatasourceService } from '../services';
 
 @Component({
     selector: 'bi-fields',
