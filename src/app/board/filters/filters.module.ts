@@ -19,8 +19,6 @@ import { FormDropdownComponent } from './components/dropdown.component';
 import { DynamicFieldDirective } from './components/dynamic-field.directive';
 import { DictDirective } from './components/dict.directive';
 
-import { ConditionService, EventService } from './services';
-
 @NgModule({
     imports: [
         CommonModule,
@@ -47,10 +45,6 @@ import { ConditionService, EventService } from './services';
     ],
     exports: [
         FilterFormComponent
-    ],
-    providers: [
-        ConditionService,
-        EventService
     ],
     entryComponents: [
         GroupComponent,

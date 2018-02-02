@@ -1,19 +1,22 @@
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
-import * as _ from 'lodash';
+import { clone, filter, includes, startsWith } from 'lodash';
 import * as d3 from 'd3';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Rx';
 
-import { ConditionService, EventService } from '@filter/services';
 import { APIService } from '@app/services';
-import { DatasourceService, FilterService } from '../../../services';
 
 import { EventType, FieldConfig, FiltersConfig, FormConfig, GroupConfig } from '@filter/model';
 import { Group, Range } from '@app/model';
 
 import { BIValidators } from '../../components/validators';
+//
+import { EventService } from '../../../services/event.service';
+import { FilterService } from '../../../services/filter.service';
+import { DatasourceService } from '../../../services/datasource-info.service';
+import { ConditionService } from '../../../services/condition.service';
 
 @Component({
     exportAs: 'filterForm',
@@ -65,7 +68,6 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                 const emptyFilter: FieldConfig[] = [{
                     name: 'name',
                     type: 'select',
-                    pseudo: false,
                     label: 'Field',
                     value: '',
                     placeholder: 'SELECT_FIELD',
@@ -79,7 +81,7 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                         this.config.groups.splice(event.group, 1);
                         // Form controls
                         (<FormArray>this.form.get('groups')).removeAt(event.group);
-                        this.applyData(_.clone(this.form.value));
+                        this.applyData(clone(this.form.value));
                         break;
                     }
                     case EventType.AddFilter: {
@@ -98,11 +100,11 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                             .at(event.group).get('group.filters'))
                             .removeAt(event.filter);
 
-                        const data = _.clone(this.form.value);
+                        const data = clone(this.form.value);
                         data.groups[event.group].active = false;
                         this.form.patchValue(data, {emitEvent: false});
                         if (!this.config.groups[event.group].group.filters.length) {
-                            const data = _.clone(this.form.value);
+                            const data = clone(this.form.value);
                             this.filterService.formFilters(data.groups, this.config);
                         }
                         break;
@@ -131,33 +133,29 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                                 const formControl = this.createGroup(groupConfig);
                                 this.config.groups.push(groupConfig);
                                 group.filters.forEach(filter => {
-                                    if (filter.condition.match('empty')) {
-                                        filter.pseudo = false;
-                                    }
                                     const nameField: FieldConfig = {
                                         name: 'name',
                                         type: 'select',
-                                        pseudo: filter.pseudo,
                                         label: 'Field',
-                                        value: `${filter.name}.${filter.type}.${filter.pseudo}.${filter.datasource}`,
+                                        value: `${filter.name}`,
                                         placeholder: 'SELECT_FIELD',
                                         options: this.datasourceService.fieldsAsOption(),
                                         validation: [Validators.required]
                                     };
                                     const conditionField: FieldConfig = this.conditionService
-                                        .field(filter.name, filter.type, filter.pseudo);
+                                        .field(filter.name);
                                     const valuesField: FieldConfig[] = FilterFormComponent.fieldValues(nameField.value, filter.condition)
                                         .map(field => field);
 
                                     conditionField.value = filter.condition;
                                     // remove after implement calendar type
-                                    if (filter.type === 'Date') {
+                                    if (filter.getType() === 'Date') {
                                         if (filter.condition.match(/interval/i)) {
                                             valuesField[0].value = `${d3.time.format('%d.%m.%Y')(filter.values[0].value)}-${d3.time.format('%d.%m.%Y')(filter.values[1].value)}`;
                                         } else {
                                             valuesField[0].value = d3.time.format('%d.%m.%Y')(filter.values[0].value);
                                         }
-                                    } else if (filter.type === 'DateTime') {
+                                    } else if (filter.getType() === 'DateTime') {
                                         if (filter.condition.match(/periodic/i)) {
                                             valuesField[0].value = filter.values[0].value;
                                         } else if (filter.condition.match(/interval/i)) {
@@ -195,7 +193,7 @@ export class FilterFormComponent implements OnDestroy, OnInit {
 
                                 // Delete all from config except 'name'
                                 this.config.groups[event.group].group.filters[event.filter] =
-                                    _.filter(this.config.groups[event.group].group.filters[event.filter], ['name', 'name']);
+                                    filter(this.config.groups[event.group].group.filters[event.filter], ['name', 'name']);
                                 // Delete from controls
                                 Object.keys(filterControls.controls)
                                     .filter(name => name !== 'name')
@@ -204,16 +202,14 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                                 if (event.value.match('\\.')) {
                                     this.addControlToFilter(event.group, event.filter,
                                         this.conditionService.field(
-                                            event.value.split('.')[0],
-                                            event.value.split('.')[1],
-                                            JSON.parse(event.value.split('.')[2])));
+                                            event.value.split('.')[0]));
                                 }
                                 break;
                             }
                             case 'condition': {
                                 const filterControls = (<FormGroup>(<FormArray>(<FormArray>this.form.get('groups'))
                                     .at(event.group).get('group.filters')).at(event.filter));
-                                const data = _.clone(this.form.value);
+                                const data = clone(this.form.value);
 
                                 data.groups[event.group].active = false;
                                 this.form.patchValue(data, {emitEvent: false});
@@ -222,8 +218,8 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                                         .filter(field => field.name === 'name' || field.name === 'condition');
 
                                 // set value for catch change field name & condition
-                                _.filter(this.config.groups[event.group].group.filters[event.filter], ['name', 'name'])[0].value = filterControls.get('name').value;
-                                _.filter(this.config.groups[event.group].group.filters[event.filter], ['name', 'condition'])[0].value = filterControls.get('condition').value;
+                                filter(this.config.groups[event.group].group.filters[event.filter], ['name', 'name'])[0].value = filterControls.get('name').value;
+                                filter(this.config.groups[event.group].group.filters[event.filter], ['name', 'condition'])[0].value = filterControls.get('condition').value;
                                 // Delete from controls
                                 Object.keys(filterControls.controls)
                                     .filter(name => name !== 'name')
@@ -240,7 +236,7 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                         break;
                     }
                     case EventType.FilterChanged: {
-                        const data = _.clone(this.form.value);
+                        const data = clone(this.form.value);
 
                         data.groups[event.group].active = false;
                         data.groups[event.group].group.filters[event.filter] = event.value;
@@ -267,7 +263,6 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                     [{
                         name: 'name',
                         type: 'select',
-                        pseudo: false,
                         label: 'Field',
                         value: '',
                         placeholder: 'SELECT_FIELD',
@@ -285,7 +280,7 @@ export class FilterFormComponent implements OnDestroy, OnInit {
     }
 
     onAllButtonClick(active: boolean) {
-        const data = _.clone(this.form.value);
+        const data = clone(this.form.value);
 
         data.groups = data.groups.map(group => {
             group.active = active;
@@ -312,7 +307,6 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                             name: 'name',
                             type: 'select',
                             value: '',
-                            pseudo: false,
                             validation: [Validators.required],
                             label: 'Field',
                             placeholder: 'SELECT_FIELD',
@@ -388,7 +382,6 @@ export class FilterFormComponent implements OnDestroy, OnInit {
         const first: FieldConfig = {
             name: 'valueFirst',
             type: 'input',
-            pseudo: false,
             value: '',
             validation: [Validators.required],
             label: 'Value'
@@ -396,21 +389,19 @@ export class FilterFormComponent implements OnDestroy, OnInit {
         const [name, type, pseudo, datasource] = nameAndType.split('.');
         let widgetType = type;
 
-        if (_.startsWith(type, 'dict-')) {
+        if (startsWith(type, 'dict-')) {
             widgetType = 'Dictionary';
         }
-        if (_.startsWith(type, 'tree-')) {
+        if (startsWith(type, 'tree-')) {
             widgetType = 'Tree';
         }
-        if (_.startsWith(type, 'model-')) {
+        if (startsWith(type, 'model-')) {
             widgetType = 'Model';
         }
 
-        // console.log(`${name} ${widgetType} ${condition}`);
-
         switch (widgetType) {
             case 'String': {
-                if (_.includes(condition, 'empty')) {
+                if (includes(condition, 'empty')) {
                     return [];
                 }
                 break;
@@ -446,7 +437,7 @@ export class FilterFormComponent implements OnDestroy, OnInit {
             case 'Int32':
             case 'Int64': {
                 first.type = 'input';
-                if (_.includes(condition, 'interval')) {
+                if (includes(condition, 'interval')) {
                     first.placeholder = '9999999999 - 9999999999';
                     first.validation.push(BIValidators.intRange);
                 } else {
@@ -458,7 +449,7 @@ export class FilterFormComponent implements OnDestroy, OnInit {
             case 'Float32':
             case 'Float64': {
                 first.type = 'input';
-                if (_.includes(condition, 'interval')) {
+                if (includes(condition, 'interval')) {
                     first.placeholder = '9999999999.9999 - 9999999999.9999';
                     first.validation.push(BIValidators.floatRange);
                 } else {
@@ -468,14 +459,14 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                 return [first];
             }
             case 'DateTime': {
-                if (name === 'exclusion_intervals' && !_.includes(condition, 'periodic')) {
+                if (name === 'exclusion_intervals' && !includes(condition, 'periodic')) {
                     first.type = 'input';
                     first.placeholder = 'dd.mm.yyyy HH:mm - dd.mm.yyyy HH:mm';
                     first.validation.push(BIValidators.dateTimeRange);
                     return [first];
                 }
-                if (_.includes(condition, 'interval')) {
-                    if (_.includes(condition, 'periodic')) {
+                if (includes(condition, 'interval')) {
+                    if (includes(condition, 'periodic')) {
                         first.type = 'input';
                         first.placeholder = '29:59 - 29:59';
                         first.validation.push(BIValidators.hours);
@@ -494,7 +485,7 @@ export class FilterFormComponent implements OnDestroy, OnInit {
             }
             case 'IPv4': {
                 first.type = 'input';
-                if (_.includes(condition, 'interval')) {
+                if (includes(condition, 'interval')) {
                     first.placeholder = '299.299.299.299 - 299.299.299.299';
                     first.validation.push(BIValidators.ipV4Range);
                     return [first];
@@ -504,7 +495,7 @@ export class FilterFormComponent implements OnDestroy, OnInit {
                 break;
             }
             case 'Date': {
-                if (_.includes(condition, 'interval')) {
+                if (includes(condition, 'interval')) {
                     first.placeholder = 'dd.mm.yyyy - dd.mm.yyyy';
                     first.validation.push(BIValidators.dateRange);
                     return [first];

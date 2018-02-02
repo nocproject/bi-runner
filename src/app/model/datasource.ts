@@ -1,4 +1,7 @@
 import { JsonMember, JsonObject, TypedJSON } from '@upe/typedjson';
+
+import { findIndex } from 'lodash';
+
 import { Field } from './field';
 
 @JsonObject()
@@ -14,5 +17,11 @@ export class Datasource {
 
     static fromJSON(json: any): Datasource {
         return TypedJSON.parse(json, Datasource);
+    }
+
+    getFieldByName(name: string) {
+        const index = findIndex(this.fields, f => f.name === name);
+
+        return this.fields[index];
     }
 }

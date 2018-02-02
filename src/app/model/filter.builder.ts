@@ -1,4 +1,4 @@
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { isUndefined } from 'lodash';
 
 import { Field } from './field';
 import { Filter } from './filter';
@@ -11,22 +11,8 @@ export class FilterBuilder {
         this.filter.association = '$and';
     }
 
-    static initFilter(fb: FormBuilder): FormGroup {
-        return fb.group({
-            name: ['', [Validators.required]],
-            condition: ['', [Validators.required]],
-            valueFirst: [''],
-            valueSecond: ['']
-        });
-    }
-
     public name(name: string): FilterBuilder {
         this.filter.name = name;
-        return this;
-    }
-
-    public type(type: string): FilterBuilder {
-        this.filter.type = type;
         return this;
     }
 
@@ -50,18 +36,16 @@ export class FilterBuilder {
         return this;
     }
 
-    public pseudo(pseudo: boolean): FilterBuilder {
-        this.filter.pseudo = pseudo;
-        return this;
-    }
-
-    public datasource(datasource: string): FilterBuilder {
-        this.filter.datasource = datasource;
-        return this;
-    }
-
     public field(field: Field): FilterBuilder {
         this.filter.field = field;
+        return this;
+    }
+
+    public type(type: string): FilterBuilder {
+        if (isUndefined(this.filter.field)) {
+            this.filter.field = new Field();
+        }
+        this.filter.field.type = type;
         return this;
     }
 

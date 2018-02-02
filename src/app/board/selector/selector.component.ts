@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
-import * as _ from 'lodash';
+import { head } from 'lodash';
 import * as moment from 'moment';
 
 import { Observable } from 'rxjs/Rx';
@@ -13,10 +13,12 @@ import { BiRequestBuilder, Board, FilterBuilder, Group, GroupBuilder, Methods, R
 
 import { ReportRangeComponent } from '../report-range/report-range.component';
 import { FilterFormComponent } from '../filters/containers/form/filter-form.component';
-import { EventService } from '@filter/services';
 import { EventType } from '@filter/model';
 import { ModalComponent } from '../../shared/modal/modal';
-import { DatasourceService, FilterService } from '../services';
+//
+import { DatasourceService } from '../services/datasource-info.service';
+import { EventService } from '../services/event.service';
+import { FilterService } from '../services/filter.service';
 
 @Component({
     // changeDetection: ChangeDetectionStrategy.OnPush,
@@ -88,7 +90,7 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
                     datasource: this.board.datasource
                 }])
                 .build())
-            .flatMap(response => _.first(response.data['result']));
+            .flatMap(response => head(response.data['result']));
 
         this.ratioForm = this.fb.group({
             ratio: this.filterService.ratioSubject.getValue()
@@ -105,7 +107,7 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
     }
 
     openRangeDlg(modal: ModalComponent) {
-        const rangeGroup = _.first(this.filterService.getFilter('startEnd'));
+        const rangeGroup = head(this.filterService.getFilter('startEnd'));
 
         this.locale = this.languageService.current;
         this.values = {

@@ -1,6 +1,6 @@
 import { forwardRef, Inject, Injectable } from '@angular/core';
 
-import * as _ from 'lodash';
+import { flattenDeep, head } from 'lodash';
 import { Observable } from 'rxjs/Rx';
 
 import { APIService } from '@app/services';
@@ -14,15 +14,15 @@ export class CounterService {
                 @Inject(forwardRef(() => FilterService)) private filterService: FilterService) {
     }
 
-    public qty(array: Field[] | Group[], board: Board): Observable<number> {
+    public qty(array: any, board: Board): Observable<number> {
         let groups: Field[];
         let filters: Group[];
 
-        if (_.first(array) instanceof Field) {
+        if (head(array) instanceof Field) {
             groups = (<Field[]>array);
             filters = this.filterService.allFilters();
         }
-        if (_.first(array) instanceof Group) {
+        if (head(array) instanceof Group) {
             filters = (<Group[]>array);
             groups = this.filterService.allGroups();
         }
@@ -59,6 +59,6 @@ export class CounterService {
             .params([params])
             .build();
         return this.api.execute(query)
-            .map(response => response.data.result.length ? _.first(_.flattenDeep(response.data.result)) : 0);
+            .map(response => response.data.result.length ? head(flattenDeep(response.data.result)) : 0);
     }
 }

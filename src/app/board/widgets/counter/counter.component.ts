@@ -2,8 +2,9 @@ import { Component, Input, OnInit } from '@angular/core';
 
 import { Observable } from 'rxjs/Rx';
 
-import { Board } from '@app/model';
-import { CounterService, FilterService } from '../../board/services';
+import { Board, Field, Group } from '@app/model';
+import { CounterService } from '../../services/counter.service';
+import { FilterService } from '../../services/filter.service';
 
 @Component({
     selector: 'bi-counter',
@@ -22,6 +23,6 @@ export class CounterComponent implements OnInit {
     ngOnInit() {
         this.qty$ = this.filterService.groups$
             .merge(this.filterService.filters$)
-            .switchMap(instance => this.counterService.qty(instance, this.board));
+            .switchMap((instance: Group[] | Field[]) => this.counterService.qty(instance, this.board));
     }
 }

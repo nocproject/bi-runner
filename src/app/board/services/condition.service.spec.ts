@@ -18,7 +18,7 @@ describe('ConditionService', () => {
     });
 
     it('retrieve exclusion_intervals conditions', async(() => {
-        service.conditions('exclusion_intervals', 'Dictionary')
+        service.conditions('exclusion_intervals')
             .subscribe(result =>
                 expect(result.length).toEqual(2)
             );

@@ -1,5 +1,5 @@
 import { JsonMember, JsonObject, TypedJSON } from '@upe/typedjson';
-import * as _ from 'lodash';
+import { toPairs } from 'lodash';
 
 import { Field } from './field';
 import { Filter } from './filter';
@@ -54,7 +54,7 @@ export class Board {
 
         if (json.hasOwnProperty('filter')) {
             board.filter = DeserializationHelper.map<String, Filter>(
-                _.toPairs(json.filter).map(item => [TypedJSON.stringify(item[0]), item[1]]),
+                toPairs(json.filter).map(item => [TypedJSON.stringify(item[0]), item[1]]),
                 String, Filter
             );
         }
@@ -63,7 +63,7 @@ export class Board {
 
     prepare() {
         // ToDo take from @JsonMember
-        const obj = Object.assign({}, this,
+        const obj = Object.assign({}, <ObjectConstructor>this,
             {
                 agv_fields: this.agvFields,
                 filter_fields: this.filterFields,

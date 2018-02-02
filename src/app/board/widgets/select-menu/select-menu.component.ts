@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import * as _ from 'lodash';
+import { last } from 'lodash';
 import * as d3 from 'd3';
 import * as dc from 'dc';
 import { BaseMixin, SelectMenu } from 'dc';
@@ -23,7 +23,7 @@ export class SelectMenuComponent extends WidgetComponent {
 
         this.initialState(chart);
 
-        chart.filter(_.last(values.all()).key);
+        chart.filter(last(values.all()).key);
         chart.dimension(dimension);
         chart.group(values);
         chart.multiple(true);

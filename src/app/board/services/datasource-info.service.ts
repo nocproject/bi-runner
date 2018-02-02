@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import * as _ from 'lodash';
+import { findIndex, head } from 'lodash';
 import { Observable } from 'rxjs/Observable';
 
 import { APIService } from '@app/services';
@@ -51,9 +51,10 @@ export class DatasourceService {
             .map(array => array
                 .filter(field => field.isSelectable)
                 .map(field => {
-                        const ds = field.datasource ? field.datasource : 'none';
+                        // const ds = field.datasource ? field.datasource : 'none';
                         return {
-                            value: `${field.name}.${field.type}.${field.pseudo}.${ds}`,
+                            // value: `${field.name}.${field.type}.${field.pseudo}.${ds}`,
+                            value: `${field.name}`,
                             text: field.name
                         };
                     }
@@ -65,7 +66,7 @@ export class DatasourceService {
         return datasource.fields
             .concat(board.pseudoFields)
             .map(field => {
-                let index = _.findIndex(board.filterFields, e => e.name === field.name);
+                let index = findIndex(board.filterFields, e => e.name === field.name);
 
                 if (index === -1) {
                     field.isSelectable = false;
@@ -101,14 +102,14 @@ export class DatasourceService {
                     field.pseudo = false;
                 }
 
-                index = _.findIndex(board.agvFields, e => e.name === field.name);
+                index = findIndex(board.agvFields, e => e.name === field.name);
 
                 if (index === -1) {
                     field.isGrouping = false;
                 }
 
-                index = _.findIndex(
-                    _.first(board.exportQry.params).fields, e => (e.alias ? e.alias : e.expr) === field.name);
+                index = findIndex(
+                    head(board.exportQry.params).fields, e => (e.alias ? e.alias : e.expr) === field.name);
 
                 if (index !== -1) {
                     field.grouped = true;

@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { clone, head, startsWith } from 'lodash';
 import * as d3 from 'd3';
 
 import { Group } from './group';
@@ -38,9 +38,7 @@ function getFilters(groups: Group[], association: string): Object[] {
                     return new FilterBuilder()
                         .name('ts')
                         .condition(`not.${filter.condition}`)
-                        .pseudo(false)
                         .values(filter.values)
-                        .type(filter.type)
                         .association(filter.association)
                         .alias(filter.alias)
                         .build();
@@ -64,7 +62,7 @@ function filtersAssociation(filters: Filter[]): string {
 }
 
 function where(filter: Filter): Object {
-    const clonedFilter = _.clone(filter);
+    const clonedFilter = clone(filter);
 
     switch (clonedFilter.condition) {
         case 'interval':
@@ -96,7 +94,7 @@ function where(filter: Filter): Object {
 function interval(filter: Filter): Object {
     let from, to;
 
-    switch (filter.type) {
+    switch (filter.getType()) {
         case 'Date': {
             from = toDate(filter.values[0]);
             to = toDate(filter.values[1]);
@@ -172,7 +170,7 @@ function interval(filter: Filter): Object {
 }
 
 function inCondition(filter: Filter): Object {
-    if (_.startsWith(filter.type, 'tree-')) {
+    if (startsWith(filter.getType(), 'tree-')) {
         return {
             $in: [
                 {
@@ -198,7 +196,7 @@ function inCondition(filter: Filter): Object {
                 {
                     $field: filter.name
                 },
-                castToField(filter.values, filter.type)
+                castToField(filter.values, filter.getType())
             ]
         };
     }
@@ -222,7 +220,7 @@ function castToValue(value: Value, type: string): any {
 }
 
 function castToField(values: Value[], type: string): Object {
-    const firstValue = _.first(values);
+    const firstValue = head(values);
     let fieldValue: Object;
 
     switch (type) {
@@ -239,7 +237,7 @@ function castToField(values: Value[], type: string): Object {
             break;
         }
         default: {
-            fieldValue = _.first(values).value;
+            fieldValue = head(values).value;
         }
     }
     return fieldValue;
@@ -250,13 +248,13 @@ function castToCondition(filter: Filter) {
 
     expression[filter.condition] = [{
         $field: filter.name
-    }, castToField(filter.values, filter.type)];
+    }, castToField(filter.values, filter.getType())];
 
     return expression;
 }
 
 function castToArray(filter: Filter): any[] {
-    return filter.values.map(value => castToValue(value, filter.type));
+    return filter.values.map(value => castToValue(value, filter.getType()));
 }
 
 function ipv4StrToNum(value): string {

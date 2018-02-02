@@ -2,12 +2,11 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 
 import { Subscription } from 'rxjs/Subscription';
-import * as _ from 'lodash';
+import { clone } from 'lodash';
 
-import { EventService } from '@filter/services';
-//
 import { EventType, FormConfig, GroupConfig } from '@filter/model';
-import { FilterService } from '../../../services';
+import { EventService } from '../../../services/event.service';
+import { FilterService } from '../../../services/filter.service';
 
 @Component({
     selector: 'bi-group',
@@ -67,7 +66,7 @@ export class GroupComponent implements OnInit, OnDestroy {
     }
 
     private applyChanges() {
-        const data = _.clone(this.parent.value);
+        const data = clone(this.parent.value);
 
         this.filterService.formFilters(data.groups, this.formConfig);
     }

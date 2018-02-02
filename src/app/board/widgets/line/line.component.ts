@@ -7,7 +7,7 @@ import * as crossfilter from 'crossfilter';
 
 import { Restore, WidgetComponent } from '../widget.component';
 import { FilterBuilder, Result, Value } from '@app/model';
-import { Utils } from '../../shared/utils';
+import { Utils } from '../../../shared/utils';
 
 @Component({
     selector: 'bi-line',

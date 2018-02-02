@@ -5,10 +5,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import * as _ from 'lodash';
+import { concat, includes, remove } from 'lodash';
 
 import { APIService, MessageService } from '@app/services';
-import { AccessLevel, Message, MessageType, Methods, BiRequestBuilder } from '@app/model';
+import { AccessLevel, BiRequestBuilder, Message, MessageType, Methods } from '@app/model';
 import { GridConfig, GridConfigBuilder } from '../shared/data-grid/data-grid.component';
 import { ModalComponent } from '../shared/modal/modal';
 
@@ -190,8 +190,8 @@ export class ShareComponent implements OnInit, OnDestroy {
     }
 
     private updateAccess(choose: Choose) {
-        _.remove(this.accessCache, e => Number(e['level']) === Number(choose.access) && e.hasOwnProperty(choose.object));
-        _.remove(this.accessCache, e => e.hasOwnProperty(choose.object) && _.includes(this.preSelected, e[choose.object].id));
+        remove(this.accessCache, e => Number(e['level']) === Number(choose.access) && e.hasOwnProperty(choose.object));
+        remove(this.accessCache, e => e.hasOwnProperty(choose.object) && includes(this.preSelected, e[choose.object].id));
         const items = this.preSelected.map(id => {
             if (choose.object === 'user') {
                 return <Access>({user: {id: id}, level: Number(choose.access)});
@@ -199,7 +199,7 @@ export class ShareComponent implements OnInit, OnDestroy {
                 return <Access>{group: {id: id}, level: Number(choose.access)};
             }
         });
-        this.accessCache = _.concat(this.accessCache, items);
+        this.accessCache = concat(this.accessCache, items);
     }
 }
 

@@ -1,10 +1,17 @@
 import {
-    AfterViewInit, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output,
+    AfterViewInit,
+    Component,
+    EventEmitter,
+    Input,
+    OnChanges,
+    OnDestroy,
+    OnInit,
+    Output,
     SimpleChanges
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 
-import * as _ from 'lodash';
+import { flatMap, includes } from 'lodash';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -65,16 +72,16 @@ export class DataGridComponent implements AfterViewInit, OnInit, OnChanges, OnDe
     }
 
     localSearch(term: string): any[] {
-        return _.flatMap(this.cache)
+        return flatMap(this.cache)
             .filter(row => this.contains(row, term));
     }
 
     isSelected(row: any): boolean {
-        return _.includes(this.selected, row.id);
+        return includes(this.selected, row.id);
     }
 
     onClick(id: any): void {
-        if (_.includes(this.selected, id)) {
+        if (includes(this.selected, id)) {
             if (this.multiSelect) {
                 this.selected = this.selected.filter(item => item !== id);
             } else {

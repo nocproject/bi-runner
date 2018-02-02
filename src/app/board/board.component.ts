@@ -2,18 +2,17 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { Subscription } from 'rxjs/Subscription';
-import * as _ from 'lodash';
-
-import { BoardResolver, DatasourceService, FilterService } from './services';
+import { head } from 'lodash';
 
 import { Board, Cell, CellAndWidget, Widget } from '@app/model';
+import { BoardResolver } from './services/board.resolver';
+import { FilterService } from './services/filter.service';
+
+// import { BoardResolver, DatasourceService, FilterService } from './services';
 
 @Component({
     selector: 'bi-board',
-    templateUrl: './board.component.html',
-    providers: [
-        DatasourceService
-    ]
+    templateUrl: './board.component.html'
 })
 
 export class BoardComponent implements OnInit, OnDestroy {
@@ -67,6 +66,6 @@ export class BoardComponent implements OnInit, OnDestroy {
     }
 
     private widgetForCell(widgets: Widget[], cell: Cell): Widget {
-        return _.head(widgets.filter(item => item.cell === cell.name));
+        return head(widgets.filter(item => item.cell === cell.name));
     }
 }

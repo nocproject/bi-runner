@@ -2,10 +2,10 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 
 import { Subscription } from 'rxjs/Subscription';
-import * as _ from 'lodash';
+import { find } from 'lodash';
 
 import { EventType, FieldConfig } from '@filter/model';
-import { EventService } from '@filter/services';
+import { EventService } from '../../../services/event.service';
 
 @Component({
     selector: 'bi-filter',
@@ -34,10 +34,10 @@ export class FilterComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.filter = (<FormGroup>(<FormArray>this.parent.get('group.filters')).at(this.index));
-        this.fieldConfig = _.find(this.filterConfig, ['name', this.fieldFieldName]);
-        this.conditionConfig = _.find(this.filterConfig, ['name', this.conditionFieldName]);
-        this.valueFirstConfig = _.find(this.filterConfig, ['name', 'valueFirst']);
-        this.valueSecondConfig = _.find(this.filterConfig, ['name', 'valueSecond']);
+        this.fieldConfig = find(this.filterConfig, ['name', this.fieldFieldName]);
+        this.conditionConfig = find(this.filterConfig, ['name', this.conditionFieldName]);
+        this.valueFirstConfig = find(this.filterConfig, ['name', 'valueFirst']);
+        this.valueSecondConfig = find(this.filterConfig, ['name', 'valueSecond']);
         this.changeSubscription = this.filter.valueChanges
             .subscribe((data) => {
                 this.eventService.next({

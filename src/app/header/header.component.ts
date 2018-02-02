@@ -6,12 +6,13 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Rx';
 import { Subscription } from 'rxjs/Subscription';
 
-import * as _ from 'lodash';
+import { clone, includes } from 'lodash';
 
 import { environment } from '@env/environment';
 
 import { APIService, AuthenticationService, LanguageService, MessageService } from '@app/services';
-import { BoardResolver, FilterService } from '../board/services';
+import { BoardResolver } from '../board/services/board.resolver';
+import { FilterService } from '../board/services/filter.service';
 
 import { Board, Message, MessageType, Methods, BiRequestBuilder, User } from '../model';
 import { ModalComponent } from '../shared/modal/modal';
@@ -82,7 +83,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
 
     onSaveBoard() {
-        const board = _.clone(this.boardResolver.getBoard());
+        const board = clone(this.boardResolver.getBoard());
 
         board.groups = this.filterService.allFilters();
         board.sample = this.filterService.ratioSubject.getValue();
@@ -98,7 +99,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
 
     onSaveAsBoard(modal: ModalComponent) {
-        const board = _.clone(this.boardResolver.getBoard());
+        const board = clone(this.boardResolver.getBoard());
 
         board.title = this.saveForm.get('title').value;
         board.description = this.saveForm.get('description').value;
@@ -121,14 +122,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
                 this.boardResolver.next(board);
             }, error => {
                 let responseBody = error.json();
-                if (responseBody.hasOwnProperty('error') && _.includes(responseBody.error, 'name exists')) {
+                if (responseBody.hasOwnProperty('error') && includes(responseBody.error, 'name exists')) {
                     this.titleError = 'VALIDATOR.NAME_EXIST';
                 }
             });
     }
 
     onRemoveBoard(modal: ModalComponent) {
-        const board = _.clone(this.boardResolver.getBoard());
+        const board = clone(this.boardResolver.getBoard());
         const query = new BiRequestBuilder()
             .method(Methods.REMOVE_DASHBOARD)
             .params([board.id])

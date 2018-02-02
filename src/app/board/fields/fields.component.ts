@@ -1,10 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 
 import { Observable } from 'rxjs/Rx';
-import * as _ from 'lodash';
+import { findIndex, remove } from 'lodash';
 
-import { Board, Field } from '@app/model';
-import { DatasourceService, FilterService } from '../services';
+import { Board, Field, FieldBuilder } from '@app/model';
+import { DatasourceService } from '../services/datasource-info.service';
+import { FilterService } from '../services/filter.service';
 
 @Component({
     selector: 'bi-fields',
@@ -26,7 +27,7 @@ export class FieldsComponent implements OnInit {
 
     onGroupBy(field: Field, control: any): void {
         const fields = [];
-        const index = _.findIndex(this.board.exportQry.params[0].fields, e => e.expr === field.name);
+        const index = findIndex(this.board.exportQry.params[0].fields, e => e.expr === field.name);
 
         field.grouped = control.checked;
         if (field.grouped && index === -1) {
@@ -34,18 +35,17 @@ export class FieldsComponent implements OnInit {
             field.expr = field.name;
             field.label = field.description;
             if (field.dict) {
-                const dictionaryField = new Field();
-
-                dictionaryField.label = field.description;
-                dictionaryField.expr = {
-                    $lookup: [
-                        field.dict,
-                        {
-                            $field: field.name
-                        }
-                    ]
-                };
-                dictionaryField.alias = field.name + '_text';
+                const dictionaryField = new FieldBuilder()
+                    .label(field.description)
+                    .expr({
+                        $lookup: [
+                            field.dict,
+                            {
+                                $field: field.name
+                            }
+                        ]
+                    })
+                    .alias(field.name + '_text');
                 field.hide = true;
                 fields.push(dictionaryField);
             }
@@ -60,9 +60,9 @@ export class FieldsComponent implements OnInit {
             this.filterService.groupsNext(fields);
         }
         if (!field.grouped && index !== -1) {
-            _.remove(this.board.exportQry.params[0].fields, e => e.expr === field.name);
+            remove(this.board.exportQry.params[0].fields, e => e.expr === field.name);
             if (field.dict || 'ip' === field.name) {
-                _.remove(this.board.exportQry.params[0].fields, e => e.alias === (field.name + '_text'));
+                remove(this.board.exportQry.params[0].fields, e => e.alias === (field.name + '_text'));
             }
             this.filterService.removeGroup(field);
         }

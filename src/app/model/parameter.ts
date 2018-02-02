@@ -1,5 +1,5 @@
 import { JsonMember, JsonObject, TypedJSON } from '@upe/typedjson';
-import * as _ from 'lodash';
+import { toPairs } from 'lodash';
 
 import { Field } from './field';
 import { DeserializationHelper } from './helpers';
@@ -34,7 +34,7 @@ export class Parameter {
     static fromJSON(json: any): Parameter {
         if (json.hasOwnProperty('filter')) {
             json.filter = DeserializationHelper.map<String, String>(
-                _.toPairs(json.filter).map(item => [TypedJSON.stringify(item[0]), TypedJSON.stringify(item[1])]),
+                toPairs(json.filter).map(item => [TypedJSON.stringify(item[0]), TypedJSON.stringify(item[1])]),
                 String, String
             );
             delete json.filter;

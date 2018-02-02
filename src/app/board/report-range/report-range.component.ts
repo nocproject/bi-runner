@@ -3,7 +3,7 @@ import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
 import { IMyDate, IMyDateModel, IMyDpOptions } from '../../shared/my-date-picker/interfaces';
 
 import * as d3 from 'd3';
-import * as _ from 'lodash';
+import { cloneDeep, isEqual, reduce } from 'lodash';
 import { Subscription } from 'rxjs/Subscription';
 
 import { BIValidators } from '../filters/components/validators';
@@ -63,8 +63,9 @@ export class ReportRangeComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     ngOnInit() {
-        const controls = _.cloneDeep(this.controlValues);
-        controls.rangeInput = ['-', BIValidators.dateTimeRange];
+        const controls: Object = cloneDeep(this.controlValues);
+
+        controls['rangeInput'] = ['-', BIValidators.dateTimeRange];
         this.form = this.fb.group(controls);
         this.data = new Data(this.controlValues);
         this.subscription = this.form.valueChanges
@@ -111,7 +112,7 @@ class Data {
 
     constructor(data: IData) {
         this.data = data;
-        this.prev = _.cloneDeep(data);
+        this.prev = cloneDeep(data);
     }
 
     private static toMyDate(date: Date): IMyDate {
@@ -137,7 +138,7 @@ class Data {
             fromDate = data[fromControlName];
             toDate = data[toControlName];
         }
-        this.prev = _.cloneDeep(this.data);
+        this.prev = cloneDeep(this.data);
         this.data.fromPick = {
             date: Data.toMyDate(fromDate),
             jsdate: null,
@@ -163,8 +164,8 @@ class Data {
     public next(data: IData, control: AbstractControl): Data {
         const changed = this._diff(data, this.data);
         if (changed.length === 1) {
-            this.prev = _.cloneDeep(this.data);
-            this.data = _.cloneDeep(data);
+            this.prev = cloneDeep(this.data);
+            this.data = cloneDeep(data);
             switch (changed[0]) {
                 case 'fromPick': {
                     this.data.fromTime = Data.changeDate(this.data.fromPick, this.data.fromTime);
@@ -203,7 +204,7 @@ class Data {
     }
 
     public set(values): Data {
-        this.prev = _.cloneDeep(this.data);
+        this.prev = cloneDeep(this.data);
         this.data.fromTime = values.from;
         this.data.toTime = values.to;
         this.data.fromPick.date = Data.toMyDate(values.from);
@@ -213,7 +214,7 @@ class Data {
     }
 
     private _diff(a, b): string[] {
-        return _.reduce(a, (result, value, key) => _.isEqual(value, b[key]) ? result : result.concat(key), []);
+        return reduce(a, (result, value, key) => isEqual(value, b[key]) ? result : result.concat(key), []);
     }
 
     private textRange(): string {

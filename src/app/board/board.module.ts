@@ -11,10 +11,14 @@ import { ModalModule } from '../shared/modal/modal.module';
 import { MyDatePickerModule } from '../shared/my-date-picker';
 import { SharedModule } from '../shared/shared.module';
 import { TimepickerModule } from '../shared/timepicker/timepicker.module';
-import { WidgetsModule } from '../widgets/widgets.module';
+import { WidgetsModule } from './widgets/widgets.module';
 //
 import { BoardComponent, FieldsComponent, ReportRangeComponent, SelectorComponent } from './index';
-import { CounterService, DatasourceService, FilterService } from './services';
+import { ConditionService } from './services/condition.service';
+import { CounterService } from './services/counter.service';
+import { EventService } from './services/event.service';
+import { FilterService } from './services/filter.service';
+import { DatasourceService } from './services/datasource-info.service';
 
 export const COMPONENTS = [
     BoardComponent,
@@ -44,6 +48,9 @@ export const COMPONENTS = [
         ...COMPONENTS
     ],
     providers: [
+        ConditionService,
+        DatasourceService,
+        EventService,
         CounterService,
         FilterService
     ]

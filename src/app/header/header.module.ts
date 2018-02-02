@@ -6,7 +6,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { ModalModule } from '../shared/modal/modal.module';
-import { WidgetsModule } from '../widgets/widgets.module';
+import { WidgetsModule } from '../board/widgets/widgets.module';
 //
 //
 import { AccessLevelComponent } from './access-level.component';

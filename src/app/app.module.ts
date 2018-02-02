@@ -15,7 +15,7 @@ import {
     LanguageService,
     MessageService
 } from './services';
-import { BoardResolver } from './board/services';
+import { BoardResolver } from './board/services/board.resolver';
 import { BoardListModule } from './board-list/board-list.module';
 import { BoardModule } from './board/board.module';
 import { HeaderModule } from './header/header.module';

@@ -22,7 +22,6 @@ export interface FiltersConfig {
 export interface FieldConfig {
     name: string;
     type: string;
-    pseudo: boolean;
     dict?: string;
     model?: string;
     description?: string;

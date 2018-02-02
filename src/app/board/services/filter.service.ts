@@ -3,12 +3,13 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Rx';
 
-import * as _ from 'lodash';
+import { cloneDeep, find, findIndex, flatMap, head, remove } from 'lodash';
 import * as d3 from 'd3';
 
 import { Field, Filter, FilterBuilder, Group, GroupBuilder, Value } from '@app/model';
 import { EventType, FormConfig, Groups } from '@filter/model';
-import { EventService } from '@filter/services';
+//
+import { EventService } from './event.service';
 
 @Injectable()
 export class FilterService {
@@ -61,11 +62,11 @@ export class FilterService {
     }
 
     filtersNext(group: Group) {
-        const groups = _.cloneDeep(this.filtersSubject.getValue());
-        const exist: Group = _.find(groups, item => item.name === group.name);
+        const groups = cloneDeep(this.filtersSubject.getValue());
+        const exist: Group = find(groups, (item: Group) => item.name === group.name);
 
         if (exist) {
-            _.first(exist.filters).values = _.first(group.filters).values;
+            head(exist.filters).values = head(group.filters).values;
             exist.active = true;
         } else {
             groups.push(group);
@@ -75,7 +76,7 @@ export class FilterService {
     }
 
     formFilters(groups: Groups[], config: FormConfig): void {
-        const exist: Group[] = _.cloneDeep(this.filtersSubject.getValue())
+        const exist: Group[] = cloneDeep(this.filtersSubject.getValue())
             .filter(group => group.name !== this.FORM_GROUP_NAME);
 
         groups.forEach((item, groupIndex) => {
@@ -95,9 +96,9 @@ export class FilterService {
                                         return false;
                                     }
                                     // SIDE EFFECT: detect change fields name or condition, may be refactoring
-                                    const nameField = _.first(config.groups[groupIndex].group.filters[filterIndex]
+                                    const nameField = head(config.groups[groupIndex].group.filters[filterIndex]
                                         .filter(f => f.name === 'name'));
-                                    const conditionField = _.first(config.groups[groupIndex].group.filters[filterIndex]
+                                    const conditionField = head(config.groups[groupIndex].group.filters[filterIndex]
                                         .filter(f => f.name === 'condition'));
                                     if (filter.condition === conditionField.value && filter.name === nameField.value) {
                                         return true;
@@ -111,16 +112,12 @@ export class FilterService {
                                 })
                                 .map(filter => {
                                     const [name, type, pseudo, datasource] = filter.name.split('.');
-                                    const index = _.findIndex(this._fields, f => f.name === name);
 
                                     return new FilterBuilder()
                                         .name(name)
                                         .association(item.group.association)
                                         .condition(filter.condition)
-                                        .type(type)
-                                        .pseudo(pseudo === 'true')
-                                        .datasource(datasource)
-                                        .field(this._fields[index])
+                                        .field(this.fieldByName(name))
                                         .values([new Value(filter.valueFirst), new Value(filter.valueSecond)])
                                         .build();
                                 })
@@ -133,7 +130,7 @@ export class FilterService {
     }
 
     allFilters(): Group[] {
-        const groups = _.cloneDeep(this.filtersSubject.getValue());
+        const groups = cloneDeep(this.filtersSubject.getValue());
 
         groups.forEach(group => {
             group.filters = group.filters.filter(filter => !filter.isEmpty());
@@ -143,9 +140,9 @@ export class FilterService {
     }
 
     allFiltersByName(name: string): Filter[] {
-        const groups = _.cloneDeep(this.filtersSubject.getValue());
+        const groups = cloneDeep(this.filtersSubject.getValue());
 
-        return _.flatMap(groups.filter(group => group.active)
+        return flatMap(groups.filter(group => group.active)
             .map(group => group.filters))
             .filter(filter => filter.name === name);
     }
@@ -163,19 +160,25 @@ export class FilterService {
     }
 
     allGroups(): Field[] {
-        return _.cloneDeep(this.groupsSubject.getValue());
+        return cloneDeep(this.groupsSubject.getValue());
     }
 
     removeGroup(group: Field) {
-        const groups = _.cloneDeep(this.groupsSubject.getValue());
+        const groups = cloneDeep(this.groupsSubject.getValue());
 
-        _.remove(groups, e => e.expr === group.name);
+        remove(groups, e => e.expr === group.name);
 
         if (group.dict || group.name === 'ip') {
-            _.remove(groups, e => e.alias === `${group.name}_text`);
+            remove(groups, e => e.alias === `${group.name}_text`);
         }
 
         this.groupsSubject.next(groups);
+    }
+
+    fieldByName(name: string) {
+        const index = findIndex(this._fields, f => f.name === name);
+
+        return this._fields[index];
     }
 
     private nextFilter(groups: Group[]) {
@@ -184,7 +187,7 @@ export class FilterService {
             .forEach(filter => {
                 let values: Value[];
 
-                if (filter.type === 'Date' && typeof filter.values[0].value === 'string') {
+                if (filter.getType() === 'Date' && typeof filter.values[0].value === 'string') {
                     if (filter.condition.match(/interval/i)) {
                         const raw = filter.values[0].value.split(' - ');
                         values = [
@@ -196,7 +199,7 @@ export class FilterService {
                     }
                     filter.values = values;
                 }
-                if (filter.type === 'DateTime' && typeof filter.values[0].value === 'string') {
+                if (filter.getType() === 'DateTime' && typeof filter.values[0].value === 'string') {
                     if (!filter.condition.match(/periodic/)) {
                         if (filter.condition.match(/interval/i)) {
                             const raw = filter.values[0].value.split(' - ');

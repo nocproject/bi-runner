@@ -31,7 +31,6 @@ export class FormModelComponent implements FilterControl, OnInit {
             label: 'Value',
             name: 'valueFirst',
             description: 'Платформа',
-            pseudo: false,
             type: 'string'
         }, {
             datasource: 'dictionaries.administrativedomain',
@@ -40,7 +39,6 @@ export class FormModelComponent implements FilterControl, OnInit {
             label: 'Value',
             name: 'valueFirst',
             description: 'З.О.',
-            pseudo: false,
             type: 'string'
         }, {
             datasource: 'dictionaries.vendor',
@@ -49,7 +47,6 @@ export class FormModelComponent implements FilterControl, OnInit {
             label: 'Value',
             name: 'valueFirst',
             description: 'Производитель',
-            pseudo: false,
             type: 'string'
         }, {
             datasource: 'dictionaries.container',
@@ -58,7 +55,6 @@ export class FormModelComponent implements FilterControl, OnInit {
             label: 'Value',
             name: 'valueFirst',
             description: 'Адрес',
-            pseudo: false,
             type: 'string'
         }, {
             datasource: 'dictionaries.profile',
@@ -67,7 +63,6 @@ export class FormModelComponent implements FilterControl, OnInit {
             label: 'Value',
             name: 'valueFirst',
             description: 'Профиль объекта',
-            pseudo: false,
             type: 'string'
         }, {
             datasource: 'dictionaries.networksegment',
@@ -76,7 +71,6 @@ export class FormModelComponent implements FilterControl, OnInit {
             label: 'Value',
             name: 'valueFirst',
             description: 'Сегмент сети',
-            pseudo: false,
             type: 'string'
         }, {
             datasource: 'dictionaries.pool',
@@ -85,7 +79,6 @@ export class FormModelComponent implements FilterControl, OnInit {
             label: 'Value',
             name: 'valueFirst',
             description: 'Имя Пула',
-            pseudo: false,
             type: 'string'
         }, {
             datasource: 'dictionaries.version',
@@ -94,7 +87,6 @@ export class FormModelComponent implements FilterControl, OnInit {
             label: 'Value',
             name: 'valueFirst',
             description: 'Версия',
-            pseudo: false,
             type: 'string'
         }];
 

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Rx';
-import * as _ from 'lodash';
+import { cloneDeep, remove } from 'lodash';
 
 import { Message } from '../model';
 
@@ -16,13 +16,9 @@ export class MessageService {
     }
 
     removeMessage(message: Message) {
-        const messages = this.cloneValue(this.messagesSubject);
+        const messages = cloneDeep(this.messagesSubject.getValue());
 
-        _.remove(messages, e => e.id === message.id);
+        remove(messages, e => e.id === message.id);
         this.messagesSubject.next(messages);
-    }
-
-    private cloneValue(subject: BehaviorSubject<any>) {
-        return _.cloneDeep(subject.getValue());
     }
 }

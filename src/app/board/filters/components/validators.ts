@@ -1,6 +1,6 @@
 import { AbstractControl, FormGroup, ValidationErrors } from '@angular/forms';
 
-import * as _ from 'lodash';
+import { includes, isInteger, isNaN, toNumber } from 'lodash';
 import * as moment from 'moment';
 import { Moment } from 'moment';
 
@@ -32,7 +32,7 @@ export class BIValidators {
 
             if (fields.length === 2
                 && filter.controls.hasOwnProperty('condition')
-                && _.includes(filter.get('condition').value, 'empty')) {
+                && includes(filter.get('condition').value, 'empty')) {
                 return null;
             }
 
@@ -99,7 +99,7 @@ export class BIValidators {
         const start = toMinutes(first);
         const end = toMinutes(second);
 
-        if (_.isNaN(start) || _.isNaN(end)) {
+        if (isNaN(start) || isNaN(end)) {
             return {
                 invalid: true,
                 msg: 'VALIDATOR.PERIODIC_NOT_NUMBER'
@@ -124,7 +124,7 @@ export class BIValidators {
     }
 
     public static int(control: AbstractControl): ValidationErrors | null {
-        if (!_.isInteger(Number(control.value))) {
+        if (!isInteger(Number(control.value))) {
             return {
                 invalid: true,
                 msg: 'VALIDATOR.MUST_BE_INT'
@@ -135,7 +135,7 @@ export class BIValidators {
     }
 
     public static float(control: AbstractControl): ValidationErrors | null {
-        if (_.isNaN(Number(control.value))) {
+        if (isNaN(Number(control.value))) {
             return {
                 invalid: true,
                 msg: 'VALIDATOR.MUST_BE_FLOAT'
@@ -160,14 +160,14 @@ export class BIValidators {
         errors = checkRangeQty(tokens);
         if (errors) return errors;
 
-        if (_.isNaN(Number(tokens[0]))) {
+        if (isNaN(Number(tokens[0]))) {
             return {
                 invalid: true,
                 msg: 'VALIDATOR.FLOAT_BAD_FIRST'
             };
         }
 
-        if (_.isNaN(Number(tokens[1]))) {
+        if (isNaN(Number(tokens[1]))) {
             return {
                 invalid: true,
                 msg: 'VALIDATOR.'
@@ -197,14 +197,14 @@ export class BIValidators {
         errors = checkRangeQty(tokens);
         if (errors) return errors;
 
-        if (!_.isInteger(Number(tokens[0]))) {
+        if (!isInteger(Number(tokens[0]))) {
             return {
                 invalid: true,
                 msg: 'VALIDATOR.INT_BAD_FIRST'
             };
         }
 
-        if (!_.isInteger(Number(tokens[1]))) {
+        if (!isInteger(Number(tokens[1]))) {
             return {
                 invalid: true,
                 msg: 'VALIDATOR.INT_BAD_SECOND'
@@ -239,12 +239,12 @@ export class BIValidators {
 function isRightMinutes(token: string): boolean {
     const minutes = token.split(':')[1];
 
-    return _.toNumber(minutes) > 59;
+    return toNumber(minutes) > 59;
 }
 
 function toMinutes(token: string): number {
     const [hour, min] = token.split(':');
-    return _.toNumber(hour) * 60 + _.toNumber(min);
+    return toNumber(hour) * 60 + toNumber(min);
 }
 
 function isIPv4BI(value: string): ValidationErrors | null {
@@ -256,14 +256,14 @@ function isIPv4BI(value: string): ValidationErrors | null {
         };
     }
 
-    if (tokens.filter((item) => _.toNumber(item) > 254).length > 0) {
+    if (tokens.filter((item) => toNumber(item) > 254).length > 0) {
         return {
             invalid: true,
             msg: 'VALIDATOR.IP_BIG'
         };
     }
 
-    if (_.toNumber(tokens[0]) === 0 || _.toNumber(tokens[3]) === 0) {
+    if (toNumber(tokens[0]) === 0 || toNumber(tokens[3]) === 0) {
         return {
             invalid: true,
             msg: 'VALIDATOR.IP_ZERO'
@@ -276,10 +276,10 @@ function isIPv4BI(value: string): ValidationErrors | null {
 function IPtoNumber(text: string): number {
     const octets = text.split('.');
 
-    return _.toNumber(octets[3])
-        + (_.toNumber(octets[2]) << 8)
-        + (_.toNumber(octets[1]) << 16)
-        + (_.toNumber(octets[0]) << 24) >>> 0;
+    return toNumber(octets[3])
+        + (toNumber(octets[2]) << 8)
+        + (toNumber(octets[1]) << 16)
+        + (toNumber(octets[0]) << 24) >>> 0;
 }
 
 function checkRangeQty(tokens) {

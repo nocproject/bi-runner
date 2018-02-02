@@ -7,7 +7,7 @@
       "@app/model": ["app/model/index"],
       "@filter/model": ["app/board/filters/model/index"],
       "@app/services": ["app/services/index"],
-      "@filter/services": ["app/board/filters/services/index"],
+      "@board/services": ["app/board/services/index"],
       "@env/*": ["environments/*"]
     },
     "sourceMap": true,

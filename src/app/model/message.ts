@@ -1,11 +1,11 @@
-import * as _ from 'lodash';
+import { uniqueId } from 'lodash';
 
 import { MessageType } from './message-type.enum';
 
 export class Message {
-    public id: number;
+    public id: string;
 
     constructor(public type: MessageType, public text: string) {
-        this.id = _.uniqueId();
+        this.id = uniqueId();
     }
 }

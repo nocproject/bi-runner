@@ -1,5 +1,12 @@
 import {
-    Component, ElementRef, EventEmitter, forwardRef, HostListener, Input, OnDestroy, OnInit,
+    Component,
+    ElementRef,
+    EventEmitter,
+    forwardRef,
+    HostListener,
+    Input,
+    OnDestroy,
+    OnInit,
     Output
 } from '@angular/core';
 import { ControlValueAccessor, FormControl, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -7,10 +14,10 @@ import { ControlValueAccessor, FormControl, FormGroup, NG_VALUE_ACCESSOR } from 
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
-import * as _ from 'lodash';
+import { includes, isEmpty, isNil, remove } from 'lodash';
 
 import { FieldConfig } from '@filter/model';
-import { Methods, BiRequestBuilder, Result } from '@app/model';
+import { BiRequestBuilder, Methods, Result } from '@app/model';
 import { APIService } from '@app/services';
 import { TreeviewComponent, TreeviewItem } from 'ngx-treeview';
 import { TranslateService } from '@ngx-translate/core';
@@ -215,7 +222,8 @@ export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAcc
                     break;
                 }
                 default: {
-                    console.log(this.config);
+                    console.warn(`FormDropdownComponent: type ${this.config.type} don\'t support`);
+                    console.warn(this.config);
                 }
             }
         }
@@ -276,13 +284,13 @@ export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAcc
         if (downlineItems.length !== this.config.value.length) {
             traverse(treeView.items, (leaf) => {
                 if (leaf.checked) {
-                    if (!_.includes(this.config.value, leaf.value)) {
-                        if (_.isNil(leaf.children)) {
+                    if (!includes(this.config.value, leaf.value)) {
+                        if (isNil(leaf.children)) {
                             this.config.value.push(leaf.value);
                         }
                     }
                 } else {
-                    _.remove(this.config.value, n => n === leaf.value);
+                    remove(this.config.value, n => n === leaf.value);
                 }
             });
 
@@ -324,12 +332,12 @@ export class FormDropdownComponent implements OnInit, OnDestroy, ControlValueAcc
     // ToDo after delete first version of BI, refactor 'get_hierarchy' backend method!!!!
     private response(response: Result) {
         if (this.config.type === 'tree') {
-            if (_.isEmpty(response.result)) {
+            if (isEmpty(response.result)) {
                 return [];
             }
             traverse([response.result], (leaf) => {
                 leaf.value = leaf.id;
-                leaf.checked = _.includes(this.config.value, leaf.id);
+                leaf.checked = includes(this.config.value, leaf.id);
             });
             return [new TreeviewItem(response.result)];
         } else {

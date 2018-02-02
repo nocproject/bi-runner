@@ -11,23 +11,24 @@ export class Filter {
     @JsonMember()
     public condition: string;
     @JsonMember()
-    public type: string;
-    @JsonMember()
     public name: string;
     @JsonMember()
     public association: '$and' | '$or';
     @JsonMember()
     public alias: string;
-    @JsonMember()
-    public pseudo: boolean;
     // form data
     public valueFirst: string;
     public valueSecond: string;
-    public field: Field;
     @JsonMember()
-    public datasource: string;
+    public field: Field;
 
     static fromJSON(json: any): Filter {
+        if (!json.hasOwnProperty('field')) {
+            const field = new Field();
+            field.type = json.type;
+            json.field = field;
+            console.log(json);
+        }
         if (json.hasOwnProperty('type') && json.hasOwnProperty('values')) {
             if (json.type.match(/Date/)) {
                 if (!json.condition.match(/periodic/)) {
@@ -40,6 +41,7 @@ export class Filter {
                 }
             }
         }
+        // console.log(Object.assign(Object.create(Filter.prototype), json));
         return Object.assign(Object.create(Filter.prototype), json);
     }
 
@@ -47,7 +49,11 @@ export class Filter {
         return this.values.length === 0;
     }
 
+    public getType(): string {
+        return this.field.type
+    }
+
     public isPseudo(): boolean {
-        return this.pseudo;
+        return this.field.pseudo;
     }
 }

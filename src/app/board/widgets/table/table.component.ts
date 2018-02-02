@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 import { Subscription } from 'rxjs/Subscription';
 
-import * as _ from 'lodash';
+import { head } from 'lodash';
 import * as d3 from 'd3';
 import * as dc from 'dc';
 import { BaseMixin, DataTableWidget } from 'dc';
@@ -10,7 +10,7 @@ import * as crossfilter from 'crossfilter';
 
 import { Restore, WidgetComponent } from '../widget.component';
 import { Field, Result, Value } from '@app/model';
-import { Utils } from '../../shared/utils';
+import { Utils } from '../../../shared/utils';
 
 @Component({
     selector: 'bi-table',
@@ -33,7 +33,7 @@ export class TableComponent extends WidgetComponent {
                     return (d) => d[param];
                 }
             });
-        const sort = _.head(
+        const sort = head(
             this.data.widget.query.getFields()
                 .filter(field => 'desc' in field)
                 .map(field => {

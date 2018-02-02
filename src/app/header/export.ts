@@ -1,29 +1,40 @@
 import { Observable } from 'rxjs/Rx';
-import * as _ from 'lodash';
+import { clone, flatMap, head } from 'lodash';
 import * as d3 from 'd3';
 import * as saver from 'file-saver';
 
 import { APIService } from '@app/services';
-import { BoardResolver, FilterService } from '../board/services';
 //
 import {
-    BiRequest, BiRequestBuilder, Board, Field, Filter, Group, Methods, Range, Result,
+    BiRequest,
+    BiRequestBuilder,
+    Board,
+    Field,
+    FieldBuilder,
+    Filter,
+    Group,
+    Methods,
+    Range,
+    Result,
     WhereBuilder
 } from '../model';
+//
+import { BoardResolver } from '../board/services/board.resolver';
+import { FilterService } from '../board/services/filter.service';
 
 export class Export {
 
     static query(api: APIService,
                  boardResolver: BoardResolver,
                  filterService: FilterService): Observable<Result> {
-        const board: Board = _.clone(boardResolver.getBoard());
+        const board: Board = clone(boardResolver.getBoard());
         const where = WhereBuilder.makeWhere(filterService.allFilters());
-        const params = _.clone(board.exportQry.params);
+        const params = clone(board.exportQry.params);
         const fields = params[0].fields.filter(f => f.alias !== 'duration_se' && f.alias !== 'duration_ei');
         const durationFilters: Filter[] = filterService.allFiltersByName('exclusion_intervals');
 
         if (durationFilters.length > 0) {
-            const rangeGroup = _.first(filterService.getFilter('startEnd'));
+            const rangeGroup = head(filterService.getFilter('startEnd'));
             if (!rangeGroup) {
                 return Observable.throw('You must set report range!');
             }
@@ -51,9 +62,9 @@ export class Export {
 
     static save(data,
                 boardResolver: BoardResolver) {
-        const fields: Field[] = _.clone(boardResolver.getBoard().exportQry.params[0].fields);
-        const title: string = _.clone(boardResolver.getBoard().title);
-        const pairs = _.clone(fields
+        const fields: Field[] = clone(boardResolver.getBoard().exportQry.params[0].fields);
+        const title: string = clone(boardResolver.getBoard().title);
+        const pairs = clone(fields
             .map(field => [field.alias ? field.alias : field.expr, field.label]))
             .reduce((acc, [key, value]) => {
                 acc[key] = value;
@@ -70,8 +81,8 @@ function durationByReport(values: any[]) {
     const startDate = toDateTime(values[0]);
     const endDate = toDateTime(values[1]);
 
-    return {
-        expr: {
+    return new FieldBuilder()
+        .expr({
             $sum: [
                 {
                     $minus: [
@@ -102,20 +113,61 @@ function durationByReport(values: any[]) {
                     ]
                 }
             ]
-        },
-        alias: 'duration_se',
-        label: 'Duration by Report'
-    };
+        })
+        .alias('duration_se')
+        .label('Duration by Report')
+        .build();
+    // return {
+    //     expr: {
+    //         $sum: [
+    //             {
+    //                 $minus: [
+    //                     {
+    //                         '$?': [
+    //                             {
+    //                                 $gt: [
+    //                                     {$field: endDate},
+    //                                     {$field: 'close_ts'}
+    //                                 ]
+    //                             },
+    //                             {$field: 'close_ts'},
+    //                             {$field: endDate}
+    //                         ]
+    //                     },
+    //                     {
+    //                         '$?': [
+    //                             {
+    //                                 $gt: [
+    //                                     {$field: 'ts'},
+    //                                     {$field: startDate}
+    //                                 ]
+    //                             },
+    //                             {$field: 'ts'},
+    //                             {$field: startDate}
+    //                         ]
+    //                     }
+    //                 ]
+    //             }
+    //         ]
+    //     },
+    //     alias: 'duration_se',
+    //     label: 'Duration by Report'
+    // };
 }
 
-function durationEIField(values) {
-    return {
-        expr: {
+function durationEIField(values): Field {
+    return new FieldBuilder()
+        .alias('duration_ei')
+        .label('EI Duration')
+        .expr({
             '$duration': values.map(e => `[${toDateTime(e.start)},${toDateTime(e.end)}]`)
-        },
-        alias: 'duration_ei',
-        label: 'EI Duration'
-    };
+        })
+        .build();
+    // expr: {
+    //     '$duration': values.map(e => `[${toDateTime(e.start)},${toDateTime(e.end)}]`)
+    // },
+    // alias: 'duration_ei',
+    // label: 'EI Duration'
 }
 
 function durationByZebra(reportRange: any[], filters: Filter[]) {
@@ -132,7 +184,7 @@ function makeIntervals(reportRange, filters) {
                 end: element.values[1].value
             };
         }).concat(
-            _.flatMap(
+            flatMap(
                 filters
                     .filter(element => element.condition.match(/periodic/))
                     .map(element => generateIntervals(reportRange, element.values[0].value))))
