@@ -5,6 +5,7 @@ import { Observable } from 'rxjs/Observable';
 
 import { APIService } from '@app/services';
 import { BoardResolver } from './board.resolver';
+import { FilterService } from './filter.service';
 
 import { BiRequestBuilder, Board, Datasource, Field, IOption, Methods } from '@app/model';
 
@@ -13,7 +14,8 @@ export class DatasourceService {
     datasource$: Observable<Datasource>;
 
     constructor(private api: APIService,
-                private boardResolver: BoardResolver) {
+                private boardResolver: BoardResolver,
+                private filterService: FilterService) {
         this.datasource$ = this.boardResolver.board$
             .switchMap((board: Board) => {
                 return this.api.execute(
@@ -24,7 +26,7 @@ export class DatasourceService {
                     .map(response => {
                         const datasource = Datasource.fromJSON(response.result);
                         datasource.fields = this._fields(board, datasource);
-                        // this.filterService.fields = datasource.fields;
+                        this.filterService.fields = datasource.fields;
                         return datasource;
                     });
             })

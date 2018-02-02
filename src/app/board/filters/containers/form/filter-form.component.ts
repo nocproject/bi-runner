@@ -7,8 +7,8 @@ import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Rx';
 
 import { ConditionService, EventService } from '@filter/services';
-import { APIService, FilterService } from '@app/services';
-import { DatasourceService } from '../../../services';
+import { APIService } from '@app/services';
+import { DatasourceService, FilterService } from '../../../services';
 
 import { EventType, FieldConfig, FiltersConfig, FormConfig, GroupConfig } from '@filter/model';
 import { Group, Range } from '@app/model';

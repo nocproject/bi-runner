@@ -3,7 +3,7 @@ import { forwardRef, Inject, Injectable } from '@angular/core';
 import * as _ from 'lodash';
 import { Observable } from 'rxjs/Rx';
 
-import { APIService } from './api.service';
+import { APIService } from '@app/services';
 import { FilterService } from './filter.service';
 
 import { BiRequestBuilder, Board, Field, Group, Methods, WhereBuilder } from '@app/model';

@@ -4,8 +4,7 @@ import { Observable } from 'rxjs/Rx';
 import * as _ from 'lodash';
 
 import { Board, Field } from '@app/model';
-import { FilterService } from '@app/services';
-import { DatasourceService } from '../services';
+import { DatasourceService, FilterService } from '../services';
 
 @Component({
     selector: 'bi-fields',

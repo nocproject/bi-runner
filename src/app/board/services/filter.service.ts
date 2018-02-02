@@ -25,8 +25,13 @@ export class FilterService {
     groups$: Observable<Field[]> = this.groupsSubject.asObservable();
     // chart: initial state
     private _initChart: ChartInitState[];
+    private _fields: Field[];
 
     constructor(private eventService: EventService) {
+    }
+
+    set fields(fields: Field[]) {
+        this._fields = fields;
     }
 
     initChart(cell: string): Value[] {
@@ -106,14 +111,16 @@ export class FilterService {
                                 })
                                 .map(filter => {
                                     const [name, type, pseudo, datasource] = filter.name.split('.');
+                                    const index = _.findIndex(this._fields, f => f.name === name);
 
                                     return new FilterBuilder()
                                         .name(name)
-                                        .type(type)
                                         .association(item.group.association)
                                         .condition(filter.condition)
+                                        .type(type)
                                         .pseudo(pseudo === 'true')
                                         .datasource(datasource)
+                                        .field(this._fields[index])
                                         .values([new Value(filter.valueFirst), new Value(filter.valueSecond)])
                                         .build();
                                 })

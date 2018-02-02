@@ -10,8 +10,8 @@ import * as _ from 'lodash';
 
 import { environment } from '@env/environment';
 
-import { APIService, AuthenticationService, FilterService, LanguageService, MessageService } from '@app/services';
-import { BoardResolver } from '../board/services';
+import { APIService, AuthenticationService, LanguageService, MessageService } from '@app/services';
+import { BoardResolver, FilterService } from '../board/services';
 
 import { Board, Message, MessageType, Methods, BiRequestBuilder, User } from '../model';
 import { ModalComponent } from '../shared/modal/modal';

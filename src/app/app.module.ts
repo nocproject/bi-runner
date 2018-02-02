@@ -12,12 +12,10 @@ import {
     APIService,
     AuthenticationService,
     AuthGuard,
-    CounterService,
-    FilterService,
     LanguageService,
     MessageService
 } from './services';
-import { BoardResolver } from './board/services/board.resolver';
+import { BoardResolver } from './board/services';
 import { BoardListModule } from './board-list/board-list.module';
 import { BoardModule } from './board/board.module';
 import { HeaderModule } from './header/header.module';
@@ -31,8 +29,6 @@ export const APP_SERVICES = [
     APIService,
     AuthGuard,
     AuthenticationService,
-    CounterService,
-    FilterService,
     LanguageService,
     MessageService
 ];

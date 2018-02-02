@@ -4,8 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import * as _ from 'lodash';
 
-import { APIService, FilterService } from '@app/services';
-import { BoardResolver, DatasourceService } from './services';
+import { BoardResolver, DatasourceService, FilterService } from './services';
 
 import { Board, Cell, CellAndWidget, Widget } from '@app/model';
 
@@ -13,13 +12,10 @@ import { Board, Cell, CellAndWidget, Widget } from '@app/model';
     selector: 'bi-board',
     templateUrl: './board.component.html',
     providers: [
-        {
-            provide: DatasourceService,
-            useClass: DatasourceService,
-            deps: [APIService, BoardResolver]
-        }
+        DatasourceService
     ]
 })
+
 export class BoardComponent implements OnInit, OnDestroy {
     public cells: CellAndWidget[][];
     public board: Board;

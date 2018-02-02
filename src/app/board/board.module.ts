@@ -14,6 +14,7 @@ import { TimepickerModule } from '../shared/timepicker/timepicker.module';
 import { WidgetsModule } from '../widgets/widgets.module';
 //
 import { BoardComponent, FieldsComponent, ReportRangeComponent, SelectorComponent } from './index';
+import { CounterService, DatasourceService, FilterService } from './services';
 
 export const COMPONENTS = [
     BoardComponent,
@@ -41,6 +42,10 @@ export const COMPONENTS = [
     ],
     exports: [
         ...COMPONENTS
+    ],
+    providers: [
+        CounterService,
+        FilterService
     ]
 })
 export class BoardModule {

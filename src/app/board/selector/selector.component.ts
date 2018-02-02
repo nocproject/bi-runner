@@ -8,7 +8,7 @@ import { Observable } from 'rxjs/Rx';
 import { Subscription } from 'rxjs/Subscription';
 
 import { environment } from '@env/environment';
-import { APIService, FilterService, LanguageService } from '@app/services';
+import { APIService, LanguageService } from '@app/services';
 import { BiRequestBuilder, Board, FilterBuilder, Group, GroupBuilder, Methods, Range, Value } from '@app/model';
 
 import { ReportRangeComponent } from '../report-range/report-range.component';
@@ -16,7 +16,7 @@ import { FilterFormComponent } from '../filters/containers/form/filter-form.comp
 import { EventService } from '@filter/services';
 import { EventType } from '@filter/model';
 import { ModalComponent } from '../../shared/modal/modal';
-import { DatasourceService } from '../services';
+import { DatasourceService, FilterService } from '../services';
 
 @Component({
     // changeDetection: ChangeDetectionStrategy.OnPush,

@@ -3,8 +3,8 @@ import * as _ from 'lodash';
 import * as d3 from 'd3';
 import * as saver from 'file-saver';
 
-import { APIService, FilterService } from '@app/services';
-import { BoardResolver } from '../board/services';
+import { APIService } from '@app/services';
+import { BoardResolver, FilterService } from '../board/services';
 //
 import {
     BiRequest, BiRequestBuilder, Board, Field, Filter, Group, Methods, Range, Result,
