@@ -1,6 +1,6 @@
 import { JsonMember, JsonObject } from '@upe/typedjson';
 
-import { Parameter } from './parameter';
+import { BiQuery } from './bi-query';
 import { Field } from './field';
 
 @JsonObject()
@@ -9,8 +9,8 @@ export class BiRequest {
     public id: number;
     @JsonMember()
     public method: string;
-    @JsonMember({elements: Parameter})
-    params: Parameter[];
+    @JsonMember({elements: BiQuery})
+    params: BiQuery[];
 
     public getFields(): Field[] {
         return this.params[0].fields;

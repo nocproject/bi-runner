@@ -49,6 +49,9 @@ export class Utils {
         if (val < 1) {
             return d3.format('.4f')(val);
         }
+        if (val < 100) {
+            return d3.format('.2f')(val);
+        }
         return d3.format('.0f')(val);
     }
 

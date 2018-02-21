@@ -1,0 +1,40 @@
+<div class="dropdown"
+     [ngClass]="{'open': open}">
+    <div class="dropdown-toggle form-control"
+         [tooltip]="placeholder | translate"
+         [ngClass]="{'open': open}"
+         (click)="openList()">
+        <ul>
+            <li class="bi-dropdown" translate>{{ placeholder }}</li>
+            <div style="margin-left: auto; display: flex;align-items: center;">
+                <li *ngIf="showRemove" style="cursor: pointer;" (click)="onClean($event)">
+                    <i class="fa fa-times"></i>
+                </li>
+                <li class="caret"></li>
+            </div>
+        </ul>
+    </div>
+    <div [formGroup]="pattern" *ngIf="open">
+        <input formControlName="term" class="form-control"
+               [placeholder]="'DROP_DOWN.ENTER_PATTERN' | translate">
+        <div><a class="not-active" *ngIf="notFound" translate>DROP_DOWN.NOT_FOUND</a></div>
+        <div *ngIf="search"><a class="not-active" translate>DROP_DOWN.SEARCHING</a></div>
+    </div>
+    <ul class="dropdown-menu scrollable-menu"
+        style="width: 100%;"
+        [ngStyle]="{'display': (!notFound && !search && open) ? 'block' : 'none'}">
+        <ngx-treeview
+                *ngIf="config.type === 'tree'; else dropdown"
+                #treeView
+                [config]="treeConfig"
+                [items]="list$ | async"
+                (selectedChange)="onTreeSelect(treeView, $event)">
+        </ngx-treeview>
+    </ul>
+</div>
+<ng-template #dropdown>
+    <li>
+        <a class="hand bi-dropdown" (click)="onSelect(row)"
+           *ngFor="let row of (list$ | async) as list">{{ row[1] }}</a>
+    </li>
+</ng-template>

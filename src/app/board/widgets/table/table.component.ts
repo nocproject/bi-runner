@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 import { Subscription } from 'rxjs/Subscription';
 
-import { head } from 'lodash';
+import { head, sortBy } from 'lodash';
 import * as d3 from 'd3';
 import * as dc from 'dc';
 import { BaseMixin, DataTableWidget } from 'dc';
@@ -34,8 +34,7 @@ export class TableComponent extends WidgetComponent {
                 }
             });
         const sort = head(
-            this.data.widget.query.getFields()
-                .filter(field => 'desc' in field)
+            sortBy(this.data.widget.query.getFields().filter(field => 'desc' in field), 'order')
                 .map(field => {
                     if (field.desc) {
                         return {field: 'alias' in field ? field.alias : field.expr, direct: d3.descending};
@@ -49,7 +48,7 @@ export class TableComponent extends WidgetComponent {
         chart.showGroups(false);
         chart.columns(cols);
         if (sort) {
-            chart.sortBy(d => parseInt(d[sort.field], 10));
+            chart.sortBy(d => parseFloat(d[sort.field]));
             chart.order(sort.direct);
         }
         this.catchEvents(chart);

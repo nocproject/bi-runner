@@ -7,15 +7,13 @@ import * as moment from 'moment';
 import { Observable } from 'rxjs/Rx';
 import { Subscription } from 'rxjs/Subscription';
 
-import { environment } from '@env/environment';
 import { APIService, LanguageService } from '@app/services';
 import { BiRequestBuilder, Board, FilterBuilder, Group, GroupBuilder, Methods, Range, Value } from '@app/model';
 
 import { ReportRangeComponent } from '../report-range/report-range.component';
-import { FilterFormComponent } from '../filters/containers/form/filter-form.component';
-import { EventType } from '@filter/model';
 import { ModalComponent } from '../../shared/modal/modal';
 //
+import { EventType } from '../filters-form/model/event.interface';
 import { DatasourceService } from '../services/datasource-info.service';
 import { EventService } from '../services/event.service';
 import { FilterService } from '../services/filter.service';
@@ -28,8 +26,6 @@ import { FilterService } from '../services/filter.service';
 export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
     @Input()
     board: Board;
-    @ViewChild(FilterFormComponent)
-    filters: FilterFormComponent;
     @ViewChild(ReportRangeComponent)
     rangeForm: ReportRangeComponent;
     START_DATE = 'startDate';
@@ -37,7 +33,6 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
     locale = 'en';
     values;
     reportRangeText: string = '-';
-    production = environment.production;
     lastUpdate$: Observable<any>;
     isSample$: Observable<boolean>;
     ratioForm: FormGroup;
@@ -149,7 +144,7 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
         this.eventSubscription = this.eventService.event$
             .filter(event => event !== null)
             .filter(event => event.type === EventType.Restore)
-            .flatMap(event => event.value)
+            .flatMap(event => event.payload)
             .filter((group: Group) => group.name === 'startEnd')
             .subscribe(
                 (group: Group) => {

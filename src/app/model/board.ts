@@ -1,5 +1,5 @@
 import { JsonMember, JsonObject, TypedJSON } from '@upe/typedjson';
-import { toPairs } from 'lodash';
+import { cloneDeep, toPairs } from 'lodash';
 
 import { Field } from './field';
 import { Filter } from './filter';
@@ -63,13 +63,12 @@ export class Board {
 
     prepare() {
         // ToDo take from @JsonMember
-        const obj = Object.assign({}, <ObjectConstructor>this,
-            {
-                agv_fields: this.agvFields,
-                filter_fields: this.filterFields,
-                'export': this.exportQry,
-                pseudo_fields: this.pseudoFields
-            });
+        const obj = cloneDeep(this);
+
+        obj['agv_fields'] = this.agvFields;
+        obj['filter_fields'] = this.filterFields;
+        obj['export'] = this.exportQry;
+        obj['pseudo_fields'] = this.pseudoFields;
         delete obj['agvFields'];
         delete obj['filterFields'];
         delete obj['exportQry'];

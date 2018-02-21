@@ -3,27 +3,23 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Rx';
 
-import { cloneDeep, find, findIndex, flatMap, head, remove } from 'lodash';
+import { cloneDeep, find, findIndex, flatMap, head } from 'lodash';
 import * as d3 from 'd3';
 
 import { Field, Filter, FilterBuilder, Group, GroupBuilder, Value } from '@app/model';
-import { EventType, FormConfig, Groups } from '@filter/model';
 //
 import { EventService } from './event.service';
+import { EventType } from '../filters-form/model/event.interface';
+import { FilterGroupConfig } from '../filters-form/model/filters-form-config.interface';
 
 @Injectable()
 export class FilterService {
     ratioSubject = new BehaviorSubject<number>(1);
-    isReportOpenSubject = new BehaviorSubject<boolean>(false);
-    isReportOpen$: Observable<boolean> = this.isReportOpenSubject.asObservable();
     lastUpdatedWidget: string;
     private FORM_GROUP_NAME = 'form';
     // store filters name is "alias.cell_name", need for restore graphs
     private filtersSubject = new BehaviorSubject<Group[]>([]);
     filters$: Observable<Group[]> = this.filtersSubject.asObservable();
-    // store state group by table
-    private groupsSubject = new BehaviorSubject<Field[]>([]);
-    groups$: Observable<Field[]> = this.groupsSubject.asObservable();
     // chart: initial state
     private _initChart: ChartInitState[];
     private _fields: Field[];
@@ -49,7 +45,7 @@ export class FilterService {
 
     initFilters(groups: Group[]) {
         this.nextFilter(groups);
-        this.eventService.next({type: EventType.Restore, value: groups});
+        this.eventService.next({type: EventType.Restore, payload: groups});
         this._initChart = groups
             .filter(group => group.name !== this.FORM_GROUP_NAME && group.name !== 'startEnd')
             .map(group => {
@@ -75,11 +71,11 @@ export class FilterService {
         this.nextFilter(groups);
     }
 
-    formFilters(groups: Groups[], config: FormConfig): void {
+    formFilters(groups: FilterGroupConfig[]): void {
         const exist: Group[] = cloneDeep(this.filtersSubject.getValue())
             .filter(group => group.name !== this.FORM_GROUP_NAME);
 
-        groups.forEach((item, groupIndex) => {
+        groups.forEach((item) => {
                 exist.push(
                     new GroupBuilder()
                         .name(this.FORM_GROUP_NAME)
@@ -87,38 +83,13 @@ export class FilterService {
                         .association(item.association)
                         .filters(
                             item.group.filters
-                                .filter(filter => filter.condition)
-                                .filter((filter, filterIndex) => {
-                                    if (filter.condition.match('empty')) {
-                                        return true;
-                                    }
-                                    if (!filter.hasOwnProperty('valueFirst')) {
-                                        return false;
-                                    }
-                                    // SIDE EFFECT: detect change fields name or condition, may be refactoring
-                                    const nameField = head(config.groups[groupIndex].group.filters[filterIndex]
-                                        .filter(f => f.name === 'name'));
-                                    const conditionField = head(config.groups[groupIndex].group.filters[filterIndex]
-                                        .filter(f => f.name === 'condition'));
-                                    if (filter.condition === conditionField.value && filter.name === nameField.value) {
-                                        return true;
-                                    } else if (filter.condition !== conditionField.value) {
-                                        conditionField.value = filter.condition;
-                                        return false;
-                                    } else if (filter.name !== nameField.value) {
-                                        nameField.value = filter.name;
-                                        return false;
-                                    }
-                                })
                                 .map(filter => {
-                                    const [name, type, pseudo, datasource] = filter.name.split('.');
-
                                     return new FilterBuilder()
-                                        .name(name)
+                                        .name(filter.name)
                                         .association(item.group.association)
                                         .condition(filter.condition)
-                                        .field(this.fieldByName(name))
-                                        .values([new Value(filter.valueFirst), new Value(filter.valueSecond)])
+                                        .field(this.fieldByName(filter.name))
+                                        .values([new Value(filter.value)])
                                         .build();
                                 })
                         )
@@ -139,7 +110,7 @@ export class FilterService {
         return groups.filter(group => group.filters.length > 0);
     }
 
-    allFiltersByName(name: string): Filter[] {
+    filtersByName(name: string): Filter[] {
         const groups = cloneDeep(this.filtersSubject.getValue());
 
         return flatMap(groups.filter(group => group.active)
@@ -151,39 +122,15 @@ export class FilterService {
         return this.allFilters().filter(group => group.name === name);
     }
 
-    cleanGroups() {
-        this.groupsSubject.next([]);
-    }
-
-    groupsNext(groups: Field[]) {
-        this.groupsSubject.next(this.groupsSubject.getValue().concat(groups));
-    }
-
-    allGroups(): Field[] {
-        return cloneDeep(this.groupsSubject.getValue());
-    }
-
-    removeGroup(group: Field) {
-        const groups = cloneDeep(this.groupsSubject.getValue());
-
-        remove(groups, e => e.expr === group.name);
-
-        if (group.dict || group.name === 'ip') {
-            remove(groups, e => e.alias === `${group.name}_text`);
-        }
-
-        this.groupsSubject.next(groups);
-    }
-
-    fieldByName(name: string) {
+    fieldByName(name: string): Field {
         const index = findIndex(this._fields, f => f.name === name);
 
-        return this._fields[index];
+        return index !== -1 ? this._fields[index] : undefined;
     }
 
     private nextFilter(groups: Group[]) {
         groups.forEach(group => group.filters
-            .filter(filter => !filter.isEmpty())
+            .filter(filter => !filter.isEmpty() && filter.field)
             .forEach(filter => {
                 let values: Value[];
 

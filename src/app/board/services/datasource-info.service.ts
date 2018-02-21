@@ -51,9 +51,7 @@ export class DatasourceService {
             .map(array => array
                 .filter(field => field.isSelectable)
                 .map(field => {
-                        // const ds = field.datasource ? field.datasource : 'none';
                         return {
-                            // value: `${field.name}.${field.type}.${field.pseudo}.${ds}`,
                             value: `${field.name}`,
                             text: field.name
                         };
@@ -106,6 +104,9 @@ export class DatasourceService {
 
                 if (index === -1) {
                     field.isGrouping = false;
+                } else {
+                    field.aggFunc = board.agvFields[index].aggFunc;
+                    field.enable = board.agvFields[index].enable !== false;
                 }
 
                 index = findIndex(

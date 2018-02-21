@@ -9,6 +9,7 @@ import 'rxjs/add/operator/debounceTime';
 import { CellAndWidget, Filter, GroupBuilder, Result, Value, WhereBuilder } from '@app/model';
 import { APIService, LanguageService } from '@app/services';
 import { FilterService } from '../services/filter.service';
+import { EventService } from '../services/event.service';
 
 export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestroy {
     @Input()
@@ -26,6 +27,7 @@ export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestro
 
     constructor(@Inject(forwardRef(() => APIService)) public api: APIService,
                 @Inject(forwardRef(() => FilterService)) private filterService: FilterService,
+                @Inject(forwardRef(() => EventService)) public eventService: EventService,
                 @Inject(forwardRef(() => LanguageService)) public languageService: LanguageService) {
     }
 
@@ -52,6 +54,7 @@ export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestro
                 nextFilter.values = this.getValue(widget, filter);
                 if (nextFilter.isEmpty()) {
                     this.filterService.lastUpdatedWidget = '';
+                    this.showReset = false;
                 } else {
                     this.filterService.lastUpdatedWidget = chart.anchorName();
                 }
@@ -96,14 +99,19 @@ export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestro
             // .distinctUntilChanged()
             // .do(data => console.log('filters changed', data))
             .filter(() => this.filterService.lastUpdatedWidget !== this.data.widget.cell)
-            .map(group => WhereBuilder.makeWhere(group))
-            .filter(where => JSON.stringify(where) !== JSON.stringify(this.data.widget.query.params[0].filter))
-            .switchMap(updated => {
-                if (updated) {
-                    this.data.widget.query.params[0].filter = updated;
-                } else {
-                    delete this.data.widget.query.params[0]['filter'];
-                }
+            .map(group => {
+                return {
+                    filter: WhereBuilder.makeWhere(group, true),
+                    having: WhereBuilder.makeWhere(group, false)
+                };
+            })
+            .filter(conditions => {
+                return (JSON.stringify(conditions.filter) !== JSON.stringify(this.data.widget.query.params[0].filter))
+                    || (JSON.stringify(conditions.having) !== JSON.stringify(this.data.widget.query.params[0].having));
+            })
+            .switchMap(conditions => {
+                this.setConstraint(conditions, 'filter');
+                this.setConstraint(conditions, 'having');
                 let ratio = this.filterService.ratioSubject.getValue();
                 if (ratio !== 1) {
                     this.data.widget.query.params[0].sample = ratio;
@@ -115,6 +123,14 @@ export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestro
                     this.chart = this.draw(response);
                 },
                 console.error);
+    }
+
+    private setConstraint(conditions, name) {
+        if (conditions[name]) {
+            this.data.widget.query.params[0][name] = conditions[name];
+        } else {
+            delete this.data.widget.query.params[0][name];
+        }
     }
 }
 

@@ -30,6 +30,10 @@ export class Field {
     public model: string;
     @JsonMember()
     public pseudo: boolean;
+    @JsonMember()
+    public enable: boolean;
+    @JsonMember()
+    public aggFunc: string;
     //
     public hide: boolean | string;
     public isSelectable: boolean;
@@ -48,11 +52,11 @@ export class Field {
         json['grouped'] = false;
         json['isAgg'] = false;
 
-        if (json.hasOwnProperty('expr')) {
-            if (typeof json['expr'] === 'object') {
-                json['expr'].__type = 'Expression';
-            }
-        }
+        // if (json.hasOwnProperty('expr')) {
+        //     if (typeof json['expr'] === 'object') {
+        //         json['expr'].__type = 'Expression';
+        //     }
+        // }
         if (json.hasOwnProperty('is_agg')) {
             json['isAgg'] = json['is_agg'];
             delete json['is_agg'];
@@ -79,6 +83,21 @@ export class FieldBuilder {
 
     public expr(expr): FieldBuilder {
         this.field.expr = expr;
+        return this;
+    }
+
+    public datasource(datasource: string): FieldBuilder {
+        this.field.datasource = datasource;
+        return this;
+    }
+
+    public description(description: string): FieldBuilder {
+        this.field.description = description;
+        return this;
+    }
+
+    public type(type: string): FieldBuilder {
+        this.field.type = type;
         return this;
     }
 

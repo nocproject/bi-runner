@@ -6,11 +6,11 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Rx';
 import { Subscription } from 'rxjs/Subscription';
 
-import { clone, includes } from 'lodash';
+import { cloneDeep, includes } from 'lodash';
 
 import { environment } from '@env/environment';
 
-import { APIService, AuthenticationService, LanguageService, MessageService } from '@app/services';
+import { APIService, AuthenticationService, LanguageService, LayoutService, MessageService } from '@app/services';
 import { BoardResolver } from '../board/services/board.resolver';
 import { FilterService } from '../board/services/filter.service';
 
@@ -46,6 +46,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
                 private messages: MessageService,
                 private api: APIService,
                 private route: Router,
+                private layoutService: LayoutService,
                 private boardResolver: BoardResolver,
                 private filterService: FilterService,
                 private location: Location) {
@@ -55,7 +56,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.user$ = this.authService.user$;
         this.isLogin$ = this.authService.isLogIn$;
         this.board$ = this.boardResolver.board$;
-        this.isReportOpen$ = this.filterService.isReportOpen$;
+        this.isReportOpen$ = this.layoutService.isReportOpen$;
         this.accessLevel$ = this.authService.accessLevel$;
 
         this.boardSubscription = this.board$
@@ -83,7 +84,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
 
     onSaveBoard() {
-        const board = clone(this.boardResolver.getBoard());
+        const board = cloneDeep(this.boardResolver.getBoard());
 
         board.groups = this.filterService.allFilters();
         board.sample = this.filterService.ratioSubject.getValue();
@@ -99,7 +100,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
 
     onSaveAsBoard(modal: ModalComponent) {
-        const board = clone(this.boardResolver.getBoard());
+        const board = cloneDeep(this.boardResolver.getBoard());
 
         board.title = this.saveForm.get('title').value;
         board.description = this.saveForm.get('description').value;
@@ -129,7 +130,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
 
     onRemoveBoard(modal: ModalComponent) {
-        const board = clone(this.boardResolver.getBoard());
+        const board = cloneDeep(this.boardResolver.getBoard());
         const query = new BiRequestBuilder()
             .method(Methods.REMOVE_DASHBOARD)
             .params([board.id])

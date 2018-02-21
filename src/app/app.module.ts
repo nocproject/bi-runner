@@ -13,6 +13,7 @@ import {
     AuthenticationService,
     AuthGuard,
     LanguageService,
+    LayoutService,
     MessageService
 } from './services';
 import { BoardResolver } from './board/services/board.resolver';
@@ -30,6 +31,7 @@ export const APP_SERVICES = [
     AuthGuard,
     AuthenticationService,
     LanguageService,
+    LayoutService,
     MessageService
 ];
 
@@ -80,5 +82,5 @@ export class AppModule {
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
-    return new TranslateHttpLoader(http, '/ui/bi2/assets/i18n/');
+    return new TranslateHttpLoader(http, 'assets/i18n/');
 }

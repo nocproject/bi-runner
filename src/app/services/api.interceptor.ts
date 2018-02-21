@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
 import {
-    HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest,
+    HttpErrorResponse,
+    HttpEvent,
+    HttpHandler,
+    HttpInterceptor,
+    HttpRequest,
     HttpResponse
 } from '@angular/common/http';
 
@@ -29,7 +33,8 @@ export class APIInterceptor implements HttpInterceptor {
                 if (event instanceof HttpResponse) {
                     if (event.url.indexOf('/api/bi/')) {
                         if (event.body.error) {
-                            throw({id: 1, message: event.body.error});
+                            this.messagesService.message(new Message(MessageType.DANGER, event.body.error));
+                            return Observable.throw(event.body.error);
                         }
                     }
                 }
@@ -37,16 +42,11 @@ export class APIInterceptor implements HttpInterceptor {
             })
             .catch(err => {
                 if (err instanceof HttpErrorResponse) {
-                    if (err.status === 401) {
-                        return Observable.throw(err);
+                    const error = err;
+                    if (error.status !== 200) {
+                        this.messagesService.message(new Message(MessageType.DANGER, `${error.message} : status ${error.status}`));
                     }
                 }
-
-                if (err.hasOwnProperty('id') && err['id'] === 1) { // API BI error
-                    this.messagesService.message(new Message(MessageType.DANGER, err.message));
-                    return Observable.throw(`response with error : '${err.message}'`);
-                }
-
                 return Observable.throw(err);
             });
     }

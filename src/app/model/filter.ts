@@ -17,17 +17,17 @@ export class Filter {
     @JsonMember()
     public alias: string;
     // form data
-    public valueFirst: string;
-    public valueSecond: string;
+    public value: string;
     @JsonMember()
     public field: Field;
 
     static fromJSON(json: any): Filter {
-        if (!json.hasOwnProperty('field')) {
+        if (json.hasOwnProperty('field')) {
+            json.type = json.field.type;
+        } else {
             const field = new Field();
             field.type = json.type;
             json.field = field;
-            console.log(json);
         }
         if (json.hasOwnProperty('type') && json.hasOwnProperty('values')) {
             if (json.type.match(/Date/)) {
@@ -46,7 +46,7 @@ export class Filter {
     }
 
     public isEmpty(): boolean {
-        return this.values.length === 0;
+        return this.values && this.values.length === 0;
     }
 
     public getType(): string {

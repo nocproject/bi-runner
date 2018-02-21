@@ -3,10 +3,11 @@ import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { getTestBed, TestBed } from '@angular/core/testing';
 
+import { Field, Methods } from '@app/model';
 import { APIService } from '@app/services';
 import { BoardResolver } from './board.resolver';
 import { DatasourceService } from './datasource-info.service';
-import { Field, Methods } from '@app/model';
+import { FilterService } from './filter.service';
 // Test data
 import * as alarmsDatasourceInfoBody from '../../test-response/alarmsDatasourceInfoBody.json';
 import * as alarmsBoardBody from '../../test-response/alarmsBoardBody.json';
@@ -21,6 +22,7 @@ describe('Service: DatasourceService for alarms', () => {
     //
     let api: APIService;
     let service: DatasourceService;
+    let filterService: FilterService;
     let fields: Field[];
 
     beforeAll(() => {
@@ -32,7 +34,7 @@ describe('Service: DatasourceService for alarms', () => {
                 BoardResolver,
                 {
                     provide: DatasourceService,
-                    useFactory: (api, resolver) => new DatasourceService(api, resolver),
+                    useFactory: (api, resolver, filter) => new DatasourceService(api, resolver, filter),
                     deps: [APIService, BoardResolver]
                 },
                 {
@@ -52,6 +54,7 @@ describe('Service: DatasourceService for alarms', () => {
         let route = new ActivatedRouteSnapshot();
         route.params = {id: ''};
         resolver.resolve(route, null);
+        filterService = TestBed.get(FilterService);
         service = TestBed.get(DatasourceService);
         // Perform a request and make sure we get the response we expect
         service.fields().subscribe(data =>
@@ -134,6 +137,7 @@ describe('Service: DatasourceService for reboots', () => {
     //
     let api: APIService;
     let service: DatasourceService;
+    let filterService: FilterService;
     let fields: Field[];
 
     beforeAll(() => {
@@ -145,7 +149,7 @@ describe('Service: DatasourceService for reboots', () => {
                 BoardResolver,
                 {
                     provide: DatasourceService,
-                    useFactory: (api, resolver) => new DatasourceService(api, resolver),
+                    useFactory: (api, resolver, filter) => new DatasourceService(api, resolver, filter),
                     deps: [APIService, BoardResolver]
                 },
                 {
@@ -165,6 +169,7 @@ describe('Service: DatasourceService for reboots', () => {
         let route = new ActivatedRouteSnapshot();
         route.params = {id: ''};
         resolver.resolve(route, null);
+        filterService = TestBed.get(FilterService);
         service = TestBed.get(DatasourceService);
         // Perform a request and make sure we get the response we expect
         service.fields().subscribe(data =>
@@ -247,6 +252,7 @@ describe('Service: DatasourceService for interfaces', () => {
     //
     let api: APIService;
     let service: DatasourceService;
+    let filterService: FilterService;
     let fields: Field[];
 
     beforeAll(() => {
@@ -258,7 +264,7 @@ describe('Service: DatasourceService for interfaces', () => {
                 BoardResolver,
                 {
                     provide: DatasourceService,
-                    useFactory: (api, resolver) => new DatasourceService(api, resolver),
+                    useFactory: (api, resolver, filter) => new DatasourceService(api, resolver, filter),
                     deps: [APIService, BoardResolver]
                 },
                 {
@@ -278,6 +284,7 @@ describe('Service: DatasourceService for interfaces', () => {
         let route = new ActivatedRouteSnapshot();
         route.params = {id: ''};
         resolver.resolve(route, null);
+        filterService = TestBed.get(FilterService);
         service = TestBed.get(DatasourceService);
         // Perform a request and make sure we get the response we expect
         service.fields().subscribe(data =>

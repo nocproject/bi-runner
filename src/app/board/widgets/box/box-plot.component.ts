@@ -6,6 +6,7 @@ import * as crossfilter from 'crossfilter';
 
 import { Restore, WidgetComponent } from '../widget.component';
 import { Result, Value } from '@app/model';
+import { EventType } from '../../filters-form/model/event.interface';
 
 @Component({
     selector: 'bi-box',
@@ -13,9 +14,12 @@ import { Result, Value } from '@app/model';
 })
 export class BoxPlotComponent extends WidgetComponent {
     draw(response: Result): BaseMixin<BoxPlot> {
+        // hard code two params 'duration' & 'UInt64'
+        const key = 'duration';
+        const type = 'UInt64';
         const chart: BoxPlot = dc.boxPlot(`#${this.data.cell.name}`);
         const ndx = crossfilter(response.zip(false));
-        const dimension = ndx.dimension(() => 'duration');
+        const dimension = ndx.dimension(() => key);
         const values = dimension.group().reduce(
             (p, v) => {
                 p.push(parseInt(v.d));
@@ -37,8 +41,13 @@ export class BoxPlotComponent extends WidgetComponent {
         chart.group(values);
         chart.elasticY(true);
         chart.elasticX(true);
-        // chart.tickFormat(d3.format('.2f'));
         this.catchEvents(chart);
+        chart.on('filtered', (widget: BaseMixin<any>) => {
+            const quartiles = widget.data()[0].value['quartiles'];
+            const k = widget.data()[0].key;
+
+            this.eventService.next({type: EventType.AddBoxplotGroup, payload: {key: k, type: type, quartiles: quartiles}});
+        });
         chart.render();
 
         return chart;

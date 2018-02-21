@@ -1,0 +1,26 @@
+<div [formGroup]="filter">
+    <div class="row" style="padding: 0 15px 0 15px;">
+        <div class="col-md-3">
+            <bi-form-select [config]="fieldSelect" [form]="filter"></bi-form-select>
+        </div> <!-- Choose field -->
+        <div class="col-md-2">
+            <bi-form-select [config]="conditionSelect" [form]="filter"></bi-form-select>
+        </div> <!-- Choose condition -->
+        <div class="col-md-6" *ngIf="valueFieldConfig$ | async as valConfig" [ngSwitch]="valConfig.type">
+            <bi-form-select *ngSwitchCase="'select'" [config]="valConfig" [form]="filter" [field]="valueField"></bi-form-select>
+            <bi-form-dictionary *ngSwitchCase="'dictionary'" [config]="valConfig" [form]="filter" [field]="valueField"></bi-form-dictionary>
+            <bi-form-dictionary *ngSwitchCase="'tree'" [config]="valConfig" [form]="filter" [field]="valueField"></bi-form-dictionary>
+            <bi-form-model *ngSwitchCase="'model'" [config]="valConfig" [form]="filter" [field]="valueField"></bi-form-model>
+            <bi-form-input *ngSwitchCase="'input'" [config]="valConfig" [form]="filter" [field]="valueField"></bi-form-input>
+            <div *ngSwitchCase="'none'"></div>
+            <div class="form-group" *ngSwitchDefault>
+                <label class="control-label" translate>Value:</label>
+                <div>Value Field not implement</div>
+            </div>
+        </div>
+        <div class="col-md-1 pull-right text-right">
+            <i class="checkbox fa fa-times-circle hand"
+               (click)="onDeleteFilter()"></i>
+        </div> <!-- Close button -->
+    </div>
+</div>

@@ -5,14 +5,18 @@ import { Subscription } from 'rxjs/Subscription';
 import { head } from 'lodash';
 
 import { Board, Cell, CellAndWidget, Widget } from '@app/model';
+import { LayoutService } from '@app/services';
 import { BoardResolver } from './services/board.resolver';
+import { DatasourceService } from './services/datasource-info.service';
 import { FilterService } from './services/filter.service';
-
-// import { BoardResolver, DatasourceService, FilterService } from './services';
+import { FieldsTableService } from './services/fields-table.service';
 
 @Component({
     selector: 'bi-board',
-    templateUrl: './board.component.html'
+    templateUrl: './board.component.html',
+    providers: [
+        DatasourceService
+    ]
 })
 
 export class BoardComponent implements OnInit, OnDestroy {
@@ -22,29 +26,31 @@ export class BoardComponent implements OnInit, OnDestroy {
 
     constructor(public boardResolver: BoardResolver,
                 private route: ActivatedRoute,
+                private layoutService: LayoutService,
+                private fieldsTableService: FieldsTableService,
                 private filterService: FilterService) {
     }
 
     ngOnInit(): void {
         this.filterService.cleanFilters();
-        this.filterService.cleanGroups();
+        this.fieldsTableService.cleanFields();
         this.subscription = this.route.data.map(data => data['detail'])
             .subscribe(
                 (board: Board) => {
                     this.filterService.initFilters(board.groups);
-                    this.filterService.groupsNext(board.exportQry.params[0].fields);
+                    this.fieldsTableService.fieldsNext(board.exportQry.params[0].fields);
                     this.board = board;
                     this.cells = this.cellsByRow(board.layout.cells, board.widgets);
                     this.filterService.ratioSubject.next(board.sample ? board.sample : 1);
                     this.boardResolver.next(board);
-                    this.filterService.isReportOpenSubject.next(true);
+                    this.layoutService.isReportOpenSubject.next(true);
                 }
             );
     }
 
     ngOnDestroy(): void {
         this.subscription.unsubscribe();
-        this.filterService.isReportOpenSubject.next(false);
+        this.layoutService.isReportOpenSubject.next(false);
     }
 
     private cellsByRow(cells: Cell[], widgets: Widget[]): CellAndWidget[][] {

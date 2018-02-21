@@ -6,23 +6,22 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { DataGridModule } from '../shared/data-grid/data-grid.module';
-import { FiltersModule } from './filters/filters.module';
+import { FiltersFormModule } from './filters-form/filters-form.module';
 import { ModalModule } from '../shared/modal/modal.module';
 import { MyDatePickerModule } from '../shared/my-date-picker';
 import { SharedModule } from '../shared/shared.module';
 import { TimepickerModule } from '../shared/timepicker/timepicker.module';
 import { WidgetsModule } from './widgets/widgets.module';
 //
-import { BoardComponent, FieldsComponent, ReportRangeComponent, SelectorComponent } from './index';
-import { ConditionService } from './services/condition.service';
+import { BoardComponent, ReportRangeComponent, SelectorComponent } from './index';
 import { CounterService } from './services/counter.service';
 import { EventService } from './services/event.service';
 import { FilterService } from './services/filter.service';
-import { DatasourceService } from './services/datasource-info.service';
+import { FieldsTableService } from './services/fields-table.service';
+import { FieldsTableModule } from './fields-table/fields-table.module';
 
 export const COMPONENTS = [
     BoardComponent,
-    FieldsComponent,
     ReportRangeComponent,
     SelectorComponent
 ];
@@ -30,7 +29,8 @@ export const COMPONENTS = [
 @NgModule({
     imports: [
         CommonModule,
-        FiltersModule,
+        FiltersFormModule,
+        FieldsTableModule,
         DataGridModule,
         ModalModule,
         MyDatePickerModule,
@@ -48,10 +48,9 @@ export const COMPONENTS = [
         ...COMPONENTS
     ],
     providers: [
-        ConditionService,
-        DatasourceService,
-        EventService,
         CounterService,
+        EventService,
+        FieldsTableService,
         FilterService
     ]
 })

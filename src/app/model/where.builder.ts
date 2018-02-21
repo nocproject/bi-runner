@@ -1,4 +1,4 @@
-import { clone, head, startsWith } from 'lodash';
+import { cloneDeep, head, startsWith } from 'lodash';
 import * as d3 from 'd3';
 
 import { Group } from './group';
@@ -6,11 +6,12 @@ import { Filter } from './filter';
 import { FilterBuilder } from './filter.builder';
 import { Value } from './value';
 import { Range } from './range';
+import { Field } from './field';
 
 export class WhereBuilder {
-    static makeWhere(groups: Group[]): Object {
-        const andFilters = getFilters(groups, '$and');
-        const orFilters = getFilters(groups, '$or');
+    static makeWhere(groups: Group[], isWhere: boolean): Object {
+        const andFilters = getFilters(groups, '$and', isWhere);
+        const orFilters = getFilters(groups, '$or', isWhere);
 
         if (andFilters.length > 0 && orFilters.length > 0) {
             return orValues([andValues(andFilters), orValues(orFilters)]);
@@ -26,12 +27,20 @@ export class WhereBuilder {
     }
 }
 
-function getFilters(groups: Group[], association: string): Object[] {
+function getFilters(groups: Group[], association: string, isWhere: boolean): Object[] {
     return groups
         .filter(group => group.active)
         .filter(group => group.association === association)
         .map(group => group.filters
             .filter(filter => !filter.isEmpty())
+            .filter(filter => {
+                const toHaving = (filter.field.isAgg || false) && group.name === 'form';
+
+                if (!isWhere && toHaving) return true;
+                if (!isWhere && !toHaving) return false;
+                if (isWhere && toHaving) return false;
+                if (isWhere && !toHaving) return true;
+            })
             // hard code, add filter
             .map(filter => {
                 if (filter.name === 'exclusion_intervals') {
@@ -62,7 +71,7 @@ function filtersAssociation(filters: Filter[]): string {
 }
 
 function where(filter: Filter): Object {
-    const clonedFilter = clone(filter);
+    const clonedFilter = cloneDeep(filter);
 
     switch (clonedFilter.condition) {
         case 'interval':
@@ -170,7 +179,7 @@ function interval(filter: Filter): Object {
 }
 
 function inCondition(filter: Filter): Object {
-    if (startsWith(filter.getType(), 'tree-')) {
+    if (startsWith(filter.getType(), 'Tree')) {
         return {
             $in: [
                 {
@@ -245,12 +254,20 @@ function castToField(values: Value[], type: string): Object {
 
 function castToCondition(filter: Filter) {
     const expression: Object = {};
-
+    const func = getAggFunc(filter.field);
+    // ToDo 'avg' must be save into board config
     expression[filter.condition] = [{
-        $field: filter.name
+        $field: (filter.field.isAgg || false) ? `${func}Merge(${filter.name}_${func})` : filter.name
     }, castToField(filter.values, filter.getType())];
 
     return expression;
+}
+
+function getAggFunc(field: Field): string {
+    if (field) {
+        return field.aggFunc || 'avg';
+    }
+    return 'avg';
 }
 
 function castToArray(filter: Filter): any[] {

@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs/Rx';
-import { clone, flatMap, head } from 'lodash';
+import { clone, cloneDeep, flatMap, head } from 'lodash';
 import * as d3 from 'd3';
 import * as saver from 'file-saver';
 
@@ -27,11 +27,12 @@ export class Export {
     static query(api: APIService,
                  boardResolver: BoardResolver,
                  filterService: FilterService): Observable<Result> {
-        const board: Board = clone(boardResolver.getBoard());
-        const where = WhereBuilder.makeWhere(filterService.allFilters());
-        const params = clone(board.exportQry.params);
+        const board: Board = cloneDeep(boardResolver.getBoard());
+        const where = WhereBuilder.makeWhere(filterService.allFilters(), true);
+        const having = WhereBuilder.makeWhere(filterService.allFilters(), false);
+        const params = cloneDeep(board.exportQry.params);
         const fields = params[0].fields.filter(f => f.alias !== 'duration_se' && f.alias !== 'duration_ei');
-        const durationFilters: Filter[] = filterService.allFiltersByName('exclusion_intervals');
+        const durationFilters: Filter[] = filterService.filtersByName('exclusion_intervals');
 
         if (durationFilters.length > 0) {
             const rangeGroup = head(filterService.getFilter('startEnd'));
@@ -45,6 +46,9 @@ export class Export {
 
         if (where) {
             params[0].filter = where;
+        }
+        if (having) {
+            params[0].having = having;
         }
         // ToDo change backend (use boolean) and remove
         params[0].fields = fields.map(field => {
@@ -64,7 +68,7 @@ export class Export {
                 boardResolver: BoardResolver) {
         const fields: Field[] = clone(boardResolver.getBoard().exportQry.params[0].fields);
         const title: string = clone(boardResolver.getBoard().title);
-        const pairs = clone(fields
+        const pairs = cloneDeep(fields
             .map(field => [field.alias ? field.alias : field.expr, field.label]))
             .reduce((acc, [key, value]) => {
                 acc[key] = value;

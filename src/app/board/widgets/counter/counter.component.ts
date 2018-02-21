@@ -5,6 +5,7 @@ import { Observable } from 'rxjs/Rx';
 import { Board, Field, Group } from '@app/model';
 import { CounterService } from '../../services/counter.service';
 import { FilterService } from '../../services/filter.service';
+import { FieldsTableService } from '../../services/fields-table.service';
 
 @Component({
     selector: 'bi-counter',
@@ -17,11 +18,12 @@ export class CounterComponent implements OnInit {
     qty$: Observable<number>;
 
     constructor(private counterService: CounterService,
+                private fieldsTableService: FieldsTableService,
                 private filterService: FilterService) {
     }
 
     ngOnInit() {
-        this.qty$ = this.filterService.groups$
+        this.qty$ = this.fieldsTableService.fields$
             .merge(this.filterService.filters$)
             .switchMap((instance: Group[] | Field[]) => this.counterService.qty(instance, this.board));
     }

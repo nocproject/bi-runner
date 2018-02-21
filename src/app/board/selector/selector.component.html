@@ -46,12 +46,7 @@
                             <bi-fields [board]="board"></bi-fields>
                         </div>
                         <div class="col-md-7" style="padding-right: 30px;">
-                            <bi-filter-form></bi-filter-form>
-                            <div *ngIf="!production">
-                                is valid : {{ filters.valid }}
-                                <hr>
-                                form params : {{ filters.value | json }}
-                            </div>
+                            <bi-filters-form></bi-filters-form>
                         </div>
                     </div>
                 </div>

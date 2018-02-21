@@ -44,15 +44,6 @@
             "sm": null,
             "xs": null,
             "row": 5
-          },
-          {
-            "md": 6,
-            "name": "c31",
-            "lg": null,
-            "height": 200,
-            "sm": null,
-            "xs": null,
-            "row": 10
           }
         ],
         "description": "",
@@ -103,7 +94,7 @@
           ]
         }
       ],
-      "title": "MO with selector",
+      "title": "Managed objects",
       "format": 2,
       "export": {
         "params": [
@@ -166,7 +157,7 @@
           }
         },
         {
-          "cell": "c22",
+          "cell": "c12",
           "note": "по количеству",
           "title": "Платформа количество объектов, топ 10",
           "type": "pieChart",
@@ -206,7 +197,7 @@
           }
         },
         {
-          "cell": "c31",
+          "cell": "c22",
           "note": "по количеству",
           "title": "Версии количество объектов, топ 10",
           "type": "pieChart",
@@ -264,46 +255,6 @@
                         "vendor",
                         {
                           "$field": "vendor"
-                        }
-                      ]
-                    },
-                    "group": 1,
-                    "alias": "name"
-                  },
-                  {
-                    "expr": "count()",
-                    "alias": "cnt",
-                    "order": 0,
-                    "desc": true
-                  }
-                ],
-                "limit": 10,
-                "datasource": "managedobjects"
-              }
-            ],
-            "id": 0,
-            "method": "query"
-          }
-        },
-        {
-          "cell": "c12",
-          "note": "по количеству",
-          "title": "Зона Ответственности количество объектов, топ 10",
-          "type": "pieChart",
-          "query": {
-            "params": [
-              {
-                "fields": [
-                  {
-                    "expr": "administrative_domain",
-                    "group": 0
-                  },
-                  {
-                    "expr": {
-                      "$lookup": [
-                        "administrativedomain",
-                        {
-                          "$field": "administrative_domain"
                         }
                       ]
                     },

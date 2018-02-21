@@ -1,37 +1,40 @@
-import { forwardRef, Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 
 import { flattenDeep, head } from 'lodash';
 import { Observable } from 'rxjs/Rx';
 
 import { APIService } from '@app/services';
 import { FilterService } from './filter.service';
+import { FieldsTableService } from './fields-table.service';
 
 import { BiRequestBuilder, Board, Field, Group, Methods, WhereBuilder } from '@app/model';
 
 @Injectable()
 export class CounterService {
     constructor(private api: APIService,
-                @Inject(forwardRef(() => FilterService)) private filterService: FilterService) {
+                private fieldsTableService: FieldsTableService,
+                private filterService: FilterService) {
     }
 
     public qty(array: any, board: Board): Observable<number> {
-        let groups: Field[];
+        let fields: Field[];
         let filters: Group[];
 
         if (head(array) instanceof Field) {
-            groups = (<Field[]>array);
+            fields = (<Field[]>array);
             filters = this.filterService.allFilters();
         }
         if (head(array) instanceof Group) {
             filters = (<Group[]>array);
-            groups = this.filterService.allGroups();
+            fields = this.fieldsTableService.allFields();
         }
 
-        return this.makeUniqQuery(board, groups, filters);
+        return this.makeUniqQuery(board, fields, filters);
     }
 
     private makeUniqQuery(board: Board, groups: Field[], filters: Group[]): Observable<number> {
-        const where = WhereBuilder.makeWhere(filters);
+        const where = WhereBuilder.makeWhere(filters, true);
+        const having = WhereBuilder.makeWhere(filters, false);
         const fields = groups
             .filter(field => field.hasOwnProperty('group'))
             .map(field => field.expr)
@@ -52,6 +55,10 @@ export class CounterService {
 
         if (where) {
             params['filter'] = where;
+        }
+
+        if (having) {
+            params['having'] = having;
         }
 
         const query = new BiRequestBuilder()
