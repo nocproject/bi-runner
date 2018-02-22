@@ -43,10 +43,13 @@ export class BoxPlotComponent extends WidgetComponent {
         chart.elasticX(true);
         this.catchEvents(chart);
         chart.on('filtered', (widget: BaseMixin<any>) => {
-            const quartiles = widget.data()[0].value['quartiles'];
+            const quartiles = widget.data()[0].value['quartiles'].map(e => Math.round(e));
             const k = widget.data()[0].key;
 
-            this.eventService.next({type: EventType.AddBoxplotGroup, payload: {key: k, type: type, quartiles: quartiles}});
+            this.eventService.next({
+                type: EventType.AddBoxplotGroup,
+                payload: {key: k, type: type, quartiles: quartiles}
+            });
         });
         chart.render();
 
