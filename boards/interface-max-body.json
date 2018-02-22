@@ -1,0 +1,447 @@
+{
+  "method": "set_dashboard",
+  "params": [
+    {
+      "layoutId": "580e1ba498601c0f96b7e809",
+      "layout": {
+        "uuid": "f2736f99-a568-4820-b746-1e71d48b4374",
+        "cells": [
+          {
+            "md": 12,
+            "name": "table1",
+            "lg": null,
+            "height": 360,
+            "sm": null,
+            "xs": null,
+            "row": 4
+          }
+        ],
+        "description": "",
+        "fav_status": false,
+        "is_builtin": false,
+        "id": "580e1ba498601c0f96b7e809",
+        "name": "c2x2"
+      },
+      "title": "Загрузка портов max",
+      "description": "отчет по интерфейсам, значения по max",
+      "groups": [
+        {
+          "active": true,
+          "association": "$and",
+          "filters": [
+            {
+              "type": "DateTime",
+              "association": "$and",
+              "values": [
+                {
+                  "value": "l7"
+                }
+              ],
+              "name": "hour",
+              "condition": "interval"
+            }
+          ],
+          "name": "startEnd"
+        }
+      ],
+      "format": 2,
+      "export": {
+        "params": [
+          {
+            "fields": [
+              {
+                "alias": "date",
+                "expr": "date",
+                "group": 0,
+                "format": "dateToString",
+                "label": "Дата"
+              },
+              {
+                "label": "Load In",
+                "expr": {
+                  "$maxMerge": [
+                    {
+                      "$field": "load_in_max"
+                    }
+                  ]
+                },
+                "alias": "load_in",
+                "format": "intFormat"
+              },
+              {
+                "label": "Load Out",
+                "expr": {
+                  "$maxMerge": [
+                    {
+                      "$field": "load_out_max"
+                    }
+                  ]
+                },
+                "alias": "load_out",
+                "format": "intFormat"
+              },
+              {
+                "label": "Discards In",
+                "expr": {
+                  "$maxMerge": [
+                    {
+                      "$field": "discards_in_max"
+                    }
+                  ]
+                },
+                "alias": "discards_in",
+                "format": "intFormat"
+              },
+              {
+                "label": "Discards Out",
+                "expr": {
+                  "$maxMerge": [
+                    {
+                      "$field": "discards_out_max"
+                    }
+                  ]
+                },
+                "alias": "discards_out",
+                "format": "intFormat"
+              },
+              {
+                "label": "Errors In",
+                "expr": {
+                  "$maxMerge": [
+                    {
+                      "$field": "errors_in_max"
+                    }
+                  ]
+                },
+                "alias": "errors_in",
+                "format": "intFormat"
+              },
+              {
+                "label": "Errors Out",
+                "expr": {
+                  "$maxMerge": [
+                    {
+                      "$field": "errors_out_max"
+                    }
+                  ]
+                },
+                "alias": "errors_out",
+                "format": "intFormat"
+              },
+              {
+                "label": "Packets In",
+                "expr": {
+                  "$maxMerge": [
+                    {
+                      "$field": "packets_in_max"
+                    }
+                  ]
+                },
+                "alias": "packets_in",
+                "format": "intFormat"
+              },
+              {
+                "label": "Packets Out",
+                "expr": {
+                  "$maxMerge": [
+                    {
+                      "$field": "packets_out_max"
+                    }
+                  ]
+                },
+                "alias": "packets_out",
+                "format": "intFormat"
+              }
+            ],
+            "datasource": "AggregatedInterface"
+          }
+        ],
+        "id": 0,
+        "method": "query"
+      },
+      "datasource": "AggregatedInterface",
+      "widgets": [
+        {
+          "cell": "table1",
+          "note": "оборудование",
+          "title": "Интерфейсы, топ 10",
+          "type": "dataTable",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "alias": "date",
+                    "expr": "date",
+                    "label": "Дата",
+                    "format": "dateToString",
+                    "group": 0
+                  },
+                  {
+                    "expr": "managed_object",
+                    "group": 1
+                  },
+                  {
+                    "expr": "arrayStringConcat(path)",
+                    "label": "Path",
+                    "alias": "path",
+                    "group": 2
+                  },
+                  {
+                    "label": "Устройство",
+                    "alias": "name",
+                    "expr": {
+                      "$lookup": [
+                        "managedobject",
+                        {
+                          "$field": "managed_object"
+                        }
+                      ]
+                    },
+                    "group": 3
+                  },
+                  {
+                    "expr": {
+                      "$lookup": [
+                        "managedobject",
+                        {
+                          "$field": "managed_object"
+                        },
+                        "platform"
+                      ]
+                    },
+                    "alias": "platform",
+                    "label": "Платформа",
+                    "group": 4
+                  },
+                  {
+                    "label": "Load In",
+                    "expr": {
+                      "$maxMerge": [
+                        {
+                          "$field": "load_in_max"
+                        }
+                      ]
+                    },
+                    "alias": "load_in",
+                    "format": "intFormat",
+                    "order": 0,
+                    "desc": true
+                  },
+                  {
+                    "label": "Load Out",
+                    "expr": {
+                      "$maxMerge": [
+                        {
+                          "$field": "load_out_max"
+                        }
+                      ]
+                    },
+                    "alias": "load_out",
+                    "format": "intFormat",
+                    "order": 1,
+                    "desc": true
+                  },
+                  {
+                    "label": "Discards In",
+                    "expr": {
+                      "$maxMerge": [
+                        {
+                          "$field": "discards_in_max"
+                        }
+                      ]
+                    },
+                    "alias": "discards_in",
+                    "format": "intFormat",
+                    "order": 2,
+                    "desc": true
+                  },
+                  {
+                    "label": "Discards Out",
+                    "expr": {
+                      "$maxMerge": [
+                        {
+                          "$field": "discards_out_max"
+                        }
+                      ]
+                    },
+                    "alias": "discards_out",
+                    "format": "intFormat",
+                    "order": 3,
+                    "desc": true
+                  },
+                  {
+                    "label": "Errors In",
+                    "expr": {
+                      "$maxMerge": [
+                        {
+                          "$field": "errors_in_max"
+                        }
+                      ]
+                    },
+                    "alias": "errors_in",
+                    "format": "intFormat",
+                    "order": 4,
+                    "desc": true
+                  },
+                  {
+                    "label": "Errors Out",
+                    "expr": {
+                      "$maxMerge": [
+                        {
+                          "$field": "errors_out_max"
+                        }
+                      ]
+                    },
+                    "alias": "errors_out",
+                    "format": "intFormat",
+                    "order": 5,
+                    "desc": true
+                  }
+                ],
+                "limit": 10,
+                "datasource": "AggregatedInterface"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        }
+      ],
+      "filter_fields": [
+        {
+          "name": "path",
+          "group": 0
+        },
+        {
+          "name": "cinr",
+          "group": 0
+        },
+        {
+          "name": "managed_object",
+          "group": 0
+        },
+        {
+          "name": "discards_in",
+          "group": 1
+        },
+        {
+          "name": "discards_out",
+          "group": 1
+        },
+        {
+          "name": "errors_in",
+          "group": 2
+        },
+        {
+          "name": "errors_out",
+          "group": 2
+        },
+        {
+          "name": "load_in",
+          "group": 3
+        },
+        {
+          "name": "load_out",
+          "group": 3
+        },
+        {
+          "name": "packets_in",
+          "group": 4
+        },
+        {
+          "name": "packets_out",
+          "group": 4
+        },
+        {
+          "name": "rssi",
+          "group": 0
+        },
+        {
+          "name": "status_admin",
+          "group": 3
+        },
+        {
+          "name": "status_oper",
+          "group": 3
+        }
+      ],
+      "agv_fields": [
+        {
+          "name": "path",
+          "group": 0
+        },
+        {
+          "name": "cinr",
+          "group": 0
+        },
+        {
+          "name": "managed_object",
+          "group": 0
+        },
+        {
+          "name": "discards_in",
+          "group": 1,
+          "aggFunc": "max",
+          "enable": false
+        },
+        {
+          "name": "discards_out",
+          "group": 1,
+          "aggFunc": "max",
+          "enable": false
+        },
+        {
+          "name": "errors_in",
+          "group": 2,
+          "aggFunc": "max",
+          "enable": false
+        },
+        {
+          "name": "errors_out",
+          "group": 2,
+          "aggFunc": "max",
+          "enable": false
+        },
+        {
+          "name": "load_in",
+          "group": 3,
+          "aggFunc": "max",
+          "enable": false
+        },
+        {
+          "name": "load_out",
+          "group": 3,
+          "aggFunc": "max",
+          "enable": false
+        },
+        {
+          "name": "packets_in",
+          "group": 4,
+          "aggFunc": "max",
+          "enable": false
+        },
+        {
+          "name": "packets_out",
+          "group": 4,
+          "aggFunc": "max",
+          "enable": false
+        },
+        {
+          "name": "rssi",
+          "group": 0
+        },
+        {
+          "name": "status_admin",
+          "group": 0
+        },
+        {
+          "name": "status_oper",
+          "group": 0
+        }
+      ],
+      "pseudo_fields": [
+      ]
+    }
+  ]
+}
