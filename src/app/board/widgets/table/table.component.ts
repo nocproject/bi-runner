@@ -122,6 +122,7 @@ export class TableComponent extends WidgetComponent {
                 }
 
                 if (startsWith(field.type, 'dict-') || startsWith(field.type, 'tree-')) {
+                    alias += '_txt';
                     expr = {
                         '$lookup': [
                             field.dict,
