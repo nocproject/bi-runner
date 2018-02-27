@@ -3,7 +3,6 @@
   "method": "set_dashboard",
   "params": [
     {
-      "id": "5a69e283c165cf7220ab81a8",
       "layoutId": "580e1ba498601c0f96b7e809",
       "layout": {
         "uuid": "f2736f99-a568-4820-b746-1e71d48b4374",
@@ -39,7 +38,7 @@
             "md": 6,
             "name": "c22",
             "lg": null,
-            "height": 200,
+            "height": 250,
             "sm": null,
             "xs": null,
             "row": 1
@@ -174,7 +173,7 @@
           "cell": "c21",
           "note": "по платформе",
           "title": "Группировка по платформе, топ 10",
-          "type": "pieChart",
+          "type": "selectPieChart",
           "query": {
             "params": [
               {
@@ -312,7 +311,7 @@
           "title": "Группировка по сегменту сети, топ 10"
         },
         {
-          "note": "по важности",
+          "note": "ручная выборка",
           "query": {
             "params": [
               {
@@ -382,7 +381,7 @@
           },
           "cell": "table2",
           "type": "topTable",
-          "title": "По важности, топ 10"
+          "title": "Произвольная выборка 2, топ (max 25)"
         },
         {
           "cell": "table1",
@@ -453,9 +452,9 @@
             "id": 0,
             "method": "query"
           },
-          "note": "по длительности",
-          "type": "dataTable",
-          "title": "По длительности аварии, топ 20"
+          "note": "ручная выборка",
+          "type": "topTable",
+          "title": "Произвольная выборка 1, топ (max 25)"
         },
         {
           "cell": "c32",
@@ -678,6 +677,10 @@
         },
         {
           "group": 0,
+          "name": "duration"
+        },
+        {
+          "group": 0,
           "name": "escalation_ts"
         },
         {
@@ -699,6 +702,10 @@
         {
           "group": 0,
           "name": "reopens"
+        },
+        {
+          "group": 0,
+          "name": "reboots"
         },
         {
           "group": 1,

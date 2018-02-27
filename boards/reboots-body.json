@@ -38,7 +38,7 @@
             "md": 6,
             "name": "c22",
             "lg": null,
-            "height": 200,
+            "height": 250,
             "sm": null,
             "xs": null,
             "row": 1
@@ -168,7 +168,7 @@
           "cell": "c21",
           "note": "по сегменту сети",
           "title": "Группировка по сегменту сети, топ 10",
-          "type": "pieChart",
+          "type": "selectPieChart",
           "query": {
             "params": [
               {
@@ -239,9 +239,9 @@
         },
         {
           "cell": "table1",
-          "note": "оборудование",
-          "title": "По количеству перезагрузок, топ 10",
-          "type": "dataTable",
+          "note": "ручная выборка",
+          "title": "Произвольная выборка, топ (max 25)",
+          "type": "topTable",
           "query": {
             "params": [
               {
