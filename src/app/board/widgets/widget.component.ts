@@ -1,17 +1,28 @@
 import { AfterViewInit, ElementRef, forwardRef, Inject, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 
 import { BaseMixin } from 'dc';
-
+import { clone, startsWith } from 'lodash';
 import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/debounceTime';
 
-import { CellAndWidget, Filter, GroupBuilder, Result, Value, WhereBuilder } from '@app/model';
+import {
+    CellAndWidget,
+    Field,
+    FieldBuilder,
+    Filter,
+    GroupBuilder,
+    IOption,
+    Result,
+    Value,
+    WhereBuilder
+} from '@app/model';
 import { APIService, LanguageService } from '@app/services';
 import { FilterService } from '../services/filter.service';
 import { EventService } from '../services/event.service';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { DatasourceService } from '../services/datasource-info.service';
+import { Observable } from 'rxjs/Observable';
 
 export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestroy {
     @Input()
@@ -24,7 +35,12 @@ export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestro
     showReset = false;
     // default values
     yLabelOffset = 20;
-    public filterSubscription: Subscription;
+    filterSubscription: Subscription;
+    reloadSubscription: Subscription;
+    formSubscription: Subscription;
+    chooseFieldForm: FormGroup;
+    fields$: Observable<IOption[]>;
+    funcs: IOption[];
 
     constructor(@Inject(forwardRef(() => FormBuilder)) public fb: FormBuilder,
                 @Inject(forwardRef(() => DatasourceService)) public datasourceService: DatasourceService,
@@ -86,6 +102,57 @@ export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestro
         this.chart.filterAll();
         this.chart.render();
         this.showReset = false;
+    }
+
+    isSelectable(): boolean {
+        return startsWith(this.data.widget.type, 'select');
+    }
+
+    dataReload() {
+        this.reloadSubscription = this.api.execute(this.data.widget.query)
+            .subscribe((response: Result) => {
+                    if (!response.result) {
+                        response.result = {fields: [], result: []};
+                    }
+                    this.chart = this.draw(response);
+                },
+                console.error);
+    }
+
+    chooseCol(): void {
+        const data = this.chooseFieldForm.value;
+
+        this.formSubscription = this.datasourceService.fieldByName(data.name)
+            .subscribe((field: Field) => {
+                const fields: Field[] = [
+                    new FieldBuilder()
+                        .expr(data.name)
+                        .group(0)
+                        .build(),
+                    new FieldBuilder()
+                        .expr({
+                            '$lookup': [
+                                field.dict,
+                                {
+                                    '$field': data.name
+                                }
+                            ]
+                        })
+                        .group(1)
+                        .alias('name')
+                        .build(),
+                    new FieldBuilder()
+                        .expr(`${data.func}()`)
+                        .alias('cnt')
+                        .order(0)
+                        .desc(true)
+                        .build()
+                ];
+
+                this.data.widget.title = this.data.widget.note = clone(field.description);
+                this.data.widget.query.setField(fields);
+                this.dataReload();
+            });
     }
 
     abstract draw(response: Result): BaseMixin<any>;

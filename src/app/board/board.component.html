@@ -5,6 +5,7 @@
              [ngSwitch]="cell.widget.type">
             <bi-bar *ngSwitchCase="'barChart'" [data]="cell"></bi-bar>
             <bi-pie *ngSwitchCase="'pieChart'" [data]="cell"></bi-pie>
+            <bi-pie *ngSwitchCase="'selectPieChart'" [data]="cell"></bi-pie>
             <bi-line *ngSwitchCase="'lineChart'" [data]="cell"></bi-line>
             <bi-row *ngSwitchCase="'rowChart'" [data]="cell"></bi-row>
             <bi-geo *ngSwitchCase="'geoChart'" [data]="cell"></bi-geo>

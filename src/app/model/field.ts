@@ -101,6 +101,21 @@ export class FieldBuilder {
         return this;
     }
 
+    public group(group: number): FieldBuilder {
+        this.field.group = group;
+        return this;
+    }
+
+    public order(order: number): FieldBuilder {
+        this.field.order = order;
+        return this;
+    }
+
+    public desc(desc: boolean): FieldBuilder {
+        this.field.desc = desc;
+        return this;
+    }
+
     public build(): Field {
         return this.field;
     }

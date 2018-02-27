@@ -187,6 +187,7 @@
   },
   "SELECT_FIELD": "Select field",
   "SELECT_FORMAT": "Select format",
+  "SELECT_FUNCTION": "Select function",
   "SELECT_MENU": {
     "PROMPT": "Select All"
   }

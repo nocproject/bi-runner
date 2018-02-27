@@ -308,7 +308,7 @@
             "method": "query"
           },
           "cell": "c31",
-          "type": "pieChart",
+          "type": "selectPieChart",
           "title": "Группировка по сегменту сети, топ 10"
         },
         {
@@ -494,7 +494,7 @@
             "method": "query"
           },
           "note": "по профилю",
-          "type": "pieChart",
+          "type": "selectPieChart",
           "title": "Группировка по профилю, топ 10"
         },
         {

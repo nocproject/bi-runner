@@ -10,7 +10,8 @@ import { Utils } from '../../../shared/utils';
 
 @Component({
     selector: 'bi-pie',
-    templateUrl: '../chart.wrapper.html'
+    templateUrl: '../chart.wrapper.html',
+    styleUrls: ['../chart.wrapper.scss']
 })
 export class PieComponent extends WidgetComponent {
     draw(response: Result): BaseMixin<PieChart> {
@@ -72,5 +73,42 @@ export class PieComponent extends WidgetComponent {
             title: values.map(item => Utils.reductionName(item)).join(),
             filter: values.map(item => new Value(item.value, item.desc))
         };
+    }
+
+    ngOnInit() {
+        const firstFieldName = this.data.widget.query.getFirstField();
+        this.cellClass = this.data.cell.getClasses();
+        this.funcs = [
+            {value: 'count', text: 'count()'}
+        ];
+        this.chooseFieldForm = this.fb.group({
+            name: firstFieldName,
+            func: 'count'
+        });
+
+        this.fields$ = this.datasourceService.fields()
+            .map(array => array
+                .filter(field => field.dict && !field.pseudo && field.isSelectable)
+                .map(field => {
+                        if (firstFieldName === field.name) {
+                            this.data.widget.title = this.data.widget.note = field.description;
+                        }
+                        return {
+                            value: `${field.name}`,
+                            text: field.name
+                        };
+                    }
+                )
+            );
+    }
+
+    ngOnDestroy(): void {
+        this.filterSubscription.unsubscribe();
+        if (this.reloadSubscription) {
+            this.reloadSubscription.unsubscribe();
+        }
+        if (this.formSubscription) {
+            this.formSubscription.unsubscribe();
+        }
     }
 }

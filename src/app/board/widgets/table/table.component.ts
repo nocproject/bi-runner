@@ -8,7 +8,6 @@ import * as d3 from 'd3';
 import * as dc from 'dc';
 import { BaseMixin, DataTableWidget } from 'dc';
 import * as crossfilter from 'crossfilter';
-import { Observable } from 'rxjs/Observable';
 
 import { Restore, WidgetComponent } from '../widget.component';
 import { Field, FieldBuilder, IOption, Result, Value } from '@app/model';
@@ -16,14 +15,10 @@ import { Utils } from '../../../shared/utils';
 
 @Component({
     selector: 'bi-table',
-    styles: [`.form-field {
-        padding: 8px;
-    }
-    `],
+    styleUrls: ['../chart.wrapper.scss'],
     templateUrl: './table.component.html'
 })
 export class TableComponent extends WidgetComponent {
-    fields$: Observable<IOption[]>;
     formats: IOption[];
     addFieldForm: FormGroup = this.fb.group({
         name: '',
@@ -32,8 +27,6 @@ export class TableComponent extends WidgetComponent {
         limit: 10,
         sortable: new FormControl({value: false, disabled: true})
     });
-    private reloadSubscription: Subscription;
-    private formSubscription: Subscription;
     private addSubscription: Subscription;
 
     draw(response: Result): BaseMixin<DataTableWidget> {
@@ -118,7 +111,6 @@ export class TableComponent extends WidgetComponent {
         const data = this.addFieldForm.value;
 
         this.addSubscription = this.datasourceService.fieldByName(data.name)
-            .map(field => field)
             .subscribe((field: Field) => {
                 let alias = data.name;
                 let expr = data.name;
@@ -260,17 +252,6 @@ export class TableComponent extends WidgetComponent {
 
     restore(values: Value[]): Restore {
         return undefined;
-    }
-
-    private dataReload() {
-        this.reloadSubscription = this.api.execute(this.data.widget.query)
-            .subscribe((response: Result) => {
-                    if (!response.result) {
-                        response.result = {fields: [], result: []};
-                    }
-                    this.chart = this.draw(response);
-                },
-                console.error);
     }
 
     private static isNumeric(field: Field): boolean {
