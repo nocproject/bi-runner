@@ -3,6 +3,7 @@
   "method": "set_dashboard",
   "params": [
     {
+      "id": "59e9b6b7c165cf607b9383e6",
       "layoutId": "580e1ba498601c0f96b7e809",
       "layout": {
         "uuid": "f2736f99-a568-4820-b746-1e71d48b4374",
@@ -46,6 +47,15 @@
           {
             "md": 12,
             "name": "table1",
+            "lg": null,
+            "height": 360,
+            "sm": null,
+            "xs": null,
+            "row": 4
+          },
+          {
+            "md": 12,
+            "name": "table2",
             "lg": null,
             "height": 360,
             "sm": null,
@@ -239,9 +249,9 @@
         },
         {
           "cell": "table1",
-          "note": "ручная выборка",
-          "title": "Произвольная выборка, топ (max 25)",
-          "type": "topTable",
+          "note": "оборудование",
+          "title": "По количеству перезагрузок, топ 10",
+          "type": "dataTable",
           "query": {
             "params": [
               {
@@ -304,6 +314,29 @@
             "id": 0,
             "method": "query"
           }
+        },
+        {
+          "cell": "table2",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "date",
+                    "label": "Дата создания",
+                    "format": "dateToString"
+                  }
+                ],
+                "limit": 1,
+                "datasource": "alarms"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          },
+          "note": "ручная выборка",
+          "type": "topTable",
+          "title": "Произвольная выборка, топ (max 25)"
         }
       ],
       "filter_fields": [
