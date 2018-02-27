@@ -165,7 +165,7 @@
           "cell": "table1",
           "note": "оборудование",
           "title": "Интерфейсы, топ 10",
-          "type": "dataTable",
+          "type": "topTable",
           "query": {
             "params": [
               {

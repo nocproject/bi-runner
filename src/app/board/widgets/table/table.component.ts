@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 
 import { Subscription } from 'rxjs/Subscription';
 
-import { head, isEmpty, sortBy, startsWith, max } from 'lodash';
+import { head, isEmpty, max, sortBy, startsWith } from 'lodash';
 import * as d3 from 'd3';
 import * as dc from 'dc';
 import { BaseMixin, DataTableWidget } from 'dc';
@@ -130,6 +130,16 @@ export class TableComponent extends WidgetComponent {
                             }
                         ]
                     };
+                }
+
+                if (field.isAgg) {
+                    const prop = `$${field.aggFunc}Merge`;
+                    expr = {};
+                    expr[prop] = [
+                        {
+                            '$field': `${data.name}_${field.aggFunc}`
+                        }
+                    ];
                 }
 
                 const newField: Field = new FieldBuilder()
