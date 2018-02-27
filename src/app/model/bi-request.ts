@@ -24,6 +24,10 @@ export class BiRequest {
         this.params[0].fields = fields;
     }
 
+    public setLimit(limit: number): void {
+        this.params[0].limit = +limit;
+    }
+
     public getWhere(): Object {
         return this.params[0].filter;
     }

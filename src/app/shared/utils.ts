@@ -56,11 +56,21 @@ export class Utils {
     }
 
     // use if property format exist in table query
-    static secondsToString(sec) {
+    static secondsToString(sec): string {
         const hours = Math.floor(sec / 3600);
         const minutes = Math.floor((sec % 3600) / 60);
         const seconds = sec % 60;
 
-        return hours + ':' + d3.format('02d')(minutes) + ':' + d3.format('02d')(seconds);
+        return `${hours}:${d3.format('02d')(minutes)}:${d3.format('02d')(seconds)}`;
     };
+
+    static intToIP(value): string {
+        let bytes = [];
+
+        bytes[0] = value & 0xFF;
+        bytes[1] = (value >> 8) & 0xFF;
+        bytes[2] = (value >> 16) & 0xFF;
+        bytes[3] = (value >> 24) & 0xFF;
+        return `${bytes[3]}.${bytes[2]}.${bytes[1]}.${bytes[0]}`;
+    }
 }

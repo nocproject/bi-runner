@@ -46,6 +46,10 @@ export class DatasourceService {
         return this.datasource$.map(d => d.fields);
     }
 
+    fieldByName(name: string): Observable<Field> {
+        return this.datasource$.map(d => d.getFieldByName(name));
+    }
+
     fieldsAsOption(): Observable<IOption[]> {
         return this.fields()
             .map(array => array

@@ -1,34 +1,59 @@
 import { Component } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 
 import { Subscription } from 'rxjs/Subscription';
 
-import { head, sortBy } from 'lodash';
+import { head, isEmpty, sortBy, startsWith, max } from 'lodash';
 import * as d3 from 'd3';
 import * as dc from 'dc';
 import { BaseMixin, DataTableWidget } from 'dc';
 import * as crossfilter from 'crossfilter';
+import { Observable } from 'rxjs/Observable';
 
 import { Restore, WidgetComponent } from '../widget.component';
-import { Field, Result, Value } from '@app/model';
+import { Field, FieldBuilder, IOption, Result, Value } from '@app/model';
 import { Utils } from '../../../shared/utils';
 
 @Component({
     selector: 'bi-table',
+    styles: [`.form-field {
+        padding: 8px;
+    }
+    `],
     templateUrl: './table.component.html'
 })
 export class TableComponent extends WidgetComponent {
-    private sortSubscription: Subscription;
+    fields$: Observable<IOption[]>;
+    formats: IOption[];
+    addFieldForm: FormGroup = this.fb.group({
+        name: '',
+        label: '',
+        format: '',
+        limit: 10,
+        sortable: new FormControl({value: false, disabled: true})
+    });
+    private reloadSubscription: Subscription;
+    private formSubscription: Subscription;
+    private addSubscription: Subscription;
 
     draw(response: Result): BaseMixin<DataTableWidget> {
         const chart: DataTableWidget = dc.dataTable(`#${this.data.cell.name}`);
-        const ndx = crossfilter(response.zip(true));
+        const ndx = crossfilter(response.zip(false));
         const dimension = ndx.dimension(d => d.date);
         const cols = this.data.widget.query.getLabeledFields()
             .map((field: Field) => {
                 const param = field.alias ? field.alias : field.expr.toString();
 
                 if ('format' in field) {
-                    return (d) => Utils[field.format](d[param]);
+                    return (d) => {
+                        let val = d[param];
+
+                        if (startsWith(field.format, 'dateTo')) {
+                            val = new Date(Date.parse(val));
+                        }
+
+                        return Utils[field.format](val);
+                    };
                 } else {
                     return (d) => d[param];
                 }
@@ -78,19 +103,150 @@ export class TableComponent extends WidgetComponent {
                     return f;
                 })
             );
-            this.sortSubscription = this.api.execute(this.data.widget.query)
-                .subscribe(
-                    (response: Result) => {
-                        this.chart = this.draw(response);
-                    },
-                    console.error);
+            this.dataReload();
         }
+    }
+
+    removeCol(col: Field): void {
+        this.data.widget.query.setField(
+            this.data.widget.query.getFields().filter(f => f.alias !== col.alias)
+        );
+        this.dataReload();
+    }
+
+    addCol(): void {
+        const data = this.addFieldForm.value;
+
+        this.addSubscription = this.datasourceService.fieldByName(data.name)
+            .map(field => field)
+            .subscribe((field: Field) => {
+                let alias = data.name;
+                let expr = data.name;
+                const sortable = data.sortable || false;
+                const fieldQty = this.data.widget.query.getFields().filter(field => startsWith(field.alias, alias)).length;
+
+                if (fieldQty) {
+                    alias += `${fieldQty}`;
+                }
+
+                if (startsWith(field.type, 'dict-') || startsWith(field.type, 'tree-')) {
+                    expr = {
+                        '$lookup': [
+                            field.dict,
+                            {
+                                '$field': data.name
+                            }
+                        ]
+                    };
+                }
+
+                const newField: Field = new FieldBuilder()
+                    .expr(expr)
+                    .alias(alias)
+                    .label(data.label)
+
+                    .build();
+
+                if (data.format) {
+                    newField.format = data.format;
+                }
+
+                if (sortable) {
+                    let maxOrder = max(this.data.widget.query
+                        .getFields()
+                        .filter(field => 'desc' in field)
+                        .map(field => field.order));
+
+                    if (!maxOrder) {
+                        maxOrder = 0;
+                    }
+                    newField.desc = true;
+                    newField.order = maxOrder + 1;
+                }
+
+                this.data.widget.query.setLimit(data.limit);
+                this.data.widget.query.setField([
+                    ...this.data.widget.query.getFields(),
+                    newField
+                ]);
+                this.dataReload();
+            });
+
+    }
+
+    ngOnInit() {
+        this.cellClass = this.data.cell.getClasses();
+        this.fields$ = this.datasourceService.fields()
+            .map(array => array
+                .filter(field => !field.pseudo)
+                .filter(field => field.isSelectable)
+                .map(field => {
+                        return {
+                            value: `${field.name}`,
+                            text: field.name
+                        };
+                    }
+                )
+            );
+        this.formSubscription = this.addFieldForm.valueChanges.switchMap(data =>
+            this.datasourceService.fieldByName(data.name)
+                .map((field: Field) => {
+                    if (field) {
+                        if (TableComponent.isNumeric(field)) {
+                            this.formats = [
+                                {value: 'intFormat', text: 'Dynamic'},
+                                {value: 'numberFormat', text: '.4f'},
+                                {value: 'secondsToString', text: '%H:%M'}
+                            ];
+                        } else if (field.type === 'DateTime') {
+                            this.formats = [
+                                {value: 'dateToString', text: '%d.%m.%y'},
+                                {value: 'dateToDateTimeString', text: '%d.%m.%y %H:%M'},
+                                {value: 'dateToTimeString', text: '%H:%M'}
+                            ];
+                        } else if (field.type === 'Date') {
+                            this.formats = [
+                                {value: 'dateToString', text: '%d.%m.%y'}
+                            ];
+                        } else if (field.type === 'IPv4') {
+                            this.formats = [
+                                {value: 'intToIP', text: 'xxx.xxx.xxx.xxx'}
+                            ];
+                        } else {
+                            this.formats = [];
+                        }
+                        if (this.formats.filter(fm => fm.value === data.format).length === 0) {
+                            this.addFieldForm.patchValue({format: ''}, {emitEvent: false});
+                        }
+                    }
+                    return {
+                        label: data.label,
+                        name: data.name,
+                        limit: data.limit,
+                        format: data.format,
+                        sortable: TableComponent.isNumeric(field)
+                    };
+                })
+        ).subscribe(data => {
+            if (data.sortable) {
+                this.addFieldForm.get('sortable').enable({emitEvent: false, onlySelf: true});
+            } else {
+                this.addFieldForm.get('sortable').disable({emitEvent: false, onlySelf: true});
+                this.addFieldForm.patchValue({sortable: false}, {emitEvent: false});
+            }
+        });
     }
 
     ngOnDestroy(): void {
         this.filterSubscription.unsubscribe();
-        if (this.sortSubscription) {
-            this.sortSubscription.unsubscribe();
+        if (this.reloadSubscription) {
+            this.reloadSubscription.unsubscribe();
+        }
+        if (this.formSubscription) {
+            this.formSubscription.unsubscribe();
+        }
+        if (this.addSubscription) {
+            this.addSubscription.unsubscribe();
         }
     }
 
@@ -104,5 +260,21 @@ export class TableComponent extends WidgetComponent {
 
     restore(values: Value[]): Restore {
         return undefined;
+    }
+
+    private dataReload() {
+        this.reloadSubscription = this.api.execute(this.data.widget.query)
+            .subscribe((response: Result) => {
+                    if (!response.result) {
+                        response.result = {fields: [], result: []};
+                    }
+                    this.chart = this.draw(response);
+                },
+                console.error);
+    }
+
+    private static isNumeric(field: Field): boolean {
+        if (isEmpty(field)) return false;
+        return ['UInt8', 'UInt16', 'UInt32', 'UInt64', 'Int8', 'Int16', 'Int32', 'Int64', 'Float32', 'Float64'].indexOf(field.type) !== -1;
     }
 }

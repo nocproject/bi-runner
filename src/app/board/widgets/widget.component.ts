@@ -10,11 +10,12 @@ import { CellAndWidget, Filter, GroupBuilder, Result, Value, WhereBuilder } from
 import { APIService, LanguageService } from '@app/services';
 import { FilterService } from '../services/filter.service';
 import { EventService } from '../services/event.service';
+import { FormBuilder } from '@angular/forms';
+import { DatasourceService } from '../services/datasource-info.service';
 
 export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestroy {
     @Input()
     data: CellAndWidget;
-    // private eventSubscription: Subscription;
     @ViewChild('wrapper') wrapperView: ElementRef;
     chart: BaseMixin<any>;
     title: string;
@@ -25,7 +26,9 @@ export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestro
     yLabelOffset = 20;
     public filterSubscription: Subscription;
 
-    constructor(@Inject(forwardRef(() => APIService)) public api: APIService,
+    constructor(@Inject(forwardRef(() => FormBuilder)) public fb: FormBuilder,
+                @Inject(forwardRef(() => DatasourceService)) public datasourceService: DatasourceService,
+                @Inject(forwardRef(() => APIService)) public api: APIService,
                 @Inject(forwardRef(() => FilterService)) private filterService: FilterService,
                 @Inject(forwardRef(() => EventService)) public eventService: EventService,
                 @Inject(forwardRef(() => LanguageService)) public languageService: LanguageService) {

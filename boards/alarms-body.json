@@ -3,6 +3,7 @@
   "method": "set_dashboard",
   "params": [
     {
+      "id": "5a69e283c165cf7220ab81a8",
       "layoutId": "580e1ba498601c0f96b7e809",
       "layout": {
         "uuid": "f2736f99-a568-4820-b746-1e71d48b4374",
@@ -380,7 +381,7 @@
             "method": "query"
           },
           "cell": "table2",
-          "type": "dataTable",
+          "type": "topTable",
           "title": "По важности, топ 10"
         },
         {

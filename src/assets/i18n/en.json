@@ -108,7 +108,9 @@
   "WIDGET": {
     "RESET": "reset",
     "DAYS": "[\"Mon\", \"Tue\", \"Wed\", \"Thu\", \"Fri\", \"Sat\", \"Sun\"]",
-    "ORDER.IN.SORT": "order in sort"
+    "ORDER.IN.SORT": "order in sort",
+    "REMOVE.COLUMN": "remove column",
+    "ONLY.NUMERIC": "sort on numeric field only"
   },
   "SELECTOR": {
     "TITLE": "Selector",
@@ -184,6 +186,7 @@
     "LIKE": "like"
   },
   "SELECT_FIELD": "Select field",
+  "SELECT_FORMAT": "Select format",
   "SELECT_MENU": {
     "PROMPT": "Select All"
   }

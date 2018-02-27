@@ -9,17 +9,71 @@
             </div>
         </div>
         <div class="chart-stage">
-            <table class="table table=hover" id="{{ data.cell.name }}">
+            <form *ngIf="data.widget.type === 'topTable'"
+                  [formGroup]="addFieldForm"
+                  class="form-inline pull-right"
+                  style="padding-right: 10px;">
+                <div class="form-group form-field">
+                    <label class="control-label" translate>Field:</label>
+                    <select class="form-control" [formControlName]="'name'" required>
+                        <option [ngValue]="''" translate>SELECT_FIELD</option>
+                        <option *ngFor="let item of fields$ | async"
+                                [value]="item.value" translate>
+                            {{ item.text }}
+                        </option>
+                    </select>
+                </div>
+                <div class="form-group form-field">
+                    <label class="control-label" translate>Format:</label>
+                    <select class="form-control" [formControlName]="'format'">
+                        <option [ngValue]="''" translate>SELECT_FORMAT</option>
+                        <option *ngFor="let item of formats"
+                                [value]="item.value" translate>
+                            {{ item.text }}
+                        </option>
+                    </select>
+                </div>
+                <div class="form-group form-field">
+                    <label class="control-label" translate>Label:</label>
+                    <input class="form-control" formControlName="label" [placeholder]="'Label' | translate" required>
+                </div>
+                <div class="form-group form-field">
+                    <label class="control-label" translate>Limit:</label>
+                    <input class="form-control" formControlName="limit" [placeholder]="'Limit' | translate" required>
+                </div>
+                <div class="form-group form-field">
+                    <div class="checkbox rtl checkbox-primary checkbox-circle"
+                         [tooltip]="'WIDGET.ONLY.NUMERIC' | translate"
+                         [placement]="'bottom'">
+                        <input id="sorted"
+                               formControlName="sortable"
+                               class="styled" type="checkbox">
+                        <label for="sorted" translate>Sortable</label>
+                    </div>
+                </div>
+                <button (click)="addCol()"
+                        [disabled]="!addFieldForm.valid"
+                        class="btn btn-default form-field" translate>Add Field
+                </button>
+            </form>
+            <table class="table table-hover" id="{{ data.cell.name }}">
                 <thead>
                 <tr class="header">
                     <th *ngFor="let column of data.widget.query.getLabeledFields()"
                         (click)="sort(column)"> {{ column.label }}
+                        <i *ngIf="data.widget.type === 'topTable'"
+                           style="cursor: pointer;"
+                           class="fa fa-times"
+                           (click)="removeCol(column)"
+                           [tooltip]="'WIDGET.REMOVE.COLUMN' | translate">
+                        </i>
                         <i *ngIf="column.isSortable()"
                            style="cursor: pointer;"
                            class="fa fa-sort-up"
-                           [ngClass]="{'fa-sort-desc': column.desc, 'fa-sort-up' : !column.desc}"
-                           aria-hidden="true"></i>
-                        <sup [tooltip]="'WIDGET.ORDER.IN.SORT' | translate" [placement]="'bottom'">{{column.order}}</sup>
+                           [ngClass]="{'fa-sort-desc': column.desc, 'fa-sort-up' : !column.desc}">
+                        </i>
+                        <sup [tooltip]="'WIDGET.ORDER.IN.SORT' | translate"
+                             [placement]="'bottom'">{{column.order}}</sup>
                     </th>
                 </tr>
                 </thead>

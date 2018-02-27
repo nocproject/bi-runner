@@ -9,6 +9,7 @@
             <bi-row *ngSwitchCase="'rowChart'" [data]="cell"></bi-row>
             <bi-geo *ngSwitchCase="'geoChart'" [data]="cell"></bi-geo>
             <bi-table *ngSwitchCase="'dataTable'" [data]="cell"></bi-table>
+            <bi-table *ngSwitchCase="'topTable'" [data]="cell"></bi-table>
             <bi-menu *ngSwitchCase="'selectMenu'" [data]="cell"></bi-menu>
             <bi-box *ngSwitchCase="'boxPlot'" [data]="cell"></bi-box>
         </div>
