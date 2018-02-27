@@ -91,11 +91,11 @@ export class PieComponent extends WidgetComponent {
                 .filter(field => field.dict && !field.pseudo && field.isSelectable)
                 .map(field => {
                         if (firstFieldName === field.name) {
-                            this.data.widget.title = this.data.widget.note = field.description;
+                            this.fieldName = this.data.widget.note = field.description;
                         }
                         return {
                             value: `${field.name}`,
-                            text: field.name
+                            text: field.description
                         };
                     }
                 )

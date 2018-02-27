@@ -14,8 +14,8 @@
                   class="form-inline pull-right"
                   style="padding-right: 10px;">
                 <div class="form-group form-field">
-                    <label class="control-label" translate>Field:</label>
-                    <select class="form-control" [formControlName]="'name'" required>
+                    <label for="select-field" class="control-label" translate>Field:</label>
+                    <select id="select-field" class="form-control" [formControlName]="'name'" required>
                         <option [ngValue]="''" translate>SELECT_FIELD</option>
                         <option *ngFor="let item of fields$ | async"
                                 [value]="item.value" translate>
@@ -24,8 +24,8 @@
                     </select>
                 </div>
                 <div class="form-group form-field">
-                    <label class="control-label" translate>Format:</label>
-                    <select class="form-control" [formControlName]="'format'">
+                    <label for="select-format" class="control-label" translate>Format:</label>
+                    <select id="select-format" class="form-control" [formControlName]="'format'">
                         <option [ngValue]="''" translate>SELECT_FORMAT</option>
                         <option *ngFor="let item of formats"
                                 [value]="item.value" translate>
@@ -34,12 +34,12 @@
                     </select>
                 </div>
                 <div class="form-group form-field">
-                    <label class="control-label" translate>Label:</label>
-                    <input class="form-control" formControlName="label" [placeholder]="'Label' | translate" required>
+                    <label for="label" class="control-label" translate>Label:</label>
+                    <input id="label" class="form-control" formControlName="label" [placeholder]="'Label' | translate" required>
                 </div>
                 <div class="form-group form-field">
-                    <label class="control-label" translate>Limit:</label>
-                    <input class="form-control" formControlName="limit" [placeholder]="'Limit' | translate" required>
+                    <label for="limit" class="control-label" translate>Limit:</label>
+                    <input id="limit" class="form-control" formControlName="limit" [placeholder]="'Limit' | translate" required>
                 </div>
                 <div class="form-group form-field">
                     <div class="checkbox rtl checkbox-primary checkbox-circle"

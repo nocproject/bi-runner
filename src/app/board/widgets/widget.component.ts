@@ -41,6 +41,7 @@ export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestro
     chooseFieldForm: FormGroup;
     fields$: Observable<IOption[]>;
     funcs: IOption[];
+    fieldName: string;
 
     constructor(@Inject(forwardRef(() => FormBuilder)) public fb: FormBuilder,
                 @Inject(forwardRef(() => DatasourceService)) public datasourceService: DatasourceService,
@@ -149,7 +150,7 @@ export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestro
                         .build()
                 ];
 
-                this.data.widget.title = this.data.widget.note = clone(field.description);
+                this.fieldName = this.data.widget.note = clone(field.description);
                 this.data.widget.query.setField(fields);
                 this.dataReload();
             });
