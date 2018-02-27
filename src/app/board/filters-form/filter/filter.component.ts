@@ -59,7 +59,7 @@ export class FilterComponent implements OnInit, OnDestroy {
         this.prevField = this.filterConfig.field;
         this.valueField = this.filterConfig.field;
         if (this.filterConfig.hasOwnProperty('data') && this.filterConfig.data) {
-            this.filter.setValue(this.filterConfig.data, {emitEvent: false});
+            this.filter.patchValue(this.filterConfig.data, {emitEvent: false});
         }
         this.initControl(this.fieldSelect);
         this.initControl(this.conditionSelect);
