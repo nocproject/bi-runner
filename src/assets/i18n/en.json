@@ -120,6 +120,7 @@
     "UPDATED": "last update: {{value}}",
     "GROUP": {
       "NAME": "Name",
+      "DESCRIPTION": "Description",
       "TYPE": "Type",
       "GROUP_BY": "GroupBy"
     },

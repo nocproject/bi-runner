@@ -2,6 +2,7 @@
     <thead>
     <tr>
         <th translate>SELECTOR.GROUP.NAME</th>
+        <th translate>SELECTOR.GROUP.DESCRIPTION</th>
         <th translate>SELECTOR.GROUP.TYPE</th>
         <th translate>SELECTOR.GROUP.GROUP_BY</th>
     </tr>
@@ -14,6 +15,11 @@
                 <div class="checkbox rtl checkbox-primary" tooltip="{{ field.description }}" placement="top">
                     <span>{{ field.name }}</span>
                     <sup *ngIf="field.aggFunc">({{ field.aggFunc}})</sup>
+                </div>
+            </td>
+            <td>
+                <div class="checkbox rtl checkbox-primary">
+                    {{ field.description }}
                 </div>
             </td>
             <td>

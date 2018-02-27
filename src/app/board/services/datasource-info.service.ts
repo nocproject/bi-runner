@@ -57,7 +57,7 @@ export class DatasourceService {
                 .map(field => {
                         return {
                             value: `${field.name}`,
-                            text: field.name
+                            text: field.description
                         };
                     }
                 )
