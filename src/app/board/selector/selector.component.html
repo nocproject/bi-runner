@@ -1,12 +1,9 @@
 <div class="row">
     <div class="col-md-12">
         <div class="chart-wrapper">
-            <div class="chart-title" (click)="collapsed = !collapsed">
-                <div class="title-left" translate>SELECTOR.TITLE</div>
-                <div class="title-right"
-                     [ngClass]="{'collapsed': collapsed, 'expanded': !collapsed}">
-                </div>
-                <div style="clear:both;"></div>
+            <div class="chart-title" (click)="collapsed = !collapsed" style="display: flex;align-items: center;">
+                <div style="margin-right: auto;" translate>SELECTOR.TITLE</div>
+                <div [ngClass]="{'collapsed': collapsed, 'expanded': !collapsed}"></div>
             </div>
             <div class="chart-stage" [ngClass]="{'collapse': collapsed}">
                 <div class="container-fluid">

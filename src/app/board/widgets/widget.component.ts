@@ -2,6 +2,8 @@ import { AfterViewInit, ElementRef, forwardRef, Inject, Input, OnDestroy, OnInit
 
 import { BaseMixin } from 'dc';
 import { clone, startsWith } from 'lodash';
+
+import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/debounceTime';
@@ -22,7 +24,6 @@ import { FilterService } from '../services/filter.service';
 import { EventService } from '../services/event.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { DatasourceService } from '../services/datasource-info.service';
-import { Observable } from 'rxjs/Observable';
 
 export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestroy {
     @Input()

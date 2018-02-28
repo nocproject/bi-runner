@@ -1,11 +1,9 @@
 <div class="{{ cellClass }}">
     <div class="chart-wrapper" #wrapper>
-        <div class="chart-title">
-            <div class="row">
-                <div class="col-md-6">{{ data.widget.title }}</div>
-                <div class="col-md-1 pull-right text-right" *ngIf="showSpinner">
-                    <i class="fa fa-spinner fa-spin fa-fw"></i>
-                </div>
+        <div class="chart-title" style="display: flex">
+            <div style="margin-right: auto;">{{ data.widget.title }}</div>
+            <div *ngIf="showSpinner">
+                <i class="fa fa-spinner fa-spin fa-fw"></i>
             </div>
         </div>
         <div class="chart-stage">
@@ -15,7 +13,8 @@
                   style="padding-right: 10px;">
                 <div class="form-group form-field">
                     <label for="select-field-{{ data.cell.name }}" class="control-label" translate>Field:</label>
-                    <select id="select-field-{{ data.cell.name }}" class="form-control" [formControlName]="'name'" required>
+                    <select id="select-field-{{ data.cell.name }}" class="form-control" [formControlName]="'name'"
+                            required>
                         <option [ngValue]="''" translate>SELECT_FIELD</option>
                         <option *ngFor="let item of fields$ | async"
                                 [value]="item.value" translate>
@@ -35,11 +34,13 @@
                 </div>
                 <div class="form-group form-field">
                     <label for="label-{{ data.cell.name }}" class="control-label" translate>Label:</label>
-                    <input id="label-{{ data.cell.name }}" class="form-control" formControlName="label" [placeholder]="'Label' | translate" required>
+                    <input id="label-{{ data.cell.name }}" class="form-control" formControlName="label"
+                           [placeholder]="'Label' | translate" required>
                 </div>
                 <div class="form-group form-field">
                     <label for="limit-{{ data.cell.name }}" class="control-label" translate>Limit:</label>
-                    <input id="limit-{{ data.cell.name }}" class="form-control" formControlName="limit" [placeholder]="'Limit' | translate" required>
+                    <input id="limit-{{ data.cell.name }}" class="form-control" formControlName="limit"
+                           [placeholder]="'Limit' | translate" required>
                 </div>
                 <div class="form-group form-field">
                     <div class="checkbox rtl checkbox-primary checkbox-circle"
