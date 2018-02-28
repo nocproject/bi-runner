@@ -10,7 +10,7 @@ import { BaseMixin, DataTableWidget } from 'dc';
 import * as crossfilter from 'crossfilter';
 
 import { Restore, WidgetComponent } from '../widget.component';
-import { BiRequest, Field, FieldBuilder, IOption, Result, Value } from '@app/model';
+import { Field, IOption, Result, Value } from '@app/model';
 import { Utils } from '../../../shared/utils';
 
 @Component({
@@ -112,60 +112,10 @@ export class TableComponent extends WidgetComponent {
 
         this.addSubscription = this.datasourceService.fieldByName(data.name)
             .subscribe((field: Field) => {
-                let alias = data.name;
-                let expr = data.name;
-                const sortable = data.sortable || false;
-                const fieldQty = this.data.widget.query.getFields().filter(field => startsWith(field.alias, alias)).length;
-
-                if (fieldQty) {
-                    alias += `${fieldQty}`;
-                }
-
-                if (startsWith(field.type, 'dict-') || startsWith(field.type, 'tree-')) {
-                    alias += '_txt';
-                    expr = {
-                        '$lookup': [
-                            field.dict,
-                            {
-                                '$field': data.name
-                            }
-                        ]
-                    };
-                }
-
-                if (field.isAgg) {
-                    const prop = `$${field.aggFunc}Merge`;
-                    expr = {};
-                    expr[prop] = [
-                        {
-                            '$field': `${data.name}_${field.aggFunc}`
-                        }
-                    ];
-                }
-
-                const newField: Field = new FieldBuilder()
-                    .expr(expr)
-                    .alias(alias)
-                    .label(data.label)
-                    .build();
-
-                if (data.format) {
-                    newField.format = data.format;
-                }
-
-                if (sortable) {
-                    newField.desc = true;
-                    newField.order = this.data.widget.query.maxOrder();
-                }
-
-                if (this.data.widget.query.isGroupBy() && !field.isAgg) {
-                    newField.group = this.data.widget.query.maxGroupBy();
-                }
-
                 this.data.widget.query.setLimit(data.limit);
                 this.data.widget.query.setField([
                     ...this.data.widget.query.getFields(),
-                    newField
+                    this.data.widget.query.createField(data, field)
                 ]);
                 this.dataReload();
             });
@@ -189,40 +139,63 @@ export class TableComponent extends WidgetComponent {
         this.formSubscription = this.addFieldForm.valueChanges.switchMap(data =>
             this.datasourceService.fieldByName(data.name)
                 .map((field: Field) => {
+                    let isNumericField = false;
+
                     if (field) {
-                        if (BiRequest.isNumeric(field)) {
-                            this.formats = [
-                                {value: 'intFormat', text: 'Dynamic'},
-                                {value: 'numberFormat', text: '.4f'},
-                                {value: 'secondsToString', text: '%H:%M'}
-                            ];
-                        } else if (field.type === 'DateTime') {
-                            this.formats = [
-                                {value: 'dateToString', text: '%d.%m.%y'},
-                                {value: 'dateToDateTimeString', text: '%d.%m.%y %H:%M'},
-                                {value: 'dateToTimeString', text: '%H:%M'}
-                            ];
-                        } else if (field.type === 'Date') {
-                            this.formats = [
-                                {value: 'dateToString', text: '%d.%m.%y'}
-                            ];
-                        } else if (field.type === 'IPv4') {
-                            this.formats = [
-                                {value: 'intToIP', text: 'xxx.xxx.xxx.xxx'}
-                            ];
-                        } else {
-                            this.formats = [];
+                        switch (field.type) {
+                            case 'UInt8':
+                            case 'UInt16':
+                            case 'UInt32':
+                            case 'UInt64':
+                            case 'Int8':
+                            case 'Int16':
+                            case 'Int32':
+                            case 'Int64':
+                            case 'Float32':
+                            case 'Float64': {
+                                this.formats = [
+                                    {value: 'intFormat', text: 'Dynamic'},
+                                    {value: 'numberFormat', text: '.4f'},
+                                    {value: 'secondsToString', text: '%H:%M'}
+                                ];
+                                isNumericField = true;
+                                break;
+                            }
+                            case 'Date': {
+                                this.formats = [
+                                    {value: 'dateToString', text: '%d.%m.%y'}
+                                ];
+                                break;
+                            }
+                            case 'DateTime': {
+                                this.formats = [
+                                    {value: 'dateToString', text: '%d.%m.%y'},
+                                    {value: 'dateToDateTimeString', text: '%d.%m.%y %H:%M'},
+                                    {value: 'dateToTimeString', text: '%H:%M'}
+                                ];
+                                break;
+                            }
+                            case 'IPv4': {
+                                this.formats = [
+                                    {value: 'intToIP', text: 'xxx.xxx.xxx.xxx'}
+                                ];
+                                break;
+                            }
+                            default: {
+                                this.formats = [];
+                            }
                         }
                         if (this.formats.filter(fm => fm.value === data.format).length === 0) {
                             this.addFieldForm.patchValue({format: ''}, {emitEvent: false});
                         }
                     }
+
                     return {
                         label: data.label,
                         name: data.name,
                         limit: data.limit,
                         format: data.format,
-                        sortable: BiRequest.isNumeric(field)
+                        sortable: isNumericField
                     };
                 })
         ).subscribe(data => {

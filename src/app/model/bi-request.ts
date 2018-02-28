@@ -1,8 +1,8 @@
 import { JsonMember, JsonObject } from '@upe/typedjson';
 
-import { isEmpty, max } from 'lodash';
+import { max, startsWith } from 'lodash';
 import { BiQuery } from './bi-query';
-import { Field } from './field';
+import { Field, FieldBuilder } from './field';
 
 @JsonObject()
 export class BiRequest {
@@ -65,9 +65,57 @@ export class BiRequest {
             .map(field => field[name]);
     }
 
-    public static isNumeric(field: Field): boolean {
-        if (isEmpty(field)) return false;
-        return ['UInt8', 'UInt16', 'UInt32', 'UInt64', 'Int8', 'Int16', 'Int32', 'Int64', 'Float32', 'Float64'].indexOf(field.type) !== -1;
+    public createField(data: any, field: Field) {
+        let alias = data.name;
+        let expr = data.name;
+        const sortable = data.sortable || false;
+        const fieldQty = this.getFields().filter(field => startsWith(field.alias, alias)).length;
+
+        if (fieldQty) {
+            alias += `${fieldQty}`;
+        }
+
+        if (startsWith(field.type, 'dict-') || startsWith(field.type, 'tree-')) {
+            alias += '_txt';
+            expr = {
+                '$lookup': [
+                    field.dict,
+                    {
+                        '$field': data.name
+                    }
+                ]
+            };
+        }
+
+        if (field.isAgg) {
+            const prop = `$${field.aggFunc}Merge`;
+            expr = {};
+            expr[prop] = [
+                {
+                    '$field': `${data.name}_${field.aggFunc}`
+                }
+            ];
+        }
+
+        const newField: Field = new FieldBuilder()
+            .expr(expr)
+            .alias(alias)
+            .label(data.label)
+            .build();
+
+        if (data.format) {
+            newField.format = data.format;
+        }
+
+        if (sortable) {
+            newField.desc = true;
+            newField.order = this.maxOrder();
+        }
+
+        if (this.isGroupBy() && !field.isAgg) {
+            newField.group = this.maxGroupBy();
+        }
+        return newField;
     }
 }
 
