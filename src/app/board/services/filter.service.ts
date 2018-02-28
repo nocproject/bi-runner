@@ -122,6 +122,12 @@ export class FilterService {
         return this.allFilters().filter(group => group.name === name);
     }
 
+    removeFilter(name: string): void {
+        this.filtersSubject.next(
+            cloneDeep(this.allFilters().filter(group => group.name !== name))
+        );
+    }
+
     fieldByName(name: string): Field {
         const index = findIndex(this._fields, f => f.name === name);
 

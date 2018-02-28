@@ -151,6 +151,7 @@ export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestro
                         .build()
                 ];
 
+                this.chart.filterAll();
                 this.fieldName = this.data.widget.note = clone(field.description);
                 this.data.widget.query.setField(fields);
                 this.dataReload();
