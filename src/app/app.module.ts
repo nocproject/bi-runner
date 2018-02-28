@@ -1,10 +1,12 @@
-import { NgModule } from '@angular/core';
+import { ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
 
 import { TranslateLoader, TranslateModule, TranslateParser } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import * as Raven from 'raven-js';
 //
+import { environment } from '@env/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import {
@@ -25,6 +27,24 @@ import { ShareModule } from './share/share.module';
 import { MessagesModule } from './shared/messages/messages.module';
 import { ShareCanDeactivateGuard } from './share/share-can-deactivate.guard';
 import { TranslateParserService } from './shared/translate/translate-parser.service';
+
+Raven
+    .config('https://848c4563b88d476fae5581361e064fdc@sentry.dv.rt.ru/4')
+    .install();
+
+export class RavenErrorHandler implements ErrorHandler {
+    handleError(err: any): void {
+        Raven.captureException(err);
+    }
+}
+
+export function provideErrorHandler() {
+    if (environment.production) {
+        return new RavenErrorHandler();
+    } else {
+        return new ErrorHandler();
+    }
+}
 
 export const APP_SERVICES = [
     APIService,
@@ -73,6 +93,11 @@ export const APP_SERVICES = [
                 MessageService
             ],
             multi: true
+        },
+        {
+            provide: ErrorHandler,
+            // useClass: RavenErrorHandler
+            useFactory: provideErrorHandler
         }
     ],
     bootstrap: [AppComponent]
