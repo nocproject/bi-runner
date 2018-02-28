@@ -115,6 +115,9 @@ export class TableComponent extends WidgetComponent {
                 let alias = data.name;
                 let expr = data.name;
                 const sortable = data.sortable || false;
+                const groupBy = this.data.widget.query
+                    .getFields()
+                    .filter(field => 'group' in field).length > 0;
                 const fieldQty = this.data.widget.query.getFields().filter(field => startsWith(field.alias, alias)).length;
 
                 if (fieldQty) {
@@ -166,7 +169,14 @@ export class TableComponent extends WidgetComponent {
                     newField.desc = true;
                     newField.order = maxOrder + 1;
                 }
+                if (groupBy && !field.isAgg) {
+                    let maxGroupBy = max(this.data.widget.query
+                        .getFields()
+                        .filter(field => 'group' in field)
+                        .map(field => field.group));
 
+                    newField.group = maxGroupBy + 1;
+                }
                 this.data.widget.query.setLimit(data.limit);
                 this.data.widget.query.setField([
                     ...this.data.widget.query.getFields(),

@@ -3,7 +3,6 @@
   "method": "set_dashboard",
   "params": [
     {
-      "id": "59e9b6b7c165cf607b9383e6",
       "layoutId": "580e1ba498601c0f96b7e809",
       "layout": {
         "uuid": "f2736f99-a568-4820-b746-1e71d48b4374",
@@ -251,7 +250,7 @@
           "cell": "table1",
           "note": "оборудование",
           "title": "По количеству перезагрузок, топ 10",
-          "type": "dataTable",
+          "type": "topTable",
           "query": {
             "params": [
               {
