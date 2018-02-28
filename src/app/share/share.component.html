@@ -2,15 +2,15 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <div class="bootstrap-dialog-header">
-                    <div class="bootstrap-dialog-close-button" style="display: block;">
-                        <button class="close" (click)="onCancel()">×</button>
+                <div class="bootstrap-dialog-header" style="display: flex;">
+                    <div class="bootstrap-dialog-title" style="margin-right: auto;"
+                         translate [translateParams]="{value: title}">SHARE.TITLE
                     </div>
-                    <div class="bootstrap-dialog-title title-left" translate
-                         [translateParams]="{value: title}">SHARE.TITLE
-                    </div>
-                    <div class="title-right" style="color: white;padding-right: 25px;" translate
+                    <div style="color: white;padding-right: 25px;" translate
                          [translateParams]="{value: preSelected.length}">SHARE.SELECTED
+                    </div>
+                    <div class="bootstrap-dialog-close-button">
+                        <button class="close" (click)="onCancel()">×</button>
                     </div>
                 </div>
             </div>
