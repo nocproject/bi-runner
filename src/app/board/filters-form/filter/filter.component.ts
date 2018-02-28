@@ -2,7 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AbstractControl } from '@angular/forms/src/model';
 
-import { clone, findIndex, includes, indexOf, isEqual } from 'lodash';
+import { clone, findIndex, indexOf, isEqual } from 'lodash';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -96,9 +96,7 @@ export class FilterComponent implements OnInit, OnDestroy {
                         const valueConfig = FieldConfigService.fieldValueConfig(data, this.prevField);
 
                         if (valueConfig) {
-                            if (this.prevData && includes(this.prevData.condition, 'empty')) {
-                                this.valueFieldConfig$ = Observable.of(valueConfig);
-                            }
+                            this.valueFieldConfig$ = Observable.of(valueConfig);
                             this.initControl(valueConfig);
                         } else { // when type = string and condition = empty | not empty
                             const control = this.filter.get('value');
