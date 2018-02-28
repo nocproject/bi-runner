@@ -31,7 +31,7 @@ export class FieldsTableComponent implements OnInit {
 
         field.grouped = control.checked;
         if (field.grouped && index === -1) {
-            field.group = this.board.exportQry.maxGroup();
+            field.group = this.board.exportQry.maxGroupBy();
             field.expr = field.name;
             field.label = field.description;
             if (field.dict) {

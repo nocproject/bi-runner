@@ -1,5 +1,6 @@
 import { JsonMember, JsonObject } from '@upe/typedjson';
 
+import { isEmpty, max } from 'lodash';
 import { BiQuery } from './bi-query';
 import { Field } from './field';
 
@@ -36,17 +37,38 @@ export class BiRequest {
         return this.params[0].fields[0].expr.toString();
     }
 
-    public maxGroup(): number {
-        const maxGroup = Math.max.apply(Math,
-            this.params[0].fields
-                .filter(function (element) {
-                    return element.hasOwnProperty('group');
-                })
-                .map(function (element) {
-                    return element.group;
-                }));
-        return (maxGroup === -Infinity || isNaN(maxGroup)) ? 1 : maxGroup + 1;
+    public maxGroupBy(): number {
+        if (this.isGroupBy()) {
+            return max(this.getFieldsValueByAttr('group')) + 1;
+        }
+        return 1;
     };
+
+    public maxOrder(): number {
+        if (this.isSortable()) {
+            return max(this.getFieldsValueByAttr('order', 'desc')) + 1;
+        }
+        return 1;
+    };
+
+    public isGroupBy(): boolean {
+        return this.getFieldsValueByAttr('group').length > 0;
+    }
+
+    public isSortable(): boolean {
+        return this.getFieldsValueByAttr('order', 'desc').length > 0;
+    }
+
+    private getFieldsValueByAttr(name: string, by: string = name): number[] {
+        return this.params[0].fields
+            .filter(field => by in field)
+            .map(field => field[name]);
+    }
+
+    public static isNumeric(field: Field): boolean {
+        if (isEmpty(field)) return false;
+        return ['UInt8', 'UInt16', 'UInt32', 'UInt64', 'Int8', 'Int16', 'Int32', 'Int64', 'Float32', 'Float64'].indexOf(field.type) !== -1;
+    }
 }
 
 export class BiRequestBuilder {

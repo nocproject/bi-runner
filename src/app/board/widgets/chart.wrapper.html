@@ -26,8 +26,8 @@
                   class="form-inline pull-right"
                   style="padding-right: 10px;">
                 <div class="form-group form-field">
-                    <label class="control-label" for="select-field" translate>Field:</label>
-                    <select id="select-field" class="form-control" [formControlName]="'name'" required>
+                    <label class="control-label" for="select-field-{{ data.cell.name }}" translate>Field:</label>
+                    <select id="select-field-{{ data.cell.name }}" class="form-control" [formControlName]="'name'" required>
                         <option [ngValue]="''" translate>SELECT_FIELD</option>
                         <option *ngFor="let item of fields$ | async"
                                 [value]="item.value" translate>
@@ -36,8 +36,8 @@
                     </select>
                 </div>
                 <div class="form-group form-field">
-                    <label class="control-label" for="select-func" translate>Function:</label>
-                    <select id="select-func" class="form-control" [formControlName]="'func'" required>
+                    <label class="control-label" for="select-func-{{ data.cell.name }}" translate>Function:</label>
+                    <select id="select-func-{{ data.cell.name }}" class="form-control" [formControlName]="'func'" required>
                         <option [ngValue]="''" translate>SELECT_FUNCTION</option>
                         <option *ngFor="let item of funcs"
                                 [value]="item.value" translate>

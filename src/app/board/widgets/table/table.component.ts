@@ -3,14 +3,14 @@ import { FormControl, FormGroup } from '@angular/forms';
 
 import { Subscription } from 'rxjs/Subscription';
 
-import { head, isEmpty, max, sortBy, startsWith } from 'lodash';
+import { head, sortBy, startsWith } from 'lodash';
 import * as d3 from 'd3';
 import * as dc from 'dc';
 import { BaseMixin, DataTableWidget } from 'dc';
 import * as crossfilter from 'crossfilter';
 
 import { Restore, WidgetComponent } from '../widget.component';
-import { Field, FieldBuilder, IOption, Result, Value } from '@app/model';
+import { BiRequest, Field, FieldBuilder, IOption, Result, Value } from '@app/model';
 import { Utils } from '../../../shared/utils';
 
 @Component({
@@ -115,9 +115,6 @@ export class TableComponent extends WidgetComponent {
                 let alias = data.name;
                 let expr = data.name;
                 const sortable = data.sortable || false;
-                const groupBy = this.data.widget.query
-                    .getFields()
-                    .filter(field => 'group' in field).length > 0;
                 const fieldQty = this.data.widget.query.getFields().filter(field => startsWith(field.alias, alias)).length;
 
                 if (fieldQty) {
@@ -150,7 +147,6 @@ export class TableComponent extends WidgetComponent {
                     .expr(expr)
                     .alias(alias)
                     .label(data.label)
-
                     .build();
 
                 if (data.format) {
@@ -158,25 +154,14 @@ export class TableComponent extends WidgetComponent {
                 }
 
                 if (sortable) {
-                    let maxOrder = max(this.data.widget.query
-                        .getFields()
-                        .filter(field => 'desc' in field)
-                        .map(field => field.order));
-
-                    if (!maxOrder) {
-                        maxOrder = 0;
-                    }
                     newField.desc = true;
-                    newField.order = maxOrder + 1;
+                    newField.order = this.data.widget.query.maxOrder();
                 }
-                if (groupBy && !field.isAgg) {
-                    let maxGroupBy = max(this.data.widget.query
-                        .getFields()
-                        .filter(field => 'group' in field)
-                        .map(field => field.group));
 
-                    newField.group = maxGroupBy + 1;
+                if (this.data.widget.query.isGroupBy() && !field.isAgg) {
+                    newField.group = this.data.widget.query.maxGroupBy();
                 }
+
                 this.data.widget.query.setLimit(data.limit);
                 this.data.widget.query.setField([
                     ...this.data.widget.query.getFields(),
@@ -205,7 +190,7 @@ export class TableComponent extends WidgetComponent {
             this.datasourceService.fieldByName(data.name)
                 .map((field: Field) => {
                     if (field) {
-                        if (TableComponent.isNumeric(field)) {
+                        if (BiRequest.isNumeric(field)) {
                             this.formats = [
                                 {value: 'intFormat', text: 'Dynamic'},
                                 {value: 'numberFormat', text: '.4f'},
@@ -237,7 +222,7 @@ export class TableComponent extends WidgetComponent {
                         name: data.name,
                         limit: data.limit,
                         format: data.format,
-                        sortable: TableComponent.isNumeric(field)
+                        sortable: BiRequest.isNumeric(field)
                     };
                 })
         ).subscribe(data => {
@@ -273,10 +258,5 @@ export class TableComponent extends WidgetComponent {
 
     restore(values: Value[]): Restore {
         return undefined;
-    }
-
-    private static isNumeric(field: Field): boolean {
-        if (isEmpty(field)) return false;
-        return ['UInt8', 'UInt16', 'UInt32', 'UInt64', 'Int8', 'Int16', 'Int32', 'Int64', 'Float32', 'Float64'].indexOf(field.type) !== -1;
     }
 }
