@@ -21,7 +21,7 @@ export class PieComponent extends WidgetComponent {
         const values = dimension.group().reduceSum(d => d.cnt);
 
         const width = this.wrapperView.nativeElement.scrollWidth;
-        const height = this.data.cell.height;
+        const height = this.data.cell.height - (this.isSelectable() ? 50 : 0);
         const legendWidth = width - height;
         const offset = 30;
         const legend: Legend = dc.legend();

@@ -20,7 +20,7 @@
             </div>
             <div style="clear:both;"></div>
         </div>
-        <div class="chart-stage">
+        <div class="chart-stage" [ngStyle]="{'height.px': data.cell.height, 'padding-left.px': data.cell.offset}">
             <form *ngIf="isSelectable()"
                   [formGroup]="chooseFieldForm"
                   class="form-inline pull-right"
@@ -51,7 +51,7 @@
                 </button>
             </form>
             <div id="{{ data.cell.name }}"
-                 [ngStyle]="{'height.px': data.cell.height, 'padding-left.px': data.cell.offset}">
+                 >
             </div>
         </div>
         <div class="chart-notes">{{ data.widget.note }}</div>

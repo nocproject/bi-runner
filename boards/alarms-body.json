@@ -3,6 +3,7 @@
   "method": "set_dashboard",
   "params": [
     {
+      "id": "5a69e283c165cf7220ab81a8",
       "layoutId": "580e1ba498601c0f96b7e809",
       "layout": {
         "uuid": "f2736f99-a568-4820-b746-1e71d48b4374",
@@ -11,7 +12,7 @@
             "md": 6,
             "name": "c11",
             "lg": null,
-            "height": 200,
+            "height": 250,
             "sm": null,
             "xs": null,
             "row": 0
@@ -20,7 +21,7 @@
             "md": 6,
             "name": "c12",
             "lg": null,
-            "height": 200,
+            "height": 250,
             "sm": null,
             "xs": null,
             "row": 0
@@ -29,7 +30,7 @@
             "md": 6,
             "name": "c21",
             "lg": null,
-            "height": 200,
+            "height": 250,
             "sm": null,
             "xs": null,
             "row": 1
@@ -47,13 +48,13 @@
             "md": 6,
             "row": 4,
             "name": "c31",
-            "height": 200
+            "height": 250
           },
           {
             "md": 6,
             "row": 4,
             "name": "c32",
-            "height": 200
+            "height": 250
           },
           {
             "md": 12,
@@ -85,7 +86,7 @@
               "association": "$and",
               "values": [
                 {
-                  "value": "l7"
+                  "value": "ly"
                 }
               ],
               "name": "ts",
