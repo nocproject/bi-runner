@@ -114,7 +114,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
             .build();
         this.api.execute(query).first()
             .subscribe(response => {
-                this.filterService.cleanFilters();
                 this.messages.message(new Message(MessageType.INFO, 'MESSAGES.SAVED'));
                 modal.close();
                 this.location.replaceState(`/board/${response.result}`);
