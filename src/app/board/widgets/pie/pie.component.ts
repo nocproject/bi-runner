@@ -77,7 +77,6 @@ export class PieComponent extends WidgetComponent {
 
     ngOnInit() {
         const firstFieldName = this.data.widget.query.getFirstField();
-        this.cellClass = this.data.cell.getClasses();
         this.funcs = [
             {value: 'count', text: 'count()'}
         ];
