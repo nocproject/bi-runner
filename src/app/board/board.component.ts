@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { head } from 'lodash';
 
-import { Board, Cell, CellAndWidget, Widget } from '@app/model';
+import { Board, Cell, Widget, WidgetRow } from '@app/model';
 import { LayoutService } from '@app/services';
 import { BoardResolver } from './services/board.resolver';
 import { DatasourceService } from './services/datasource-info.service';
@@ -20,7 +20,7 @@ import { FieldsTableService } from './services/fields-table.service';
 })
 
 export class BoardComponent implements OnInit, OnDestroy {
-    public cells: CellAndWidget[][];
+    public rows: WidgetRow[];
     public board: Board;
     private subscription: Subscription;
 
@@ -40,7 +40,7 @@ export class BoardComponent implements OnInit, OnDestroy {
                     this.filterService.initFilters(board.groups);
                     this.fieldsTableService.fieldsNext(board.exportQry.params[0].fields);
                     this.board = board;
-                    this.cells = this.cellsByRow(board.layout.cells, board.widgets);
+                    this.rows = this.widgetsByRow(board.layout.cells, board.widgets);
                     this.filterService.ratioSubject.next(board.sample ? board.sample : 1);
                     this.boardResolver.next(board);
                     this.layoutService.isReportOpenSubject.next(true);
@@ -53,22 +53,29 @@ export class BoardComponent implements OnInit, OnDestroy {
         this.layoutService.isReportOpenSubject.next(false);
     }
 
-    private cellsByRow(cells: Cell[], widgets: Widget[]): CellAndWidget[][] {
-        const cellsByRow: Array<CellAndWidget[]> = [];
+    private widgetsByRow(cells: Cell[], widgets: Widget[]): WidgetRow[] {
+        const rows: WidgetRow[] = [];
         const sortedByRow = cells.sort((a, b) => a.row - b.row);
         let currentRow: number = sortedByRow[0].row;
-        let row: CellAndWidget[] = [];
+        let row: WidgetRow = {
+            row: currentRow,
+            cells: []
+        };
 
         for (const cell of sortedByRow) {
             if (currentRow !== cell.row) {
-                cellsByRow[currentRow] = row;
+                rows.push(row);
                 currentRow = cell.row;
-                row = [];
+                row = {
+                    row: currentRow,
+                    cells: []
+                };
             }
-            row.push({cell: cell, widget: this.widgetForCell(widgets, cell)});
+            row.cells.push({cell: cell, widget: this.widgetForCell(widgets, cell)});
         }
-        cellsByRow[currentRow] = row;
-        return cellsByRow;
+        rows.push(row);
+
+        return rows;
     }
 
     private widgetForCell(widgets: Widget[], cell: Cell): Widget {

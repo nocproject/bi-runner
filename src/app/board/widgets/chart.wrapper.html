@@ -1,57 +1,55 @@
-<div class="{{ cellClass }}">
-    <div class="chart-wrapper" #wrapper>
-        <div class="chart-title" style="display: flex;">
-            <div style="margin-right: auto;"
-                 translate
-                 [translateParams]="{value: fieldName}"
-                 *ngIf="fieldName">WIDGET.TITLE
-            </div>
-            <div *ngIf="!fieldName" style="margin-right: auto;">{{ data.widget.title }}</div>
-            <div *ngIf="showReset"
-                 style="padding-left: 5px;">{{ title }}
-            </div>
-            <div style="padding: 0 10px 0 5px;"
-                 class="hand"
-                 *ngIf="showReset"
-                 (click)="onReset()" translate>WIDGET.RESET
-            </div>
-            <div [ngClass]="{'spinner': showSpinner, 'spinner-blank' : !showSpinner}"></div>
+<div class="chart-wrapper" #wrapper>
+    <div class="chart-title" style="display: flex;">
+        <div style="margin-right: auto;"
+             translate
+             [translateParams]="{value: fieldName}"
+             *ngIf="fieldName">WIDGET.TITLE
         </div>
-        <div class="chart-stage" [ngStyle]="{'height.px': data.cell.height, 'padding-left.px': data.cell.offset}">
-            <form *ngIf="isSelectable()"
-                  [formGroup]="chooseFieldForm"
-                  class="form-inline pull-right"
-                  style="padding-right: 10px;">
-                <div class="form-group form-field">
-                    <label class="control-label" for="select-field-{{ data.cell.name }}" translate>Field:</label>
-                    <select id="select-field-{{ data.cell.name }}" class="form-control" [formControlName]="'name'"
-                            required>
-                        <option [ngValue]="''" translate>SELECT_FIELD</option>
-                        <option *ngFor="let item of fields$ | async"
-                                [value]="item.value" translate>
-                            {{ item.text }}
-                        </option>
-                    </select>
-                </div>
-                <div class="form-group form-field">
-                    <label class="control-label" for="select-func-{{ data.cell.name }}" translate>Function:</label>
-                    <select id="select-func-{{ data.cell.name }}" class="form-control" [formControlName]="'func'"
-                            required>
-                        <option [ngValue]="''" translate>SELECT_FUNCTION</option>
-                        <option *ngFor="let item of funcs"
-                                [value]="item.value" translate>
-                            {{ item.text }}
-                        </option>
-                    </select>
-                </div>
-                <button (click)="chooseCol()"
-                        [disabled]="!chooseFieldForm.valid"
-                        class="btn btn-default btn-sm" translate>Choose Field
-                </button>
-            </form>
-            <div id="{{ data.cell.name }}">
-            </div>
+        <div *ngIf="!fieldName" style="margin-right: auto;">{{ data.widget.title }}</div>
+        <div *ngIf="showReset"
+             style="padding-left: 5px;">{{ title }}
         </div>
-        <div class="chart-notes">{{ data.widget.note }}</div>
+        <div style="padding: 0 10px 0 5px;"
+             class="hand"
+             *ngIf="showReset"
+             (click)="onReset()" translate>WIDGET.RESET
+        </div>
+        <div [ngClass]="{'spinner': showSpinner, 'spinner-blank' : !showSpinner}"></div>
     </div>
+    <div class="chart-stage" [ngStyle]="{'height.px': data.cell.height, 'padding-left.px': data.cell.offset}">
+        <form *ngIf="isSelectable()"
+              [formGroup]="chooseFieldForm"
+              class="form-inline pull-right"
+              style="padding-right: 10px;">
+            <div class="form-group form-field">
+                <label class="control-label" for="select-field-{{ data.cell.name }}" translate>Field:</label>
+                <select id="select-field-{{ data.cell.name }}" class="form-control" [formControlName]="'name'"
+                        required>
+                    <option [ngValue]="''" translate>SELECT_FIELD</option>
+                    <option *ngFor="let item of fields$ | async"
+                            [value]="item.value" translate>
+                        {{ item.text }}
+                    </option>
+                </select>
+            </div>
+            <div class="form-group form-field">
+                <label class="control-label" for="select-func-{{ data.cell.name }}" translate>Function:</label>
+                <select id="select-func-{{ data.cell.name }}" class="form-control" [formControlName]="'func'"
+                        required>
+                    <option [ngValue]="''" translate>SELECT_FUNCTION</option>
+                    <option *ngFor="let item of funcs"
+                            [value]="item.value" translate>
+                        {{ item.text }}
+                    </option>
+                </select>
+            </div>
+            <button (click)="chooseCol()"
+                    [disabled]="!chooseFieldForm.valid"
+                    class="btn btn-default btn-sm" translate>Choose Field
+            </button>
+        </form>
+        <div id="{{ data.cell.name }}">
+        </div>
+    </div>
+    <div class="chart-notes">{{ data.widget.note }}</div>
 </div>
