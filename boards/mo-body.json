@@ -159,7 +159,7 @@
           "cell": "c12",
           "note": "по количеству",
           "title": "Платформа количество объектов, топ 10",
-          "type": "pieChart",
+          "type": "selectablePieChart",
           "query": {
             "params": [
               {
@@ -199,7 +199,7 @@
           "cell": "c22",
           "note": "по количеству",
           "title": "Версии количество объектов, топ 10",
-          "type": "pieChart",
+          "type": "selectablePieChart",
           "query": {
             "params": [
               {
@@ -239,7 +239,7 @@
           "cell": "c21",
           "note": "по количеству",
           "title": "Производители количество объектов, топ 10",
-          "type": "pieChart",
+          "type": "selectablePieChart",
           "query": {
             "params": [
               {
