@@ -174,7 +174,7 @@
           "cell": "c21",
           "note": "по платформе",
           "title": "Группировка по платформе, топ 10",
-          "type": "selectPieChart",
+          "type": "selectablePieChart",
           "query": {
             "params": [
               {
@@ -308,7 +308,7 @@
             "method": "query"
           },
           "cell": "c31",
-          "type": "selectPieChart",
+          "type": "selectablePieChart",
           "title": "Группировка по сегменту сети, топ 10"
         },
         {
@@ -494,7 +494,7 @@
             "method": "query"
           },
           "note": "по профилю",
-          "type": "selectPieChart",
+          "type": "selectablePieChart",
           "title": "Группировка по профилю, топ 10"
         },
         {

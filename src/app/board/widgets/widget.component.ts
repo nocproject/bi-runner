@@ -105,7 +105,7 @@ export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestro
     }
 
     isSelectable(): boolean {
-        return startsWith(this.data.widget.type, 'select');
+        return startsWith(this.data.widget.type, 'selectable');
     }
 
     dataReload() {
