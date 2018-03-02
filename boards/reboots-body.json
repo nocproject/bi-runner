@@ -178,7 +178,7 @@
           "cell": "c21",
           "note": "по сегменту сети",
           "title": "Группировка по сегменту сети, топ 10",
-          "type": "selectPieChart",
+          "type": "selectablePieChart",
           "query": {
             "params": [
               {

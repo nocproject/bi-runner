@@ -123,7 +123,6 @@ export class TableComponent extends WidgetComponent {
     }
 
     ngOnInit() {
-        this.cellClass = this.data.cell.getClasses();
         this.fields$ = this.datasourceService.fields()
             .map(array => array
                 .filter(field => !field.pseudo)

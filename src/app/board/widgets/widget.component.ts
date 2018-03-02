@@ -31,7 +31,6 @@ export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestro
     @ViewChild('wrapper') wrapperView: ElementRef;
     chart: BaseMixin<any>;
     title: string;
-    cellClass: string;
     showSpinner = true;
     showReset = false;
     // default values
@@ -58,7 +57,6 @@ export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestro
 
     ngOnInit() {
         this.filterService.lastUpdatedWidget = '';
-        this.cellClass = this.data.cell.getClasses();
     }
 
     ngOnDestroy(): void {
@@ -107,7 +105,7 @@ export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestro
     }
 
     isSelectable(): boolean {
-        return startsWith(this.data.widget.type, 'select');
+        return startsWith(this.data.widget.type, 'selectable');
     }
 
     dataReload() {

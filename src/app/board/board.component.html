@@ -1,18 +1,17 @@
 <div class="container-fluid">
     <bi-selector [board]="boardResolver.board$ | async"></bi-selector>
-    <div class="row" *ngFor="let row of cells">
-        <div *ngFor="let cell of row"
-             [ngSwitch]="cell.widget.type">
-            <bi-bar *ngSwitchCase="'barChart'" [data]="cell"></bi-bar>
-            <bi-pie *ngSwitchCase="'pieChart'" [data]="cell"></bi-pie>
-            <bi-pie *ngSwitchCase="'selectPieChart'" [data]="cell"></bi-pie>
-            <bi-line *ngSwitchCase="'lineChart'" [data]="cell"></bi-line>
-            <bi-row *ngSwitchCase="'rowChart'" [data]="cell"></bi-row>
-            <bi-geo *ngSwitchCase="'geoChart'" [data]="cell"></bi-geo>
-            <bi-table *ngSwitchCase="'dataTable'" [data]="cell"></bi-table>
-            <bi-table *ngSwitchCase="'topTable'" [data]="cell"></bi-table>
-            <bi-menu *ngSwitchCase="'selectMenu'" [data]="cell"></bi-menu>
-            <bi-box *ngSwitchCase="'boxPlot'" [data]="cell"></bi-box>
+    <div class="row" *ngFor="let row of rows">
+        <div *ngFor="let data of row.cells" [ngSwitch]="data.widget.type" class="{{ data.cell.getClasses() }}">
+            <bi-bar *ngSwitchCase="'barChart'" [data]="data"></bi-bar>
+            <bi-pie *ngSwitchCase="'pieChart'" [data]="data"></bi-pie>
+            <bi-pie *ngSwitchCase="'selectablePieChart'" [data]="data"></bi-pie>
+            <bi-line *ngSwitchCase="'lineChart'" [data]="data"></bi-line>
+            <bi-row *ngSwitchCase="'rowChart'" [data]="data"></bi-row>
+            <bi-geo *ngSwitchCase="'geoChart'" [data]="data"></bi-geo>
+            <bi-table *ngSwitchCase="'dataTable'" [data]="data"></bi-table>
+            <bi-table *ngSwitchCase="'topTable'" [data]="data"></bi-table>
+            <bi-menu *ngSwitchCase="'selectMenu'" [data]="data"></bi-menu>
+            <bi-box *ngSwitchCase="'boxPlot'" [data]="data"></bi-box>
         </div>
     </div>
 </div>
