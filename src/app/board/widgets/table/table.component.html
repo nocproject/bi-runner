@@ -8,8 +8,7 @@
     <div class="chart-stage">
         <form *ngIf="data.widget.type === 'topTable'"
               [formGroup]="addFieldForm"
-              class="form-inline pull-right"
-              style="padding-right: 10px;">
+              class="pull-right" style="display: flex; margin-right: 30px;">
             <div class="form-group form-field">
                 <label for="select-field-{{ data.cell.name }}" class="control-label" translate>Field:</label>
                 <select id="select-field-{{ data.cell.name }}" class="form-control" [formControlName]="'name'"
@@ -23,7 +22,8 @@
             </div>
             <div class="form-group form-field">
                 <label for="select-format-{{ data.cell.name }}" class="control-label" translate>Format:</label>
-                <select id="select-format-{{ data.cell.name }}" class="form-control" [formControlName]="'format'">
+                <select id="select-format-{{ data.cell.name }}" class="form-control"
+                        [formControlName]="'format'">
                     <option [ngValue]="''" translate>SELECT_FORMAT</option>
                     <option *ngFor="let item of formats"
                             [value]="item.value" translate>
@@ -41,7 +41,7 @@
                 <input id="limit-{{ data.cell.name }}" class="form-control" formControlName="limit"
                        [placeholder]="'Limit' | translate" required>
             </div>
-            <div class="form-group form-field">
+            <div class="form-group form-field" style="align-self: flex-end;">
                 <div class="checkbox rtl checkbox-primary checkbox-circle"
                      [tooltip]="'WIDGET.ONLY.NUMERIC' | translate"
                      [placement]="'bottom'">
@@ -53,6 +53,7 @@
             </div>
             <button (click)="addCol()"
                     [disabled]="!addFieldForm.valid"
+                    style="align-self: center;"
                     class="btn btn-default btn-sm" translate>Add Field
             </button>
         </form>
