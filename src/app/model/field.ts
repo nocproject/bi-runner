@@ -116,6 +116,11 @@ export class FieldBuilder {
         return this;
     }
 
+    public pseudo(pseudo: boolean): FieldBuilder {
+        this.field.pseudo = pseudo;
+        return this;
+    }
+
     public build(): Field {
         return this.field;
     }

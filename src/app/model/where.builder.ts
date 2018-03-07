@@ -6,7 +6,7 @@ import { Filter } from './filter';
 import { FilterBuilder } from './filter.builder';
 import { Value } from './value';
 import { Range } from './range';
-import { Field } from './field';
+import { Field, FieldBuilder } from './field';
 
 export class WhereBuilder {
     static makeWhere(groups: Group[], isWhere: boolean): Object {
@@ -44,12 +44,18 @@ function getFilters(groups: Group[], association: string, isWhere: boolean): Obj
             // hard code, add filter
             .map(filter => {
                 if (filter.name === 'exclusion_intervals') {
+                    const condition = filter.condition.startsWith('not.')
+                        ? filter.condition.replace('not.', '') : `not.${filter.condition}`;
                     return new FilterBuilder()
                         .name('ts')
-                        .condition(`not.${filter.condition}`)
+                        .condition(condition)
                         .values(filter.values)
                         .association(filter.association)
                         .alias(filter.alias)
+                        .field(new FieldBuilder()
+                            .type(filter.getType())
+                            .pseudo(false)
+                            .build())
                         .build();
                 }
                 return filter;
