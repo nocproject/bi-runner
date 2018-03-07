@@ -35,20 +35,20 @@ export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestro
     showReset = false;
     // default values
     yLabelOffset = 20;
-    filterSubscription: Subscription;
-    reloadSubscription: Subscription;
-    formSubscription: Subscription;
+    protected filterSubscription: Subscription;
+    protected reloadSubscription: Subscription;
+    protected formSubscription: Subscription;
     chooseFieldForm: FormGroup;
     fields$: Observable<IOption[]>;
     funcs: IOption[];
     fieldName: string;
 
-    constructor(@Inject(forwardRef(() => FormBuilder)) public fb: FormBuilder,
-                @Inject(forwardRef(() => DatasourceService)) public datasourceService: DatasourceService,
-                @Inject(forwardRef(() => APIService)) public api: APIService,
-                @Inject(forwardRef(() => FilterService)) private filterService: FilterService,
-                @Inject(forwardRef(() => EventService)) public eventService: EventService,
-                @Inject(forwardRef(() => LanguageService)) public languageService: LanguageService) {
+    constructor(@Inject(forwardRef(() => FormBuilder)) protected fb: FormBuilder,
+                @Inject(forwardRef(() => DatasourceService)) protected datasourceService: DatasourceService,
+                @Inject(forwardRef(() => APIService)) protected api: APIService,
+                @Inject(forwardRef(() => FilterService)) protected filterService: FilterService,
+                @Inject(forwardRef(() => EventService)) protected eventService: EventService,
+                @Inject(forwardRef(() => LanguageService)) protected languageService: LanguageService) {
     }
 
     ngAfterViewInit(): void {

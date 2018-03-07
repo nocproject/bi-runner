@@ -188,6 +188,10 @@
   dependencies:
     typescript "~2.6.2"
 
+"@swimlane/ngx-datatable@^11.2.0":
+  version "11.2.0"
+  resolved "https://registry.yarnpkg.com/@swimlane/ngx-datatable/-/ngx-datatable-11.2.0.tgz#fdc353bdffb676a14c5dfd7834509427cb30060b"
+
 "@types/crossfilter@*":
   version "0.0.31"
   resolved "https://registry.yarnpkg.com/@types/crossfilter/-/crossfilter-0.0.31.tgz#acfeda07ba82f617b3cbc71a51a43391c17841a8"

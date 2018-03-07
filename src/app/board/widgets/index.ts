@@ -1,6 +1,7 @@
 export * from './bar/bar.component';
 export * from './box/box-plot.component';
 export * from './counter/counter.component';
+export * from './export/export.component';
 export * from './geo/geo.component';
 export * from './line/line.component';
 export * from './pie/pie.component';

@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 
-import { flattenDeep, head } from 'lodash';
+import { cloneDeep, flattenDeep, head } from 'lodash';
 import { Observable } from 'rxjs/Rx';
 
 import { APIService } from '@app/services';
 import { FilterService } from './filter.service';
 import { FieldsTableService } from './fields-table.service';
 
-import { BiRequestBuilder, Board, Field, Group, Methods, WhereBuilder } from '@app/model';
+import { BiRequestBuilder, Board, Group, Methods, Result, WhereBuilder } from '@app/model';
 
 @Injectable()
 export class CounterService {
@@ -16,56 +16,81 @@ export class CounterService {
                 private filterService: FilterService) {
     }
 
-    public qty(array: any, board: Board): Observable<number> {
-        let fields: Field[];
-        let filters: Group[];
+    public sampleExport(board: Board): Observable<any[]> {
+        return this.execQuery(board,
+            (params) => {
+                const cloned = cloneDeep(params);
+                const fields =board.exportQry.getFields();
 
-        if (head(array) instanceof Field) {
-            fields = (<Field[]>array);
-            filters = this.filterService.allFilters();
-        }
-        if (head(array) instanceof Group) {
-            filters = (<Group[]>array);
-            fields = this.fieldsTableService.allFields();
-        }
+                if (fields) cloned['fields'] = fields;
+                else cloned['fields'] = undefined;
 
-        return this.makeUniqQuery(board, fields, filters);
+                return cloned;
+            },
+            [])
+            .map((response: Result) => response.zip(false));
     }
 
-    private makeUniqQuery(board: Board, groups: Field[], filters: Group[]): Observable<number> {
+    public qty(board: Board): Observable<number> {
+        return this.execQuery(board, this.uniqFields, 0)
+            .map(response => response.data.result.length ? head(flattenDeep(response.data.result)) : 0);
+    }
+
+    private queryCondition(params) {
+        const cloned = cloneDeep(params);
+        const filters: Group[] = this.filterService.allFilters();
         const where = WhereBuilder.makeWhere(filters, true);
         const having = WhereBuilder.makeWhere(filters, false);
-        const fields = groups
+
+        if (where) {
+            cloned['filter'] = where;
+        }
+
+        if (having) {
+            cloned['having'] = having;
+        }
+
+        return cloned;
+    }
+
+    private uniqFields(params) {
+        const cloned = cloneDeep(params);
+        const fields = this.fieldsTableService.allFields()
             .filter(field => field.hasOwnProperty('group'))
             .map(field => field.expr)
             .join(',');
-        const params = {
-            datasource: board.datasource,
-            fields: [
+
+        if (fields) {
+            cloned['fields'] = [
                 {
                     expr: `uniq(${fields})`,
                     alias: 'qty'
                 }
-            ]
+            ];
+        } else {
+            cloned['fields'] = undefined;
+        }
+        return cloned;
+    }
+
+    private execQuery(board: Board, getFields, emptyValue): Observable<Result> {
+        let params = {
+            datasource: board.datasource,
+            limit: 15
         };
 
-        if (!fields) {
-            return Observable.of(0);
+        params = getFields.call(this, params);
+
+        if (!params['fields']) {
+            return Observable.of(emptyValue);
         }
 
-        if (where) {
-            params['filter'] = where;
-        }
-
-        if (having) {
-            params['having'] = having;
-        }
+        params = this.queryCondition(params);
 
         const query = new BiRequestBuilder()
             .method(Methods.QUERY)
             .params([params])
             .build();
-        return this.api.execute(query)
-            .map(response => response.data.result.length ? head(flattenDeep(response.data.result)) : 0);
+        return this.api.execute(query);
     }
 }

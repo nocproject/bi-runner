@@ -8,6 +8,7 @@ import {
     BarComponent,
     BoxPlotComponent,
     CounterComponent,
+    ExportComponent,
     GeoComponent,
     LineComponent,
     PieComponent,
@@ -15,11 +16,13 @@ import {
     SelectMenuComponent,
     TableComponent
 } from './index';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 export const WIDGETS = [
     BarComponent,
     BoxPlotComponent,
     CounterComponent,
+    ExportComponent,
     GeoComponent,
     LineComponent,
     PieComponent,
@@ -31,6 +34,7 @@ export const WIDGETS = [
 @NgModule({
     imports: [
         CommonModule,
+        NgxDatatableModule,
         ReactiveFormsModule,
         TooltipModule.forRoot(),
         TranslateModule
