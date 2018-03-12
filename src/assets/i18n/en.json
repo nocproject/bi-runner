@@ -192,5 +192,8 @@
   "SELECT_FUNCTION": "Select function",
   "SELECT_MENU": {
     "PROMPT": "Select All"
+  },
+  "EXPORT": {
+    "TITLE": "Example export, first 15 rows"
   }
 }
