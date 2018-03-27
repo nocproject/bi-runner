@@ -71,26 +71,39 @@
           ],
           "name": "startEnd"
         },
+
         {
-          "association": "$and",
           "active": true,
-          "name": "form",
+          "association": "$and",
           "filters": [
             {
+              "field": {
+                "enable": true,
+                "group": 1,
+                "name": "vendor",
+                "isAgg": false,
+                "description": "Vendor",
+                "pseudo": false,
+                "grouped": false,
+                "dict": "vendor",
+                "datasource": "managedobjects",
+                "isSelectable": true,
+                "model": null,
+                "type": "Dictionary",
+                "isGrouping": true
+              },
               "association": "$and",
-              "name": "vendor",
-              "type": "dict-vendor",
-              "condition": "not.in",
-              "pseudo": false,
-              "datasource": "managedobjects",
               "values": [
                 {
                   "value": "0"
-                },
-                {}
-              ]
+                }
+              ],
+              "name": "vendor",
+              "condition": "not.in",
+              "type": "dict-vendor"
             }
-          ]
+          ],
+          "name": "form"
         }
       ],
       "title": "Managed objects",
