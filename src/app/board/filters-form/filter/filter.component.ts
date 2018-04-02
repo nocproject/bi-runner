@@ -3,8 +3,10 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AbstractControl } from '@angular/forms/src/model';
 
 import { clone, findIndex, indexOf, isEqual } from 'lodash';
+
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
+import { of } from 'rxjs/observable/of';
 
 import { Field } from '@app/model';
 import { EventType } from '../model/event.interface';
@@ -84,7 +86,7 @@ export class FilterComponent implements OnInit, OnDestroy {
                             if (findIndex(conditions, o => o.value === data.condition) < 0) {
                                 this.filter.patchValue({condition: ''}, {emitEvent: false});
                             }
-                            this.conditionSelect.options = Observable.of(conditions);
+                            this.conditionSelect.options = of(conditions);
                             this.initControl(valueConfig);
 
                             return valueConfig;
@@ -96,11 +98,11 @@ export class FilterComponent implements OnInit, OnDestroy {
                         const valueConfig = FieldConfigService.fieldValueConfig(data, this.prevField);
 
                         if (valueConfig) {
-                            this.valueFieldConfig$ = Observable.of(valueConfig);
+                            this.valueFieldConfig$ = of(valueConfig);
                             this.initControl(valueConfig);
                         } else { // when type = string and condition = empty | not empty
                             const control = this.filter.get('value');
-                            this.valueFieldConfig$ = Observable.of({
+                            this.valueFieldConfig$ = of({
                                 controlName: '',
                                 type: 'none',
                                 label: '',

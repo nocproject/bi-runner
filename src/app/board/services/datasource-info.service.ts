@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 
-import { findIndex, head } from 'lodash';
 import { Observable } from 'rxjs/Observable';
+import { publishLast, refCount, switchMap } from 'rxjs/operators';
+
+import { findIndex, head } from 'lodash';
 
 import { APIService } from '@app/services';
 import { BoardResolver } from './board.resolver';
@@ -17,21 +19,23 @@ export class DatasourceService {
                 private boardResolver: BoardResolver,
                 private filterService: FilterService) {
         this.datasource$ = this.boardResolver.board$
-            .switchMap((board: Board) => {
-                return this.api.execute(
-                    new BiRequestBuilder()
-                        .method(Methods.GET_DATASOURCE_INFO)
-                        .params([board.datasource])
-                        .build())
-                    .map(response => {
-                        const datasource = Datasource.fromJSON(response.result);
-                        datasource.fields = this._fields(board, datasource);
-                        this.filterService.fields = datasource.fields;
-                        return datasource;
-                    });
-            })
-            .publishLast()
-            .refCount();
+            .pipe(
+                switchMap((board: Board) => {
+                    return this.api.execute(
+                        new BiRequestBuilder()
+                            .method(Methods.GET_DATASOURCE_INFO)
+                            .params([board.datasource])
+                            .build())
+                        .map(response => {
+                            const datasource = Datasource.fromJSON(response.result);
+                            datasource.fields = this._fields(board, datasource);
+                            this.filterService.fields = datasource.fields;
+                            return datasource;
+                        });
+                }),
+                publishLast(),
+                refCount()
+            );
     }
 
     name(): Observable<string> {

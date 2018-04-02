@@ -3,8 +3,9 @@ import { Location } from '@angular/common';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
+import { first } from 'rxjs/operators';
 
 import { cloneDeep, includes } from 'lodash';
 
@@ -14,7 +15,7 @@ import { APIService, AuthenticationService, LanguageService, LayoutService, Mess
 import { BoardResolver } from '../board/services/board.resolver';
 import { FilterService } from '../board/services/filter.service';
 
-import { Board, Message, MessageType, Methods, BiRequestBuilder, User } from '../model';
+import { BiRequestBuilder, Board, Message, MessageType, Methods, User } from '../model';
 import { ModalComponent } from '../shared/modal/modal';
 import { Export } from './export';
 
@@ -92,7 +93,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
             .method(Methods.SET_DASHBOARD)
             .params([board.prepare()])
             .build();
-        this.api.execute(query).first().subscribe(
+        this.api.execute(query).pipe(first()).subscribe(
             () => {
                 this.messages.message(new Message(MessageType.INFO, 'MESSAGES.SAVED'));
             }
@@ -112,7 +113,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
             .method(Methods.SET_DASHBOARD)
             .params([board.prepare()])
             .build();
-        this.api.execute(query).first()
+        this.api.execute(query)
+            .pipe(first())
             .subscribe(response => {
                 this.messages.message(new Message(MessageType.INFO, 'MESSAGES.SAVED'));
                 modal.close();
@@ -135,7 +137,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
             .params([board.id])
             .build();
         modal.close();
-        this.api.execute(query).first()
+        this.api.execute(query).pipe(first())
             .subscribe(() => {
                 this.messages.message(new Message(MessageType.INFO, 'MESSAGES.REMOVED'));
                 this.route.navigate([''])
@@ -146,7 +148,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     onExport(): void {
         this.exportSpin = true;
         Export.query(this.api, this.boardResolver, this.filterService)
-            .first()
+            .pipe(first())
             .subscribe(
                 (response) => {
                     this.exportSpin = false;

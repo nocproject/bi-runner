@@ -5,8 +5,7 @@ import { clone, startsWith } from 'lodash';
 
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/operator/debounceTime';
+import { debounceTime, filter, map, switchMap } from 'rxjs/operators';
 
 import {
     CellAndWidget,
@@ -166,29 +165,31 @@ export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestro
 
     private filtersSubscription() {
         this.filterSubscription = this.filterService.filters$
-            .debounceTime(500)
-            // .distinctUntilChanged()
-            // .do(data => console.log('filters changed', data))
-            .filter(() => this.filterService.lastUpdatedWidget !== this.data.widget.cell)
-            .map(group => {
-                return {
-                    filter: WhereBuilder.makeWhere(group, true),
-                    having: WhereBuilder.makeWhere(group, false)
-                };
-            })
-            .filter(conditions => {
-                return (JSON.stringify(conditions.filter) !== JSON.stringify(this.data.widget.query.params[0].filter))
-                    || (JSON.stringify(conditions.having) !== JSON.stringify(this.data.widget.query.params[0].having));
-            })
-            .switchMap(conditions => {
-                this.setConstraint(conditions, 'filter');
-                this.setConstraint(conditions, 'having');
-                let ratio = this.filterService.ratioSubject.getValue();
-                if (ratio !== 1) {
-                    this.data.widget.query.params[0].sample = ratio;
-                }
-                return this.api.execute(this.data.widget.query);
-            })
+            .pipe(
+                debounceTime(500),
+                // .distinctUntilChanged()
+                // .do(data => console.log('filters changed', data))
+                filter(() => this.filterService.lastUpdatedWidget !== this.data.widget.cell),
+                map(group => {
+                    return {
+                        filter: WhereBuilder.makeWhere(group, true),
+                        having: WhereBuilder.makeWhere(group, false)
+                    };
+                }),
+                filter(conditions => {
+                    return (JSON.stringify(conditions.filter) !== JSON.stringify(this.data.widget.query.params[0].filter))
+                        || (JSON.stringify(conditions.having) !== JSON.stringify(this.data.widget.query.params[0].having));
+                }),
+                switchMap(conditions => {
+                    this.setConstraint(conditions, 'filter');
+                    this.setConstraint(conditions, 'having');
+                    let ratio = this.filterService.ratioSubject.getValue();
+                    if (ratio !== 1) {
+                        this.data.widget.query.params[0].sample = ratio;
+                    }
+                    return this.api.execute(this.data.widget.query);
+                })
+            )
             .subscribe(
                 (response: Result) => {
                     this.chart = this.draw(response);

@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
 
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { map, publishLast, refCount, share } from 'rxjs/operators';
 
 import { APIService } from '@app/services';
 
-import { Board, Methods, BiRequestBuilder } from '@app/model';
+import { BiRequestBuilder, Board, Methods } from '@app/model';
 
 @Injectable()
 export class BoardResolver implements Resolve<Board> {
@@ -23,11 +24,13 @@ export class BoardResolver implements Resolve<Board> {
                 .method(Methods.GET_DASHBOARD)
                 .params([route.params['id']])
                 .build())
-            .map(response => Board.fromJSON(response.result))
-            .publishLast()
-            .refCount();
+            .pipe(
+                map(response => Board.fromJSON(response.result)),
+                publishLast(),
+                refCount()
+            );
 
-        this.board$ = board$.share();
+        this.board$ = board$.pipe(share());
         return board$;
     }
 

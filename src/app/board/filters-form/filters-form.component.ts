@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { Subscription } from 'rxjs/Subscription';
+import { of } from 'rxjs/observable/of';
 
 import { clone, cloneDeep } from 'lodash';
 import * as d3 from 'd3';
@@ -19,7 +20,6 @@ import {
 import { EventType } from './model/event.interface';
 import { EventService } from '../services/event.service';
 import { BIValidators } from './components/validators';
-import { Observable } from 'rxjs/Observable';
 import { FieldConfigService } from './services/field-config.service';
 
 @Component({
@@ -63,7 +63,7 @@ export class FiltersFormComponent implements OnInit {
             condition: 'condition',
             value: 'value',
             conditionField: conditionFieldConfig,
-            valueField$: Observable.of(valueFieldConfig)
+            valueField$: of(valueFieldConfig)
         };
         const freshGroup: FilterGroupConfig = {
             association: '$and',
@@ -85,7 +85,7 @@ export class FiltersFormComponent implements OnInit {
                             condition: 'condition',
                             value: 'value',
                             conditionField: conditionFieldConfig,
-                            valueField$: Observable.of(valueFieldConfig)
+                            valueField$: of(valueFieldConfig)
                             // },
                             // {
                             //     name: 'name',
@@ -126,8 +126,8 @@ export class FiltersFormComponent implements OnInit {
                                     const filterConfig = cloneDeep(emptyFilterConfig);
                                     const data = this.castToFormData(filter);
 
-                                    filterConfig.conditionField.options = Observable.of(FieldConfigService.conditions(filter.field));
-                                    filterConfig.valueField$ = Observable.of(FieldConfigService.fieldValueConfig(data, filter.field));
+                                    filterConfig.conditionField.options = of(FieldConfigService.conditions(filter.field));
+                                    filterConfig.valueField$ = of(FieldConfigService.fieldValueConfig(data, filter.field));
                                     filterConfig.field = filter.field;
                                     filterConfig.data = data;
 
@@ -158,8 +158,8 @@ export class FiltersFormComponent implements OnInit {
                             condition: 'not.interval',
                             value: `${event.payload.quartiles[0]} - ${event.payload.quartiles[2]}`
                         };
-                        filter.conditionField.options = Observable.of(FieldConfigService.conditions(field));
-                        filter.valueField$ = Observable.of(FieldConfigService.fieldValueConfig(data, field));
+                        filter.conditionField.options = of(FieldConfigService.conditions(field));
+                        filter.valueField$ = of(FieldConfigService.fieldValueConfig(data, field));
                         filter.field = field;
                         filter.data = data;
 

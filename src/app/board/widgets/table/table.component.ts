@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 
 import { Subscription } from 'rxjs/Subscription';
+import { map, switchMap } from 'rxjs/operators';
 
 import { head, sortBy, startsWith } from 'lodash';
 import * as d3 from 'd3';
@@ -135,76 +136,81 @@ export class TableComponent extends WidgetComponent {
                     }
                 )
             );
-        this.formSubscription = this.addFieldForm.valueChanges.switchMap(data =>
-            this.datasourceService.fieldByName(data.name)
-                .map((field: Field) => {
-                    let isNumericField = false;
+        this.formSubscription = this.addFieldForm.valueChanges
+            .pipe(
+                switchMap(data =>
+                    this.datasourceService.fieldByName(data.name)
+                        .pipe(
+                            map((field: Field) => {
+                                let isNumericField = false;
 
-                    if (field) {
-                        switch (field.type) {
-                            case 'UInt8':
-                            case 'UInt16':
-                            case 'UInt32':
-                            case 'UInt64':
-                            case 'Int8':
-                            case 'Int16':
-                            case 'Int32':
-                            case 'Int64':
-                            case 'Float32':
-                            case 'Float64': {
-                                this.formats = [
-                                    {value: 'intFormat', text: 'Dynamic'},
-                                    {value: 'numberFormat', text: '.4f'},
-                                    {value: 'secondsToString', text: '%H:%M'}
-                                ];
-                                isNumericField = true;
-                                break;
-                            }
-                            case 'Date': {
-                                this.formats = [
-                                    {value: 'dateToString', text: '%d.%m.%y'}
-                                ];
-                                break;
-                            }
-                            case 'DateTime': {
-                                this.formats = [
-                                    {value: 'dateToString', text: '%d.%m.%y'},
-                                    {value: 'dateToDateTimeString', text: '%d.%m.%y %H:%M'},
-                                    {value: 'dateToTimeString', text: '%H:%M'}
-                                ];
-                                break;
-                            }
-                            case 'IPv4': {
-                                this.formats = [
-                                    {value: 'intToIP', text: 'xxx.xxx.xxx.xxx'}
-                                ];
-                                break;
-                            }
-                            default: {
-                                this.formats = [];
-                            }
-                        }
-                        if (this.formats.filter(fm => fm.value === data.format).length === 0) {
-                            this.addFieldForm.patchValue({format: ''}, {emitEvent: false});
-                        }
-                    }
+                                if (field) {
+                                    switch (field.type) {
+                                        case 'UInt8':
+                                        case 'UInt16':
+                                        case 'UInt32':
+                                        case 'UInt64':
+                                        case 'Int8':
+                                        case 'Int16':
+                                        case 'Int32':
+                                        case 'Int64':
+                                        case 'Float32':
+                                        case 'Float64': {
+                                            this.formats = [
+                                                {value: 'intFormat', text: 'Dynamic'},
+                                                {value: 'numberFormat', text: '.4f'},
+                                                {value: 'secondsToString', text: '%H:%M'}
+                                            ];
+                                            isNumericField = true;
+                                            break;
+                                        }
+                                        case 'Date': {
+                                            this.formats = [
+                                                {value: 'dateToString', text: '%d.%m.%y'}
+                                            ];
+                                            break;
+                                        }
+                                        case 'DateTime': {
+                                            this.formats = [
+                                                {value: 'dateToString', text: '%d.%m.%y'},
+                                                {value: 'dateToDateTimeString', text: '%d.%m.%y %H:%M'},
+                                                {value: 'dateToTimeString', text: '%H:%M'}
+                                            ];
+                                            break;
+                                        }
+                                        case 'IPv4': {
+                                            this.formats = [
+                                                {value: 'intToIP', text: 'xxx.xxx.xxx.xxx'}
+                                            ];
+                                            break;
+                                        }
+                                        default: {
+                                            this.formats = [];
+                                        }
+                                    }
+                                    if (this.formats.filter(fm => fm.value === data.format).length === 0) {
+                                        this.addFieldForm.patchValue({format: ''}, {emitEvent: false});
+                                    }
+                                }
 
-                    return {
-                        label: data.label,
-                        name: data.name,
-                        limit: data.limit,
-                        format: data.format,
-                        sortable: isNumericField
-                    };
-                })
-        ).subscribe(data => {
-            if (data.sortable) {
-                this.addFieldForm.get('sortable').enable({emitEvent: false, onlySelf: true});
-            } else {
-                this.addFieldForm.get('sortable').disable({emitEvent: false, onlySelf: true});
-                this.addFieldForm.patchValue({sortable: false}, {emitEvent: false});
-            }
-        });
+                                return {
+                                    label: data.label,
+                                    name: data.name,
+                                    limit: data.limit,
+                                    format: data.format,
+                                    sortable: isNumericField
+                                };
+                            })
+                        )
+                )
+            ).subscribe(data => {
+                if (data.sortable) {
+                    this.addFieldForm.get('sortable').enable({emitEvent: false, onlySelf: true});
+                } else {
+                    this.addFieldForm.get('sortable').disable({emitEvent: false, onlySelf: true});
+                    this.addFieldForm.patchValue({sortable: false}, {emitEvent: false});
+                }
+            });
     }
 
     ngOnDestroy(): void {

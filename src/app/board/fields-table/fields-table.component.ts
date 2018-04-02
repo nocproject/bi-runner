@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs/Observable';
 import { findIndex, remove } from 'lodash';
 
 import { Board, Field, FieldBuilder } from '@app/model';

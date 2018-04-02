@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 
+import { finalize, first, map, tap } from 'rxjs/operators';
+
 import * as moment from 'moment';
 
 import { BiRequestBuilder, Message, MessageType, Methods } from '@app/model';
@@ -31,13 +33,15 @@ export class BoardListComponent implements OnInit {
             .fromJson(tableJson)
             .data(this.api
                 .execute(new BiRequestBuilder().method(Methods.LIST_DASHBOARDS).params([{version: 2}]).build())
-                .do(() => this.showSpinner = false)
-                .map(response => response.result.map(row =>
-                    Object.assign({}, row,
-                        {changed: moment(row.changed).format('DD.MM.YYYY HH:mm')},
-                        {created: moment(row.created).format('DD.MM.YYYY HH:mm')}
-                    )
-                )))
+                .pipe(
+                    tap(() => this.showSpinner = false),
+                    map(response => response.result.map(row =>
+                        Object.assign({}, row,
+                            {changed: moment(row.changed).format('DD.MM.YYYY HH:mm')},
+                            {created: moment(row.created).format('DD.MM.YYYY HH:mm')}
+                        )
+                    )))
+            )
             .build();
     }
 
@@ -71,13 +75,14 @@ export class BoardListComponent implements OnInit {
                 this.messages.message(new Message(MessageType.DANGER, error));
             }
 
-            this.api.execute(query).first()
-                .finally(() => el.value = '')
-                .subscribe((response) => {
-                    this.messages.message(new Message(MessageType.INFO, 'MESSAGES.IMPORTED'));
-                    this.route.navigate(['board', response.result])
-                        .catch(msg => this.messages.message(new Message(MessageType.DANGER, msg)));
-                });
+            this.api.execute(query).pipe(
+                first(),
+                finalize(() => el.value = '')
+            ).subscribe((response) => {
+                this.messages.message(new Message(MessageType.INFO, 'MESSAGES.IMPORTED'));
+                this.route.navigate(['board', response.result])
+                    .catch(msg => this.messages.message(new Message(MessageType.DANGER, msg)));
+            });
 
         };
         reader.readAsText(file.target.files[0]);

@@ -1,6 +1,6 @@
 import { ValidatorFn } from '@angular/forms';
 
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs/Observable';
 
 import { Field, IOption } from '@app/model';
 

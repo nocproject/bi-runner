@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 
+import { Observable } from 'rxjs/Observable';
+import { of } from 'rxjs/observable/of';
+
 import { cloneDeep, flattenDeep, head } from 'lodash';
-import { Observable } from 'rxjs/Rx';
 
 import { APIService } from '@app/services';
 import { FilterService } from './filter.service';
@@ -20,7 +22,7 @@ export class CounterService {
         return this.execQuery(board,
             (params) => {
                 const cloned = cloneDeep(params);
-                const fields =board.exportQry.getFields();
+                const fields = board.exportQry.getFields();
 
                 if (fields) cloned['fields'] = fields;
                 else cloned['fields'] = undefined;
@@ -82,7 +84,7 @@ export class CounterService {
         params = getFields.call(this, params);
 
         if (!params['fields']) {
-            return Observable.of(emptyValue);
+            return of(emptyValue);
         }
 
         params = this.queryCondition(params);

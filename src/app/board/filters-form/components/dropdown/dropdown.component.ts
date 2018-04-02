@@ -15,6 +15,7 @@ import { ControlValueAccessor, FormControl, FormGroup, NG_VALUE_ACCESSOR } from 
 
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
+import { first, map, tap } from 'rxjs/operators';
 
 import { includes, isEmpty, isNil, remove } from 'lodash';
 import { TreeviewComponent, TreeviewItem } from 'ngx-treeview';
@@ -77,11 +78,13 @@ export class BiDropdownComponent implements OnInit, OnDestroy, OnChanges, Contro
                 this.notFound = false;
                 this.list$ = this.api.execute(
                     this.makeQuery(data.term))
-                    .map(response => this.response(response))
-                    .do(data => {
-                        this.search = false;
-                        this.notFound = data.length === 0;
-                    });
+                    .pipe(
+                        map(response => this.response(response)),
+                        tap(data => {
+                            this.search = false;
+                            this.notFound = data.length === 0;
+                        })
+                    );
             });
         if (this.config.value) { // restore by Id
             let params;
@@ -111,7 +114,7 @@ export class BiDropdownComponent implements OnInit, OnDestroy, OnChanges, Contro
                             .method(Methods.QUERY)
                             .params(params)
                             .build())
-                        .first()
+                        .pipe(first())
                         .subscribe(response => this.placeholder = response.result.result[0][0]);
                     break;
                 }
@@ -142,7 +145,9 @@ export class BiDropdownComponent implements OnInit, OnDestroy, OnChanges, Contro
                             .method(Methods.QUERY)
                             .params(params)
                             .build())
-                        .first()
+                        .pipe(
+                            first()
+                        )
                         .subscribe(response => this.placeholder = response.result.result[0][0]);
                     break;
                 }
@@ -237,11 +242,13 @@ export class BiDropdownComponent implements OnInit, OnDestroy, OnChanges, Contro
         this.placeholder = this.translate.instant('DROP_DOWN.CHOOSE') + ` ${this.field.description ? this.field.description : this.translate.instant('DROP_DOWN.VALUE')}`;
         this.list$ = this.api.execute(
             this.makeQuery())
-            .map(response => this.response(response))
-            .do(data => {
-                this.search = false;
-                this.notFound = data.length === 0;
-            });
+            .pipe(
+                map(response => this.response(response)),
+                tap(data => {
+                    this.search = false;
+                    this.notFound = data.length === 0;
+                })
+            );
     }
 
     private treePlaceholder(): string {

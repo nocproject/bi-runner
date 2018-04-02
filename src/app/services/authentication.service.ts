@@ -1,13 +1,15 @@
 import { forwardRef, Inject, Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 
+import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Rx';
+import { of } from 'rxjs/observable/of';
+import { catchError, map } from 'rxjs/operators';
 
 import { APIService } from './api.service';
 import { MessageService } from './message.service';
 
-import { Message, MessageType, Methods, BiRequestBuilder, Result, User } from '../model';
+import { BiRequestBuilder, Message, MessageType, Methods, Result, User } from '../model';
 
 @Injectable()
 export class AuthenticationService {
@@ -48,26 +50,27 @@ export class AuthenticationService {
         if (!this.isLogInSubject.getValue()) {
             return this.userInfo();
         } else {
-            return Observable.of(true);
+            return of(true);
         }
     }
 
     userInfo(): Observable<boolean> {
         return this.http.get('/main/desktop/user_settings/')
-            .map((response: HttpResponse<User>) => {
-                    if (response) {
-                        const user = User.fromJSON(response);
+            .pipe(
+                map((response: HttpResponse<User>) => {
+                        if (response) {
+                            const user = User.fromJSON(response);
 
-                        this.userSubject.next(user);
-                        this.isLogInSubject.next(true);
+                            this.userSubject.next(user);
+                            this.isLogInSubject.next(true);
 
-                        return true;
+                            return true;
+                        }
+                        return false;
                     }
-                    return false;
-                }
-            ).catch(() => {
-                return Observable.of(false);
-            });
+                ),
+                catchError(() => of(false))
+            );
     }
 
     initAccessLevel(id: string): void {

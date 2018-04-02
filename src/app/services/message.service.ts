@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
+import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Rx';
 import { cloneDeep, remove } from 'lodash';
 
 import { Message } from '../model';

@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs/Observable';
+import { merge, switchMap } from 'rxjs/operators';
 
 import { Board } from '@app/model';
 import { CounterService } from '../../services/counter.service';
@@ -24,7 +25,9 @@ export class CounterComponent implements OnInit {
 
     ngOnInit() {
         this.qty$ = this.fieldsTableService.fields$
-            .merge(this.filterService.filters$)
-            .switchMap(() => this.counterService.qty(this.board));
+            .pipe(
+                merge(this.filterService.filters$),
+                switchMap(() => this.counterService.qty(this.board))
+            );
     }
 }

@@ -5,6 +5,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
+import { first, flatMap, map, switchMap, toArray } from 'rxjs/operators';
+
 import { concat, includes, remove } from 'lodash';
 
 import { APIService, MessageService } from '@app/services';
@@ -70,13 +72,15 @@ export class ShareComponent implements OnInit, OnDestroy {
         );
 
         this.route.data.map(data => data['detail'])
-            .map(board => board)
-            .switchMap(board => {
-                this.boardId = board.id;
-                this.title = board.title;
-                this.config = this.configGrid(init);
-                return this.initCacheAccess(board.id);
-            })
+            .pipe(
+                map(board => board),
+                switchMap(board => {
+                    this.boardId = board.id;
+                    this.title = board.title;
+                    this.config = this.configGrid(init);
+                    return this.initCacheAccess(board.id);
+                })
+            )
             .subscribe(data => {
                     this.accessCache = data;
                     this.preSelected = this.getAccess(init);
@@ -124,7 +128,7 @@ export class ShareComponent implements OnInit, OnDestroy {
                 {items: this.accessCache}
             ])
             .build())
-            .first()
+            .pipe(first())
             .subscribe(() => {
                     this.unsavedData = false;
                     this.shareSpin = false;
@@ -142,7 +146,7 @@ export class ShareComponent implements OnInit, OnDestroy {
                 {items: []}
             ])
             .build())
-            .first()
+            .pipe(first())
             .subscribe(() => {
                 this.trashSpin = false;
                 this.unsavedData = false;
@@ -171,15 +175,17 @@ export class ShareComponent implements OnInit, OnDestroy {
                 .method(Methods.GET_DASHBOARD_ACCESS)
                 .params([{id: boardId}])
                 .build())
-            .flatMap(response => response.result)
-            .map(item => {
+        .pipe(
+            flatMap(response => response.result),
+            map(item => {
                 if (item.hasOwnProperty('user')) {
                     return <Access>({user: {id: item['user'].id}, level: Number(item['level'])});
                 } else {  // if (item.hasOwnProperty('group')) {
                     return <Access>{group: {id: item['group'].id}, level: Number(item['level'])};
                 }
-            })
-            .toArray();
+            }),
+            toArray()
+        );
     }
 
     private getAccess(choose: Choose): any[] {

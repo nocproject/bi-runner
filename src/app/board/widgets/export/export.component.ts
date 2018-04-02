@@ -7,6 +7,7 @@ import { Board, Field } from '@app/model';
 import { FieldsTableService } from '../../services/fields-table.service';
 import { FilterService } from '../../services/filter.service';
 import { CounterService } from '../../services/counter.service';
+import { merge, switchMap } from 'rxjs/operators';
 
 @Component({
     selector: 'bi-export',
@@ -38,7 +39,9 @@ export class ExportComponent implements OnInit {
                     })
             );
         this.rows$ = this.fieldsTableService.fields$
-            .merge(this.filterService.filters$)
-            .switchMap(() => this.counterService.sampleExport(this.board));
+            .pipe(
+                merge(this.filterService.filters$),
+                switchMap(() => this.counterService.sampleExport(this.board))
+            );
     }
 }

@@ -4,8 +4,9 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { head } from 'lodash';
 import * as moment from 'moment';
 
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
+import { filter, flatMap } from 'rxjs/operators';
 
 import { APIService, LanguageService } from '@app/services';
 import { BiRequestBuilder, Board, FilterBuilder, Group, GroupBuilder, Methods, Range, Value } from '@app/model';
@@ -85,7 +86,7 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
                     datasource: this.board.datasource
                 }])
                 .build())
-            .flatMap(response => head(response.data['result']));
+            .pipe(flatMap(response => head(response.data['result'])));
 
         this.ratioForm = this.fb.group({
             ratio: this.filterService.ratioSubject.getValue()
@@ -141,28 +142,28 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
     }
 
     private filterChangeSub() {
-        this.eventSubscription = this.eventService.event$
-            .filter(event => event !== null)
-            .filter(event => event.type === EventType.Restore)
-            .flatMap(event => event.payload)
-            .filter((group: Group) => group.name === 'startEnd')
-            .subscribe(
-                (group: Group) => {
-                    let from = null;
-                    let to = null;
-                    if (Range.isNotRange(group.filters[0].values[0].value)) {
-                        from = new Date(group.filters[0].values[0].value);
-                        to = new Date(group.filters[0].values[1].value);
-                        this.reportRangeText = SelectorComponent.rangeText(from, to);
-                    } else {
-                        from = group.filters[0].values[0].value;
-                        this.reportRangeText = `DATETIME_RANGE.${Range.getDates(from, false).text}`;
-                    }
-                    this.values = {
-                        [this.START_DATE]: from,
-                        [this.END_DATE]: to
-                    };
+        this.eventSubscription = this.eventService.event$.pipe(
+            filter(event => event !== null),
+            filter(event => event.type === EventType.Restore),
+            flatMap(event => event.payload),
+            filter((group: Group) => group.name === 'startEnd')
+        ).subscribe(
+            (group: Group) => {
+                let from = null;
+                let to = null;
+                if (Range.isNotRange(group.filters[0].values[0].value)) {
+                    from = new Date(group.filters[0].values[0].value);
+                    to = new Date(group.filters[0].values[1].value);
+                    this.reportRangeText = SelectorComponent.rangeText(from, to);
+                } else {
+                    from = group.filters[0].values[0].value;
+                    this.reportRangeText = `DATETIME_RANGE.${Range.getDates(from, false).text}`;
                 }
-            );
+                this.values = {
+                    [this.START_DATE]: from,
+                    [this.END_DATE]: to
+                };
+            }
+        );
     }
 }
