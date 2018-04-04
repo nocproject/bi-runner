@@ -42,7 +42,7 @@ export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestro
     funcs: IOption[];
     fieldName: string;
 
-    protected constructor(@Inject(forwardRef(() => FormBuilder)) protected fb: FormBuilder,
+    constructor(@Inject(forwardRef(() => FormBuilder)) protected fb: FormBuilder,
                           @Inject(forwardRef(() => DatasourceService)) protected datasourceService: DatasourceService,
                           @Inject(forwardRef(() => APIService)) protected api: APIService,
                           @Inject(forwardRef(() => FilterService)) protected filterService: FilterService,
