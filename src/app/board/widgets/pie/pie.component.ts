@@ -1,12 +1,14 @@
 import { Component } from '@angular/core';
 
+import { map } from 'rxjs/operators';
+
 import * as crossfilter from 'crossfilter';
 import * as d3 from 'd3';
 import * as dc from 'dc';
 import { BaseMixin, Legend, PieChart } from 'dc';
 
-import { Restore, WidgetComponent } from '../widget.component';
 import { FilterBuilder, Result, Value } from '@app/model';
+import { Restore, WidgetComponent } from '../widget.component';
 import { Utils } from '../../../shared/utils';
 
 @Component({
@@ -96,17 +98,19 @@ export class PieComponent extends WidgetComponent {
         });
 
         this.fields$ = this.datasourceService.fields()
-            .map(array => array
-                .filter(field => field.dict && !field.pseudo && field.isSelectable)
-                .map(field => {
-                        if (firstFieldName === field.name) {
-                            this.fieldName = this.data.widget.note = field.description;
+            .pipe(
+                map(array => array
+                    .filter(field => field.dict && !field.pseudo && field.isSelectable)
+                    .map(field => {
+                            if (firstFieldName === field.name) {
+                                this.fieldName = this.data.widget.note = field.description;
+                            }
+                            return {
+                                value: `${field.name}`,
+                                text: field.description
+                            };
                         }
-                        return {
-                            value: `${field.name}`,
-                            text: field.description
-                        };
-                    }
+                    )
                 )
             );
     }

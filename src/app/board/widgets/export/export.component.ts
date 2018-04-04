@@ -1,13 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/toArray';
+import { map, merge, switchMap } from 'rxjs/operators';
 
 import { Board, Field } from '@app/model';
 import { FieldsTableService } from '../../services/fields-table.service';
 import { FilterService } from '../../services/filter.service';
 import { CounterService } from '../../services/counter.service';
-import { merge, switchMap } from 'rxjs/operators';
 
 @Component({
     selector: 'bi-export',
@@ -27,8 +26,8 @@ export class ExportComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.columns$ = this.fieldsTableService.fields$
-            .map((fields: Field[]) =>
+        this.columns$ = this.fieldsTableService.fields$.pipe(
+            map((fields: Field[]) =>
                 fields
                     .filter(field => !('hide' in field) || !field.hide)
                     .map(field => {
@@ -37,7 +36,8 @@ export class ExportComponent implements OnInit {
                             prop: field.alias ? field.alias : field.expr
                         };
                     })
-            );
+            )
+        );
         this.rows$ = this.fieldsTableService.fields$
             .pipe(
                 merge(this.filterService.filters$),

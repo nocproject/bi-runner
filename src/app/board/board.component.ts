@@ -2,6 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { Subscription } from 'rxjs/Subscription';
+import { map } from 'rxjs/operators';
+
 import { head } from 'lodash';
 
 import { Board, Cell, Widget, WidgetRow } from '@app/model';
@@ -34,18 +36,18 @@ export class BoardComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.filterService.cleanFilters();
         this.fieldsTableService.cleanFields();
-        this.subscription = this.route.data.map(data => data['detail'])
-            .subscribe(
-                (board: Board) => {
-                    this.filterService.initFilters(board.groups);
-                    this.fieldsTableService.fieldsNext(board.exportQry.params[0].fields);
-                    this.board = board;
-                    this.rows = this.widgetsByRow(board.layout.cells, board.widgets);
-                    this.filterService.ratioSubject.next(board.sample ? board.sample : 1);
-                    this.boardResolver.next(board);
-                    this.layoutService.isReportOpenSubject.next(true);
-                }
-            );
+        this.subscription = this.route.data.pipe(
+            map(data => data['detail'])
+        ).subscribe((board: Board) => {
+                this.filterService.initFilters(board.groups);
+                this.fieldsTableService.fieldsNext(board.exportQry.params[0].fields);
+                this.board = board;
+                this.rows = this.widgetsByRow(board.layout.cells, board.widgets);
+                this.filterService.ratioSubject.next(board.sample ? board.sample : 1);
+                this.boardResolver.next(board);
+                this.layoutService.isReportOpenSubject.next(true);
+            }
+        );
     }
 
     ngOnDestroy(): void {

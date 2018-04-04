@@ -5,12 +5,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import { first, flatMap, map, switchMap, toArray } from 'rxjs/operators';
+import { first, flatMap, map, pluck, switchMap, toArray } from 'rxjs/operators';
 
 import { concat, includes, remove } from 'lodash';
 
 import { APIService, MessageService } from '@app/services';
-import { AccessLevel, BiRequestBuilder, Message, MessageType, Methods } from '@app/model';
+import { AccessLevel, BiRequestBuilder, Board, Message, MessageType, Methods } from '@app/model';
 import { GridConfig, GridConfigBuilder } from '../shared/data-grid/data-grid.component';
 import { ModalComponent } from '../shared/modal/modal';
 
@@ -71,21 +71,19 @@ export class ShareComponent implements OnInit, OnDestroy {
             }
         );
 
-        this.route.data.map(data => data['detail'])
-            .pipe(
-                map(board => board),
-                switchMap(board => {
-                    this.boardId = board.id;
-                    this.title = board.title;
-                    this.config = this.configGrid(init);
-                    return this.initCacheAccess(board.id);
-                })
-            )
-            .subscribe(data => {
-                    this.accessCache = data;
-                    this.preSelected = this.getAccess(init);
-                }
-            );
+        this.route.data.pipe(
+            pluck('detail'),
+            switchMap((board: Board) => {
+                this.boardId = board.id;
+                this.title = board.title;
+                this.config = this.configGrid(init);
+                return this.initCacheAccess(board.id);
+            })
+        ).subscribe(data => {
+                this.accessCache = data;
+                this.preSelected = this.getAccess(init);
+            }
+        );
 
         this.chooseSubscription = this.chooseForm
             .valueChanges
@@ -175,17 +173,17 @@ export class ShareComponent implements OnInit, OnDestroy {
                 .method(Methods.GET_DASHBOARD_ACCESS)
                 .params([{id: boardId}])
                 .build())
-        .pipe(
-            flatMap(response => response.result),
-            map(item => {
-                if (item.hasOwnProperty('user')) {
-                    return <Access>({user: {id: item['user'].id}, level: Number(item['level'])});
-                } else {  // if (item.hasOwnProperty('group')) {
-                    return <Access>{group: {id: item['group'].id}, level: Number(item['level'])};
-                }
-            }),
-            toArray()
-        );
+            .pipe(
+                flatMap(response => response.result),
+                map(item => {
+                    if (item.hasOwnProperty('user')) {
+                        return <Access>({user: {id: item['user'].id}, level: Number(item['level'])});
+                    } else {  // if (item.hasOwnProperty('group')) {
+                        return <Access>{group: {id: item['group'].id}, level: Number(item['level'])};
+                    }
+                }),
+                toArray()
+            );
     }
 
     private getAccess(choose: Choose): any[] {

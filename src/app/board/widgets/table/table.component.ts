@@ -10,8 +10,8 @@ import * as dc from 'dc';
 import { BaseMixin, DataTableWidget } from 'dc';
 import * as crossfilter from 'crossfilter';
 
-import { Restore, WidgetComponent } from '../widget.component';
 import { Field, IOption, Result, Value } from '@app/model';
+import { Restore, WidgetComponent } from '../widget.component';
 import { Utils } from '../../../shared/utils';
 
 @Component({
@@ -128,8 +128,8 @@ export class TableComponent extends WidgetComponent {
     }
 
     ngOnInit() {
-        this.fields$ = this.datasourceService.fields()
-            .map(array => array
+        this.fields$ = this.datasourceService.fields().pipe(
+            map(array => array
                 .filter(field => !field.pseudo)
                 .filter(field => field.isSelectable)
                 .map(field => {
@@ -139,7 +139,8 @@ export class TableComponent extends WidgetComponent {
                         };
                     }
                 )
-            );
+            )
+        );
         this.formSubscription = this.addFieldForm.valueChanges
             .pipe(
                 switchMap(data =>
