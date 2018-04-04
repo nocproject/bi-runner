@@ -38,10 +38,9 @@ export class ExportComponent implements OnInit {
                     })
             )
         );
-        this.rows$ = this.fieldsTableService.fields$
-            .pipe(
-                merge(this.filterService.filters$),
-                switchMap(() => this.counterService.sampleExport(this.board))
-            );
+        this.rows$ = this.fieldsTableService.fields$.pipe(
+            merge(this.filterService.filters$),
+            switchMap(() => this.counterService.sampleExport(this.board))
+        );
     }
 }
