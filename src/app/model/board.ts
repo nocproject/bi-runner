@@ -64,10 +64,18 @@ export class Board {
     prepare() {
         // ToDo take from @JsonMember
         const obj = cloneDeep(this);
-
+        obj.exportQry.setFields(obj.exportQry.getFields()
+            .map(f => {
+                if ('hide' in f && f.hide) {
+                    f.hide = 'yes';
+                } else {
+                    f.hide = 'no';
+                }
+                return f;
+            }));
         obj['agv_fields'] = this.agvFields;
         obj['filter_fields'] = this.filterFields;
-        obj['export'] = this.exportQry;
+        obj['export'] = obj.exportQry;
         obj['pseudo_fields'] = this.pseudoFields;
         delete obj['agvFields'];
         delete obj['filterFields'];

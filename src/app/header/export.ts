@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs/Observable';
-import { clone, cloneDeep, flatMap, head } from 'lodash';
+import { flatMap, head } from 'lodash';
 import * as d3 from 'd3';
 import * as saver from 'file-saver';
 
@@ -27,11 +27,11 @@ export class Export {
     static query(api: APIService,
                  boardResolver: BoardResolver,
                  filterService: FilterService): Observable<Result> {
-        const board: Board = cloneDeep(boardResolver.getBoard());
+        const board: Board = boardResolver.getBoard();
         const where = WhereBuilder.makeWhere(filterService.allFilters(), true);
         const having = WhereBuilder.makeWhere(filterService.allFilters(), false);
-        const params = cloneDeep(board.exportQry.params);
-        const fields = params[0].fields.filter(f => f.alias !== 'duration_se' && f.alias !== 'duration_ei');
+        const params = board.exportQry.params;
+        const fields = params[0].fields.filter(f => f.alias !== 'duration_se' && f.alias !== 'exclusion_intervals');
         const durationFilters: Filter[] = filterService.filtersByName('exclusion_intervals');
 
         if (durationFilters.length > 0) {
@@ -66,10 +66,10 @@ export class Export {
 
     static save(data,
                 boardResolver: BoardResolver) {
-        const fields: Field[] = clone(boardResolver.getBoard().exportQry.params[0].fields);
-        const title: string = clone(boardResolver.getBoard().title);
-        const pairs = cloneDeep(fields
-            .map(field => [field.alias ? field.alias : field.expr, field.label]))
+        const fields: Field[] = boardResolver.getBoard().exportQry.params[0].fields;
+        const title: string = boardResolver.getBoard().title;
+        const pairs = fields
+            .map(field => [field.alias ? field.alias : field.expr, field.label])
             .reduce((acc, [key, value]) => {
                 acc[key] = value;
                 return acc;
@@ -161,7 +161,7 @@ function durationByReport(values: any[]) {
 
 function durationEIField(values): Field {
     return new FieldBuilder()
-        .alias('duration_ei')
+        .alias('exclusion_intervals')
         .label('EI Duration')
         .expr({
             '$duration': values.map(e => `[${toDateTime(e.start)},${toDateTime(e.end)}]`)
@@ -277,14 +277,12 @@ function toDateTime(value) {
  * @param {string} cDelimiter The column delimiter.  Defaults to a comma (,) if omitted.
  * @return {string} The CSV equivalent of objArray.
  */
-function toCsv(objArray, nameArray, sDelimiter, cDelimiter) {
+function toCsv(objArray, nameArray, sDelimiter = '"', cDelimiter = ',') {
     let i, l, names = [], name, value, obj, row, output = '', n, nl;
 
     function toCsvValue(theValue, sDelimiter) {
         let t = typeof (theValue), output;
-        if (typeof (sDelimiter) === 'undefined' || sDelimiter === null) {
-            sDelimiter = '"';
-        }
+
         if (t === 'undefined' || t === null) {
             output = '';
         } else if (t === 'string') {
@@ -295,13 +293,6 @@ function toCsv(objArray, nameArray, sDelimiter, cDelimiter) {
         return output;
     }
 
-    // Initialize default parameters.
-    if (typeof (sDelimiter) === 'undefined' || sDelimiter === null) {
-        sDelimiter = '"';
-    }
-    if (typeof (cDelimiter) === 'undefined' || cDelimiter === null) {
-        cDelimiter = ',';
-    }
     for (i = 0, l = objArray.length; i < l; i += 1) {
         // Get the names of the properties.
         obj = objArray[i];

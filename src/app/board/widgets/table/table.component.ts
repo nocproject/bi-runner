@@ -53,7 +53,8 @@ export class TableComponent extends WidgetComponent {
                 }
             });
         const sort = head(
-            sortBy(this.data.widget.query.getFields().filter(field => 'desc' in field), 'order')
+            sortBy(this.data.widget.query.getFields()
+                .filter(field => 'desc' in field), 'order')
                 .map(field => {
                     if (field.desc) {
                         return {field: 'alias' in field ? field.alias : field.expr, direct: d3.descending};
@@ -89,7 +90,7 @@ export class TableComponent extends WidgetComponent {
                 return field;
             });
             const mapper = fields.filter(f => 'order' in f).map(f => f.order).sort();
-            this.data.widget.query.setField(
+            this.data.widget.query.setFields(
                 fields.map(f => {
                     if ('order' in f) {
                         f.order = mapper.indexOf(f.order) + 1;
@@ -102,7 +103,7 @@ export class TableComponent extends WidgetComponent {
     }
 
     removeCol(col: Field): void {
-        this.data.widget.query.setField(
+        this.data.widget.query.setFields(
             this.data.widget.query.getFields().filter(f => f.alias !== col.alias)
         );
         this.dataReload();
@@ -114,7 +115,7 @@ export class TableComponent extends WidgetComponent {
         this.addSubscription = this.datasourceService.fieldByName(data.name)
             .subscribe((field: Field) => {
                 this.data.widget.query.setLimit(data.limit);
-                this.data.widget.query.setField([
+                this.data.widget.query.setFields([
                     ...this.data.widget.query.getFields(),
                     this.data.widget.query.createField(data, field)
                 ]);

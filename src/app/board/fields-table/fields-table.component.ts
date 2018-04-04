@@ -51,10 +51,13 @@ export class FieldsTableComponent implements OnInit {
                 fields.push(dictionaryField);
             }
             if ('ip' === field.name) {
-                fields.push({
-                    expr: 'IPv4NumToString(ip)',
-                    alias: 'ip_text'
-                });
+                fields.push(new FieldBuilder()
+                    .expr('IPv4NumToString(ip)')
+                    .alias('ip_text')
+                    .label('IP адрес')
+                    .build()
+                );
+                field.hide = true;
             }
             fields.push(field);
             this.board.exportQry.params[0].fields = this.board.exportQry.params[0].fields.concat(fields);

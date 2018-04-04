@@ -21,7 +21,7 @@ export class BiRequest {
         return this.params[0].fields.filter(item => 'label' in item);
     }
 
-    public setField(fields): void {
+    public setFields(fields): void {
         this.params[0].fields = fields;
     }
 

@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import { first } from 'rxjs/operators';
+import { finalize, first } from 'rxjs/operators';
 
 import { cloneDeep, includes } from 'lodash';
 
@@ -148,12 +148,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
     onExport(): void {
         this.exportSpin = true;
         Export.query(this.api, this.boardResolver, this.filterService)
-            .pipe(first())
+            .pipe(first(), finalize(() => this.exportSpin = false))
             .subscribe(
-                (response) => {
-                    this.exportSpin = false;
-                    Export.save(response.result, this.boardResolver);
-                }
+                (response) => Export.save(response.result, this.boardResolver)
             );
     }
 

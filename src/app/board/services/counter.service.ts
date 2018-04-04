@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
+import { map } from 'rxjs/operators';
 
 import { cloneDeep, flattenDeep, head } from 'lodash';
 
@@ -19,6 +20,7 @@ export class CounterService {
     }
 
     public sampleExport(board: Board): Observable<any[]> {
+        const emptyValue = {data: {result: []}};
         return this.execQuery(board,
             (params) => {
                 const cloned = cloneDeep(params);
@@ -28,14 +30,18 @@ export class CounterService {
                 else cloned['fields'] = undefined;
 
                 return cloned;
-            },
-            [])
-            .map((response: Result) => response.zip(false));
+            }, emptyValue)
+            .pipe(
+                map((response: Result) => response.zip(false))
+            );
     }
 
     public qty(board: Board): Observable<number> {
-        return this.execQuery(board, this.uniqFields, 0)
-            .map(response => response.data.result.length ? head(flattenDeep(response.data.result)) : 0);
+        const emptyValue = {data: {result: []}};
+        return this.execQuery(board, this.uniqFields, emptyValue)
+            .pipe(
+                map(response => response.data.result.length ? head(flattenDeep(response.data.result)) : 0)
+            );
     }
 
     private queryCondition(params) {
@@ -61,7 +67,6 @@ export class CounterService {
             .filter(field => field.hasOwnProperty('group'))
             .map(field => field.expr)
             .join(',');
-
         if (fields) {
             cloned['fields'] = [
                 {

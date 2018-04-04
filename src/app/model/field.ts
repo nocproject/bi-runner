@@ -34,8 +34,9 @@ export class Field {
     public enable: boolean;
     @JsonMember()
     public aggFunc: string;
-    //
+    @JsonMember()
     public hide: boolean | string;
+    //
     public isSelectable: boolean;
     public isGrouping: boolean;
     public grouped: boolean;
@@ -57,11 +58,11 @@ export class Field {
         //         json['expr'].__type = 'Expression';
         //     }
         // }
-        if (json.hasOwnProperty('is_agg')) {
+        if ('is_agg' in json) {
             json['isAgg'] = json['is_agg'];
             delete json['is_agg'];
         }
-        if (json.hasOwnProperty('hide')) {
+        if ('hide' in json) {
             json['hide'] = json['hide'] === 'yes' || json['hide'] === 'true';
         }
         return Object.assign(Object.create(Field.prototype), json);
@@ -70,6 +71,11 @@ export class Field {
 
 export class FieldBuilder {
     private field: Field = new Field();
+
+    public name(name: string): FieldBuilder {
+        this.field.name = name;
+        return this;
+    }
 
     public alias(alias: string): FieldBuilder {
         this.field.alias = alias;
