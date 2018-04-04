@@ -56,10 +56,13 @@ export class TableComponent extends WidgetComponent {
             sortBy(this.data.widget.query.getFields()
                 .filter(field => 'desc' in field), 'order')
                 .map(field => {
-                    if (field.desc) {
-                        return {field: 'alias' in field ? field.alias : field.expr, direct: d3.descending};
+                    let name = field.expr;
+
+                    if ('alias' in field) {
+                        name = field.alias;
                     }
-                    return {field: 'alias' in field ? field.alias : field.expr, direct: d3.ascending};
+
+                    return {field: name, direct: field.desc ? d3.descending : d3.ascending};
                 })
         );
 
