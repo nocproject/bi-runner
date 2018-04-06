@@ -28,8 +28,7 @@ export class ExportComponent implements OnInit {
     ngOnInit() {
         this.columns$ = this.fieldsTableService.fields$.pipe(
             map((fields: Field[]) =>
-                fields
-                    .filter(field => !('hide' in field) || !field.hide)
+                fields.filter(field => !('hide' in field) || !field.hide)
                     .map(field => {
                         return {
                             name: field.label,
