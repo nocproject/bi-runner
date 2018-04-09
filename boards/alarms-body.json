@@ -3,6 +3,7 @@
   "method": "set_dashboard",
   "params": [
     {
+      "id": "5abc72841e95f807417d5512",
       "layoutId": "580e1ba498601c0f96b7e809",
       "layout": {
         "uuid": "f2736f99-a568-4820-b746-1e71d48b4374",
@@ -79,6 +80,7 @@
         {
           "active": true,
           "association": "$and",
+          "range": true,
           "filters": [
             {
               "type": "DateTime",

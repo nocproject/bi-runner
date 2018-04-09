@@ -10,9 +10,12 @@ import { Field, FieldBuilder } from './field';
 
 export class WhereBuilder {
     static makeWhere(groups: Group[], isWhere: boolean): Object {
-        const andFilters = getFilters(groups, '$and', isWhere);
+        let andFilters = getFilters(groups, '$and', isWhere);
         const orFilters = getFilters(groups, '$or', isWhere);
 
+        if (isWhere) {
+            andFilters = andFilters.concat(reportRange(groups));
+        }
         if (andFilters.length > 0 && orFilters.length > 0) {
             return orValues([andValues(andFilters), orValues(orFilters)]);
         }
@@ -27,8 +30,26 @@ export class WhereBuilder {
     }
 }
 
+function reportRange(groups: Group[]) {
+    return groups
+        .filter(group => group.name === 'startEnd')
+        .map(group => {
+            if (group.range) {
+                let [from, to] = getDateTime(group.filters[0]);
+                return not(
+                    orValues([
+                        andValues([condition('$lte', 'ts', from), condition('$lte', 'ts', to)]),
+                        andValues([condition('$gte', 'close_ts', from), condition('$gte', 'close_ts', to)])
+                    ])
+                );
+            }
+            return andValues([interval(group.filters[0])]);
+        });
+}
+
 function getFilters(groups: Group[], association: string, isWhere: boolean): Object[] {
     return groups
+        .filter(group => group.name !== 'startEnd')
         .filter(group => group.active)
         .filter(group => group.association === association)
         .map(group => group.filters
@@ -116,20 +137,7 @@ function interval(filter: Filter): Object {
             break;
         }
         case 'DateTime': {
-            if (filter.condition.match(/periodic/)) {
-                const tokens = filter.values[0].value.split(' - ');
-
-                from = toPeriodicTime(tokens[0]);
-                to = toPeriodicTime(tokens[1]);
-                filter.name = `toTime(${filter.name})`;
-            } else if (filter.values.length === 1) {
-                const dates: Value[] = Range.getValues(filter.values[0].value);
-                from = toDateTime(dates[0]);
-                to = toDateTime(dates[1]);
-            } else {
-                from = toDateTime(filter.values[0]);
-                to = toDateTime(filter.values[1]);
-            }
+            [from, to] = getDateTime(filter);
             break;
         }
         case 'IPv4': {
@@ -319,6 +327,19 @@ function andValues(values) {
     };
 }
 
+function condition(condition: string, col: string, value: string) {
+    return {
+        [condition]: [
+            {
+                $field: col
+            },
+            {
+                $field: value
+            }
+        ]
+    };
+}
+
 function orValues(values) {
     return {
         $or: values
@@ -353,4 +374,24 @@ function like(filter: Filter) {
 
 function valueLength(values: Value[]): number {
     return values.filter(item => item.value).length;
+}
+
+function getDateTime(filter: Filter) {
+    let from, to;
+
+    if (filter.condition.match(/periodic/)) {
+        const tokens = filter.values[0].value.split(' - ');
+
+        from = toPeriodicTime(tokens[0]);
+        to = toPeriodicTime(tokens[1]);
+        filter.name = `toTime(${filter.name})`;
+    } else if (filter.values.length === 1) {
+        const dates: Value[] = Range.getValues(filter.values[0].value);
+        from = toDateTime(dates[0]);
+        to = toDateTime(dates[1]);
+    } else {
+        from = toDateTime(filter.values[0]);
+        to = toDateTime(filter.values[1]);
+    }
+    return [from, to];
 }

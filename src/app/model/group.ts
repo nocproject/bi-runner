@@ -10,6 +10,8 @@ export class Group {
     active: boolean;
     @JsonMember()
     association: '$and' | '$or';
+    @JsonMember()
+    public range: boolean;
     @JsonMember({elements: Filter})
     filters: Filter[];
 
