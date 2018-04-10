@@ -58,25 +58,26 @@ export class BoardComponent implements OnInit, OnDestroy {
     private widgetsByRow(cells: Cell[], widgets: Widget[]): WidgetRow[] {
         const rows: WidgetRow[] = [];
         const sortedByRow = cells.sort((a, b) => a.row - b.row);
-        let currentRow: number = sortedByRow[0].row;
-        let row: WidgetRow = {
-            row: currentRow,
-            cells: []
-        };
+        if (cells.length) {
+            let currentRow: number = sortedByRow[0].row;
+            let row: WidgetRow = {
+                row: currentRow,
+                cells: []
+            };
 
-        for (const cell of sortedByRow) {
-            if (currentRow !== cell.row) {
-                rows.push(row);
-                currentRow = cell.row;
-                row = {
-                    row: currentRow,
-                    cells: []
-                };
+            for (const cell of sortedByRow) {
+                if (currentRow !== cell.row) {
+                    rows.push(row);
+                    currentRow = cell.row;
+                    row = {
+                        row: currentRow,
+                        cells: []
+                    };
+                }
+                row.cells.push({cell: cell, widget: this.widgetForCell(widgets, cell)});
             }
-            row.cells.push({cell: cell, widget: this.widgetForCell(widgets, cell)});
+            rows.push(row);
         }
-        rows.push(row);
-
         return rows;
     }
 
