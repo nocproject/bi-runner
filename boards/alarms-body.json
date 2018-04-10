@@ -3,7 +3,6 @@
   "method": "set_dashboard",
   "params": [
     {
-      "id": "5abc72841e95f807417d5512",
       "layoutId": "580e1ba498601c0f96b7e809",
       "layout": {
         "uuid": "f2736f99-a568-4820-b746-1e71d48b4374",
@@ -117,7 +116,7 @@
               {
                 "expr": "sum(reboots)",
                 "alias": "reboots_sum",
-                "label": "Кол-во перезагрузок"
+                "label": "Кол-во перезагрузок (сум)"
               },
               {
                 "expr": {
@@ -133,7 +132,7 @@
                   }
                 },
                 "alias": "duration_sum",
-                "label": "Продолжительность"
+                "label": "Продолжительность (сум)"
               }
             ],
             "datasource": "alarms"
@@ -596,6 +595,10 @@
           "name": "segment"
         },
         {
+          "group": 1,
+          "name": "alarm_class"
+        },
+        {
           "group": 0,
           "name": "severity"
         },
@@ -757,6 +760,10 @@
         {
           "group": 0,
           "name": "close_ts"
+        },
+        {
+          "group": 1,
+          "name": "alarm_class"
         },
         {
           "group": 1,

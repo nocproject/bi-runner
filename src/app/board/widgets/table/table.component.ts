@@ -107,7 +107,11 @@ export class TableComponent extends WidgetComponent {
 
     removeCol(col: Field): void {
         this.data.widget.query.setFields(
-            this.data.widget.query.getFields().filter(f => f.alias !== col.alias)
+            this.data.widget.query.getFields().filter(field => {
+                const f = field.alias ? field.alias : field.expr;
+                const c = col.alias ? col.alias : col.expr;
+                return f !== c;
+            })
         );
         this.dataReload();
     }

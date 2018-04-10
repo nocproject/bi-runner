@@ -38,8 +38,8 @@ function reportRange(groups: Group[]) {
                 let [from, to] = getDateTime(group.filters[0]);
                 return not(
                     orValues([
-                        andValues([condition('$lte', 'ts', from), condition('$lte', 'ts', to)]),
-                        andValues([condition('$gte', 'close_ts', from), condition('$gte', 'close_ts', to)])
+                        andValues([condition('$lte', from, 'ts'), condition('$lte', to, 'ts')]),
+                        andValues([condition('$gte', from, 'close_ts'), condition('$gte', to, 'close_ts')])
                     ])
                 );
             }
