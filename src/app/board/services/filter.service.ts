@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 
-import { cloneDeep, find, findIndex, flatMap, head } from 'lodash';
+import { cloneDeep, find, findIndex, flatMap } from 'lodash';
 import * as d3 from 'd3';
 
 import { Field, Filter, FilterBuilder, Group, GroupBuilder, Value } from '@app/model';
@@ -62,7 +62,7 @@ export class FilterService {
         const exist: Group = find(groups, (item: Group) => item.name === group.name);
 
         if (exist) {
-            head(exist.filters).values = head(group.filters).values;
+            exist.filters = group.filters;
             exist.active = true;
         } else {
             groups.push(group);

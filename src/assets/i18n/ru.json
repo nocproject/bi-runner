@@ -147,6 +147,7 @@
     "IMPORTED": "Импортировано"
   },
   "DATETIME_RANGE": {
+    "BY_FIELD": "по полю:",
     "THIS_MONTH": "Текущий месяц",
     "LAST_MONTH": "Предыдущий месяц",
     "THIS_WEEK": "Текущая неделя",

@@ -6,10 +6,20 @@ import * as moment from 'moment';
 
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import { filter, flatMap } from 'rxjs/operators';
+import { filter, flatMap, map } from 'rxjs/operators';
 
 import { APIService, LanguageService } from '@app/services';
-import { BiRequestBuilder, Board, FilterBuilder, Group, GroupBuilder, Methods, Range, Value } from '@app/model';
+import {
+    BiRequestBuilder,
+    Board,
+    FilterBuilder,
+    Group,
+    GroupBuilder,
+    IOption,
+    Methods,
+    Range,
+    Value
+} from '@app/model';
 
 import { ReportRangeComponent } from '../report-range/report-range.component';
 import { ModalComponent } from '../../shared/modal/modal';
@@ -36,9 +46,11 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
     reportRangeText: string = '-';
     lastUpdate$: Observable<any>;
     isSample$: Observable<boolean>;
+    reportRangeFields$: Observable<IOption[]>;
     ratioForm: FormGroup;
     ratio: FormControl;
     collapsed = true;
+    isNotInRange = true;
     // private rangeSubscription: Subscription;
     private eventSubscription: Subscription;
     private ratioSubscription: Subscription;
@@ -52,7 +64,7 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
         this.ratio = new FormControl(this.filterService.ratioSubject.getValue());
     }
 
-    private static rangeText(from: any, to: Date): string {
+    private static rangeText(from: any, to: any): string {
         if (Range.isNotRange(from)) {
             return `${moment(from).format('DD.MM.YYYY HH:mm')} - ${moment(to).format('DD.MM.YYYY HH:mm')}`;
         }
@@ -73,6 +85,7 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
     }
 
     ngOnInit() {
+        this.isNotInRange = this.board.groups && !this.board.groups[0].range;
         this.lastUpdate$ = this.api.execute(
             new BiRequestBuilder()
                 .method(Methods.QUERY)
@@ -96,6 +109,19 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
             this.filterService.initFilters(this.filterService.allFilters());
         });
         this.isSample$ = this.datasourceService.isSample();
+        this.reportRangeFields$ = this.datasourceService.fields()
+            .pipe(
+                map(array => array
+                    .filter(field => !field.pseudo && field.type === 'DateTime' && field.isSelectable)
+                    .map(field => {
+                            return {
+                                value: `${field.name}`,
+                                text: field.description
+                            };
+                        }
+                    )
+                )
+            );
     }
 
     onChangeRatio(value) {
@@ -109,6 +135,7 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
         this.values = {
             [this.START_DATE]: rangeGroup.filters[0].values[0].value,
             [this.END_DATE]: rangeGroup.filters[0].values[1] ? rangeGroup.filters[0].values[1].value : null,
+            fieldName: rangeGroup.filters[0].name,
             text: this.reportRangeText
         };
         modal.open();
@@ -117,6 +144,7 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
     applyRange(modal: ModalComponent) {
         const from = this.rangeForm.values[this.START_DATE];
         const to = this.rangeForm.values[this.END_DATE];
+        const field = this.rangeForm.values['fieldName'];
         let range;
         if (this.rangeForm.range) {
             range = [new Value(this.rangeForm.range)];
@@ -130,7 +158,7 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
                 .name('startEnd')
                 .filters([
                     new FilterBuilder()
-                        .name('ts')
+                        .name(field)
                         .type('DateTime')
                         .condition('interval')
                         .values(range)
@@ -161,7 +189,8 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
                 }
                 this.values = {
                     [this.START_DATE]: from,
-                    [this.END_DATE]: to
+                    [this.END_DATE]: to,
+                    fieldName: group.filters[0].name
                 };
             }
         );

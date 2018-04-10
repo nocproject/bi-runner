@@ -58,6 +58,8 @@
     <bi-modal-content>
         <bi-report-range
                 [locale]="locale" [initValues]="values"
+                [showFields]="isNotInRange"
+                [fields]="reportRangeFields$ | async"
                 [fromControlName]="this.START_DATE"
                 [toControlName]="this.END_DATE">
         </bi-report-range>

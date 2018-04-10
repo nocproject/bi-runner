@@ -1,5 +1,18 @@
 <div [formGroup]="form">
-    <div class="row vertical-align">
+    <div class="row vertical-align form-inline" style="padding-bottom: 10px;">
+        <div *ngIf="showFields" class="col-md-5">
+            <div class="form-group">
+                <label>DATETIME_RANGE.BY_FIELD</label>
+                <select class="form-control"
+                        [formControlName]="'fieldName'"
+                        title="select field">
+                    <option *ngFor="let item of fields"
+                            [value]="item.value" translate>
+                        {{ item.text }}
+                    </option>
+                </select>
+            </div>
+        </div>
         <div class="col-md-4">
             <div class="form-group">
                 <input class="form-control"
@@ -9,7 +22,7 @@
                        [placeholder]="'dd.mm.yyyy HH:mm-dd.mm.yyyy HH:mm'">
             </div>
         </div>
-        <div class="col-md-6 text-left">
+        <div class="col-md-3 text-left">
             <div *ngIf="form.get('rangeInput').hasError('invalid')"
                  [translate]="form.get('rangeInput').errors['msg']">
             </div>

@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IMyDate, IMyDateModel, IMyDpOptions } from '../../shared/my-date-picker/interfaces';
 
 import * as d3 from 'd3';
@@ -7,7 +7,7 @@ import { cloneDeep, isEqual, reduce } from 'lodash';
 import { Subscription } from 'rxjs/Subscription';
 
 import { BIValidators } from '../filters-form/components/validators';
-import { IDateRange, Range } from '@app/model';
+import { IDateRange, IOption, Range } from '@app/model';
 
 @Component({
     selector: 'bi-report-range',
@@ -23,13 +23,19 @@ export class ReportRangeComponent implements OnInit, OnDestroy, OnChanges {
     public locale: string;
     @Input()
     public initValues;
+    @Input()
+    public fields: IOption[];
+    @Input()
+    public showFields: boolean;
     public form: FormGroup;
     public controlValues: IData = {
         fromPick: null,
         toPick: null,
         rangeInput: '-',
         fromTime: null,
-        toTime: null
+        toTime: null,
+        fieldName: 'close_ts',
+        range: null
     };
     public myDatePickerOptions: IMyDpOptions = {
         // other options...
@@ -45,16 +51,15 @@ export class ReportRangeComponent implements OnInit, OnDestroy, OnChanges {
     constructor(private fb: FormBuilder) {
     }
 
-    private _range: string;
-
     get range() {
-        return this._range;
+        return this.data.values().range;
     }
 
     get values() {
         return {
             [this.fromControlName]: this.data.values().fromTime,
-            [this.toControlName]: this.data.values().toTime
+            [this.toControlName]: this.data.values().toTime,
+            fieldName: this.data.values().fieldName
         };
     }
 
@@ -66,11 +71,11 @@ export class ReportRangeComponent implements OnInit, OnDestroy, OnChanges {
         const controls: Object = cloneDeep(this.controlValues);
 
         controls['rangeInput'] = ['-', BIValidators.dateTimeRange];
+        controls['fieldName'] = ['close_ts', Validators.required];
         this.form = this.fb.group(controls);
         this.data = new Data(this.controlValues);
         this.subscription = this.form.valueChanges
             .subscribe(values => {
-                this._range = null;
                 this.form.setValue(this.data.next(values, this.form.get('rangeInput')).values(),
                     {
                         emitEvent: false,
@@ -84,20 +89,20 @@ export class ReportRangeComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (changes.initValues.currentValue) {
+        if (changes.initValues && changes.initValues.currentValue) {
             this.form.setValue(
                 this.data.restore(changes.initValues.currentValue, this.fromControlName, this.toControlName).values(), {
                     emitEvent: false,
                     onlySelf: true
                 });
             if (!changes.initValues.currentValue[this.toControlName]) {
-                this._range = changes.initValues.currentValue[this.fromControlName];
+                this.data.values().range = changes.initValues.currentValue[this.fromControlName];
             }
         }
     }
 
     public selectRange(range: string): void {
-        this._range = range;
+        this.data.values().range = range;
         this.form.setValue(this.data.set(Range.getDates(range)).values(),
             {
                 emitEvent: false,
@@ -138,6 +143,7 @@ class Data {
             fromDate = data[fromControlName];
             toDate = data[toControlName];
         }
+        this.data.fieldName = data.fieldName;
         this.prev = cloneDeep(this.data);
         this.data.fromPick = {
             date: Data.toMyDate(fromDate),
@@ -170,21 +176,29 @@ class Data {
                 case 'fromPick': {
                     this.data.fromTime = Data.changeDate(this.data.fromPick, this.data.fromTime);
                     this.data.rangeInput = this.textRange();
+                    this.data.range = null;
                     break;
                 }
                 case 'toPick': {
                     this.data.toTime = Data.changeDate(this.data.toPick, this.data.toTime);
                     this.data.rangeInput = this.textRange();
+                    this.data.range = null;
                     break;
                 }
                 case 'fromTime': {
                     this.data.fromPick.date = Data.toMyDate(this.data.fromTime);
                     this.data.rangeInput = this.textRange();
+                    this.data.range = null;
                     break;
                 }
                 case 'toTime': {
                     this.data.toPick.date = Data.toMyDate(this.data.toTime);
                     this.data.rangeInput = this.textRange();
+                    this.data.range = null;
+                    break;
+                }
+                case 'fieldName': {
+                    this.data.fieldName = data.fieldName;
                     break;
                 }
                 case 'rangeInput': {
@@ -195,6 +209,7 @@ class Data {
                         this.data.toTime = dates[1];
                         this.data.fromPick.date = Data.toMyDate(dates[0]);
                         this.data.toPick.date = Data.toMyDate(dates[1]);
+                        this.data.range = null;
                     }
                     break;
                 }
@@ -228,4 +243,6 @@ export interface IData {
     rangeInput: string,
     fromTime: Date,
     toTime: Date,
+    fieldName: string,
+    range: string
 }
