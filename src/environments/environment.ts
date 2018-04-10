@@ -5,6 +5,6 @@
 
 export const environment = {
     production: false,
-    version: '2.6.17 dev',
+    version: '2.6.18 dev',
     language: 'ru'
 };
