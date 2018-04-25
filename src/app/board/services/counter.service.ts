@@ -70,7 +70,7 @@ export class CounterService {
         if (fields) {
             cloned['fields'] = [
                 {
-                    expr: `uniq(${fields})`,
+                    expr: `countDistinct(${fields})`,
                     alias: 'qty'
                 }
             ];
