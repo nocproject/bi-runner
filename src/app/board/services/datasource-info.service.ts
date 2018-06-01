@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs/Observable';
-import { publishLast, refCount, switchMap } from 'rxjs/operators';
+import { map, publishLast, refCount, switchMap } from 'rxjs/operators';
 
 import { findIndex, head } from 'lodash';
 
@@ -28,7 +28,8 @@ export class DatasourceService {
                             .build())
                         .map(response => {
                             const datasource = Datasource.fromJSON(response.result);
-                            datasource.fields = this._fields(board, datasource);
+                            datasource.fields = this._fields(board, board.filterFields, datasource);
+                            datasource.tableFields = this._fields(board, board.agvFields, datasource);
                             this.filterService.fields = datasource.fields;
                             return datasource;
                         });
@@ -50,35 +51,41 @@ export class DatasourceService {
         return this.datasource$.map(d => d.fields);
     }
 
+    tableFields(): Observable<Field[]> {
+        return this.datasource$.map(d => d.tableFields);
+    }
+
     fieldByName(name: string): Observable<Field> {
         return this.datasource$.map(d => d.getFieldByName(name));
     }
 
     fieldsAsOption(): Observable<IOption[]> {
         return this.fields()
-            .map(array => array
-                .filter(field => field.isSelectable)
-                .map(field => {
-                        return {
-                            value: `${field.name}`,
-                            text: field.description
-                        };
-                    }
+            .pipe(
+                map(array => array
+                    .filter(field => field.isSelectable)
+                    .map(field => {
+                            return {
+                                value: `${field.name}`,
+                                text: field.description
+                            };
+                        }
+                    )
                 )
             );
     }
 
-    private _fields(board: Board, datasource: Datasource): Field[] {
+    private _fields(board: Board, fields: Field[], datasource: Datasource): Field[] {
         return datasource.fields
             .concat(board.pseudoFields)
             .map(field => {
-                let index = findIndex(board.filterFields, e => e.name === field.name);
+                let index = findIndex(fields, e => e.name === field.name);
 
                 if (index === -1) {
                     field.isSelectable = false;
                     field.group = 999;
                 } else {
-                    field.group = board.filterFields[index].group;
+                    field.group = fields[index].group;
                 }
 
                 if (!field.description) {

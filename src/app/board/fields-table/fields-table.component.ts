@@ -22,7 +22,7 @@ export class FieldsTableComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.fields$ = this.datasourceService.fields();
+        this.fields$ = this.datasourceService.tableFields();
     }
 
     onGroupBy(field: Field, control: any): void {

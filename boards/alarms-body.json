@@ -657,14 +657,6 @@
         {
           "group": 0,
           "name": "reboots"
-        },
-        {
-          "group": 3,
-          "name": "services"
-        },
-        {
-          "group": 3,
-          "name": "subscribers"
         }
       ],
       "agv_fields": [
