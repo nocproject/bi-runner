@@ -31,7 +31,7 @@ export class APIInterceptor implements HttpInterceptor {
         return next.handle(request)
             .map((event: HttpEvent<any>) => {
                 if (event instanceof HttpResponse) {
-                    if (event.url.indexOf('/api/bi/')) {
+                    if (event.url && event.url.indexOf('/api/bi/')) {
                         if (event.body.error) {
                             this.messagesService.message(new Message(MessageType.DANGER, event.body.error));
                             return Observable.throw(event.body.error);

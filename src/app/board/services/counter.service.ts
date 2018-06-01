@@ -65,12 +65,15 @@ export class CounterService {
         const cloned = cloneDeep(params);
         const fields = this.fieldsTableService.allFields()
             .filter(field => field.hasOwnProperty('group'))
-            .map(field => field.expr)
-            .join(',');
-        if (fields) {
+            .map(field => {
+                return {$field: `${field.expr}`};
+            });
+        if (fields.length) {
             cloned['fields'] = [
                 {
-                    expr: `countDistinct(${fields})`,
+                    expr: {
+                        $uniqExact: fields
+                    },
                     alias: 'qty'
                 }
             ];

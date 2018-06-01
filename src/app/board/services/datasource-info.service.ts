@@ -104,6 +104,10 @@ export class DatasourceService {
                     field.type = 'IPv4';
                 }
 
+                if (field.type.startsWith('Nested')) {
+                    field.type = 'Nested';
+                }
+
                 if (!field.pseudo) {
                     field.pseudo = false;
                 }
