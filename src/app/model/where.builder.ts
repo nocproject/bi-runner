@@ -193,7 +193,7 @@ function interval(filter: Filter): Object {
 }
 
 function inCondition(filter: Filter): Object {
-    if (startsWith(filter.getType(), 'Tree')) {
+    if (startsWith(filter.getType(), 'Tree') || startsWith(filter.getType(), 'tree-')) {
         return {
             $in: [
                 {

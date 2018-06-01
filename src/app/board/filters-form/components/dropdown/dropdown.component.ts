@@ -185,6 +185,10 @@ export class BiDropdownComponent implements OnInit, OnDestroy, OnChanges, Contro
     }
 
     writeValue(obj: any): void {
+        if (this.config.type === 'tree') {
+            this.config.value = obj;
+            this.placeholder = this.treePlaceholder();
+        }
     }
 
     registerOnChange(fn: any): void {
