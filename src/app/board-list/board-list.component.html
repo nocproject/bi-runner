@@ -1,0 +1,36 @@
+<div class="modal fade bootstrap-dialog type-primary modal-open in" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="bootstrap-dialog-header">
+                    <div class="bootstrap-dialog-close-button" style="display: block;">
+                        <button class="close" (click)="onCancel()">×</button>
+                    </div>
+                    <div class="bootstrap-dialog-title"
+                         [ngClass]="{'spin': showSpinner}"
+                         translate>LIST.TITLE
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <bi-data-grid
+                        [config]="tableConfig"
+                        [multiSelect]="false"
+                        (openEvent)="onSelected($event)">
+                </bi-data-grid>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="onOpen()"
+                        [disabled]="selected.length === 0" translate>LIST.OPEN_BTN
+                </button>
+                <label class="btn btn-default btn-import" translate>LIST.IMPORT
+                    <input type="file" style="display: none;"
+                           accept="text/json" #import
+                           (change)="onImport($event, import)">
+                </label>
+                <button type="button" class="btn btn-default" (click)="onCancel()" translate>LIST.CANCEL_BTN
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

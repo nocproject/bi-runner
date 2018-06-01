@@ -1,0 +1,43 @@
+<table class="table table-striped table-hover table-condensed">
+    <thead>
+    <tr>
+        <th translate>SELECTOR.GROUP.NAME</th>
+        <th translate>SELECTOR.GROUP.DESCRIPTION</th>
+        <th translate>SELECTOR.GROUP.TYPE</th>
+        <th translate>SELECTOR.GROUP.GROUP_BY</th>
+    </tr>
+    </thead>
+    <tbody>
+    <ng-container *ngFor="let field of fields$ | async">
+        <tr [ngClass]="{'disabled-row': !field.enable}"
+            *ngIf="field.isGrouping">
+            <td>
+                <div class="checkbox rtl checkbox-primary" tooltip="{{ field.description }}" placement="top">
+                    <span>{{ field.name }}</span>
+                    <sup *ngIf="field.aggFunc">({{ field.aggFunc}})</sup>
+                </div>
+            </td>
+            <td>
+                <div class="checkbox rtl checkbox-primary">
+                    {{ field.description }}
+                </div>
+            </td>
+            <td>
+                <div class="checkbox rtl checkbox-primary">
+                    {{ field.dict ? field.dict : field.type }}
+                </div>
+            </td>
+            <td>
+                <div class="checkbox rtl checkbox-primary checkbox-circle">
+                    <input id="groupBy-{{ field.name }}"
+                           [checked]="field.grouped"
+                           class="styled" type="checkbox"
+                           [disabled]="!field.enable"
+                           (click)="onGroupBy(field, isGrouped)"
+                           #isGrouped>
+                    <label for="groupBy-{{ field.name }}"></label>
+                </div>
+            </td>
+        </tr>
+    </ng-container>
+</table>

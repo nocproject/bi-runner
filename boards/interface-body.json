@@ -1,0 +1,269 @@
+{
+  "id": "0",
+  "method": "set_dashboard",
+  "params": [
+    {
+      "layoutId": "580e1ba498601c0f96b7e809",
+      "layout": {
+        "uuid": "f2736f99-a568-4820-b746-1e71d48b4374",
+        "cells": [
+          {
+            "md": 12,
+            "name": "table1",
+            "lg": null,
+            "height": 360,
+            "sm": null,
+            "xs": null,
+            "row": 4
+          }
+        ],
+        "description": "",
+        "fav_status": false,
+        "is_builtin": false,
+        "id": "580e1ba498601c0f96b7e809",
+        "name": "c2x2"
+      },
+      "description": "отчет по интерфейсам",
+      "groups": [
+        {
+          "active": true,
+          "association": "$and",
+          "filters": [
+            {
+              "type": "DateTime",
+              "association": "$and",
+              "values": [
+                {
+                  "value": "l7"
+                }
+              ],
+              "name": "ts",
+              "condition": "interval"
+            }
+          ],
+          "name": "startEnd"
+        }
+      ],
+      "title": "Загрузка портов",
+      "format": 2,
+      "export": {
+        "params": [
+          {
+            "fields": [
+              {
+                "alias": "date",
+                "expr": "date",
+                "group": 0,
+                "format": "dateToString",
+                "label": "Дата"
+              },
+              {
+                "alias": "qty",
+                "desc": true,
+                "expr": "count()",
+                "order": 0,
+                "label": "Кол-во"
+              }
+            ],
+            "datasource": "interface"
+          }
+        ],
+        "id": 0,
+        "method": "query"
+      },
+      "datasource": "interface",
+      "widgets": [
+        {
+          "cell": "table1",
+          "note": "оборудование",
+          "title": "Интерфейсы, топ 10",
+          "type": "dataTable",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "alias": "date",
+                    "expr": "date",
+                    "label": "Дата",
+                    "format": "dateToString"
+                  },
+                  {
+                    "expr": "managed_object"
+                  },
+                  {
+                    "expr": "arrayStringConcat(path)",
+                    "label": "Path",
+                    "alias": "path"
+                  },
+                  {
+                    "label": "Устройство",
+                    "alias": "name",
+                    "expr": {
+                      "$lookup": [
+                        "managedobject",
+                        {
+                          "$field": "managed_object"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "expr": {
+                      "$lookup": [
+                        "managedobject",
+                        {
+                          "$field": "managed_object"
+                        },
+                        "platform"
+                      ],
+                      "__type": "Expression"
+                    },
+                    "alias": "platform",
+                    "label": "Платформа"
+                  },
+                  {
+                    "label": "Load In",
+                    "expr": "load_in",
+                    "format": "intFormat",
+                    "order": 0,
+                    "desc": true
+                  },
+                  {
+                    "label": "Load Out",
+                    "expr": "load_out",
+                    "format": "intFormat",
+                    "order": 1,
+                    "desc": true
+                  }
+                ],
+                "limit": 10,
+                "datasource": "interface"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        }
+      ],
+      "filter_fields": [
+        {
+          "name": "path",
+          "group": 0
+        },
+        {
+          "name": "cinr",
+          "group": 0
+        },
+        {
+          "name": "managed_object",
+          "group": 0
+        },
+        {
+          "name": "discards_in",
+          "group": 1
+        },
+        {
+          "name": "discards_out",
+          "group": 1
+        },
+        {
+          "name": "errors_in",
+          "group": 2
+        },
+        {
+          "name": "errors_out",
+          "group": 2
+        },
+        {
+          "name": "load_in",
+          "group": 3
+        },
+        {
+          "name": "load_out",
+          "group": 3
+        },
+        {
+          "name": "packets_in",
+          "group": 4
+        },
+        {
+          "name": "packets_out",
+          "group": 4
+        },
+        {
+          "name": "rssi",
+          "group": 0
+        },
+        {
+          "name": "status_admin",
+          "group": 3
+        },
+        {
+          "name": "status_oper",
+          "group": 3
+        }
+      ],
+      "agv_fields": [
+        {
+          "name": "path",
+          "group": 0
+        },
+        {
+          "name": "cinr",
+          "group": 0
+        },
+        {
+          "name": "managed_object",
+          "group": 0
+        },
+        {
+          "name": "discards_in",
+          "group": 1
+        },
+        {
+          "name": "discards_out",
+          "group": 1
+        },
+        {
+          "name": "errors_in",
+          "group": 2
+        },
+        {
+          "name": "errors_out",
+          "group": 2
+        },
+        {
+          "name": "load_in",
+          "group": 3
+        },
+        {
+          "name": "load_out",
+          "group": 3
+        },
+        {
+          "name": "packets_in",
+          "group": 4
+        },
+        {
+          "name": "packets_out",
+          "group": 4
+        },
+        {
+          "name": "rssi",
+          "group": 0
+        },
+        {
+          "name": "status_admin",
+          "group": 0
+        },
+        {
+          "name": "status_oper",
+          "group": 0
+        }
+      ],
+      "pseudo_fields": [
+      ]
+    }
+  ]
+}

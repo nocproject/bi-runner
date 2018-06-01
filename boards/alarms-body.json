@@ -1,0 +1,791 @@
+{
+  "id": "0",
+  "method": "set_dashboard",
+  "params": [
+    {
+      "layoutId": "580e1ba498601c0f96b7e809",
+      "layout": {
+        "uuid": "f2736f99-a568-4820-b746-1e71d48b4374",
+        "cells": [
+          {
+            "md": 6,
+            "name": "c11",
+            "lg": null,
+            "height": 250,
+            "sm": null,
+            "xs": null,
+            "row": 0
+          },
+          {
+            "md": 6,
+            "name": "c12",
+            "lg": null,
+            "height": 250,
+            "sm": null,
+            "xs": null,
+            "row": 0
+          },
+          {
+            "md": 6,
+            "name": "c21",
+            "lg": null,
+            "height": 250,
+            "sm": null,
+            "xs": null,
+            "row": 1
+          },
+          {
+            "md": 6,
+            "name": "c22",
+            "lg": null,
+            "height": 250,
+            "sm": null,
+            "xs": null,
+            "row": 1
+          },
+          {
+            "md": 6,
+            "row": 4,
+            "name": "c31",
+            "height": 250
+          },
+          {
+            "md": 6,
+            "row": 4,
+            "name": "c32",
+            "height": 250
+          },
+          {
+            "md": 12,
+            "row": 10,
+            "name": "table1",
+            "height": 200
+          },
+          {
+            "md": 12,
+            "row": 20,
+            "name": "table2",
+            "height": 200
+          }
+        ],
+        "description": "",
+        "fav_status": false,
+        "is_builtin": false,
+        "id": "580e1ba498601c0f96b7e809",
+        "name": "c2x2"
+      },
+      "description": "описание отчета по авариям",
+      "groups": [
+        {
+          "active": true,
+          "association": "$and",
+          "range": true,
+          "filters": [
+            {
+              "type": "DateTime",
+              "association": "$and",
+              "values": [
+                {
+                  "value": "ly"
+                }
+              ],
+              "name": "ts",
+              "condition": "interval"
+            }
+          ],
+          "name": "startEnd"
+        }
+      ],
+      "title": "Аварии v2",
+      "format": 2,
+      "export": {
+        "params": [
+          {
+            "fields": [
+              {
+                "expr": "date",
+                "group": 0,
+                "format": "dateToString",
+                "label": "Дата"
+              },
+              {
+                "expr": "count()",
+                "alias": "qty",
+                "label": "Кол-во"
+              },
+              {
+                "expr": "sum(reboots)",
+                "alias": "reboots_sum",
+                "label": "Кол-во перезагрузок (сум)"
+              },
+              {
+                "expr": {
+                  "$sum": {
+                    "$minus": [
+                      {
+                        "$field": "close_ts"
+                      },
+                      {
+                        "$field": "ts"
+                      }
+                    ]
+                  }
+                },
+                "alias": "duration_sum",
+                "label": "Продолжительность (сум)"
+              }
+            ],
+            "datasource": "alarms"
+          }
+        ],
+        "id": 0,
+        "method": "query"
+      },
+      "datasource": "alarms",
+      "widgets": [
+        {
+          "cell": "c11",
+          "note": "по времени",
+          "title": "Аварии по Времени",
+          "type": "lineChart",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "date",
+                    "group": 0,
+                    "order": 0,
+                    "desc": true
+                  },
+                  {
+                    "expr": "count()",
+                    "alias": "cnt"
+                  }
+                ],
+                "datasource": "alarms"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        },
+        {
+          "cell": "c21",
+          "note": "по платформе",
+          "title": "Группировка по платформе, топ 10",
+          "type": "selectablePieChart",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "platform",
+                    "group": 0
+                  },
+                  {
+                    "expr": {
+                      "$lookup": [
+                        "platform",
+                        {
+                          "$field": "platform"
+                        }
+                      ]
+                    },
+                    "group": 1,
+                    "alias": "name"
+                  },
+                  {
+                    "expr": "count()",
+                    "alias": "cnt",
+                    "order": 0,
+                    "desc": true
+                  }
+                ],
+                "limit": 10,
+                "datasource": "alarms"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        },
+        {
+          "cell": "c12",
+          "note": "по дню недели",
+          "title": "Аварии по дню недели",
+          "type": "rowChart",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "toDayOfWeek(date)",
+                    "alias": "day",
+                    "group": 0,
+                    "order": 0,
+                    "desc": true
+                  },
+                  {
+                    "expr": "count()",
+                    "alias": "cnt"
+                  }
+                ],
+                "datasource": "alarms"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        },
+        {
+          "cell": "c22",
+          "note": "по времени",
+          "title": "Аварии по номеру часа",
+          "type": "barChart",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "toHour(ts)",
+                    "alias": "hour",
+                    "group": 0,
+                    "order": 0,
+                    "desc": true
+                  },
+                  {
+                    "expr": "count()",
+                    "alias": "cnt"
+                  },
+                  {
+                    "expr": "toHour(ts)",
+                    "group": 1,
+                    "alias": "name"
+                  }
+                ],
+                "datasource": "alarms"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        },
+        {
+          "note": "по сегменту сети",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "segment",
+                    "group": 0
+                  },
+                  {
+                    "expr": {
+                      "$lookup": [
+                        "networksegment",
+                        {
+                          "$field": "segment"
+                        }
+                      ]
+                    },
+                    "group": 1,
+                    "alias": "name"
+                  },
+                  {
+                    "expr": "count()",
+                    "alias": "cnt",
+                    "order": 0,
+                    "desc": true
+                  }
+                ],
+                "limit": 10,
+                "datasource": "alarms"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          },
+          "cell": "c31",
+          "type": "selectablePieChart",
+          "title": "Группировка по сегменту сети, топ 10"
+        },
+        {
+          "note": "ручная выборка",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": {
+                      "$lookup": [
+                        "profile",
+                        {
+                          "$field": "profile"
+                        }
+                      ]
+                    },
+                    "alias": "profile_text",
+                    "label": "Профиль"
+                  },
+                  {
+                    "expr": {
+                      "$lookup": [
+                        "vendor",
+                        {
+                          "$field": "vendor"
+                        }
+                      ]
+                    },
+                    "alias": "vendor_text",
+                    "label": "Производитель"
+                  },
+                  {
+                    "expr": {
+                      "$lookup": [
+                        "platform",
+                        {
+                          "$field": "platform"
+                        }
+                      ]
+                    },
+                    "alias": "platform_text",
+                    "label": "Платформа"
+                  },
+                  {
+                    "expr": {
+                      "$lookup": [
+                        "version",
+                        {
+                          "$field": "version"
+                        }
+                      ]
+                    },
+                    "alias": "version_text",
+                    "label": "Версия ПО"
+                  },
+                  {
+                    "expr": "severity",
+                    "label": "Важность",
+                    "alias": "xxx",
+                    "order": 0,
+                    "desc": true
+                  }
+                ],
+                "limit": 10,
+                "datasource": "alarms"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          },
+          "cell": "table2",
+          "type": "topTable",
+          "title": "Произвольная выборка 2, топ (max 25)"
+        },
+        {
+          "cell": "table1",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "severity",
+                    "label": "Важность",
+                    "alias": "severity"
+                  },
+                  {
+                    "expr": {
+                      "$lookup": [
+                        "managedobject",
+                        {
+                          "$field": "managed_object"
+                        }
+                      ]
+                    },
+                    "alias": "managed_object_text",
+                    "label": "Имя оборудования"
+                  },
+                  {
+                    "expr": "date",
+                    "label": "Дата создания",
+                    "format": "dateToString"
+                  },
+                  {
+                    "expr": "reopens",
+                    "label": "Кол-во переоткрытий"
+                  },
+                  {
+                    "expr": {
+                      "$lookup": [
+                        "container",
+                        {
+                          "$field": "container"
+                        }
+                      ]
+                    },
+                    "alias": "container_text",
+                    "label": "Контейнер (Адрес)"
+                  },
+                  {
+                    "format": "secondsToString",
+                    "expr": {
+                      "$minus": [
+                        {
+                          "$field": "close_ts"
+                        },
+                        {
+                          "$field": "ts"
+                        }
+                      ]
+                    },
+                    "label": "Длительность (час:мин:сек)",
+                    "alias": "xxx",
+                    "order": 0,
+                    "desc": true
+                  }
+                ],
+                "limit": 20,
+                "datasource": "alarms"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          },
+          "note": "ручная выборка",
+          "type": "topTable",
+          "title": "Произвольная выборка 1, топ (max 25)"
+        },
+        {
+          "cell": "c32",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "profile",
+                    "group": 0
+                  },
+                  {
+                    "expr": {
+                      "$lookup": [
+                        "profile",
+                        {
+                          "$field": "profile"
+                        }
+                      ]
+                    },
+                    "group": 1,
+                    "alias": "name"
+                  },
+                  {
+                    "expr": "count()",
+                    "alias": "cnt",
+                    "order": 0,
+                    "desc": true
+                  }
+                ],
+                "limit": 10,
+                "datasource": "alarms"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          },
+          "note": "по профилю",
+          "type": "selectablePieChart",
+          "title": "Группировка по профилю, топ 10"
+        },
+        {
+          "cell": "zc22",
+          "note": "по пулу",
+          "title": "Группировка по пулу, топ 10",
+          "type": "pieChart",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "pool",
+                    "group": 0
+                  },
+                  {
+                    "expr": {
+                      "$lookup": [
+                        "pool",
+                        {
+                          "$field": "pool"
+                        }
+                      ]
+                    },
+                    "alias": "name"
+                  },
+                  {
+                    "expr": "count()",
+                    "alias": "cnt",
+                    "order": 0,
+                    "desc": true
+                  }
+                ],
+                "limit": 10,
+                "datasource": "alarms"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        }
+      ],
+      "filter_fields": [
+        {
+          "group": 2,
+          "name": "administrative_domain"
+        },
+        {
+          "group": 0,
+          "name": "alarm_id"
+        },
+        {
+          "group": 0,
+          "name": "close_ts"
+        },
+        {
+          "group": 1,
+          "name": "container"
+        },
+        {
+          "group": 0,
+          "name": "direct_services"
+        },
+        {
+          "group": 0,
+          "name": "direct_subscribers"
+        },
+        {
+          "group": 0,
+          "name": "escalation_ts"
+        },
+        {
+          "group": 0,
+          "name": "escalation_tt"
+        },
+        {
+          "group": 1,
+          "name": "managed_object"
+        },
+        {
+          "group": 1,
+          "name": "platform"
+        },
+        {
+          "group": 1,
+          "name": "profile"
+        },
+        {
+          "group": 0,
+          "name": "reopens"
+        },
+        {
+          "group": 1,
+          "name": "root"
+        },
+        {
+          "group": 1,
+          "name": "segment"
+        },
+        {
+          "group": 1,
+          "name": "alarm_class"
+        },
+        {
+          "group": 0,
+          "name": "severity"
+        },
+        {
+          "group": 0,
+          "name": "total_objects"
+        },
+        {
+          "group": 0,
+          "name": "total_services"
+        },
+        {
+          "group": 0,
+          "name": "total_subscribers"
+        },
+        {
+          "group": 1,
+          "name": "version"
+        },
+        {
+          "group": 0,
+          "name": "x"
+        },
+        {
+          "group": 0,
+          "name": "y"
+        },
+        {
+          "group": 0,
+          "name": "ts"
+        },
+        {
+          "group": 1,
+          "name": "vendor"
+        },
+        {
+          "group": 1,
+          "name": "ip"
+        },
+        {
+          "group": 2,
+          "name": "pool"
+        },
+        {
+          "group": 0,
+          "name": "date"
+        },
+        {
+          "group": 0,
+          "name": "exclusion_intervals"
+        },
+        {
+          "group": 0,
+          "name": "duration"
+        },
+        {
+          "group": 0,
+          "name": "reboots"
+        }
+      ],
+      "agv_fields": [
+        {
+          "group": 2,
+          "name": "administrative_domain"
+        },
+        {
+          "group": 0,
+          "name": "ts"
+        },
+        {
+          "group": 0,
+          "name": "alarm_id"
+        },
+        {
+          "group": 0,
+          "name": "direct_services"
+        },
+        {
+          "group": 0,
+          "name": "direct_subscribers"
+        },
+        {
+          "group": 0,
+          "name": "duration"
+        },
+        {
+          "group": 0,
+          "name": "escalation_ts"
+        },
+        {
+          "group": 0,
+          "name": "escalation_tt"
+        },
+        {
+          "group": 1,
+          "name": "managed_object"
+        },
+        {
+          "group": 1,
+          "name": "platform"
+        },
+        {
+          "group": 1,
+          "name": "profile"
+        },
+        {
+          "group": 0,
+          "name": "reopens"
+        },
+        {
+          "group": 0,
+          "name": "reboots"
+        },
+        {
+          "group": 1,
+          "name": "segment"
+        },
+        {
+          "group": 0,
+          "name": "severity",
+          "description": "Важность"
+        },
+        {
+          "group": 0,
+          "name": "total_objects"
+        },
+        {
+          "group": 0,
+          "name": "total_services"
+        },
+        {
+          "group": 0,
+          "name": "total_subscribers"
+        },
+        {
+          "group": 1,
+          "name": "version"
+        },
+        {
+          "group": 1,
+          "name": "vendor"
+        },
+        {
+          "group": 1,
+          "name": "ip"
+        },
+        {
+          "group": 2,
+          "name": "pool"
+        },
+        {
+          "group": 0,
+          "name": "date"
+        },
+        {
+          "group": 1,
+          "name": "container"
+        },
+        {
+          "group": 0,
+          "name": "close_ts"
+        },
+        {
+          "group": 1,
+          "name": "alarm_class"
+        },
+        {
+          "group": 1,
+          "name": "root"
+        },
+        {
+          "group": 3,
+          "name": "services"
+        },
+        {
+          "group": 3,
+          "name": "subscribers"
+        }
+      ],
+      "pseudo_fields": [
+        {
+          "description": "ИП Длительность",
+          "name": "exclusion_intervals",
+          "type": "DateTime",
+          "pseudo": true
+        }
+      ]
+    }
+  ]
+}

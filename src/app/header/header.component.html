@@ -1,0 +1,129 @@
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a routerLink="/" class="navbar-brand">NOC BI</a>
+        </div>
+
+        <div class="collapse navbar-collapse" *ngIf="isLogin$ | async">
+            <ul *ngIf="isReportOpen$ | async; else openReport" class="nav navbar-nav">
+                <li class="dropdown" dropdown>
+                    <a dropdownToggle class="dropdown-toggle" translate>
+                        HEADER.REPORTS<span class="caret"></span>
+                    </a>
+                    <ul *dropdownMenu class="dropdown-menu" role="menu">
+                        <li><a class="hand" routerLink="list" translate>HEADER.OPEN</a></li>
+                        <li *ngIf="(accessLevel$ | async) === 2">
+                            <a class="hand" [routerLink]="['share', (board$ | async).id]" translate>HEADER.SHARE</a>
+                        </li>
+                        <li *ngIf="(accessLevel$ | async) === 2">
+                            <a class="hand" (click)="removeConfirm.open()" translate>HEADER.REMOVE</a>
+                        </li>
+                        <li *ngIf="(accessLevel$ | async) >= 0">
+                            <a class="hand" (click)="saveAs.open()" translate>HEADER.SAVE_AS</a>
+                        </li>
+                        <li *ngIf="(accessLevel$ | async) > 0">
+                            <a class="hand" (click)="onSaveBoard()" translate>HEADER.SAVE</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="not-active"><a>{{ boardTitle }}</a></li>
+                <li [ngClass]="{'disabled': exportSpin}">
+                    <a type="button" class="hand" (click)="onExport()" translate>
+                        <i *ngIf="exportSpin"
+                           class="fa fa-spinner fa-spin fa-fw icon-offset"></i>
+                        HEADER.EXPORT</a></li>
+                <li class="not-active"><a>
+                    <bi-counter [board]="board$ | async"></bi-counter>
+                </a></li>
+                <li class="not-active"><a translate>ACCESS.ACCESS
+                    <bi-access-level [level$]="accessLevel$"></bi-access-level>
+                </a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown" dropdown>
+                    <a dropdownToggle class="dropdown-toggle">
+                        <i class="fa fa-language icon-offset"></i>
+                        {{ lang }}<span class="caret"></span>
+                    </a>
+                    <ul *dropdownMenu class="dropdown-menu" role="menu">
+                        <li><a class="hand"
+                               *ngFor="let l of languageService.languages"
+                               (click)="onChangeLang(l)">{{ l }}</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown" dropdown>
+                    <a dropdownToggle class="dropdown-toggle">
+                        <i class='fa fa-user icon-offset'></i>{{ (user$ | async).display() }}<span class="caret"></span>
+                    </a>
+                    <ul *dropdownMenu class="dropdown-menu" role="menu">
+                        <li><a class="hand" (click)="about.open()" translate>
+                            <i class="fa fa-question-circle icon-offset"></i>HEADER.ABOUT</a>
+                        </li>
+                        <li><a href="https://code.getnoc.com/noc/bi-runner/issues" target="_blank" translate>
+                            <i class="fa fa-external-link icon-offset">
+                            </i>HEADER.ISSUE</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a routerLink="login" translate>
+                            <i class="fa fa-sign-out icon-offset"></i>HEADER.LOGOUT</a>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<ng-template #openReport>
+    <ul class="nav navbar-nav">
+        <li><a class="hand" routerLink="list" translate>HEADER.OPEN</a></li>
+    </ul>
+</ng-template>
+
+<bi-modal #about>
+    <bi-modal-header translate>HEADER.ABOUT_DLG.TITLE</bi-modal-header>
+    <bi-modal-content>
+        <p translate [translateParams]="{value: version}">HEADER.ABOUT_DLG.CONTENT</p>
+        <small>Copyright © 2007-2017, The NOC Project</small>
+    </bi-modal-content>
+    <bi-modal-footer>
+        <button class="btn btn-default" (click)="about.close()" translate>HEADER.ABOUT_DLG.CLOSE</button>
+    </bi-modal-footer>
+</bi-modal>
+
+<bi-modal #saveAs>
+    <bi-modal-header translate>HEADER.SAVE_DLG.TITLE</bi-modal-header>
+    <bi-modal-content>
+        <form id="#saveForm" [formGroup]="saveForm">
+            <label for="save-title" class="control-label" translate>HEADER.SAVE_DLG.NAME</label>
+            <input id="save-title" class="form-control" required autofocus
+                   [ngModel]="boardTitle" formControlName="title">
+            <div *ngIf="saveForm.get('title').hasError('required')">
+                <div class="ng-invalid" translate>VALIDATOR.REQUIRED</div>
+            </div>
+            <div *ngIf="titleError">
+                <div class="ng-invalid" translate>{{ titleError }}</div>
+            </div>
+            <label for="save-description" class="control-label" translate>HEADER.SAVE_DLG.DESCRIPTION</label>
+            <input id="save-description" class="form-control"
+                   [ngModel]="boardDesc" formControlName="description">
+        </form>
+    </bi-modal-content>
+    <bi-modal-footer>
+        <button form="#saveForm" class="btn btn-primary" [disabled]="!saveForm.valid"
+                (click)="onSaveAsBoard(saveAs)" translate>HEADER.SAVE_DLG.SAVE_AS
+        </button>
+        <button class="btn btn-default" (click)="saveAs.close()" translate>HEADER.SAVE_DLG.CLOSE</button>
+    </bi-modal-footer>
+</bi-modal>
+
+<bi-modal #removeConfirm>
+    <bi-modal-header translate>HEADER.REMOVE_DLG.TITLE</bi-modal-header>
+    <bi-modal-content translate>HEADER.REMOVE_DLG.CONTENT</bi-modal-content>
+    <bi-modal-footer>
+        <button class="btn btn-primary"
+                (click)="onRemoveBoard(removeConfirm)" translate>HEADER.REMOVE_DLG.YES
+        </button>
+        <button class="btn btn-default"
+                (click)="removeConfirm.close()" translate>HEADER.REMOVE_DLG.NO
+        </button>
+    </bi-modal-footer>
+</bi-modal>

@@ -1,0 +1,463 @@
+{
+  "id": "0",
+  "method": "set_dashboard",
+  "params": [
+    {
+      "layoutId": "580e1ba498601c0f96b7e809",
+      "layout": {
+        "uuid": "f2736f99-a568-4820-b746-1e71d48b4374",
+        "cells": [
+          {
+            "md": 6,
+            "name": "c11",
+            "lg": null,
+            "height": 200,
+            "sm": null,
+            "xs": null,
+            "row": 0
+          },
+          {
+            "md": 6,
+            "name": "c12",
+            "lg": null,
+            "height": 200,
+            "sm": null,
+            "xs": null,
+            "row": 0
+          },
+          {
+            "md": 6,
+            "name": "c21",
+            "lg": null,
+            "height": 200,
+            "sm": null,
+            "xs": null,
+            "row": 0
+          },
+          {
+            "md": 6,
+            "name": "c22",
+            "lg": null,
+            "height": 200,
+            "sm": null,
+            "xs": null,
+            "row": 0
+          },
+          {
+            "md": 6,
+            "name": "c31",
+            "lg": null,
+            "height": 200,
+            "sm": null,
+            "xs": null,
+            "row": 0
+          },
+          {
+            "md": 6,
+            "name": "c32",
+            "lg": null,
+            "height": 200,
+            "sm": null,
+            "xs": null,
+            "row": 0
+          },
+          {
+            "md": 12,
+            "name": "table2",
+            "lg": null,
+            "height": 360,
+            "sm": null,
+            "xs": null,
+            "row": 4
+          },
+          {
+            "md": 12,
+            "name": "table1",
+            "lg": null,
+            "height": 360,
+            "sm": null,
+            "xs": null,
+            "row": 4
+          }
+        ],
+        "description": "",
+        "fav_status": false,
+        "is_builtin": false,
+        "id": "580e1ba498601c0f96b7e809",
+        "name": "c2x2"
+      },
+      "description": "отчет по метрикам",
+      "groups": [
+        {
+          "active": true,
+          "association": "$and",
+          "filters": [
+            {
+              "type": "DateTime",
+              "association": "$and",
+              "values": [
+                {
+                  "value": "l7"
+                }
+              ],
+              "name": "ts",
+              "condition": "interval"
+            }
+          ],
+          "name": "startEnd"
+        }
+      ],
+      "title": "Ping с виджетами",
+      "format": 2,
+      "export": {
+        "params": [
+          {
+            "fields": [
+              {
+                "label": "Среднее количество потерянных пакетов в серии (шт.)",
+                "expr": "sum(attempts)/count(attempts)",
+                "alias": "attempts_value",
+                "order": 0,
+                "desc": true
+              },
+              {
+                "label": "Средняя круговая задержка пакета (мкс)",
+                "expr": "sum(rtt)/count(rtt)",
+                "alias": "rtt_value",
+                "order": 1,
+                "desc": true
+              }
+            ],
+            "datasource": "ping"
+          }
+        ],
+        "id": 0,
+        "method": "query"
+      },
+      "datasource": "ping",
+      "widgets": [
+        {
+          "cell": "c11",
+          "note": "по времени",
+          "title": "Количество потерянных пакетов по Времени (шт.)",
+          "type": "lineChart",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "date",
+                    "group": 0,
+                    "order": 0,
+                    "desc": true
+                  },
+                  {
+                    "expr": "sum(attempts)",
+                    "alias": "cnt"
+                  }
+                ],
+                "datasource": "ping"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        },
+        {
+          "cell": "c21",
+          "note": "по дню недели",
+          "title": "Количество потерянных пакетов по дню недели (шт.)",
+          "type": "rowChart",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "toDayOfWeek(date)",
+                    "alias": "day",
+                    "group": 0,
+                    "order": 0,
+                    "desc": true
+                  },
+                  {
+                    "expr": "sum(attempts)",
+                    "alias": "cnt"
+                  }
+                ],
+                "datasource": "ping"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        },
+        {
+          "cell": "c12",
+          "note": "по времени",
+          "title": "Средняя задержка по Времени (мс)",
+          "type": "lineChart",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "date",
+                    "group": 0,
+                    "order": 0,
+                    "desc": true
+                  },
+                  {
+                    "expr": "sum(rtt)/count(rtt) / 1000",
+                    "alias": "cnt"
+                  }
+                ],
+                "datasource": "ping"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        },
+        {
+          "cell": "c22",
+          "note": "по дню недели",
+          "title": "Средняя задержка по дню недели (мс)",
+          "type": "rowChart",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "toDayOfWeek(date)",
+                    "alias": "day",
+                    "group": 0,
+                    "order": 0,
+                    "desc": true
+                  },
+                  {
+                    "expr": "sum(rtt)/count(rtt) / 1000",
+                    "alias": "cnt"
+                  }
+                ],
+                "datasource": "ping"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        },
+        {
+          "cell": "c31",
+          "note": "по времени",
+          "title": "Количество потерянных пакетов по номеру часа (шт.)",
+          "type": "barChart",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "toHour(ts)",
+                    "alias": "hour",
+                    "group": 0,
+                    "order": 0,
+                    "desc": true
+                  },
+                  {
+                    "expr": "sum(attempts)",
+                    "alias": "cnt"
+                  },
+                  {
+                    "expr": "toHour(ts)",
+                    "group": "1",
+                    "alias": "name"
+                  }
+                ],
+                "datasource": "ping"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        },
+        {
+          "cell": "c32",
+          "note": "по времени",
+          "title": "Средняя задержка по по номеру часа (мс)",
+          "type": "barChart",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "toHour(ts)",
+                    "alias": "hour",
+                    "group": 0,
+                    "order": 0,
+                    "desc": true
+                  },
+                  {
+                    "expr": "sum(rtt)/count(rtt) / 1000",
+                    "alias": "cnt"
+                  },
+                  {
+                    "expr": "toHour(ts)",
+                    "group": "1",
+                    "alias": "name"
+                  }
+                ],
+                "datasource": "ping"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        },
+        {
+          "cell": "table1",
+          "note": "оборудование",
+          "title": "ICMP Ping количество потерянных пакетов в серии, топ 10",
+          "type": "dataTable",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "managed_object",
+                    "group": 0
+                  },
+                  {
+                    "label": "Устройство",
+                    "alias": "name",
+                    "expr": {
+                      "$lookup": [
+                        "managedobject",
+                        {
+                          "$field": "managed_object"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "expr": {
+                      "$lookup": [
+                        "managedobject",
+                        {
+                          "$field": "managed_object"
+                        },
+                        "platform"
+                      ],
+                      "__type": "Expression"
+                    },
+                    "alias": "platform",
+                    "label": "Платформа"
+                  },
+                  {
+                    "label": "Среднее количество потерянных пакетов в серии (шт.)",
+                    "expr": "sum(attempts)/count(attempts)",
+                    "alias": "value",
+                    "format": "numberFormat",
+                    "order": 0,
+                    "desc": true
+                  }
+                ],
+                "limit": 10,
+                "datasource": "ping"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        },
+        {
+          "cell": "table2",
+          "note": "оборудование",
+          "title": "ICMP Ping круговая задержка пакета в мс, топ 10",
+          "type": "dataTable",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "managed_object",
+                    "group": 0
+                  },
+                  {
+                    "label": "Устройство",
+                    "alias": "name",
+                    "expr": {
+                      "$lookup": [
+                        "managedobject",
+                        {
+                          "$field": "managed_object"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "expr": {
+                      "$lookup": [
+                        "managedobject",
+                        {
+                          "$field": "managed_object"
+                        },
+                        "platform"
+                      ],
+                      "__type": "Expression"
+                    },
+                    "alias": "platform",
+                    "label": "Платформа"
+                  },
+                  {
+                    "label": "Средняя круговая задержка пакета (мс)",
+                    "expr": "sum(rtt)/count(rtt)/1000",
+                    "alias": "value",
+                    "format": "intFormat",
+                    "order": 0,
+                    "desc": true
+                  }
+                ],
+                "limit": 10,
+                "datasource": "ping"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        }
+      ],
+      "filter_fields": [
+        {
+          "name": "date"
+        },
+        {
+          "name": "ts"
+        },
+        {
+          "name": "managed_object"
+        },
+        {
+          "name": "attempts"
+        },
+        {
+          "name": "rtt"
+        }
+      ],
+      "agv_fields": [
+        {
+          "group": 0,
+          "name": "date"
+        },
+        {
+          "group": 0,
+          "name": "ts"
+        },
+        {
+          "group": 1,
+          "name": "managed_object"
+        }
+      ],
+      "pseudo_fields": [
+      ]
+    }
+  ]
+}

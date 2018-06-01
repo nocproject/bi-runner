@@ -1,0 +1,28 @@
+<div class="pull-right" style="margin-right: 5px;"
+     [ngClass]="{'spinner': loading, 'spinner-blank' : !loading}">
+</div>
+<form [formGroup]="searchForm">
+    <div class="form-group">
+        <input type="search"
+               class="form-control"
+               [placeholder]="'GRID.SEARCH' | translate"
+               [formControl]="searchField">
+    </div>
+</form>
+<div [ngStyle]="{'height.px': config.height}">
+    <table class="table table-striped table-hover" cellspacing="0">
+        <thead>
+        <tr>
+            <th *ngFor="let header of config.headers" translate>{{ header }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let row of data"
+            [ngClass]="{'info': isSelected(row)}"
+            (dblclick)="onOpen(row.id)"
+            (click)="onClick(row.id)">
+            <td *ngFor="let field of colNames">{{ row[field] }}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>

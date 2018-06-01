@@ -1,0 +1,200 @@
+{
+  "HEADER": {
+    "OPEN": "Open",
+    "REPORTS": "Reports",
+    "SHARE": "Share",
+    "REMOVE": "Remove",
+    "SAVE_AS": "Save As",
+    "SAVE": "Save",
+    "EXPORT": "Export",
+    "LOGOUT": "Logout",
+    "ABOUT": "About",
+    "ISSUE": "Create issue",
+    "IMPORT": "Import",
+    "ABOUT_DLG": {
+      "TITLE": "Application NOC BI",
+      "CONTENT": "NOC BI version {{value}}",
+      "CLOSE": "Close"
+    },
+    "REMOVE_DLG": {
+      "TITLE": "Remove Board",
+      "CONTENT": "Are you sure to delete dashboard?",
+      "YES": "Yes",
+      "NO": "No"
+    },
+    "SAVE_DLG": {
+      "TITLE": "Save As",
+      "NAME": "Name",
+      "DESCRIPTION": "Description",
+      "SAVE_AS": "Save As",
+      "CLOSE": "Close"
+    }
+  },
+  "VALIDATOR": {
+    "REQUIRED": "value is required",
+    "NOT_IP": "is not ip address",
+    "IP_BIG": "value bigger 254",
+    "IP_ZERO": "first or end is 0",
+    "MUST_TWO_VALUES": "must be two value, determ ' - '",
+    "YEAR_LESS_2000": "year < 2000",
+    "IS_NOT_DATE": "is not date",
+    "IS_NOT_DATETIME": "is not datetime",
+    "FIRST_IS_NOT_DATE": "first is not date",
+    "FIRST_IS_NOT_DATETIME": "first is not datetime",
+    "SECOND_IS_NOT_DATE": "second is not date",
+    "SECOND_IS_NOT_DATETIME": "second is not datetime",
+    "SECOND_LESS_FIRST": "second value less first",
+    "BAD_FORMAT": "bad format",
+    "CONDITION_NOT_FOUND": "condition not found",
+    "NOT_ALL_FIELDS": "not all fields",
+    "START_END_NOT_IP": "start or end is not IPv4 address",
+    "IP_BAD_RANGE": "the start of the range is bigger than end",
+    "BAD_MINUTES": "minutes should be in the range from 0 to 59",
+    "PERIODIC_NOT_NUMBER": "star or end isn't number",
+    "PERIODIC_EXCEED": "one or both of the values exceed 23:59",
+    "PERIODIC_BAD_RANGE": "the start of the range is bigger than end",
+    "MUST_BE_INT": "value must be int",
+    "MUST_BE_FLOAT": "value must be float",
+    "FLOAT_BAD_FORMAT": "bad format, use 9999999999.9999 - 9999999999.9999",
+    "FLOAT_BAD_RANGE": "second value less first",
+    "FLOAT_BAD_FIRST": "first value isn't number",
+    "FLOAT_BAD_SECOND": "second value isn't number",
+    "INT_BAD_FORMAT": "bad format, use 9999999999 - 9999999999",
+    "INT_BAD_RANGE": "second value less first",
+    "INT_BAD_FIRST": "first value isn't int",
+    "INT_BAD_SECOND": "second value isn't int",
+    "NAME_EXIST": "name exists"
+  },
+  "LIST": {
+    "NAME": "Name",
+    "DESCRIPTION": "Description",
+    "OWNER": "Owner",
+    "CREATED": "Created",
+    "CHANGED": "Changed",
+    "OPEN_BTN": "Open",
+    "CANCEL_BTN": "Cancel",
+    "TITLE": "Select Report",
+    "IMPORT": "Import"
+  },
+  "GRID": {
+    "SEARCH": "enter search string"
+  },
+  "SHARE": {
+    "BY_USER": "By User",
+    "BY_GROUP": "By Group",
+    "READ_ONLY": "Read Only",
+    "MODIFY": "Modify",
+    "ADMIN": "Admin",
+    "GROUP_NAME": "Group Name",
+    "USERNAME": "Username",
+    "FULL_NAME": "Full Name",
+    "TITLE": "Share Report : {{value}}",
+    "SHARE_BTN": "Share",
+    "EXIT_BTN": "Exit",
+    "REMOVE_BTN": "Remove Access From All",
+    "SELECTED": "Selected : {{value}}",
+    "TITLE_DLG": "Unsaved data",
+    "YES_BTN": "Yes",
+    "NO_BTN": "No",
+    "BODY_DLG": "Discard changes?<br/>Are you sure to leave without save?"
+  },
+  "ACCESS": {
+    "ACCESS": "access level",
+    "READ": "read only",
+    "MODIFY": "modify",
+    "ADMIN": "admin",
+    "UNDEFINED": "undefined"
+  },
+  "WIDGET": {
+    "RESET": "reset",
+    "DAYS": "[\"Mon\", \"Tue\", \"Wed\", \"Thu\", \"Fri\", \"Sat\", \"Sun\"]",
+    "ORDER.IN.SORT": "order in sort",
+    "REMOVE.COLUMN": "remove column",
+    "ONLY.NUMERIC": "sort on numeric field only",
+    "TITLE": "Group by {{value}}, top 10"
+  },
+  "SELECTOR": {
+    "TITLE": "Selector",
+    "NOTES": "Selector",
+    "RANGE": "Report Range:",
+    "UPDATED": "last update: {{value}}",
+    "GROUP": {
+      "NAME": "Name",
+      "DESCRIPTION": "Description",
+      "TYPE": "Type",
+      "GROUP_BY": "GroupBy"
+    },
+    "FORM": {
+      "DISABLE_BTN": "Disable",
+      "APPLY_BTN": "Apply",
+      "DISABLE_ALL_BTN": "Disable All",
+      "APPLY_ALL_BTN": "Apply All",
+      "ADD_GROUP": "Add Group",
+      "GROUP_N": "group {{value}}",
+      "ASSOCIATION": "association"
+    },
+    "RANGE_DLG": {
+      "TITLE": "Choose report range",
+      "APPLY_BTN": "Apply",
+      "CLOSE_BTN": "Close"
+    }
+  },
+  "MESSAGES": {
+    "SAVED": "Saved.",
+    "REMOVED": "Removed.",
+    "SHARE_SAVED": "Access level saved.",
+    "SHARE_REMOVED": "Access level removed.",
+    "IMPORTED": "Imported"
+  },
+  "DATETIME_RANGE": {
+    "BY_FIELD": "by field:",
+    "THIS_MONTH": "This Month",
+    "LAST_MONTH": "Last Month",
+    "THIS_WEEK": "This Week",
+    "LAST_WEEK": "Last Week",
+    "THIS_YEAR": "This Year",
+    "LAST_YEAR": "Last Year",
+    "TODAY": "Today",
+    "YESTERDAY": "Yesterday",
+    "LAST_7": "Last 7 days",
+    "LAST_14": "Last 14 days",
+    "LAST_30": "Last 30 days",
+    "LAST_60": "Last 60 days",
+    "MON": "Mon",
+    "TUE": "Tue",
+    "WED": "Wed",
+    "THU": "Thu",
+    "FRI": "Fri",
+    "SAT": "Sat",
+    "SUN": "Sun"
+  },
+  "DROP_DOWN": {
+    "SEARCHING": "searching...",
+    "NOT_FOUND": "not found",
+    "ENTER_PATTERN": "enter pattern",
+    "CHOOSE": "Choose",
+    "VALUE": "value",
+    "SELECTED": "selected",
+    "NODES": "node(s)"
+  },
+  "CONDITION": {
+    "SELECT_CONDITION": "Select Condition",
+    "SELECT": "select",
+    "INTERVAL": "interval",
+    "NOT_IN_INTERVAL": "not in interval",
+    "PERIODIC_INTERVAL": "periodic interval",
+    "NOT_IN_PERIODIC": "not in periodic",
+    "EMPTY": "empty",
+    "NOT_EMPTY": "not empty",
+    "LIKE": "like"
+  },
+  "SELECT_FIELD": "Select field",
+  "SELECT_FORMAT": "Select format",
+  "SELECT_FUNCTION": "Select function",
+  "SELECT_MENU": {
+    "PROMPT": "Select All"
+  },
+  "EXPORT": {
+    "TITLE": "Example export, first 15 rows"
+  }
+}

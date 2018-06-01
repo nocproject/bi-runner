@@ -1,0 +1,27 @@
+<div class="row">
+    <bi-spinner class="pull-left"></bi-spinner>
+    <button class="btn btn-default pull-right clearfix"
+            (click)="onAddGroup()"
+            style="margin-bottom: 5px" translate>SELECTOR.FORM.ADD_GROUP
+    </button>
+</div>
+<div class="row">
+    <form [formGroup]="filtersForm">
+        <div formArrayName="groups">
+            <div class="form-group">
+                <bi-filters-group *ngFor="let group of config.groups; let groupIndex = index"
+                                  [index]="groupIndex"
+                                  [parent]="filtersForm"
+                                  [groupConfig]="group">
+                </bi-filters-group>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="row" *ngIf="!isProd">
+    <div>
+        is valid : {{ filtersForm.valid }}
+        <hr>
+        form params : {{ filtersForm.value | json }}
+    </div>
+</div>

@@ -1,0 +1,181 @@
+{
+  "id": "0",
+  "method": "set_dashboard",
+  "params": [
+    {
+      "layoutId": "580e1ba498601c0f96b7e809",
+      "layout": {
+        "uuid": "f2736f99-a568-4820-b746-1e71d48b4374",
+        "cells": [
+          {
+            "md": 12,
+            "name": "table1",
+            "lg": null,
+            "height": 360,
+            "sm": null,
+            "xs": null,
+            "row": 4
+          }
+        ],
+        "description": "",
+        "fav_status": false,
+        "is_builtin": false,
+        "id": "580e1ba498601c0f96b7e809",
+        "name": "c2x2"
+      },
+      "description": "шаблон отчета по метрикам",
+      "groups": [
+        {
+          "active": true,
+          "association": "$and",
+          "filters": [
+            {
+              "type": "DateTime",
+              "association": "$and",
+              "values": [
+                {
+                  "value": "l7"
+                }
+              ],
+              "name": "ts",
+              "condition": "interval"
+            }
+          ],
+          "name": "startEnd"
+        }
+      ],
+      "title": "Память",
+      "format": 2,
+      "export": {
+        "params": [
+          {
+            "fields": [
+              {
+                "alias": "date",
+                "expr": "date",
+                "group": 0,
+                "format": "dateToString",
+                "label": "Дата"
+              },
+              {
+                "alias": "qty",
+                "desc": true,
+                "expr": "count()",
+                "order": 0,
+                "label": "Кол-во"
+              }
+            ],
+            "datasource": "memory"
+          }
+        ],
+        "id": 0,
+        "method": "query"
+      },
+      "datasource": "memory",
+      "widgets": [
+        {
+          "cell": "table1",
+          "note": "оборудование",
+          "title": "По количеству используемой памяти, топ 10",
+          "type": "dataTable",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "alias": "date",
+                    "expr": "date",
+                    "label": "Дата",
+                    "group": 0,
+                    "format": "dateToString"
+                  },
+                  {
+                    "expr": "managed_object",
+                    "group": 1
+                  },
+                  {
+                    "expr": {
+                      "$lookup": [
+                        "managedobject_bi",
+                        {
+                          "$field": "managed_object"
+                        }
+                      ]
+                    },
+                    "alias": "name",
+                    "label": "Оборудование"
+                  },
+                  {
+                    "expr": {
+                      "$lookup": [
+                        "managedobject_platform_bi",
+                        {
+                          "$field": "managed_object"
+                        }
+                      ]
+                    },
+                    "alias": "platform",
+                    "label": "Платформа"
+                  },
+                  {
+                    "expr": "load_1min",
+                    "group": 2,
+                    "label": "Загрузка 1 мин"
+                  },
+                  {
+                    "expr": "usage",
+                    "group": 3,
+                    "label": "Использ. %"
+                  },
+                  {
+                    "expr": "usage_5s",
+                    "group": 4,
+                    "label": "Использ. 5 сек"
+                  }
+                ],
+                "limit": 10,
+                "datasource": "memory"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        }
+      ],
+      "filter_fields": [
+        {
+          "group": 1,
+          "name": "managed_object"
+        },
+        {
+          "group": 0,
+          "name": "load_1min"
+        },
+        {
+          "group": 0,
+          "name": "usage"
+        },
+        {
+          "group": 0,
+          "name": "usage_5s"
+        }
+      ],
+      "agv_fields": [
+        {
+          "group": 0,
+          "name": "load_1min"
+        },
+        {
+          "group": 0,
+          "name": "usage"
+        },
+        {
+          "group": 0,
+          "name": "usage_5s"
+        }
+      ],
+      "pseudo_fields": [
+      ]
+    }
+  ]
+}

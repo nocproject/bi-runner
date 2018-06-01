@@ -1,0 +1,5 @@
+<div *ngIf="(messages$ | async)?.length > 0">
+    <bi-message *ngFor="let message of (messages$ | async)"
+                [message]="message">
+    </bi-message>
+</div>

@@ -1,0 +1,16 @@
+{
+  "id": 0,
+  "error": null,
+  "result": {
+    "fields": [
+      "qty"
+    ],
+    "result": [
+      [
+        "7885"
+      ]
+    ],
+    "duration": 0.0443120003,
+    "sql": "SELECT  uniq(date,close_ts,ts,direct_services,escalation_ts,alarm_id,escalation_tt,reopens,severity,total_objects,total_services,pool,administrative_domain,version,vendor,profile,platform,managed_object,segment,ip,container,root,total_subscribers) AS qty FROM alarms WHERE ((((ts) BETWEEN ('2017-01-01T00:00:00') AND ('2017-12-31T23:59:59')))) AND (((platform) = (7288347531080510810))) AND ((empty((root))))"
+  }
+}

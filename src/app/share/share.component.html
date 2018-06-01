@@ -1,0 +1,86 @@
+<div class="modal fade bootstrap-dialog type-primary modal-open in" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="bootstrap-dialog-header" style="display: flex;">
+                    <div class="bootstrap-dialog-title" style="margin-right: auto;"
+                         translate [translateParams]="{value: title}">SHARE.TITLE
+                    </div>
+                    <div style="color: white;padding-right: 25px;" translate
+                         [translateParams]="{value: preSelected.length}">SHARE.SELECTED
+                    </div>
+                    <div class="bootstrap-dialog-close-button">
+                        <button class="close" (click)="onCancel()">×</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <form [formGroup]="chooseForm">
+                            <div class="col-md-6">
+                                <div class="radio radio-primary">
+                                    <input type="radio"
+                                           id="object-user" value="user"
+                                           formControlName="object">
+                                    <label for="object-user" translate>SHARE.BY_USER</label>
+                                </div>
+                                <div class="radio radio-primary">
+                                    <input type="radio"
+                                           id="object-group" value="group"
+                                           formControlName="object">
+                                    <label for="object-group" translate>SHARE.BY_GROUP</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="radio radio-primary">
+                                    <input type="radio"
+                                           id="access-read" value="0"
+                                           formControlName="access">
+                                    <label for="access-read" translate>SHARE.READ_ONLY</label>
+                                </div>
+                                <div class="radio radio-primary">
+                                    <input type="radio"
+                                           id="access-modify" value="1"
+                                           formControlName="access">
+                                    <label for="access-modify" translate>SHARE.MODIFY</label>
+                                </div>
+                                <div class="radio radio-primary">
+                                    <input type="radio"
+                                           id="access-admin" value="2"
+                                           formControlName="access">
+                                    <label for="access-admin" translate>SHARE.ADMIN</label>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <bi-data-grid
+                        [config]="config"
+                        [selected]="preSelected"
+                        (selectedEvent)="onSelected($event)">
+                </bi-data-grid>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="onShare()"
+                        [disabled]="accessCache.length === 0" translate>SHARE.SHARE_BTN
+                    <span [ngClass]="{'shared-rotate': shareSpin, 'shared' : !shareSpin}"></span>
+                </button>
+                <button type="button" class="btn btn-default" (click)="onRemoveAll()"
+                        [disabled]="accessCache.length === 0" translate>SHARE.REMOVE_BTN
+                    <span [ngClass]="{'shared-rotate': trashSpin, 'trash' : !trashSpin}"></span>
+                </button>
+                <button type="button" class="btn btn-default" (click)="onCancel()" translate>SHARE.EXIT_BTN</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<bi-modal #unsavedConfirmDlg (onClose)="onCloseConfirm()">
+    <bi-modal-header translate>SHARE.TITLE_DLG</bi-modal-header>
+    <bi-modal-content [innerHTML]="'SHARE.BODY_DLG' | translate"></bi-modal-content>
+    <bi-modal-footer>
+        <button class="btn btn-primary" (click)="onConfirm(true)" translate>SHARE.YES_BTN</button>
+        <button class="btn btn-default" (click)="onConfirm(false)" translate>SHARE.NO_BTN</button>
+    </bi-modal-footer>
+</bi-modal>

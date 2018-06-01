@@ -1,0 +1,122 @@
+@import "variables";
+@import "../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
+@import "../../node_modules/dc/style/dc";
+@import "chart";
+@import "bootstrap-dialog";
+@import "awesome-bootstrap-checkbox";
+@import "data-table";
+
+body {
+  background: #95a5a6;
+  padding-top: 70px;
+}
+
+*:focus {
+  outline: none !important;
+}
+
+.hand {
+  cursor: pointer;
+}
+
+.add-filter{
+  font-size: 20px;
+  color: $brand-primary;
+}
+
+.icon-offset {
+  margin-right: 5px
+}
+
+.modal.modal-open {
+  display: block;
+}
+
+.board-selected {
+  color: #fff;
+  background: $brand-primary;
+  box-shadow: inset 0 1px 3px $input-border-focus;
+}
+
+.tree {
+  height: auto;
+  max-height: 300px;
+  overflow-x: hidden;
+}
+
+.active-half {
+  background-color: $brand-primary-half;
+}
+
+.tree .list-group-item {
+  border: 0;
+}
+
+.not-active-group {
+  background-color: rgba(245, 245, 245, 0);
+}
+
+.not-active {
+  pointer-events: none;
+  cursor: default;
+}
+
+.small-mode .picker-calendar {
+  font-weight: normal;
+}
+
+.small-mode .picker-calendar .picker-day {
+  font-size: 12px !important;
+}
+
+.form-control {
+  font-weight: normal;
+}
+
+.navbar-nav > .disabled{
+  cursor: not-allowed;
+}
+
+.navbar-nav > .disabled > a{
+  pointer-events: none;
+}
+
+.dc-chart path.line {
+  fill: none;
+  stroke-width: 1.5px;
+}
+
+.dc-chart path.area {
+  fill-opacity: .3;
+  stroke: none;
+}
+
+.dc-chart path.highlight {
+  stroke-width: 3;
+  fill-opacity: 1;
+  stroke-opacity: 1;
+}
+
+.dc-chart .selected path {
+  stroke-width: 3;
+  stroke: #ccc;
+  fill-opacity: 1;
+}
+
+.dc-chart .deselected path {
+  stroke: none;
+  fill-opacity: .5;
+  fill: #ccc;
+}
+
+.dc-chart g.map {
+  cursor: pointer;
+}
+
+.dc-chart g.map :hover {
+  fill: #d7eff9;
+}
+
+.dc-chart g.map path {
+  stroke: #fff;
+}
