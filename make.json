@@ -1,25 +1,10 @@
 {
-  "name": "bi-runner-legacy",
-  "version": "0.0.0",
-  "dst_prefix": "ui/bi/",
+  "name": "bi-runner",
+  "version": "2.6.21",
+  "dst_prefix": "ui/bi2/",
   "src_prefix": "",
   "files": [
-	"fonts/glyphicons-halflings-regular.eot",
-	"fonts/glyphicons-halflings-regular.svg",
-	"fonts/glyphicons-halflings-regular.ttf",
-	"fonts/glyphicons-halflings-regular.woff",
-	"fonts/glyphicons-halflings-regular.woff2",
-	"fonts/FontAwesome.otf",
-	"fonts/fontawesome-webfont.eot",
-	"fonts/fontawesome-webfont.svg",
-	"fonts/fontawesome-webfont.ttf",
-	"fonts/fontawesome-webfont.woff",
-	"fonts/fontawesome-webfont.woff2",
-	"index.html",
-	"bi.js",
-	"libs/libs.js",
-	"css/libs.css",
-	"css/bi.css",
-	"translations/ru.json"
+    "*"
   ]
 }
+
