@@ -11,6 +11,7 @@
     "ABOUT": "О Приложении",
     "ISSUE": "Создать issue",
     "IMPORT": "Импорт",
+    "ADD_FIELD": "Добавить поле",
     "ABOUT_DLG": {
       "TITLE": "Приложение NOC BI",
       "CONTENT": "NOC BI версия {{value}}",
@@ -27,6 +28,16 @@
       "NAME": "Название",
       "DESCRIPTION": "Описание",
       "SAVE_AS": "Сохранить Как",
+      "CLOSE": "Закрыть"
+    },
+    "ADD_FIELD_DLG": {
+      "TITLE": "Добавить поле",
+      "NAME": "Название",
+      "GROUP": "Группа",
+      "ADD_TO": "Добавить к",
+      "TO_FIELDS": "Списку полей",
+      "TO_FILTERS": "Фильтрам",
+      "ADD": "Добавить",
       "CLOSE": "Закрыть"
     }
   },
@@ -144,7 +155,8 @@
     "REMOVED": "Удалено.",
     "SHARE_SAVED": "Уровень доступа сохранен.",
     "SHARE_REMOVED": "Уровень доступа удален.",
-    "IMPORTED": "Импортировано"
+    "IMPORTED": "Импортировано",
+    "REBOOT_REQUIRED": "Необходима перезагрузка!"
   },
   "DATETIME_RANGE": {
     "BY_FIELD": "по полю:",

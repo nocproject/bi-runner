@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import { finalize, first } from 'rxjs/operators';
+import { finalize, first, map } from 'rxjs/operators';
 
 import { cloneDeep, includes } from 'lodash';
 
@@ -15,7 +15,7 @@ import { APIService, AuthenticationService, LanguageService, LayoutService, Mess
 import { BoardResolver } from '../board/services/board.resolver';
 import { FilterService } from '../board/services/filter.service';
 
-import { BiRequestBuilder, Board, Message, MessageType, Methods, User } from '../model';
+import { BiRequestBuilder, Board, Field, Message, MessageType, Methods, User } from '../model';
 import { ModalComponent } from '../shared/modal/modal';
 import { Export } from './export';
 
@@ -39,8 +39,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
     boardTitle: string;
     titleError: string;
     boardDesc: string;
+    // add field form
+    addFieldForm: FormGroup;
+    fieldName: string;
     private boardSubscription: Subscription;
     private saveAsSubscription: Subscription;
+    private addFieldSubscription: Subscription;
 
     constructor(public languageService: LanguageService,
                 private authService: AuthenticationService,
@@ -73,6 +77,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
             'title': new FormControl(null, [Validators.required]),
             'description': new FormControl(null, [Validators.required])
         });
+        this.addFieldForm = new FormGroup({
+            'name': new FormControl(null, [Validators.required]),
+            'group': new FormControl(null, [Validators.required]),
+            'fields': new FormControl(true),
+            'filters': new FormControl(true)
+
+        });
         this.lang = this.languageService.current;
         this.saveAsSubscription = this.saveForm.get('title').valueChanges.subscribe(
             () => this.titleError = ''
@@ -80,8 +91,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        this.boardSubscription.unsubscribe();
-        this.saveAsSubscription.unsubscribe();
+        if (this.boardSubscription) {
+            this.boardSubscription.unsubscribe();
+        }
+        if (this.saveAsSubscription) {
+            this.saveAsSubscription.unsubscribe();
+        }
+        if (this.addFieldSubscription) {
+            this.addFieldSubscription.unsubscribe();
+        }
     }
 
     onSaveBoard() {
@@ -157,5 +175,62 @@ export class HeaderComponent implements OnInit, OnDestroy {
     onChangeLang(lang: string) {
         this.lang = lang;
         this.languageService.use(lang);
+    }
+
+    onAddField(modal: ModalComponent) {
+        const board = cloneDeep(this.boardResolver.getBoard());
+        const field: Field = {
+            name: this.addFieldForm.value.name,
+            group: this.addFieldForm.value.group,
+            isSelectable: this.addFieldForm.value.filters,
+            isGrouping: this.addFieldForm.value.fields,
+            expr: null,
+            label: null,
+            alias: null,
+            desc: null,
+            order: null,
+            format: null,
+            description: null,
+            dict: null,
+            type: null,
+            model: null,
+            pseudo: false,
+            enable: null,
+            aggFunc: null,
+            hide: null,
+            grouped: null,
+            datasource: null,
+            isAgg: null,
+            isSortable: null
+        };
+
+        if (this.addFieldForm.value.fields) {
+            board.agvFields.push(field);
+        }
+
+        if (this.addFieldForm.value.filters) {
+            board.filterFields.push(field);
+        }
+
+        board.groups = this.filterService.allFilters();
+        board.sample = this.filterService.ratioSubject.getValue();
+
+        modal.close();
+        const query = new BiRequestBuilder()
+            .method(Methods.SET_DASHBOARD)
+            .params([board.prepare()])
+            .build();
+        this.addFieldSubscription = this.api.execute(query)
+            .pipe(
+                first(),
+                map((response) => {
+                    this.messages.message(new Message(MessageType.INFO, 'MESSAGES.SAVED'));
+                    this.route.navigate(['/']).then(() => {
+                            this.route.navigate(['board', response.result])
+                                .catch(msg => this.messages.message(new Message(MessageType.DANGER, msg)));
+                        }
+                    ).catch(msg => this.messages.message(new Message(MessageType.DANGER, msg)));
+                })
+            ).subscribe();
     }
 }
