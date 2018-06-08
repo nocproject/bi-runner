@@ -24,6 +24,9 @@
                         <li *ngIf="(accessLevel$ | async) > 0">
                             <a class="hand" (click)="onSaveBoard()" translate>HEADER.SAVE</a>
                         </li>
+                        <li *ngIf="(accessLevel$ | async) === 2">
+                            <a class="hand" (click)="addField.open()" translate>HEADER.ADD_FIELD</a>
+                        </li>
                     </ul>
                 </li>
                 <li class="not-active"><a>{{ boardTitle }}</a></li>
@@ -125,5 +128,46 @@
         <button class="btn btn-default"
                 (click)="removeConfirm.close()" translate>HEADER.REMOVE_DLG.NO
         </button>
+    </bi-modal-footer>
+</bi-modal>
+
+<bi-modal #addField>
+    <bi-modal-header translate>HEADER.ADD_FIELD_DLG.TITLE</bi-modal-header>
+    <bi-modal-content>
+        <form id="#addFieldForm" [formGroup]="addFieldForm">
+            <label for="add-field-name" class="control-label" translate>HEADER.ADD_FIELD_DLG.NAME</label>
+            <input id="add-field-name" class="form-control" required autofocus formControlName="name">
+            <div *ngIf="addFieldForm.get('name').hasError('required')">
+                <div class="ng-invalid" translate>VALIDATOR.REQUIRED</div>
+            </div>
+            <label for="add-field-group" class="control-label" translate>HEADER.ADD_FIELD_DLG.GROUP</label>
+            <input id="add-field-group" class="form-control" required formControlName="group">
+            <div *ngIf="addFieldForm.get('group').hasError('required')">
+                <div class="ng-invalid" translate>VALIDATOR.REQUIRED</div>
+            </div>
+            <fieldset>
+                <legend translate>HEADER.ADD_FIELD_DLG.ADD_TO</legend>
+                <div class="checkbox rtl checkbox-primary checkbox-circle">
+                    <input id="add-field-to-fields"
+                           [checked]="true"
+                           formControlName="fields"
+                           class="styled" type="checkbox">
+                    <label for="add-field-to-fields" class="control-label" translate>HEADER.ADD_FIELD_DLG.TO_FIELDS</label>
+                </div>
+                <div class="checkbox rtl checkbox-primary checkbox-circle">
+                    <input id="add-field-to-filters"
+                           [checked]="true"
+                           formControlName="filters"
+                           class="styled" type="checkbox">
+                    <label for="add-field-to-filters" class="control-label" translate>HEADER.ADD_FIELD_DLG.TO_FILTERS</label>
+                </div>
+            </fieldset>
+        </form>
+    </bi-modal-content>
+    <bi-modal-footer>
+        <button form="#addFieldForm" class="btn btn-primary" [disabled]="!addFieldForm.valid"
+                (click)="onAddField(addField)" translate>HEADER.ADD_FIELD_DLG.ADD
+        </button>
+        <button class="btn btn-default" (click)="addField.close()" translate>HEADER.ADD_FIELD_DLG.CLOSE</button>
     </bi-modal-footer>
 </bi-modal>

@@ -1,28 +1,40 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { Observable } from 'rxjs/Observable';
-import { findIndex, remove } from 'lodash';
+import { Subscription } from 'rxjs/Subscription';
+import { first, map } from 'rxjs/operators';
 
-import { Board, Field, FieldBuilder } from '@app/model';
+import { cloneDeep, findIndex, remove } from 'lodash';
+
+import { BiRequestBuilder, Board, Field, FieldBuilder, Message, MessageType, Methods } from '@app/model';
 import { DatasourceService } from '../services/datasource-info.service';
 import { FieldsTableService } from '../services/fields-table.service';
+import { APIService, AuthenticationService, MessageService } from '@app/services';
 
 @Component({
     selector: 'bi-fields',
     templateUrl: './fields-table.component.html',
     styleUrls: ['./fields-table.component.scss']
 })
-export class FieldsTableComponent implements OnInit {
+export class FieldsTableComponent implements OnInit, OnDestroy {
     @Input()
     board: Board;
+    accessLevel$: Observable<number>;
     fields$: Observable<Field[]>;
+    removeFieldSubscription: Subscription;
 
     constructor(private datasourceService: DatasourceService,
+                private messages: MessageService,
+                private authService: AuthenticationService,
+                private api: APIService,
+                private route: Router,
                 private fieldsTableService: FieldsTableService) {
     }
 
     ngOnInit() {
         this.fields$ = this.datasourceService.tableFields();
+        this.accessLevel$ = this.authService.accessLevel$;
     }
 
     onGroupBy(field: Field, control: any): void {
@@ -69,6 +81,36 @@ export class FieldsTableComponent implements OnInit {
                 remove(this.board.exportQry.params[0].fields, e => e.alias === (field.name + '_text'));
             }
             this.fieldsTableService.removeField(field);
+        }
+    }
+
+    onRemove(field: Field): void {
+        const board = cloneDeep(this.board);
+        board.agvFields = board.agvFields.filter(f => f.name !== field.name);
+        this.board.agvFields = board.agvFields;
+        board.filterFields = board.filterFields.filter(f => f.name !== field.name);
+        const query = new BiRequestBuilder()
+            .method(Methods.SET_DASHBOARD)
+            .params([board.prepare()])
+            .build();
+
+        this.removeFieldSubscription = this.api.execute(query)
+            .pipe(
+                first(),
+                map((response) => {
+                    this.messages.message(new Message(MessageType.INFO, 'MESSAGES.SAVED'));
+                    this.route.navigate(['/']).then(() => {
+                            this.route.navigate(['board', response.result])
+                                .catch(msg => this.messages.message(new Message(MessageType.DANGER, msg)));
+                        }
+                    ).catch(msg => this.messages.message(new Message(MessageType.DANGER, msg)));
+                })
+            ).subscribe();
+    }
+
+    ngOnDestroy(): void {
+        if (this.removeFieldSubscription) {
+            this.removeFieldSubscription.unsubscribe();
         }
     }
 }

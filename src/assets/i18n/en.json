@@ -11,6 +11,7 @@
     "ABOUT": "About",
     "ISSUE": "Create issue",
     "IMPORT": "Import",
+    "ADD_FIELD": "Add Field",
     "ABOUT_DLG": {
       "TITLE": "Application NOC BI",
       "CONTENT": "NOC BI version {{value}}",
@@ -27,6 +28,16 @@
       "NAME": "Name",
       "DESCRIPTION": "Description",
       "SAVE_AS": "Save As",
+      "CLOSE": "Close"
+    },
+    "ADD_FIELD_DLG": {
+      "TITLE": "Add Field",
+      "NAME": "Name",
+      "GROUP": "Group",
+      "ADD_TO": "Add To",
+      "TO_FIELDS": "Fields",
+      "TO_FILTERS": "Filters",
+      "ADD": "Add",
       "CLOSE": "Close"
     }
   },
@@ -144,7 +155,8 @@
     "REMOVED": "Removed.",
     "SHARE_SAVED": "Access level saved.",
     "SHARE_REMOVED": "Access level removed.",
-    "IMPORTED": "Imported"
+    "IMPORTED": "Imported",
+    "REBOOT_REQUIRED": "Reboot is required!"
   },
   "DATETIME_RANGE": {
     "BY_FIELD": "by field:",

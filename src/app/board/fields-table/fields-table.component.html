@@ -5,6 +5,7 @@
         <th translate>SELECTOR.GROUP.DESCRIPTION</th>
         <th translate>SELECTOR.GROUP.TYPE</th>
         <th translate>SELECTOR.GROUP.GROUP_BY</th>
+        <th *ngIf="(accessLevel$ | async) === 2"></th>
     </tr>
     </thead>
     <tbody>
@@ -37,6 +38,11 @@
                            #isGrouped>
                     <label for="groupBy-{{ field.name }}"></label>
                 </div>
+            </td>
+            <td *ngIf="(accessLevel$ | async) === 2">
+                <i class="checkbox fa fa-times-circle"
+                   style="cursor: pointer;"
+                   (click)="onRemove(field)"></i>
             </td>
         </tr>
     </ng-container>
