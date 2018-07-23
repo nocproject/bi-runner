@@ -12,23 +12,23 @@
     <ng-container *ngFor="let field of fields$ | async">
         <tr [ngClass]="{'disabled-row': !field.enable}"
             *ngIf="field.isGrouping">
-            <td>
+            <td style="vertical-align: middle;">
                 <div class="checkbox rtl checkbox-primary" tooltip="{{ field.description }}" placement="top">
                     <span>{{ field.name }}</span>
                     <sup *ngIf="field.aggFunc">({{ field.aggFunc}})</sup>
                 </div>
             </td>
-            <td>
+            <td style="vertical-align: middle;">
                 <div class="checkbox rtl checkbox-primary">
                     {{ field.description }}
                 </div>
             </td>
-            <td>
+            <td style="vertical-align: middle;">
                 <div class="checkbox rtl checkbox-primary">
                     {{ field.dict ? field.dict : field.type }}
                 </div>
             </td>
-            <td>
+            <td style="vertical-align: middle;">
                 <div class="checkbox rtl checkbox-primary checkbox-circle">
                     <input id="groupBy-{{ field.name }}"
                            [checked]="field.grouped"
