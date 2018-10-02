@@ -268,17 +268,17 @@ function isIPv4BI(value: string): ValidationErrors | null {
         };
     }
 
+    if (tokens.filter((item) => !Number.isInteger(toNumber(item))).length > 0) {
+        return {
+            invalid: true,
+            msg: 'VALIDATOR.NOT_IP'
+        };
+    }
+
     if (tokens.filter((item) => toNumber(item) > 255).length > 0) {
         return {
             invalid: true,
             msg: 'VALIDATOR.IP_BIG'
-        };
-    }
-
-    if (toNumber(tokens[0]) === 0) {
-        return {
-            invalid: true,
-            msg: 'VALIDATOR.IP_ZERO'
         };
     }
 
