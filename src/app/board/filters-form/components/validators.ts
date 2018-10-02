@@ -261,21 +261,21 @@ function toMinutes(token: string): number {
 
 function isIPv4BI(value: string): ValidationErrors | null {
     const tokens = value.split('.');
-    if (tokens.length !== 4) {
+    if (tokens.length !== 4 || !tokens[3].length) {
         return {
             invalid: true,
             msg: 'VALIDATOR.NOT_IP'
         };
     }
 
-    if (tokens.filter((item) => toNumber(item) > 254).length > 0) {
+    if (tokens.filter((item) => toNumber(item) > 255).length > 0) {
         return {
             invalid: true,
             msg: 'VALIDATOR.IP_BIG'
         };
     }
 
-    if (toNumber(tokens[0]) === 0 || toNumber(tokens[3]) === 0) {
+    if (toNumber(tokens[0]) === 0) {
         return {
             invalid: true,
             msg: 'VALIDATOR.IP_ZERO'

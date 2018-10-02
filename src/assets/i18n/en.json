@@ -44,7 +44,7 @@
   "VALIDATOR": {
     "REQUIRED": "value is required",
     "NOT_IP": "is not ip address",
-    "IP_BIG": "value bigger 254",
+    "IP_BIG": "value bigger 255",
     "IP_ZERO": "first or end is 0",
     "MUST_TWO_VALUES": "must be two value, determ ' - '",
     "YEAR_LESS_2000": "year < 2000",
