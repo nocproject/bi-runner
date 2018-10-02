@@ -5,30 +5,30 @@
         <th translate>SELECTOR.GROUP.DESCRIPTION</th>
         <th translate>SELECTOR.GROUP.TYPE</th>
         <th translate>SELECTOR.GROUP.GROUP_BY</th>
-        <th *ngIf="(accessLevel$ | async) === 2"></th>
+        <th *ngIf="(accessLevel$ | async) === 2" style="width: 50px;"></th>
     </tr>
     </thead>
     <tbody>
     <ng-container *ngFor="let field of fields$ | async">
         <tr [ngClass]="{'disabled-row': !field.enable}"
             *ngIf="field.isGrouping">
-            <td>
+            <td style="vertical-align: middle;">
                 <div class="checkbox rtl checkbox-primary" tooltip="{{ field.description }}" placement="top">
                     <span>{{ field.name }}</span>
                     <sup *ngIf="field.aggFunc">({{ field.aggFunc}})</sup>
                 </div>
             </td>
-            <td>
+            <td style="vertical-align: middle;">
                 <div class="checkbox rtl checkbox-primary">
                     {{ field.description }}
                 </div>
             </td>
-            <td>
+            <td style="vertical-align: middle;">
                 <div class="checkbox rtl checkbox-primary">
                     {{ field.dict ? field.dict : field.type }}
                 </div>
             </td>
-            <td>
+            <td style="vertical-align: middle;">
                 <div class="checkbox rtl checkbox-primary checkbox-circle">
                     <input id="groupBy-{{ field.name }}"
                            [checked]="field.grouped"
@@ -39,7 +39,7 @@
                     <label for="groupBy-{{ field.name }}"></label>
                 </div>
             </td>
-            <td *ngIf="(accessLevel$ | async) === 2">
+            <td *ngIf="(accessLevel$ | async) === 2" style="width: 50px;vertical-align: middle;">
                 <i class="checkbox fa fa-times-circle"
                    style="cursor: pointer;"
                    (click)="onRemove(field)"></i>
