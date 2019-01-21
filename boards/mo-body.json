@@ -138,7 +138,7 @@
         {
           "cell": "c11",
           "note": "по дате",
-          "title": "Срез данных",
+          "title": "Срез данных, 100 последних значений",
           "type": "selectMenu",
           "query": {
             "params": [
@@ -160,7 +160,7 @@
                     "desc": true
                   }
                 ],
-                "limit": 10,
+                "limit": 100,
                 "datasource": "managedobjects"
               }
             ],
