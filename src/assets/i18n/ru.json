@@ -198,7 +198,8 @@
     "NOT_IN_PERIODIC": "не в периодическом",
     "EMPTY": "пусто",
     "NOT_EMPTY": "не пусто",
-    "LIKE": "содержит"
+    "LIKE": "содержит",
+    "NOT_LIKE": "не содержит"
   },
   "SELECT_FIELD": "Выбор поля",
   "SELECT_FORMAT": "Выбор формата",

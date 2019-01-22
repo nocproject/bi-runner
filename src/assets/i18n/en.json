@@ -198,7 +198,8 @@
     "NOT_IN_PERIODIC": "not in periodic",
     "EMPTY": "empty",
     "NOT_EMPTY": "not empty",
-    "LIKE": "like"
+    "LIKE": "like",
+    "NOT_LIKE": "not like"
   },
   "SELECT_FIELD": "Select field",
   "SELECT_FORMAT": "Select format",

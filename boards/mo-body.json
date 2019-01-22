@@ -481,6 +481,10 @@
         {
           "name": "has_snmp_v2c",
           "group": 1
+        },
+        {
+          "name": "tags",
+          "group": 1
         }
       ],
       "agv_fields": [
@@ -614,6 +618,10 @@
         },
         {
           "name": "has_snmp_v2c",
+          "group": 1
+        },
+        {
+          "name": "tags",
           "group": 1
         }
       ],

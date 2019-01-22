@@ -121,6 +121,10 @@ function where(filter: Filter): Object {
             };
         case '$like':
             return like(clonedFilter);
+        case 'not.$hasAny':
+            return not(hasAny(clonedFilter));
+        case '$hasAny':
+            return hasAny(clonedFilter);
         default:
             return castToCondition(clonedFilter);
     }
@@ -259,6 +263,10 @@ function castToField(values: Value[], type: string): Object {
             fieldValue = firstValue.value;
             break;
         }
+        case 'Array(String)': {
+            fieldValue = [firstValue.value];
+            break;
+        }
         default: {
             fieldValue = head(values).value;
         }
@@ -368,6 +376,18 @@ function like(filter: Filter) {
             }, {
                 $lower: `%${filter.values[0].value}%`
             }
+        ]
+    };
+}
+
+function hasAny(filter: Filter) {
+    return {
+        $hasAny: [
+            {
+                $field: filter.name
+            },
+            [`${filter.values[0].value}`]
+
         ]
     };
 }

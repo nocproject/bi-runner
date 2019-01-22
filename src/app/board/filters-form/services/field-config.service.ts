@@ -32,6 +32,9 @@ export class FieldConfigService {
         if (startsWith(field.type, 'model-')) {
             widgetType = 'Model';
         }
+        if (field.type === 'Array(String)') {
+            widgetType = 'String';
+        }
 
         switch (widgetType) {
             case 'String': {
@@ -223,6 +226,15 @@ export class FieldConfigService {
                     {value: 'not.empty', text: 'CONDITION.NOT_EMPTY'},
                     {value: '$like', text: 'CONDITION.LIKE'}
                 ]);
+                break;
+            }
+            case 'Array(String)': {
+                conditions = [
+                    {value: 'empty', text: 'CONDITION.EMPTY'},
+                    {value: 'not.empty', text: 'CONDITION.NOT_EMPTY'},
+                    {value: '$hasAny', text: 'CONDITION.LIKE'},
+                    {value: 'not.$hasAny', text: 'CONDITION.NOT_LIKE'}
+                ];
                 break;
             }
             default: {
