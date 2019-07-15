@@ -33,4 +33,4 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 ## Build
 
-`ng build ng build --prod --aot --no-sourcemap --base-href=/ui/dist/`
+`ng build ng build --prod --aot --no-sourcemap --base-href=/ui/dist/` 
