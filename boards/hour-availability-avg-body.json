@@ -2,6 +2,7 @@
   "method": "set_dashboard",
   "params": [
     {
+      "id": "5cdef9fde9618be0ae196e53",
       "layoutId": "580e1ba498601c0f96b7e809",
       "layout": {
         "uuid": "f2736f99-a568-4820-b746-1e71d48b4374",
@@ -22,8 +23,8 @@
         "id": "580e1ba498601c0f96b7e809",
         "name": "c2x2"
       },
-      "title": "Загрузка портов avg",
-      "description": "отчет по интерфейсам, значения по avg",
+      "title": "Часовая агрегация доступности",
+      "description": "отчет по часовой доступности объектов",
       "groups": [
         {
           "active": true,
@@ -55,116 +56,20 @@
                 "group": 0,
                 "format": "dateToString",
                 "label": "Дата"
-              },
-              {
-                "label": "Load In",
-                "expr": {
-                  "$avgMerge": [
-                    {
-                      "$field": "load_in_avg"
-                    }
-                  ]
-                },
-                "alias": "load_in",
-                "format": "intFormat"
-              },
-              {
-                "label": "Load Out",
-                "expr": {
-                  "$avgMerge": [
-                    {
-                      "$field": "load_out_avg"
-                    }
-                  ]
-                },
-                "alias": "load_out",
-                "format": "intFormat"
-              },
-              {
-                "label": "Discards In",
-                "expr": {
-                  "$avgMerge": [
-                    {
-                      "$field": "discards_in_avg"
-                    }
-                  ]
-                },
-                "alias": "discards_in",
-                "format": "intFormat"
-              },
-              {
-                "label": "Discards Out",
-                "expr": {
-                  "$avgMerge": [
-                    {
-                      "$field": "discards_out_avg"
-                    }
-                  ]
-                },
-                "alias": "discards_out",
-                "format": "intFormat"
-              },
-              {
-                "label": "Errors In",
-                "expr": {
-                  "$avgMerge": [
-                    {
-                      "$field": "errors_in_avg"
-                    }
-                  ]
-                },
-                "alias": "errors_in",
-                "format": "intFormat"
-              },
-              {
-                "label": "Errors Out",
-                "expr": {
-                  "$avgMerge": [
-                    {
-                      "$field": "errors_out_avg"
-                    }
-                  ]
-                },
-                "alias": "errors_out",
-                "format": "intFormat"
-              },
-              {
-                "label": "Packets In",
-                "expr": {
-                  "$avgMerge": [
-                    {
-                      "$field": "packets_in_avg"
-                    }
-                  ]
-                },
-                "alias": "packets_in",
-                "format": "intFormat"
-              },
-              {
-                "label": "Packets Out",
-                "expr": {
-                  "$avgMerge": [
-                    {
-                      "$field": "packets_out_avg"
-                    }
-                  ]
-                },
-                "alias": "packets_out",
-                "format": "intFormat"
               }
             ],
-            "datasource": "AggregatedInterface"
+            "datasource": "aggregatedpinghour"
           }
         ],
         "id": 0,
         "method": "query"
       },
-      "datasource": "AggregatedInterface",
+      "datasource": "aggregatedpinghour",
       "widgets": [
         {
           "cell": "table1",
           "note": "оборудование",
-          "title": "Интерфейсы, топ 10",
+          "title": "Доступности по объектам, топ 10",
           "type": "topTable",
           "query": {
             "params": [
@@ -175,17 +80,17 @@
                     "expr": "date",
                     "label": "Дата",
                     "format": "dateToString",
-                    "group": 0
-                  },
-                  {
-                    "expr": "managed_object",
                     "group": 1
                   },
                   {
-                    "expr": "arrayStringConcat(path)",
-                    "label": "Path",
-                    "alias": "path",
+                    "expr": "managed_object",
                     "group": 2
+                  },
+                  {
+                    "label": "Время",
+                    "expr": "hour",
+                    "format": "dateToTimeString",
+                    "group": 3
                   },
                   {
                     "label": "Устройство",
@@ -198,110 +103,41 @@
                         }
                       ]
                     },
-                    "group": 3
-                  },
-                  {
-                    "expr": {
-                      "$lookup": [
-                        "managedobject",
-                        {
-                          "$field": "managed_object"
-                        },
-                        "platform"
-                      ],
-                      "__type": "Expression"
-                    },
-                    "alias": "platform",
-                    "label": "Платформа",
                     "group": 4
                   },
                   {
-                    "label": "Load In",
-                    "expr": {
-                      "$avgMerge": [
-                        {
-                          "$field": "load_in_avg"
-                        }
-                      ]
-                    },
-                    "alias": "load_in",
-                    "format": "intFormat",
-                    "order": 0,
-                    "desc": true
+                    "label": "Задержка - 95-перцентиль (мс)",
+                    "expr": "rtt_p95",
+                    "group": 5
                   },
                   {
-                    "label": "Load Out",
-                    "expr": {
-                      "$avgMerge": [
-                        {
-                          "$field": "load_out_avg"
-                        }
-                      ]
-                    },
-                    "alias": "load_out",
-                    "format": "intFormat",
-                    "order": 1,
-                    "desc": true
+                    "label": "Средняя задержка (мс)",
+                    "expr": "rtt_avg",
+                    "group": 6
                   },
                   {
-                    "label": "Discards In",
-                    "expr": {
-                      "$avgMerge": [
-                        {
-                          "$field": "discards_in_avg"
-                        }
-                      ]
-                    },
-                    "alias": "discards_in",
-                    "format": "intFormat",
-                    "order": 2,
-                    "desc": true
+                    "label": "Максимальна задержка (мс)",
+                    "expr": "rtt_max",
+                    "group": 7
                   },
                   {
-                    "label": "Discards Out",
-                    "expr": {
-                      "$avgMerge": [
-                        {
-                          "$field": "discards_out_avg"
-                        }
-                      ]
-                    },
-                    "alias": "discards_out",
-                    "format": "intFormat",
-                    "order": 3,
-                    "desc": true
+                    "label": "Число переповторов",
+                    "expr": "attempts_sum",
+                    "group": 8
                   },
                   {
-                    "label": "Errors In",
-                    "expr": {
-                      "$avgMerge": [
-                        {
-                          "$field": "errors_in_avg"
-                        }
-                      ]
-                    },
-                    "alias": "errors_in",
-                    "format": "intFormat",
-                    "order": 4,
-                    "desc": true
+                    "label": "Число провалов",
+                    "expr": "ping_fail_count",
+                    "group": 9
                   },
                   {
-                    "label": "Errors Out",
-                    "expr": {
-                      "$avgMerge": [
-                        {
-                          "$field": "errors_out_avg"
-                        }
-                      ]
-                    },
-                    "alias": "errors_out",
-                    "format": "intFormat",
-                    "order": 5,
-                    "desc": true
+                    "label": "Число успешных проверок",
+                    "expr": "ping_success_count",
+                    "group": 10
                   }
                 ],
                 "limit": 10,
-                "datasource": "AggregatedInterface"
+                "datasource": "aggregatedpinghour"
               }
             ],
             "id": 0,
@@ -311,11 +147,11 @@
       ],
       "filter_fields": [
         {
-          "name": "path",
+          "name": "date",
           "group": 0
         },
         {
-          "name": "cinr",
+          "name": "hour",
           "group": 0
         },
         {
@@ -323,57 +159,37 @@
           "group": 0
         },
         {
-          "name": "discards_in",
+          "name": "rtt_avg",
           "group": 1
         },
         {
-          "name": "discards_out",
+          "name": "rtt_max",
           "group": 1
         },
         {
-          "name": "errors_in",
+          "name": "rtt_p95",
+          "group": 1
+        },
+        {
+          "name": "attempts_sum",
           "group": 2
         },
         {
-          "name": "errors_out",
-          "group": 2
-        },
-        {
-          "name": "load_in",
+          "name": "ping_success_count",
           "group": 3
         },
         {
-          "name": "load_out",
-          "group": 3
-        },
-        {
-          "name": "packets_in",
-          "group": 4
-        },
-        {
-          "name": "packets_out",
-          "group": 4
-        },
-        {
-          "name": "rssi",
-          "group": 0
-        },
-        {
-          "name": "status_admin",
-          "group": 3
-        },
-        {
-          "name": "status_oper",
+          "name": "ping_fail_count",
           "group": 3
         }
       ],
       "agv_fields": [
         {
-          "name": "path",
+          "name": "date",
           "group": 0
         },
         {
-          "name": "cinr",
+          "name": "hour",
           "group": 0
         },
         {
@@ -381,64 +197,28 @@
           "group": 0
         },
         {
-          "name": "discards_in",
-          "group": 1,
-          "aggFunc": "avg",
-          "enable": false
+          "name": "rtt_avg",
+          "group": 1
         },
         {
-          "name": "discards_out",
-          "group": 1,
-          "aggFunc": "avg",
-          "enable": false
+          "name": "rtt_max",
+          "group": 1
         },
         {
-          "name": "errors_in",
-          "group": 2,
-          "aggFunc": "avg",
-          "enable": false
+          "name": "rtt_p95",
+          "group": 1
         },
         {
-          "name": "errors_out",
-          "group": 2,
-          "aggFunc": "avg",
-          "enable": false
+          "name": "attempts_sum",
+          "group": 2
         },
         {
-          "name": "load_in",
-          "group": 3,
-          "aggFunc": "avg",
-          "enable": false
+          "name": "ping_success_count",
+          "group": 3
         },
         {
-          "name": "load_out",
-          "group": 3,
-          "aggFunc": "avg",
-          "enable": false
-        },
-        {
-          "name": "packets_in",
-          "group": 4,
-          "aggFunc": "avg",
-          "enable": false
-        },
-        {
-          "name": "packets_out",
-          "group": 4,
-          "aggFunc": "avg",
-          "enable": false
-        },
-        {
-          "name": "rssi",
-          "group": 0
-        },
-        {
-          "name": "status_admin",
-          "group": 0
-        },
-        {
-          "name": "status_oper",
-          "group": 0
+          "name": "ping_fail_count",
+          "group": 3
         }
       ],
       "pseudo_fields": [
