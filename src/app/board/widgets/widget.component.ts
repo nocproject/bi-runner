@@ -43,11 +43,11 @@ export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestro
     fieldName: string;
 
     constructor(@Inject(forwardRef(() => FormBuilder)) protected fb: FormBuilder,
-                          @Inject(forwardRef(() => DatasourceService)) protected datasourceService: DatasourceService,
-                          @Inject(forwardRef(() => APIService)) protected api: APIService,
-                          @Inject(forwardRef(() => FilterService)) protected filterService: FilterService,
-                          @Inject(forwardRef(() => EventService)) protected eventService: EventService,
-                          @Inject(forwardRef(() => LanguageService)) protected languageService: LanguageService) {
+                @Inject(forwardRef(() => DatasourceService)) protected datasourceService: DatasourceService,
+                @Inject(forwardRef(() => APIService)) protected api: APIService,
+                @Inject(forwardRef(() => FilterService)) protected filterService: FilterService,
+                @Inject(forwardRef(() => EventService)) protected eventService: EventService,
+                @Inject(forwardRef(() => LanguageService)) protected languageService: LanguageService) {
     }
 
     ngAfterViewInit(): void {
@@ -129,25 +129,30 @@ export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestro
                         .group(0)
                         .build(),
                     new FieldBuilder()
-                        .expr({
-                            '$lookup': [
-                                field.dict,
-                                {
-                                    '$field': data.name
-                                }
-                            ]
-                        })
-                        .group(1)
-                        .alias('name')
-                        .build(),
-                    new FieldBuilder()
                         .expr(`${data.func}()`)
                         .alias('cnt')
                         .order(0)
                         .desc(true)
                         .build()
                 ];
-
+                if (field.dict) {
+                    fields.push(
+                        new FieldBuilder()
+                            .expr({
+                                '$lookup': [
+                                    field.dict,
+                                    {
+                                        '$field': data.name
+                                    }
+                                ]
+                            })
+                            .group(1)
+                            .alias('name')
+                            .build()
+                    );
+                } else {
+                    fields[0].alias = 'name';
+                }
                 this.chart.filterAll();
                 this.fieldName = this.data.widget.note = clone(field.description);
                 this.data.widget.query.setFields(fields);

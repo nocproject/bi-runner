@@ -100,7 +100,7 @@ export class PieComponent extends WidgetComponent {
         this.fields$ = this.datasourceService.fields()
             .pipe(
                 map(array => array
-                    .filter(field => field.dict && !field.pseudo && field.isSelectable)
+                    .filter(field => (field.dict || field.allowAggFuncs) && !field.pseudo && field.isSelectable)
                     .map(field => {
                             if (firstFieldName === field.name) {
                                 this.fieldName = this.data.widget.note = field.description;

@@ -36,6 +36,8 @@ export class Field {
     public aggFunc: string;
     @JsonMember()
     public hide: boolean | string;
+    @JsonMember()
+    public allowAggFuncs: boolean;
     //
     public isSelectable: boolean;
     public isGrouping: boolean;

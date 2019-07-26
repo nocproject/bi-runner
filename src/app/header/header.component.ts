@@ -201,7 +201,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
             grouped: null,
             datasource: null,
             isAgg: null,
-            isSortable: null
+            isSortable: null,
+            allowAggFuncs: false
         };
 
         if (this.addFieldForm.value.fields) {
