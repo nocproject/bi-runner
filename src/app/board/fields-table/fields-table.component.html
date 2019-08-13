@@ -4,11 +4,11 @@
         <th translate>SELECTOR.GROUP.NAME</th>
         <th translate>SELECTOR.GROUP.DESCRIPTION</th>
         <th translate>SELECTOR.GROUP.TYPE</th>
-        <th translate>SELECTOR.GROUP.GROUP_BY</th>
+        <th style="width: 50px;" translate>SELECTOR.GROUP.TITLE</th>
         <th *ngIf="(accessLevel$ | async) === 2" style="width: 50px;"></th>
     </tr>
     </thead>
-    <tbody>
+    <tbody style="overflow-wrap: break-word;">
     <ng-container *ngFor="let field of fields$ | async">
         <tr [ngClass]="{'disabled-row': !field.enable}"
             *ngIf="field.isGrouping">
@@ -28,8 +28,10 @@
                     {{ field.dict ? field.dict : field.type }}
                 </div>
             </td>
-            <td style="vertical-align: middle;">
-                <div class="checkbox rtl checkbox-primary checkbox-circle">
+            <td style="vertical-align: middle; width: 50px;">
+                <div class="checkbox rtl checkbox-primary checkbox-circle"
+                     [tooltip]="'SELECTOR.GROUP.GROUP_BY' | translate"
+                     placement="top">
                     <input id="groupBy-{{ field.name }}"
                            [checked]="field.grouped"
                            class="styled" type="checkbox"

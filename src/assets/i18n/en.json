@@ -133,7 +133,8 @@
       "NAME": "Name",
       "DESCRIPTION": "Description",
       "TYPE": "Type",
-      "GROUP_BY": "GroupBy"
+      "GROUP_BY": "add field to grouping",
+      "TITLE": "On"
     },
     "FORM": {
       "DISABLE_BTN": "Disable",

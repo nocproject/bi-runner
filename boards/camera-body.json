@@ -51,7 +51,7 @@
         "id": "580e1ba498601c0f96b7e809",
         "name": "c2x2"
       },
-      "description": "Managed objects",
+      "description": "Объекты видеонаблюдения Москвы",
       "groups": [
         {
           "active": true,
@@ -86,7 +86,7 @@
                 "pseudo": false,
                 "grouped": false,
                 "dict": "vendor",
-                "datasource": "managedobjects",
+                "datasource": "mskvideoobject",
                 "isSelectable": true,
                 "model": null,
                 "type": "Dictionary",
@@ -106,7 +106,7 @@
           "name": "form"
         }
       ],
-      "title": "Managed objects",
+      "title": "Объекты видеонаблюдения Москвы",
       "format": 2,
       "export": {
         "params": [
@@ -127,13 +127,13 @@
                 "label": "Кол-во"
               }
             ],
-            "datasource": "managedobjects"
+            "datasource": "mskvideoobject"
           }
         ],
         "id": 0,
         "method": "query"
       },
-      "datasource": "managedobjects",
+      "datasource": "mskvideoobject",
       "widgets": [
         {
           "cell": "c11",
@@ -161,7 +161,7 @@
                   }
                 ],
                 "limit": 100,
-                "datasource": "managedobjects"
+                "datasource": "mskvideoobject"
               }
             ],
             "id": 0,
@@ -201,7 +201,7 @@
                   }
                 ],
                 "limit": 10,
-                "datasource": "managedobjects"
+                "datasource": "mskvideoobject"
               }
             ],
             "id": 0,
@@ -241,7 +241,7 @@
                   }
                 ],
                 "limit": 10,
-                "datasource": "managedobjects"
+                "datasource": "mskvideoobject"
               }
             ],
             "id": 0,
@@ -281,7 +281,7 @@
                   }
                 ],
                 "limit": 10,
-                "datasource": "managedobjects"
+                "datasource": "mskvideoobject"
               }
             ],
             "id": 0,
@@ -341,7 +341,7 @@
                   }
                 ],
                 "limit": 10,
-                "datasource": "managedobjects"
+                "datasource": "mskvideoobject"
               }
             ],
             "id": 0,
@@ -375,6 +375,10 @@
           "group": 1
         },
         {
+          "name": "location",
+          "group": 1
+        },
+        {
           "name": "level",
           "group": 1
         },
@@ -391,7 +395,15 @@
           "group": 1
         },
         {
+          "name": "object_profile_name",
+          "group": 1
+        },
+        {
           "name": "name",
+          "group": 1
+        },
+        {
+          "name": "hostname",
           "group": 1
         },
         {
@@ -415,71 +427,123 @@
           "group": 1
         },
         {
+          "name": "hw_version",
+          "group": 1
+        },
+        {
           "name": "version",
           "group": 1
         },
         {
-          "name": "n_interfaces",
+          "name": "version_build_date",
           "group": 1
         },
         {
-          "name": "n_subscribers",
+          "name": "ptz_version",
           "group": 1
         },
         {
-          "name": "n_services",
+          "name": "bootprom_version",
           "group": 1
         },
         {
-          "name": "n_neighbors",
+          "name": "image_brightness",
           "group": 1
         },
         {
-          "name": "n_links",
+          "name": "image_saturation",
           "group": 1
         },
         {
-          "name": "nri_links",
+          "name": "image_contrast",
           "group": 1
         },
         {
-          "name": "mac_links",
+          "name": "image_sharpness",
           "group": 1
         },
         {
-          "name": "stp_links",
+          "name": "image_wdr_admin_status",
           "group": 1
         },
         {
-          "name": "lldp_links",
+          "name": "image_blc_admin_status",
           "group": 1
         },
         {
-          "name": "cdp_links",
+          "name": "main_stream_name",
           "group": 1
         },
         {
-          "name": "has_stp",
+          "name": "main_stream_resolution",
           "group": 1
         },
         {
-          "name": "has_lldp",
+          "name": "main_stream_codec",
           "group": 1
         },
         {
-          "name": "has_cdp",
+          "name": "main_stream_codec_profile",
           "group": 1
         },
         {
-          "name": "has_snmp",
+          "name": "main_stream_codec_gop",
           "group": 1
         },
         {
-          "name": "has_snmp_v1",
+          "name": "main_stream_fps_rate_max",
           "group": 1
         },
         {
-          "name": "has_snmp_v2c",
+          "name": "main_stream_bitrate",
+          "group": 1
+        },
+        {
+          "name": "main_stream_bitrate_mode",
+          "group": 1
+        },
+        {
+          "name": "main_stream_audio_admin_status",
+          "group": 1
+        },
+        {
+          "name": "main_stream_audio_codec",
+          "group": 1
+        },
+        {
+          "name": "extra_stream",
+          "group": 1
+        },
+        {
+          "name": "overlay_channel_name_admin_status",
+          "group": 1
+        },
+        {
+          "name": "overlay_channel_name_text",
+          "group": 1
+        },
+        {
+          "name": "users",
+          "group": 1
+        },
+        {
+          "name": "ntp_admin_status",
+          "group": 1
+        },
+        {
+          "name": "ntp_servers",
+          "group": 1
+        },
+        {
+          "name": "uptime",
+          "group": 1
+        },
+        {
+          "name": "netris_events",
+          "group": 1
+        },
+        {
+          "name": "serials",
           "group": 1
         },
         {
@@ -513,6 +577,10 @@
           "group": 1
         },
         {
+          "name": "location",
+          "group": 1
+        },
+        {
           "name": "level",
           "group": 1
         },
@@ -529,7 +597,15 @@
           "group": 1
         },
         {
+          "name": "object_profile_name",
+          "group": 1
+        },
+        {
           "name": "name",
+          "group": 1
+        },
+        {
+          "name": "hostname",
           "group": 1
         },
         {
@@ -553,71 +629,123 @@
           "group": 1
         },
         {
+          "name": "hw_version",
+          "group": 1
+        },
+        {
           "name": "version",
           "group": 1
         },
         {
-          "name": "n_interfaces",
+          "name": "version_build_date",
           "group": 1
         },
         {
-          "name": "n_subscribers",
+          "name": "ptz_version",
           "group": 1
         },
         {
-          "name": "n_services",
+          "name": "bootprom_version",
           "group": 1
         },
         {
-          "name": "n_neighbors",
+          "name": "image_brightness",
           "group": 1
         },
         {
-          "name": "n_links",
+          "name": "image_saturation",
           "group": 1
         },
         {
-          "name": "nri_links",
+          "name": "image_contrast",
           "group": 1
         },
         {
-          "name": "mac_links",
+          "name": "image_sharpness",
           "group": 1
         },
         {
-          "name": "stp_links",
+          "name": "image_wdr_admin_status",
           "group": 1
         },
         {
-          "name": "lldp_links",
+          "name": "image_blc_admin_status",
           "group": 1
         },
         {
-          "name": "cdp_links",
+          "name": "main_stream_name",
           "group": 1
         },
         {
-          "name": "has_stp",
+          "name": "main_stream_resolution",
           "group": 1
         },
         {
-          "name": "has_lldp",
+          "name": "main_stream_codec",
           "group": 1
         },
         {
-          "name": "has_cdp",
+          "name": "main_stream_codec_profile",
           "group": 1
         },
         {
-          "name": "has_snmp",
+          "name": "main_stream_codec_gop",
           "group": 1
         },
         {
-          "name": "has_snmp_v1",
+          "name": "main_stream_fps_rate_max",
           "group": 1
         },
         {
-          "name": "has_snmp_v2c",
+          "name": "main_stream_bitrate",
+          "group": 1
+        },
+        {
+          "name": "main_stream_bitrate_mode",
+          "group": 1
+        },
+        {
+          "name": "main_stream_audio_admin_status",
+          "group": 1
+        },
+        {
+          "name": "main_stream_audio_codec",
+          "group": 1
+        },
+        {
+          "name": "extra_stream",
+          "group": 1
+        },
+        {
+          "name": "overlay_channel_name_admin_status",
+          "group": 1
+        },
+        {
+          "name": "overlay_channel_name_text",
+          "group": 1
+        },
+        {
+          "name": "users",
+          "group": 1
+        },
+        {
+          "name": "ntp_admin_status",
+          "group": 1
+        },
+        {
+          "name": "ntp_servers",
+          "group": 1
+        },
+        {
+          "name": "uptime",
+          "group": 1
+        },
+        {
+          "name": "netris_events",
+          "group": 1
+        },
+        {
+          "name": "serials",
           "group": 1
         },
         {
