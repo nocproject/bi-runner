@@ -1,0 +1,631 @@
+{
+  "id": "0",
+  "method": "set_dashboard",
+  "params": [
+    {
+      "layoutId": "580e1ba498601c0f96b7e809",
+      "layout": {
+        "uuid": "f2736f99-a568-4820-b746-1e71d48b4374",
+        "cells": [
+          {
+            "md": 6,
+            "name": "c11",
+            "lg": null,
+            "height": 200,
+            "sm": null,
+            "xs": null,
+            "row": 0,
+            "offset": 40
+          },
+          {
+            "md": 6,
+            "name": "c12",
+            "lg": null,
+            "height": 200,
+            "sm": null,
+            "xs": null,
+            "row": 0
+          },
+          {
+            "md": 6,
+            "name": "c21",
+            "lg": null,
+            "height": 200,
+            "sm": null,
+            "xs": null,
+            "row": 5
+          },
+          {
+            "md": 6,
+            "name": "c22",
+            "lg": null,
+            "height": 200,
+            "sm": null,
+            "xs": null,
+            "row": 5
+          }
+        ],
+        "description": "",
+        "fav_status": false,
+        "is_builtin": false,
+        "id": "580e1ba498601c0f96b7e809",
+        "name": "c2x2"
+      },
+      "description": "Managed objects",
+      "groups": [
+        {
+          "active": true,
+          "association": "$and",
+          "filters": [
+            {
+              "type": "DateTime",
+              "association": "$and",
+              "values": [
+                {
+                  "value": "ty"
+                }
+              ],
+              "name": "ts",
+              "condition": "interval"
+            }
+          ],
+          "name": "startEnd"
+        },
+
+        {
+          "active": true,
+          "association": "$and",
+          "filters": [
+            {
+              "field": {
+                "enable": true,
+                "group": 1,
+                "name": "vendor",
+                "isAgg": false,
+                "description": "Vendor",
+                "pseudo": false,
+                "grouped": false,
+                "dict": "vendor",
+                "datasource": "managedobjects",
+                "isSelectable": true,
+                "model": null,
+                "type": "Dictionary",
+                "isGrouping": true
+              },
+              "association": "$and",
+              "values": [
+                {
+                  "value": "0"
+                }
+              ],
+              "name": "vendor",
+              "condition": "not.in",
+              "type": "dict-vendor"
+            }
+          ],
+          "name": "form"
+        }
+      ],
+      "title": "Managed objects",
+      "format": 2,
+      "export": {
+        "params": [
+          {
+            "fields": [
+              {
+                "alias": "date",
+                "expr": "date",
+                "group": 0,
+                "format": "dateToString",
+                "label": "Дата"
+              },
+              {
+                "alias": "qty",
+                "desc": true,
+                "expr": "count()",
+                "order": 0,
+                "label": "Кол-во"
+              }
+            ],
+            "datasource": "managedobjects"
+          }
+        ],
+        "id": 0,
+        "method": "query"
+      },
+      "datasource": "managedobjects",
+      "widgets": [
+        {
+          "cell": "c11",
+          "note": "по дате",
+          "title": "Срез данных, 100 последних значений",
+          "type": "selectMenu",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "alias": "date",
+                    "expr": "ts",
+                    "label": "Дата выгрузки",
+                    "format": "dateToDateTimeString",
+                    "group": 0,
+                    "order": 0,
+                    "desc": true
+                  },
+                  {
+                    "expr": "count()",
+                    "alias": "cnt",
+                    "order": 1,
+                    "desc": true
+                  }
+                ],
+                "limit": 100,
+                "datasource": "managedobjects"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        },
+        {
+          "cell": "c12",
+          "note": "по количеству",
+          "title": "Платформа количество объектов, топ 10",
+          "type": "selectablePieChart",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "platform",
+                    "group": 0
+                  },
+                  {
+                    "expr": {
+                      "$lookup": [
+                        "platform",
+                        {
+                          "$field": "platform"
+                        }
+                      ]
+                    },
+                    "group": 1,
+                    "alias": "name"
+                  },
+                  {
+                    "expr": "count()",
+                    "alias": "cnt",
+                    "order": 0,
+                    "desc": true
+                  }
+                ],
+                "limit": 10,
+                "datasource": "managedobjects"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        },
+        {
+          "cell": "c22",
+          "note": "по количеству",
+          "title": "Версии количество объектов, топ 10",
+          "type": "selectablePieChart",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "version",
+                    "group": 0
+                  },
+                  {
+                    "expr": {
+                      "$lookup": [
+                        "version",
+                        {
+                          "$field": "version"
+                        }
+                      ]
+                    },
+                    "group": 1,
+                    "alias": "name"
+                  },
+                  {
+                    "expr": "count()",
+                    "alias": "cnt",
+                    "order": 0,
+                    "desc": true
+                  }
+                ],
+                "limit": 10,
+                "datasource": "managedobjects"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        },
+        {
+          "cell": "c21",
+          "note": "по количеству",
+          "title": "Производители количество объектов, топ 10",
+          "type": "selectablePieChart",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "vendor",
+                    "group": 0
+                  },
+                  {
+                    "expr": {
+                      "$lookup": [
+                        "vendor",
+                        {
+                          "$field": "vendor"
+                        }
+                      ]
+                    },
+                    "group": 1,
+                    "alias": "name"
+                  },
+                  {
+                    "expr": "count()",
+                    "alias": "cnt",
+                    "order": 0,
+                    "desc": true
+                  }
+                ],
+                "limit": 10,
+                "datasource": "managedobjects"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        },
+        {
+          "cell": "table1",
+          "note": "объекты",
+          "title": "Объекты",
+          "type": "dataTable",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "alias": "date",
+                    "expr": "ts",
+                    "label": "Дата выгрузки",
+                    "format": "dateToDateTimeString"
+                  },
+                  {
+                    "expr": {
+                      "$lookup": [
+                        "vendor",
+                        {
+                          "$field": "vendor"
+                        }
+                      ]
+                    },
+                    "alias": "vendor_text",
+                    "label": "Производитель"
+                  },
+                  {
+                    "expr": {
+                      "$lookup": [
+                        "platform",
+                        {
+                          "$field": "platform"
+                        }
+                      ]
+                    },
+                    "alias": "platform_text",
+                    "label": "Платформа"
+                  },
+                  {
+                    "expr": {
+                      "$lookup": [
+                        "version",
+                        {
+                          "$field": "version"
+                        }
+                      ]
+                    },
+                    "alias": "version_text",
+                    "label": "Версия ПО"
+                  }
+                ],
+                "limit": 10,
+                "datasource": "managedobjects"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          }
+        }
+      ],
+      "filter_fields": [
+        {
+          "name": "date",
+          "group": 1
+        },
+        {
+          "name": "ts",
+          "group": 1
+        },
+        {
+          "name": "managed_object",
+          "group": 1
+        },
+        {
+          "name": "administrative_domain",
+          "group": 1
+        },
+        {
+          "name": "segment",
+          "group": 1
+        },
+        {
+          "name": "container",
+          "group": 1
+        },
+        {
+          "name": "level",
+          "group": 1
+        },
+        {
+          "name": "x",
+          "group": 1
+        },
+        {
+          "name": "y",
+          "group": 1
+        },
+        {
+          "name": "pool",
+          "group": 1
+        },
+        {
+          "name": "name",
+          "group": 1
+        },
+        {
+          "name": "ip",
+          "group": 1
+        },
+        {
+          "name": "is_managed",
+          "group": 1
+        },
+        {
+          "name": "profile",
+          "group": 1
+        },
+        {
+          "name": "vendor",
+          "group": 1
+        },
+        {
+          "name": "platform",
+          "group": 1
+        },
+        {
+          "name": "version",
+          "group": 1
+        },
+        {
+          "name": "n_interfaces",
+          "group": 1
+        },
+        {
+          "name": "n_subscribers",
+          "group": 1
+        },
+        {
+          "name": "n_services",
+          "group": 1
+        },
+        {
+          "name": "n_neighbors",
+          "group": 1
+        },
+        {
+          "name": "n_links",
+          "group": 1
+        },
+        {
+          "name": "nri_links",
+          "group": 1
+        },
+        {
+          "name": "mac_links",
+          "group": 1
+        },
+        {
+          "name": "stp_links",
+          "group": 1
+        },
+        {
+          "name": "lldp_links",
+          "group": 1
+        },
+        {
+          "name": "cdp_links",
+          "group": 1
+        },
+        {
+          "name": "has_stp",
+          "group": 1
+        },
+        {
+          "name": "has_lldp",
+          "group": 1
+        },
+        {
+          "name": "has_cdp",
+          "group": 1
+        },
+        {
+          "name": "has_snmp",
+          "group": 1
+        },
+        {
+          "name": "has_snmp_v1",
+          "group": 1
+        },
+        {
+          "name": "has_snmp_v2c",
+          "group": 1
+        },
+        {
+          "name": "tags",
+          "group": 1
+        }
+      ],
+      "agv_fields": [
+        {
+          "name": "date",
+          "group": 1
+        },
+        {
+          "name": "ts",
+          "group": 1
+        },
+        {
+          "name": "managed_object",
+          "group": 1
+        },
+        {
+          "name": "administrative_domain",
+          "group": 1
+        },
+        {
+          "name": "segment",
+          "group": 1
+        },
+        {
+          "name": "container",
+          "group": 1
+        },
+        {
+          "name": "level",
+          "group": 1
+        },
+        {
+          "name": "x",
+          "group": 1
+        },
+        {
+          "name": "y",
+          "group": 1
+        },
+        {
+          "name": "pool",
+          "group": 1
+        },
+        {
+          "name": "name",
+          "group": 1
+        },
+        {
+          "name": "ip",
+          "group": 1
+        },
+        {
+          "name": "is_managed",
+          "group": 1
+        },
+        {
+          "name": "profile",
+          "group": 1
+        },
+        {
+          "name": "vendor",
+          "group": 1
+        },
+        {
+          "name": "platform",
+          "group": 1
+        },
+        {
+          "name": "version",
+          "group": 1
+        },
+        {
+          "name": "n_interfaces",
+          "group": 1
+        },
+        {
+          "name": "n_subscribers",
+          "group": 1
+        },
+        {
+          "name": "n_services",
+          "group": 1
+        },
+        {
+          "name": "n_neighbors",
+          "group": 1
+        },
+        {
+          "name": "n_links",
+          "group": 1
+        },
+        {
+          "name": "nri_links",
+          "group": 1
+        },
+        {
+          "name": "mac_links",
+          "group": 1
+        },
+        {
+          "name": "stp_links",
+          "group": 1
+        },
+        {
+          "name": "lldp_links",
+          "group": 1
+        },
+        {
+          "name": "cdp_links",
+          "group": 1
+        },
+        {
+          "name": "has_stp",
+          "group": 1
+        },
+        {
+          "name": "has_lldp",
+          "group": 1
+        },
+        {
+          "name": "has_cdp",
+          "group": 1
+        },
+        {
+          "name": "has_snmp",
+          "group": 1
+        },
+        {
+          "name": "has_snmp_v1",
+          "group": 1
+        },
+        {
+          "name": "has_snmp_v2c",
+          "group": 1
+        },
+        {
+          "name": "tags",
+          "group": 1
+        }
+      ],
+      "pseudo_fields": []
+    }
+  ]
+}
