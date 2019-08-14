@@ -4,7 +4,7 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs/Subscription';
 import { of } from 'rxjs/observable/of';
 
-import { clone, cloneDeep } from 'lodash';
+import { cloneDeep } from 'lodash';
 import * as d3 from 'd3';
 
 import { environment } from '@env/environment';
@@ -186,11 +186,19 @@ export class FiltersFormComponent implements OnInit {
                         break;
                     }
                     case EventType.DeleteGroup: {
+                        const data = cloneDeep(this.filtersForm.value);
+                        // Form controls
+                        let filters = (<FormArray>(<FormArray>this.filtersForm.get('groups'))
+                            .at(event.group).get('group.filters'));
+                        if (filters.length) {
+                            (<FormArray>(<FormArray>this.filtersForm.get('groups'))
+                                .at(event.group).get('group.filters'))
+                                .removeAt(0);
+                        }
                         // Config array
                         this.config.groups.splice(event.group, 1);
-                        // Form controls
                         (<FormArray>this.filtersForm.get('groups')).removeAt(event.group);
-                        this.applyData(clone(this.filtersForm.value));
+                        this.filtersForm.patchValue(data, {emitEvent: false});
                         break;
                     }
                     case EventType.AddFilter: {
@@ -202,6 +210,7 @@ export class FiltersFormComponent implements OnInit {
                         break;
                     }
                     case EventType.DeleteFilter: {
+                        const data = cloneDeep(this.filtersForm.value);
                         // Config array
                         this.config.groups[event.group].group.filters.splice(event.filter, 1);
                         // Form controls
@@ -209,7 +218,6 @@ export class FiltersFormComponent implements OnInit {
                             .at(event.group).get('group.filters'))
                             .removeAt(event.filter);
 
-                        const data = cloneDeep(this.filtersForm.value);
                         data.groups[event.group].active = false;
                         this.filtersForm.patchValue(data, {emitEvent: false});
                         // if (!this.config.groups[event.group].group.filters.length) {
@@ -225,10 +233,6 @@ export class FiltersFormComponent implements OnInit {
 
     onAddGroup(): void {
         this.eventService.next({type: EventType.AddGroup});
-    }
-
-    private applyData(data: any) {
-        this.filtersForm.patchValue(data, {emitEvent: true});
     }
 
     private createForm(config: FiltersFormConfig): FormGroup {

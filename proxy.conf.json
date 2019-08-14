@@ -1,6 +1,6 @@
 {
   "/main/desktop/user_settings/": {
-    "target": "https://stage-sova.dv.rt.ru/",
+    "target": "https://stage-sova.center.rt.ru/",
     "logLevel": "debug",
     "changeOrigin": true,
     "secure": false
@@ -30,7 +30,7 @@
     "changeOrigin": false
   },
   "/": {
-    "target": "https://stage-sova.dv.rt.ru/",
+    "target": "https://stage-sova.center.rt.ru/",
     "logLevel": "debug",
     "ignorePath": false,
     "changeOrigin": true,
