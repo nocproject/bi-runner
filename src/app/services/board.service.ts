@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { map, publishLast, refCount, share } from 'rxjs/operators';
 
-import { APIService } from '@app/services';
+import { APIService } from './api.service';
 
 import { BiRequestBuilder, Board, Methods } from '@app/model';
 

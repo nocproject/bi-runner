@@ -1,6 +1,6 @@
 {
   "name": "noc-bi",
-  "version": "2.12.0",
+  "version": "3.0.0",
   "description": "NOC BI",
   "scripts": {
     "ng": "ng",
