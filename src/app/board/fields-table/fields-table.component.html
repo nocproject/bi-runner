@@ -13,7 +13,7 @@
         <tr [ngClass]="{'disabled-row': !field.enable}"
             *ngIf="field.isGrouping">
             <td style="vertical-align: middle;">
-                <div class="checkbox rtl checkbox-primary" tooltip="{{ field.description }}" placement="top">
+                <div class="checkbox rtl checkbox-primary" tooltip="{{ field.description + ' : ' + field.group }}" placement="top">
                     <span>{{ field.name }}</span>
                     <sup *ngIf="field.aggFunc">({{ field.aggFunc}})</sup>
                 </div>

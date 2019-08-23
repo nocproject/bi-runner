@@ -8,9 +8,8 @@ import { first, map } from 'rxjs/operators';
 import { cloneDeep, findIndex, remove } from 'lodash';
 
 import { BiRequestBuilder, Board, Field, FieldBuilder, Message, MessageType, Methods } from '@app/model';
-import { DatasourceService } from '../services/datasource-info.service';
 import { FieldsTableService } from '../services/fields-table.service';
-import { APIService, AuthenticationService, MessageService } from '@app/services';
+import { APIService, AuthenticationService, DatasourceService, MessageService } from '@app/services';
 
 @Component({
     selector: 'bi-fields',

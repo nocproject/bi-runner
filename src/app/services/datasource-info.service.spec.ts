@@ -5,9 +5,9 @@ import { getTestBed, TestBed } from '@angular/core/testing';
 
 import { Field, Methods } from '@app/model';
 import { APIService } from '@app/services';
-import { BoardResolver } from './board.resolver';
+import { BoardService } from '../services/board.service';
 import { DatasourceService } from './datasource-info.service';
-import { FilterService } from './filter.service';
+import { FilterService } from '../board/services/filter.service';
 // Test data
 import * as alarmsDatasourceInfoBody from '../../test-response/alarmsDatasourceInfoBody.json';
 import * as alarmsBoardBody from '../../test-response/alarmsBoardBody.json';
@@ -31,11 +31,11 @@ describe('Service: DatasourceService for alarms', () => {
                 HttpClientTestingModule
             ],
             providers: [
-                BoardResolver,
+                BoardService,
                 {
                     provide: DatasourceService,
                     useFactory: (api, resolver, filter) => new DatasourceService(api, resolver, filter),
-                    deps: [APIService, BoardResolver]
+                    deps: [APIService, BoardService]
                 },
                 {
                     provide: APIService,
@@ -50,7 +50,7 @@ describe('Service: DatasourceService for alarms', () => {
         httpMock = injector.get(HttpTestingController);
 
         // Returns a services with the MockBackend so we can test with dummy responses
-        let resolver = TestBed.get(BoardResolver);
+        let resolver = TestBed.get(BoardService);
         let route = new ActivatedRouteSnapshot();
         route.params = {id: ''};
         resolver.resolve(route, null);
@@ -146,11 +146,11 @@ describe('Service: DatasourceService for reboots', () => {
                 HttpClientTestingModule
             ],
             providers: [
-                BoardResolver,
+                BoardService,
                 {
                     provide: DatasourceService,
                     useFactory: (api, resolver, filter) => new DatasourceService(api, resolver, filter),
-                    deps: [APIService, BoardResolver]
+                    deps: [APIService, BoardService]
                 },
                 {
                     provide: APIService,
@@ -165,7 +165,7 @@ describe('Service: DatasourceService for reboots', () => {
         httpMock = injector.get(HttpTestingController);
 
         // Returns a services with the MockBackend so we can test with dummy responses
-        let resolver = TestBed.get(BoardResolver);
+        let resolver = TestBed.get(BoardService);
         let route = new ActivatedRouteSnapshot();
         route.params = {id: ''};
         resolver.resolve(route, null);
@@ -261,11 +261,11 @@ describe('Service: DatasourceService for interfaces', () => {
                 HttpClientTestingModule
             ],
             providers: [
-                BoardResolver,
+                BoardService,
                 {
                     provide: DatasourceService,
                     useFactory: (api, resolver, filter) => new DatasourceService(api, resolver, filter),
-                    deps: [APIService, BoardResolver]
+                    deps: [APIService, BoardService]
                 },
                 {
                     provide: APIService,
@@ -280,7 +280,7 @@ describe('Service: DatasourceService for interfaces', () => {
         httpMock = injector.get(HttpTestingController);
 
         // Returns a services with the MockBackend so we can test with dummy responses
-        let resolver = TestBed.get(BoardResolver);
+        let resolver = TestBed.get(BoardService);
         let route = new ActivatedRouteSnapshot();
         route.params = {id: ''};
         resolver.resolve(route, null);

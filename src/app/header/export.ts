@@ -3,7 +3,7 @@ import { flatMap, head } from 'lodash';
 import * as d3 from 'd3';
 import * as saver from 'file-saver';
 
-import { APIService } from '@app/services';
+import { APIService, BoardService } from '@app/services';
 //
 import {
     BiRequest,
@@ -19,13 +19,12 @@ import {
     WhereBuilder
 } from '../model';
 //
-import { BoardResolver } from '../board/services/board.resolver';
 import { FilterService } from '../board/services/filter.service';
 
 export class Export {
 
     static query(api: APIService,
-                 boardResolver: BoardResolver,
+                 boardResolver: BoardService,
                  filterService: FilterService): Observable<Result> {
         const board: Board = boardResolver.getBoard();
         const where = WhereBuilder.makeWhere(filterService.allFilters(), true);
@@ -65,7 +64,7 @@ export class Export {
     }
 
     static save(data,
-                boardResolver: BoardResolver) {
+                boardResolver: BoardService) {
         const fields: Field[] = boardResolver.getBoard().exportQry.params[0].fields;
         const title: string = boardResolver.getBoard().title;
         const pairs = fields

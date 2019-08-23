@@ -1,8 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { AuthGuard } from './services';
-import { BoardResolver } from './board/services/board.resolver';
+import { AuthGuard, BoardService } from './services';
 
 import { BoardComponent } from './board';
 import { LoginComponent } from './login/login.component';
@@ -31,7 +30,7 @@ const routes: Routes = [
         canDeactivate: [ShareCanDeactivateGuard],
         canActivate: [AuthGuard],
         resolve: {
-            detail: BoardResolver
+            detail: BoardService
         }
     },
     {
@@ -39,7 +38,7 @@ const routes: Routes = [
         component: BoardComponent,
         canActivate: [AuthGuard],
         resolve: {
-            detail: BoardResolver
+            detail: BoardService
         }
     }
 ];

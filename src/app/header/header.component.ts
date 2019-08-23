@@ -11,11 +11,18 @@ import { cloneDeep, includes } from 'lodash';
 
 import { environment } from '@env/environment';
 
-import { APIService, AuthenticationService, LanguageService, LayoutService, MessageService } from '@app/services';
-import { BoardResolver } from '../board/services/board.resolver';
+import {
+    APIService,
+    AuthenticationService,
+    BoardService,
+    DatasourceService,
+    LanguageService,
+    LayoutService,
+    MessageService
+} from '@app/services';
 import { FilterService } from '../board/services/filter.service';
 
-import { BiRequestBuilder, Board, Field, Message, MessageType, Methods, User } from '../model';
+import { BiRequestBuilder, Board, Field, IOption, Message, MessageType, Methods, User } from '../model';
 import { ModalComponent } from '../shared/modal/modal';
 import { Export } from './export';
 
@@ -31,6 +38,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     board$: Observable<Board>;
     isReportOpen$: Observable<boolean>;
     accessLevel$: Observable<number>;
+    newFields$: Observable<IOption[]>;
     exportSpin: boolean = false;
     version = environment.version;
     lang: string;
@@ -52,15 +60,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
                 private api: APIService,
                 private route: Router,
                 private layoutService: LayoutService,
-                private boardResolver: BoardResolver,
+                private boardService: BoardService,
                 private filterService: FilterService,
+                private datasource: DatasourceService,
                 private location: Location) {
     }
 
     ngOnInit() {
         this.user$ = this.authService.user$;
         this.isLogin$ = this.authService.isLogIn$;
-        this.board$ = this.boardResolver.board$;
+        this.board$ = this.boardService.board$;
         this.isReportOpen$ = this.layoutService.isReportOpen$;
         this.accessLevel$ = this.authService.accessLevel$;
 
@@ -70,6 +79,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
                         setTimeout(() => this.boardTitle = board.title, 0);
                         setTimeout(() => this.boardDesc = board.description, 0);
                         this.authService.initAccessLevel(board.id);
+                        this.newFields$ = this.datasource.newFieldsAsOption();
                     }
                 }
             );
@@ -103,7 +113,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
 
     onSaveBoard() {
-        const board = cloneDeep(this.boardResolver.getBoard());
+        const board = cloneDeep(this.boardService.getBoard());
 
         board.groups = this.filterService.allFilters();
         board.sample = this.filterService.ratioSubject.getValue();
@@ -119,7 +129,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
 
     onSaveAsBoard(modal: ModalComponent) {
-        const board = cloneDeep(this.boardResolver.getBoard());
+        const board = cloneDeep(this.boardService.getBoard());
 
         board.title = this.saveForm.get('title').value;
         board.description = this.saveForm.get('description').value;
@@ -139,7 +149,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
                 this.location.replaceState(`/board/${response.result}`);
                 this.boardTitle = board.title;
                 board.id = response.result;
-                this.boardResolver.next(board);
+                this.boardService.next(board);
             }, error => {
                 let responseBody = error.json();
                 if (responseBody.hasOwnProperty('error') && includes(responseBody.error, 'name exists')) {
@@ -149,7 +159,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
 
     onRemoveBoard(modal: ModalComponent) {
-        const board = cloneDeep(this.boardResolver.getBoard());
+        const board = cloneDeep(this.boardService.getBoard());
         const query = new BiRequestBuilder()
             .method(Methods.REMOVE_DASHBOARD)
             .params([board.id])
@@ -165,10 +175,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     onExport(): void {
         this.exportSpin = true;
-        Export.query(this.api, this.boardResolver, this.filterService)
+        Export.query(this.api, this.boardService, this.filterService)
             .pipe(first(), finalize(() => this.exportSpin = false))
             .subscribe(
-                (response) => Export.save(response.result, this.boardResolver)
+                (response) => Export.save(response.result, this.boardService)
             );
     }
 
@@ -178,7 +188,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
 
     onAddField(modal: ModalComponent) {
-        const board = cloneDeep(this.boardResolver.getBoard());
+        const board = cloneDeep(this.boardService.getBoard());
         const field: Field = {
             name: this.addFieldForm.value.name,
             group: this.addFieldForm.value.group,
@@ -204,6 +214,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
             isSortable: null,
             allowAggFuncs: false
         };
+
+        if (this.addFieldForm.value.name === 'none') {
+            return;
+        }
 
         if (this.addFieldForm.value.fields) {
             board.agvFields.push(field);

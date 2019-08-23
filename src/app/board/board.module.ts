@@ -16,8 +16,8 @@ import { WidgetsModule } from './widgets/widgets.module';
 import { BoardComponent, ReportRangeComponent, SelectorComponent } from './index';
 import { CounterService } from './services/counter.service';
 import { EventService } from './services/event.service';
-import { FilterService } from './services/filter.service';
 import { FieldsTableService } from './services/fields-table.service';
+import { FilterService } from './services/filter.service';
 import { FieldsTableModule } from './fields-table/fields-table.module';
 
 export const COMPONENTS = [

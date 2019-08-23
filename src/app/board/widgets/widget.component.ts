@@ -18,11 +18,10 @@ import {
     Value,
     WhereBuilder
 } from '@app/model';
-import { APIService, LanguageService } from '@app/services';
+import { APIService, DatasourceService, LanguageService } from '@app/services';
 import { FilterService } from '../services/filter.service';
 import { EventService } from '../services/event.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { DatasourceService } from '../services/datasource-info.service';
 
 export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestroy {
     @Input()
@@ -43,7 +42,8 @@ export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestro
     fieldName: string;
 
     constructor(@Inject(forwardRef(() => FormBuilder)) protected fb: FormBuilder,
-                @Inject(forwardRef(() => DatasourceService)) protected datasourceService: DatasourceService,
+                protected datasourceService: DatasourceService,
+                // @Inject(forwardRef(() => DatasourceService)) protected datasourceService: DatasourceService,
                 @Inject(forwardRef(() => APIService)) protected api: APIService,
                 @Inject(forwardRef(() => FilterService)) protected filterService: FilterService,
                 @Inject(forwardRef(() => EventService)) protected eventService: EventService,

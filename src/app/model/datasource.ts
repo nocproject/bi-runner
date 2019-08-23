@@ -15,6 +15,7 @@ export class Datasource {
     @JsonMember()
     public sample: boolean;
     public tableFields: Field[];
+    public origFields: Field[];
 
     static fromJSON(json: any): Datasource {
         return TypedJSON.parse(json, Datasource);

@@ -136,12 +136,19 @@
     <bi-modal-content>
         <form id="#addFieldForm" [formGroup]="addFieldForm">
             <label for="add-field-name" class="control-label" translate>HEADER.ADD_FIELD_DLG.NAME</label>
-            <input id="add-field-name" class="form-control" required autofocus formControlName="name">
+            <!--            <input id="add-field-name" class="form-control" required autofocus formControlName="name">-->
+            <select id="add-field-name"
+                    class="form-control"
+                    formControlName="name">
+                <option [value]="'none'" translate>Choose Field</option>
+                <option *ngFor="let item of newFields$ | async" [value]="item.value">{{ item.text }}</option>
+            </select>
             <div *ngIf="addFieldForm.get('name').hasError('required')">
                 <div class="ng-invalid" translate>VALIDATOR.REQUIRED</div>
             </div>
             <label for="add-field-group" class="control-label" translate>HEADER.ADD_FIELD_DLG.GROUP</label>
-            <input id="add-field-group" class="form-control" required formControlName="group">
+            <input id="add-field-group" type="number" class="form-control" required formControlName="group"
+                   placeholder="9999999999" min="1">
             <div *ngIf="addFieldForm.get('group').hasError('required')">
                 <div class="ng-invalid" translate>VALIDATOR.REQUIRED</div>
             </div>
@@ -152,14 +159,16 @@
                            [checked]="true"
                            formControlName="fields"
                            class="styled" type="checkbox">
-                    <label for="add-field-to-fields" class="control-label" translate>HEADER.ADD_FIELD_DLG.TO_FIELDS</label>
+                    <label for="add-field-to-fields" class="control-label"
+                           translate>HEADER.ADD_FIELD_DLG.TO_FIELDS</label>
                 </div>
                 <div class="checkbox rtl checkbox-primary checkbox-circle">
                     <input id="add-field-to-filters"
                            [checked]="true"
                            formControlName="filters"
                            class="styled" type="checkbox">
-                    <label for="add-field-to-filters" class="control-label" translate>HEADER.ADD_FIELD_DLG.TO_FILTERS</label>
+                    <label for="add-field-to-filters" class="control-label"
+                           translate>HEADER.ADD_FIELD_DLG.TO_FILTERS</label>
                 </div>
             </fieldset>
         </form>

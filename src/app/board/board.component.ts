@@ -7,18 +7,17 @@ import { map } from 'rxjs/operators';
 import { head } from 'lodash';
 
 import { Board, Cell, Widget, WidgetRow } from '@app/model';
-import { LayoutService } from '@app/services';
-import { BoardResolver } from './services/board.resolver';
-import { DatasourceService } from './services/datasource-info.service';
+import { BoardService, LayoutService } from '@app/services';
+// import { DatasourceService } from './services/datasource-info.service';
 import { FilterService } from './services/filter.service';
 import { FieldsTableService } from './services/fields-table.service';
 
 @Component({
     selector: 'bi-board',
     templateUrl: './board.component.html',
-    providers: [
-        DatasourceService
-    ]
+    // providers: [
+    //     DatasourceService
+    // ]
 })
 
 export class BoardComponent implements OnInit, OnDestroy {
@@ -26,7 +25,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     public board: Board;
     private subscription: Subscription;
 
-    constructor(public boardResolver: BoardResolver,
+    constructor(public boardResolver: BoardService,
                 private route: ActivatedRoute,
                 private layoutService: LayoutService,
                 private fieldsTableService: FieldsTableService,

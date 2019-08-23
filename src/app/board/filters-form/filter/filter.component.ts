@@ -9,9 +9,9 @@ import { Subscription } from 'rxjs/Subscription';
 import { of } from 'rxjs/observable/of';
 
 import { Field } from '@app/model';
+import { DatasourceService } from '@app/services';
 import { EventType } from '../model/event.interface';
 import { FieldConfig, FilterConfig } from '../model/filters-form-config.interface';
-import { DatasourceService } from '../../services/datasource-info.service';
 import { EventService } from '../../services/event.service';
 import { FieldConfigService } from '../services/field-config.service';
 

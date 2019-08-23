@@ -8,7 +8,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { filter, flatMap, map } from 'rxjs/operators';
 
-import { APIService, LanguageService } from '@app/services';
+import { APIService, DatasourceService, LanguageService } from '@app/services';
 import {
     BiRequestBuilder,
     Board,
@@ -25,7 +25,6 @@ import { ReportRangeComponent } from '../report-range/report-range.component';
 import { ModalComponent } from '../../shared/modal/modal';
 //
 import { EventType } from '../filters-form/model/event.interface';
-import { DatasourceService } from '../services/datasource-info.service';
 import { EventService } from '../services/event.service';
 import { FilterService } from '../services/filter.service';
 

@@ -12,11 +12,12 @@ import {
     APIService,
     AuthenticationService,
     AuthGuard,
+    BoardService,
+    DatasourceService,
     LanguageService,
     LayoutService,
     MessageService
 } from './services';
-import { BoardResolver } from './board/services/board.resolver';
 import { BoardListModule } from './board-list/board-list.module';
 import { BoardModule } from './board/board.module';
 import { HeaderModule } from './header/header.module';
@@ -28,8 +29,10 @@ import { TranslateParserService } from './shared/translate/translate-parser.serv
 
 export const APP_SERVICES = [
     APIService,
-    AuthGuard,
     AuthenticationService,
+    AuthGuard,
+    BoardService,
+    DatasourceService,
     LanguageService,
     LayoutService,
     MessageService
@@ -53,7 +56,9 @@ export const APP_SERVICES = [
             loader: {
                 provide: TranslateLoader,
                 useFactory: HttpLoaderFactory,
-                deps: [HttpClient]
+                deps: [
+                    HttpClient
+                ]
             },
             parser: {
                 provide: TranslateParser,
@@ -62,7 +67,6 @@ export const APP_SERVICES = [
         })
     ],
     providers: [
-        BoardResolver,
         ShareCanDeactivateGuard,
         // Application services
         ...APP_SERVICES,

@@ -10,7 +10,7 @@ import { APIService } from './api.service';
 import { BiRequestBuilder, Board, Methods } from '@app/model';
 
 @Injectable()
-export class BoardResolver implements Resolve<Board> {
+export class BoardService implements Resolve<Board> {
     private boardSubject = new BehaviorSubject<Board>(null);
     board$: Observable<Board> = this.boardSubject.asObservable();
 

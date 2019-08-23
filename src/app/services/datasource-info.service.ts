@@ -1,24 +1,25 @@
 import { Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs/Observable';
-import { map, publishLast, refCount, switchMap } from 'rxjs/operators';
+import { map, publishReplay, refCount, switchMap } from 'rxjs/operators';
 
-import { findIndex, head } from 'lodash';
+import { cloneDeep, findIndex, head } from 'lodash';
 
-import { APIService } from '@app/services';
-import { BoardResolver } from './board.resolver';
-import { FilterService } from './filter.service';
+import { APIService } from './api.service';
 
 import { BiRequestBuilder, Board, Datasource, Field, IOption, Methods } from '@app/model';
+import { BoardService } from './board.service';
+import { FilterService } from '../board/services/filter.service';
 
 @Injectable()
 export class DatasourceService {
     datasource$: Observable<Datasource>;
 
     constructor(private api: APIService,
-                private boardResolver: BoardResolver,
-                private filterService: FilterService) {
-        this.datasource$ = this.boardResolver.board$
+                private boardService: BoardService,
+                private filterService: FilterService
+    ) {
+        this.datasource$ = this.boardService.board$
             .pipe(
                 switchMap((board: Board) => {
                     return this.api.execute(
@@ -28,13 +29,14 @@ export class DatasourceService {
                             .build())
                         .map(response => {
                             const datasource = Datasource.fromJSON(response.result);
+                            datasource.origFields = cloneDeep(datasource.fields);
                             datasource.fields = this._fields(board, board.filterFields, datasource);
                             datasource.tableFields = this._fields(board, board.agvFields, datasource);
                             this.filterService.fields = datasource.fields;
                             return datasource;
                         });
                 }),
-                publishLast(),
+                publishReplay(1),
                 refCount()
             );
     }
@@ -56,6 +58,7 @@ export class DatasourceService {
     }
 
     fieldByName(name: string): Observable<Field> {
+        console.log(name);
         return this.datasource$.map(d => d.getFieldByName(name));
     }
 
@@ -72,6 +75,30 @@ export class DatasourceService {
                         }
                     )
                 )
+            );
+    }
+
+    newFieldsAsOption(): Observable<IOption[]> {
+        return this.boardService.board$
+            .pipe(
+                switchMap((board: Board) => {
+                    return this.datasource$.map(d => d.origFields)
+                        .pipe(
+                            map(array => array
+                                .filter(field => field.isSelectable)
+                                .filter(field => findIndex(board.agvFields, e => e.name === field.name) === -1)
+                                .map(field => {
+                                        return {
+                                            value: `${field.name}`,
+                                            text: field.description
+                                        };
+                                    }
+                                )
+                            )
+                        );
+                }),
+                publishReplay(1),
+                refCount()
             );
     }
 
