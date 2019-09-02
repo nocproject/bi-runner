@@ -101,7 +101,7 @@
     "FULL_NAME": "Full Name",
     "TITLE": "Share Report : {{value}}",
     "SHARE_BTN": "Share",
-    "EXIT_BTN": "Exit",
+    "EXIT_BTN": "Close",
     "REMOVE_BTN": "Remove Access From All",
     "SELECTED": "Selected : {{value}}",
     "TITLE_DLG": "Unsaved data",
