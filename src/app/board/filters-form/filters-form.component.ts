@@ -70,7 +70,7 @@ export class FiltersFormComponent implements OnInit {
             active: false,
             group: {
                 association: '$and',
-                filters: [cloneDeep(emptyFilterConfig)]
+                filters: [emptyFilterConfig]
             }
         };
         this.config = {
@@ -180,9 +180,9 @@ export class FiltersFormComponent implements OnInit {
                     }
                     case EventType.AddGroup: {
                         // Config array
-                        this.config.groups.push(freshGroup);
+                        this.config.groups.push(cloneDeep(freshGroup));
                         // Form controls
-                        (<FormArray>this.filtersForm.get('groups')).push(this.createGroup(freshGroup));
+                        (<FormArray>this.filtersForm.get('groups')).push(this.createGroup(cloneDeep(freshGroup)));
                         break;
                     }
                     case EventType.DeleteGroup: {
