@@ -211,13 +211,13 @@ export class FiltersFormComponent implements OnInit {
                     }
                     case EventType.DeleteFilter: {
                         const data = cloneDeep(this.filtersForm.value);
+                        data.groups[event.group].group.filters.splice(event.filter, 1);
                         // Config array
                         this.config.groups[event.group].group.filters.splice(event.filter, 1);
                         // Form controls
                         (<FormArray>(<FormArray>this.filtersForm.get('groups'))
                             .at(event.group).get('group.filters'))
                             .removeAt(event.filter);
-
                         data.groups[event.group].active = false;
                         this.filtersForm.patchValue(data, {emitEvent: false});
                         // if (!this.config.groups[event.group].group.filters.length) {
