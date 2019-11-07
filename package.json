@@ -1,6 +1,6 @@
 {
   "name": "noc-bi",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "description": "NOC BI",
   "scripts": {
     "ng": "ng",
@@ -60,7 +60,7 @@
     "karma-jasmine-html-reporter": "^0.2.2",
     "node-sass": "^4.12.0",
     "protractor": "~5.1.2",
-    "ts-node": "~3.2.0",
+    "ts-node": "~3.2.1",
     "tslint": "~5.7.0",
     "typescript": "~2.6"
   }
