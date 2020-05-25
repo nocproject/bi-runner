@@ -1,4 +1,4 @@
-import { AfterViewInit, ElementRef, forwardRef, Inject, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ElementRef, forwardRef, Inject, Input, OnDestroy, OnInit, ViewChild, Directive } from '@angular/core';
 
 import { BaseMixin } from 'dc';
 import { clone, startsWith } from 'lodash';
@@ -22,6 +22,7 @@ import { FilterService } from '../services/filter.service';
 import { EventService } from '../services/event.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
+@Directive()
 export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestroy {
     @Input()
     data: CellAndWidget;
