@@ -1,8 +1,9 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
 import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { TranslateLoader, TranslateModule, TranslateParser } from '@ngx-translate/core';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 //
 import { AppRoutingModule } from './app-routing.module';
@@ -10,7 +11,6 @@ import { AppComponent } from './app.component';
 import {
     APIInterceptor,
     APIService,
-    AuthenticationService,
     AuthGuard,
     BoardService,
     DatasourceService,
@@ -25,17 +25,14 @@ import { LoginModule } from './login/login.module';
 import { ShareModule } from './share/share.module';
 import { MessagesModule } from './shared/messages/messages.module';
 import { ShareCanDeactivateGuard } from './share/share-can-deactivate.guard';
-import { TranslateParserService } from './shared/translate/translate-parser.service';
 
 export const APP_SERVICES = [
     APIService,
-    AuthenticationService,
     AuthGuard,
     BoardService,
     DatasourceService,
     LanguageService,
     LayoutService,
-    MessageService
 ];
 
 @NgModule({
@@ -52,6 +49,7 @@ export const APP_SERVICES = [
         LoginModule,
         ShareModule,
         AppRoutingModule,
+        BrowserAnimationsModule,
         TranslateModule.forRoot({
             loader: {
                 provide: TranslateLoader,
@@ -60,10 +58,6 @@ export const APP_SERVICES = [
                     HttpClient
                 ]
             },
-            parser: {
-                provide: TranslateParser,
-                useClass: TranslateParserService
-            }
         })
     ],
     providers: [

@@ -1,6 +1,7 @@
-import { Observable } from 'rxjs/Observable';
+
+import {throwError as observableThrowError,  Observable } from 'rxjs';
 import { flatMap, head } from 'lodash';
-import * as d3 from 'd3';
+import { timeFormat } from 'd3-time-format';
 import * as saver from 'file-saver';
 
 import { APIService, BoardService } from '@app/services';
@@ -19,7 +20,7 @@ import {
     WhereBuilder
 } from '../model';
 //
-import { FilterService } from '../board/services/filter.service';
+import { FilterService } from '@board/services';
 
 export class Export {
 
@@ -36,7 +37,7 @@ export class Export {
         if (durationFilters.length > 0) {
             const rangeGroup = head(filterService.getFilter('startEnd'));
             if (!rangeGroup) {
-                return Observable.throw('You must set report range!');
+                return observableThrowError('You must set report range!');
             }
             const range = reportRange(rangeGroup);
             fields.push(durationByReport(range));
@@ -64,13 +65,13 @@ export class Export {
     }
 
     static save(data,
-                boardResolver: BoardService) {
-        const fields: Field[] = boardResolver.getBoard().exportQry.params[0].fields;
-        const title: string = boardResolver.getBoard().title;
+                boardService: BoardService) {
+        const fields: Field[] = boardService.getBoard().exportQry.params[0].fields;
+        const title: string = boardService.getBoard().title;
         const pairs = fields
             .map(field => [field.alias ? field.alias : field.expr, field.label])
             .reduce((acc, [key, value]) => {
-                acc[key] = value;
+                acc[key.toString()] = value;
                 return acc;
             }, {});
         saver.saveAs(
@@ -265,7 +266,7 @@ function reportRange(group: Group): any[] {
 }
 
 function toDateTime(value) {
-    return `toDateTime('${d3.time.format('%Y-%m-%dT%H:%M:%S')(value)}')`;
+    return `toDateTime('${timeFormat('%Y-%m-%dT%H:%M:%S')(value)}')`;
 }
 
 /**

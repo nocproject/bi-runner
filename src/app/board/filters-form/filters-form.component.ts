@@ -1,30 +1,31 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { Subscription } from 'rxjs/Subscription';
-import { of } from 'rxjs/observable/of';
+import { of, Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 import { cloneDeep } from 'lodash';
-import * as d3 from 'd3';
+import { timeFormat } from 'd3-time-format';
 
 import { environment } from '@env/environment';
 
 import { Field, FieldBuilder, Filter, Group, Range } from '@app/model';
 import {
+    EventType,
     FieldConfig,
     FilterConfig,
     FilterGroupConfig,
     FiltersConfig,
     FiltersFormConfig
-} from './model/filters-form-config.interface';
-import { EventType } from './model/event.interface';
-import { EventService } from '../services/event.service';
+} from './model';
+import { EventService } from '@board/services';
 import { BIValidators } from './components/validators';
 import { FieldConfigService } from './services/field-config.service';
 
 @Component({
     selector: 'bi-filters-form',
-    templateUrl: './filters-form.component.html'
+    templateUrl: './filters-form.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FiltersFormComponent implements OnInit {
     config: FiltersFormConfig;
@@ -113,8 +114,8 @@ export class FiltersFormComponent implements OnInit {
             }]
         };
         this.filtersForm = this.createForm(this.config);
-        this.eventSubscription = this.eventService.event$
-            .filter(event => event !== null)
+        this.eventSubscription = this.eventService.event$.pipe(
+            filter(event => event !== null))
             .subscribe(event => {
                 switch (event.type) {
                     case EventType.Restore: {
@@ -274,21 +275,21 @@ export class FiltersFormComponent implements OnInit {
 
         if (filter.getType() === 'Date') {
             if (filter.condition.match(/interval/i)) {
-                value = `${d3.time.format('%d.%m.%Y')(filter.values[0].value)} - ${d3.time.format('%d.%m.%Y')(filter.values[1].value)}`;
+                value = `${timeFormat('%d.%m.%Y')(filter.values[0].value)} - ${timeFormat('%d.%m.%Y')(filter.values[1].value)}`;
             } else {
-                value = d3.time.format('%d.%m.%Y')(filter.values[0].value);
+                value = timeFormat('%d.%m.%Y')(filter.values[0].value);
             }
         } else if (filter.getType() === 'DateTime') {
             if (filter.condition.match(/periodic/i)) {
                 value = filter.values[0].value;
             } else if (filter.condition.match(/interval/i)) {
                 if (Range.isNotRange(filter.values[0].value)) {
-                    value = `${d3.time.format('%d.%m.%Y %H:%M')(filter.values[0].value)} - ${d3.time.format('%d.%m.%Y %H:%M')(filter.values[1].value)}`;
+                    value = `${timeFormat('%d.%m.%Y %H:%M')(filter.values[0].value)} - ${timeFormat('%d.%m.%Y %H:%M')(filter.values[1].value)}`;
                 } else {
                     value = filter.values[0].value;
                 }
             } else {
-                value = d3.time.format('%d.%m.%Y %H:%M')(filter.values[0].value);
+                value = timeFormat('%d.%m.%Y %H:%M')(filter.values[0].value);
             }
         } else if (filter.condition.match('empty')) {
             // skip empty value

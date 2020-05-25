@@ -1,16 +1,15 @@
 import { Injectable } from '@angular/core';
 
-import { Observable } from 'rxjs/Observable';
-import { of } from 'rxjs/observable/of';
+import { Observable ,  of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { cloneDeep, flattenDeep, head } from 'lodash';
 
+import { BiRequestBuilder, Board, Group, Methods, Result, WhereBuilder } from '@app/model';
 import { APIService } from '@app/services';
 import { FilterService } from './filter.service';
 import { FieldsTableService } from './fields-table.service';
 
-import { BiRequestBuilder, Board, Group, Methods, Result, WhereBuilder } from '@app/model';
 
 @Injectable()
 export class CounterService {

@@ -1,8 +1,7 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import { Observable ,  Subscription } from 'rxjs';
 import { first, map } from 'rxjs/operators';
 
 import { cloneDeep, findIndex, remove } from 'lodash';
@@ -38,7 +37,7 @@ export class FieldsTableComponent implements OnInit, OnDestroy {
 
     onGroupBy(field: Field, control: any): void {
         const fields = [];
-        const index = findIndex(this.board.exportQry.params[0].fields, e => e.expr === field.name);
+        const index = findIndex(this.board.exportQry.params[0].fields, (e: Field) => e.expr === field.name);
 
         field.grouped = control.checked;
         if (field.grouped && index === -1) {
@@ -75,9 +74,9 @@ export class FieldsTableComponent implements OnInit, OnDestroy {
             this.fieldsTableService.fieldsNext(fields);
         }
         if (!field.grouped && index !== -1) {
-            remove(this.board.exportQry.params[0].fields, e => e.expr === field.name);
+            remove(this.board.exportQry.params[0].fields, (e: Field) => e.expr === field.name);
             if (field.dict || 'ip' === field.name) {
-                remove(this.board.exportQry.params[0].fields, e => e.alias === (field.name + '_text'));
+                remove(this.board.exportQry.params[0].fields, (e: Field) => e.alias === (field.name + '_text'));
             }
             this.fieldsTableService.removeField(field);
         }

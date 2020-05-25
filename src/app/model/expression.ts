@@ -1,5 +1,5 @@
-import { JsonObject } from '@upe/typedjson';
+import { Serializable } from 'typescript-json-serializer';
 
-@JsonObject()
+@Serializable()
 export class Expression {
 }

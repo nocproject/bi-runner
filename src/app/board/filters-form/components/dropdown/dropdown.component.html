@@ -5,7 +5,7 @@
          [ngClass]="{'open': open}"
          (click)="openList()">
         <ul>
-            <li class="bi-dropdown" translate>{{ placeholder }}</li>
+            <li class="bi-dropdown">{{ placeholder | translate }}</li>
             <div style="margin-left: auto; display: flex;align-items: center;">
                 <li *ngIf="showRemove" style="cursor: pointer;" (click)="onClean($event)">
                     <i class="fa fa-times"></i>

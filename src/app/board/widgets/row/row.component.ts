@@ -1,11 +1,9 @@
 import { Component } from '@angular/core';
 
-import * as dc from 'dc';
 import { BaseMixin, RowChart } from 'dc';
-import * as crossfilter from 'crossfilter';
 
-import { Restore, WidgetComponent } from '../widget.component';
 import { FilterBuilder, Result, Value } from '@app/model';
+import { Restore, WidgetComponent } from '../widget.component';
 import { Utils } from '../../../shared/utils';
 
 @Component({
@@ -15,12 +13,10 @@ import { Utils } from '../../../shared/utils';
 export class RowComponent extends WidgetComponent {
     draw(response: Result): BaseMixin<RowChart> {
         const days = this.languageService.days;
-        const chart: RowChart = dc.rowChart(`#${this.data.cell.name}`);
-        const ndx = crossfilter(response.zip(false));
+        const chart: RowChart = new RowChart(`#${this.data.cell.name}`);
+        const ndx = this.initialState(chart, response.zip(false));
         const dimension = ndx.dimension(d => new Value(d.day, days[d.day - 1]));
         const values = dimension.group().reduceSum(d => d.cnt);
-
-        this.initialState(chart);
 
         chart.width(this.wrapperView.nativeElement.scrollWidth - 10);
         chart.height(this.data.cell.height);

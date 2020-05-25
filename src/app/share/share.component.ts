@@ -2,9 +2,7 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import { BehaviorSubject ,  Observable ,  Subscription } from 'rxjs';
 import { first, flatMap, map, pluck, switchMap, toArray } from 'rxjs/operators';
 
 import { concat, includes, remove } from 'lodash';
@@ -49,8 +47,8 @@ export class ShareComponent implements OnInit, OnDestroy {
             .headers(['SHARE.USERNAME', 'SHARE.FULL_NAME'])
             .names(['username', 'full_name'])
             .data(this.api
-                .execute(new BiRequestBuilder().method(Methods.LIST_USERS).build())
-                .map(response => response.result)
+                .execute(new BiRequestBuilder().method(Methods.LIST_USERS).build()).pipe(
+                map(response => response.result))
             )
             .fromJson(userJson)
             .build();
@@ -59,8 +57,8 @@ export class ShareComponent implements OnInit, OnDestroy {
             .headers(['SHARE.GROUP_NAME'])
             .names(['name'])
             .data(this.api
-                .execute(new BiRequestBuilder().method(Methods.LIST_GROUPS).build())
-                .map(response => response.result)
+                .execute(new BiRequestBuilder().method(Methods.LIST_GROUPS).build()).pipe(
+                map(response => response.result))
             )
             .fromJson(groupJson)
             .build();

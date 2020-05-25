@@ -1,14 +1,13 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
 import { head, sortBy, startsWith } from 'lodash';
-import * as d3 from 'd3';
-import * as dc from 'dc';
-import { BaseMixin, DataTableWidget } from 'dc';
-import * as crossfilter from 'crossfilter';
+import { ascending, descending } from 'd3-array';
+import { BaseMixin, DataTable } from 'dc';
+import crossfilter from 'crossfilter2';
 
 import { Field, IOption, Result, Value } from '@app/model';
 import { Restore, WidgetComponent } from '../widget.component';
@@ -30,8 +29,8 @@ export class TableComponent extends WidgetComponent {
     });
     private addSubscription: Subscription;
 
-    draw(response: Result): BaseMixin<DataTableWidget> {
-        const chart: DataTableWidget = dc.dataTable(`#${this.data.cell.name}`);
+    draw(response: Result): BaseMixin<DataTable> {
+        const chart: DataTable = new DataTable(`#${this.data.cell.name}`);
         const ndx = crossfilter(response.zip(false));
         const dimension = ndx.dimension(d => d.date);
         const cols = this.data.widget.query.getLabeledFields()
@@ -52,7 +51,7 @@ export class TableComponent extends WidgetComponent {
                     return (d) => d[param];
                 }
             });
-        const sort = head(
+        const sort: any = head(
             sortBy(this.data.widget.query.getFields()
                 .filter(field => 'desc' in field), 'order')
                 .map(field => {
@@ -62,13 +61,13 @@ export class TableComponent extends WidgetComponent {
                         name = field.alias;
                     }
 
-                    return {field: name, direct: field.desc ? d3.descending : d3.ascending};
+                    return {field: name, direct: field.desc ? descending : ascending};
                 })
         );
 
         chart.dimension(dimension);
-        chart.group(() => 'click on column header to switch');
-        chart.showGroups(false);
+        chart.section(() => 'click on column header to switch');
+        chart.showSections(false);
         chart.columns(cols);
         if (sort) {
             chart.sortBy(d => parseFloat(d[sort.field]));

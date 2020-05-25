@@ -2,9 +2,7 @@ import { Component } from '@angular/core';
 
 import { map } from 'rxjs/operators';
 
-import * as crossfilter from 'crossfilter';
-import * as d3 from 'd3';
-import * as dc from 'dc';
+import { select } from 'd3-selection';
 import { BaseMixin, Legend, PieChart } from 'dc';
 
 import { FilterBuilder, Result, Value } from '@app/model';
@@ -18,8 +16,8 @@ import { Utils } from '../../../shared/utils';
 })
 export class PieComponent extends WidgetComponent {
     draw(response: Result): BaseMixin<PieChart> {
-        const chart: PieChart = dc.pieChart(`#${this.data.cell.name}`);
-        const ndx = crossfilter(response.zip(false));
+        const chart: PieChart = new PieChart(`#${this.data.cell.name}`);
+        const ndx = this.initialState(chart, response.zip(false));
         const dimension = ndx.dimension(d => new Value(d[Object.keys(d)[0]], d.name));
         const values = dimension.group().reduceSum(d => d['cnt']);
 
@@ -27,9 +25,7 @@ export class PieComponent extends WidgetComponent {
         const height = this.data.cell.height - (this.isSelectable() ? 50 : 0);
         const legendWidth = width - 1.5 * height;
         const offset = 30;
-        const legend: Legend = dc.legend();
-
-        this.initialState(chart);
+        const legend: Legend = new Legend();
 
         // legend.x(width / 2 + offset / 2) // legend right
         legend.x(offset); // legend left
@@ -38,7 +34,7 @@ export class PieComponent extends WidgetComponent {
         legend.gap(5);
         legend.autoItemWidth(true);
         legend.legendText(function (d) {
-            const self = d3.select(this);
+            const self = select(this);
             self.text(d.name.desc);
             let textLength = this.getComputedTextLength();
             let text = self.text();

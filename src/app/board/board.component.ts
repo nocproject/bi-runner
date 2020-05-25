@@ -1,23 +1,18 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { head } from 'lodash';
 
 import { Board, Cell, Widget, WidgetRow } from '@app/model';
-import { BoardService, LayoutService } from '@app/services';
-// import { DatasourceService } from './services/datasource-info.service';
-import { FilterService } from './services/filter.service';
-import { FieldsTableService } from './services/fields-table.service';
+import { LayoutService } from '@app/services';
+import { FilterService, FieldsTableService } from '@board/services';
 
 @Component({
     selector: 'bi-board',
     templateUrl: './board.component.html',
-    // providers: [
-    //     DatasourceService
-    // ]
 })
 
 export class BoardComponent implements OnInit, OnDestroy {
@@ -25,8 +20,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     public board: Board;
     private subscription: Subscription;
 
-    constructor(public boardResolver: BoardService,
-                private route: ActivatedRoute,
+    constructor(private route: ActivatedRoute,
                 private layoutService: LayoutService,
                 private fieldsTableService: FieldsTableService,
                 private filterService: FilterService) {
@@ -43,7 +37,6 @@ export class BoardComponent implements OnInit, OnDestroy {
                 this.board = board;
                 this.rows = this.widgetsByRow(board.layout.cells, board.widgets);
                 this.filterService.ratioSubject.next(board.sample ? board.sample : 1);
-                this.boardResolver.next(board);
                 this.layoutService.isReportOpenSubject.next(true);
             }
         );

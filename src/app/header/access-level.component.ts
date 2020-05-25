@@ -1,6 +1,8 @@
+
+import {map} from 'rxjs/operators';
 import { Component, Input, OnInit } from '@angular/core';
 
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 @Component({
     selector: 'bi-access-level',
@@ -14,7 +16,7 @@ export class AccessLevelComponent implements OnInit {
     text$: Observable<string>;
 
     ngOnInit(): void {
-        this.text$ = this.level$.map(level => {
+        this.text$ = this.level$.pipe(map(level => {
             switch (level) {
                 case 0:
                     return 'ACCESS.READ';
@@ -25,6 +27,6 @@ export class AccessLevelComponent implements OnInit {
                 default:
                     return 'ACCESS.UNDEFINED';
             }
-        });
+        }));
     }
 }

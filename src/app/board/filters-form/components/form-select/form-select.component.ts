@@ -8,10 +8,10 @@ import { ValueControl } from '../value-control';
     template: `
         <div class="form-group"
              [formGroup]="form">
-            <label class="control-label" translate>{{ config.label }}:</label>
+            <label class="control-label">{{ config.label | translate }}:</label>
             <select class="form-control"
                     [formControlName]="config.controlName">
-                <option [ngValue]="''" translate>{{ config.placeholder }}</option>
+                <option [ngValue]="''">{{ config.placeholder | translate }}</option>
                 <option *ngFor="let item of config.options | async"
                         [value]="item.value" translate>
                     {{ item.text }}

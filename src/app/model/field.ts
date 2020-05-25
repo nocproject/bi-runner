@@ -1,73 +1,60 @@
-import { JsonMember, JsonObject } from '@upe/typedjson';
+import { JsonProperty, Serializable } from 'typescript-json-serializer';
 
-import { Expression } from './expression';
+export type YesNo = 'yes' | 'no';
 
-@JsonObject({initializer: Field.fromJSON, knownTypes: [Expression]})
+@Serializable()
 export class Field {
-    // @JsonMember
-    public expr: string;
-    @JsonMember()
+    @JsonProperty()
+    public expr: string | {};
+    @JsonProperty()
     public label: string;
-    @JsonMember()
+    @JsonProperty()
     public alias: string;
-    @JsonMember()
+    @JsonProperty()
     public desc: boolean;
-    @JsonMember({type: Number})
+    @JsonProperty()
     public order: number;
-    @JsonMember({type: Number})
+    @JsonProperty()
     public group: number;
-    @JsonMember()
+    @JsonProperty()
     public format: string;
-    @JsonMember()
+    @JsonProperty()
     public name: string;
-    @JsonMember()
+    @JsonProperty()
     public description: string;
-    @JsonMember()
+    @JsonProperty()
     public dict: string;
-    @JsonMember()
+    @JsonProperty()
     public type: string;
-    @JsonMember()
+    @JsonProperty()
     public model: string;
-    @JsonMember()
+    @JsonProperty()
     public pseudo: boolean;
-    @JsonMember()
+    @JsonProperty()
     public enable: boolean;
-    @JsonMember()
+    @JsonProperty()
     public aggFunc: string;
-    @JsonMember()
-    public hide: boolean | string;
-    @JsonMember()
+    @JsonProperty({
+        onDeserialize: (value) => value === 'yes' || value === 'true',
+        onSerialize: (value) => value ? 'yes' : 'no'
+    })
+    public hide: boolean | YesNo;
+    @JsonProperty()
     public allowAggFuncs: boolean;
     //
-    public isSelectable: boolean;
-    public isGrouping: boolean;
-    public grouped: boolean;
+    // @JsonProperty()
+    public isSelectable: boolean = true;
+    // @JsonProperty()
+    public isGrouping: boolean = true;
+    // @JsonProperty()
+    public grouped: boolean = false;
+    // @JsonProperty({name: 'is_agg'})
+    public isAgg: boolean = false;
+    @JsonProperty()
     public datasource: string;
-    public isAgg: boolean;
 
     public isSortable(): boolean {
         return 'desc' in this;
-    }
-
-    static fromJSON(json) {
-        json['isSelectable'] = true;
-        json['isGrouping'] = true;
-        json['grouped'] = false;
-        json['isAgg'] = false;
-
-        // if (json.hasOwnProperty('expr')) {
-        //     if (typeof json['expr'] === 'object') {
-        //         json['expr'].__type = 'Expression';
-        //     }
-        // }
-        if ('is_agg' in json) {
-            json['isAgg'] = json['is_agg'];
-            delete json['is_agg'];
-        }
-        if ('hide' in json) {
-            json['hide'] = json['hide'] === 'yes' || json['hide'] === 'true';
-        }
-        return Object.assign(Object.create(Field.prototype), json);
     }
 }
 
@@ -126,6 +113,13 @@ export class FieldBuilder {
 
     public pseudo(pseudo: boolean): FieldBuilder {
         this.field.pseudo = pseudo;
+        return this;
+    }
+
+    public hide(hide: boolean | YesNo): FieldBuilder {
+        if (typeof hide === 'boolean') {
+            this.field.hide = hide;
+        }
         return this;
     }
 

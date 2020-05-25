@@ -8,7 +8,6 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { ModalModule } from '../shared/modal/modal.module';
 import { WidgetsModule } from '../board/widgets/widgets.module';
 //
-//
 import { AccessLevelComponent } from './access-level.component';
 import { HeaderComponent } from './header.component';
 
@@ -28,7 +27,7 @@ export const COMPONENTS = [
         TranslateModule
     ],
     declarations: [
-        ...COMPONENTS
+        ...COMPONENTS,
     ],
     exports: [
         ...COMPONENTS

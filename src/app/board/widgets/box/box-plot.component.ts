@@ -1,12 +1,10 @@
 import { Component } from '@angular/core';
 
-import * as dc from 'dc';
 import { BaseMixin, BoxPlot } from 'dc';
-import * as crossfilter from 'crossfilter';
 
-import { Restore, WidgetComponent } from '../widget.component';
 import { Result, Value } from '@app/model';
-import { EventType } from '../../filters-form/model/event.interface';
+import { Restore, WidgetComponent } from '../widget.component';
+import { EventType } from '../../filters-form/model';
 
 @Component({
     selector: 'bi-box',
@@ -17,8 +15,8 @@ export class BoxPlotComponent extends WidgetComponent {
         // hard code two params 'duration' & 'UInt64'
         const key = 'duration';
         const type = 'UInt64';
-        const chart: BoxPlot = dc.boxPlot(`#${this.data.cell.name}`);
-        const ndx = crossfilter(response.zip(false));
+        const chart: BoxPlot = new BoxPlot(`#${this.data.cell.name}`);
+        const ndx = this.initialState(chart, response.zip(false));
         const dimension = ndx.dimension(() => key);
         const values = dimension.group().reduce(
             (p, v) => {
@@ -30,8 +28,6 @@ export class BoxPlotComponent extends WidgetComponent {
                 return p;
             },
             () => []);
-
-        this.initialState(chart);
 
         // chart.margins({top: 50, bottom: 0, left: 0, right: 0});
         chart.yAxisLabel(null, this.yLabelOffset + 20);

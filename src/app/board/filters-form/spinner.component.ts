@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 import { APIService } from '@app/services';
-import { Observable } from 'rxjs/Observable';
+
+import { Observable } from 'rxjs';
 
 @Component({
     selector: 'bi-spinner',
@@ -8,13 +9,13 @@ import { Observable } from 'rxjs/Observable';
         <div [ngClass]="{'spinner': (requestQty$ | async) !== 0}"></div>
     `
 })
-export class SpinnerComponent implements OnInit {
+export class SpinnerComponent implements AfterViewInit {
     requestQty$: Observable<number>;
 
     constructor(private api: APIService) {
     }
 
-    ngOnInit(): void {
+    ngAfterViewInit(): void {
         this.requestQty$ = this.api.requestQty$;
     }
 }

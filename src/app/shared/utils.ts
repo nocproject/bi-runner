@@ -1,4 +1,5 @@
-import * as d3 from 'd3';
+import { timeFormat } from 'd3-time-format';
+import { format } from 'd3-format';
 
 export class Utils {
 
@@ -15,19 +16,19 @@ export class Utils {
     static dateToString(date, format?: string): string {
         format = typeof format !== 'undefined' ? format : '%d.%m.%y';
 
-        return d3.time.format(format)(date);
+        return timeFormat(format)(date);
     };
 
     static dateToTimeString(date, format?: string): string {
         format = typeof format !== 'undefined' ? format : '%H:%M';
 
-        return d3.time.format(format)(date);
+        return timeFormat(format)(date);
     };
 
     static dateToDateTimeString(date, format?: string): string {
         format = typeof format !== 'undefined' ? format : '%d.%m.%y %H:%M';
 
-        return d3.time.format(format)(date);
+        return timeFormat(format)(date);
     };
 
     static spanView(id: number): string {
@@ -40,19 +41,19 @@ export class Utils {
     }
 
     static numberFormat(data) {
-        return d3.format('.4f')(parseFloat(data));
+        return format('.4f')(parseFloat(data));
     }
 
     static intFormat(data) {
         const val = parseFloat(data);
 
         if (val < 1) {
-            return d3.format('.4f')(val);
+            return format('.4f')(val);
         }
         if (val < 100) {
-            return d3.format('.2f')(val);
+            return format('.2f')(val);
         }
-        return d3.format('.0f')(val);
+        return format('.0f')(val);
     }
 
     // use if property format exist in table query
@@ -61,7 +62,7 @@ export class Utils {
         const minutes = Math.floor((sec % 3600) / 60);
         const seconds = sec % 60;
 
-        return `${hours}:${d3.format('02d')(minutes)}:${d3.format('02d')(seconds)}`;
+        return `${hours}:${format('02d')(minutes)}:${format('02d')(seconds)}`;
     };
 
     static intToIP(value): string {

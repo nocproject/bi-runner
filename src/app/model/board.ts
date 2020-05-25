@@ -1,65 +1,51 @@
-import { JsonMember, JsonObject, TypedJSON } from '@upe/typedjson';
-import { cloneDeep, toPairs } from 'lodash';
+import { JsonProperty, Serializable } from 'typescript-json-serializer';
+import { cloneDeep } from 'lodash';
 
 import { Field } from './field';
-import { Filter } from './filter';
 import { Group } from './group';
 import { Layout } from './layout';
 import { BiRequest } from './bi-request';
 import { Widget } from './widget';
-import { DeserializationHelper } from './helpers';
 
-@JsonObject()
+@Serializable()
 export class Board {
-    @JsonMember()
+    @JsonProperty()
     public id: string;
-    @JsonMember()
+    @JsonProperty()
     public layoutId: string;
-    @JsonMember()
+    @JsonProperty()
     public title: string;
-    @JsonMember()
+    @JsonProperty()
     public description: string;
-    @JsonMember()
+    @JsonProperty()
     public datasource: string;
-    @JsonMember()
+    @JsonProperty()
     public format: number;
-    @JsonMember()
+    @JsonProperty()
     public sample: number;
-    @JsonMember()
+    @JsonProperty()
     public owner: string;
-    @JsonMember()
+    @JsonProperty()
     public created: string;
-    @JsonMember()
+    @JsonProperty()
     public changed: string;
-    @JsonMember({elements: Widget})
+    @JsonProperty({type: Widget})
     public widgets: Widget[];
-    @JsonMember({elements: Field, name: 'agv_fields'})
+    @JsonProperty({type: Field, name: 'agv_fields'})
     public agvFields: Field[];
-    @JsonMember({elements: Field, name: 'filter_fields'})
+    @JsonProperty({type: Field, name: 'filter_fields'})
     public filterFields: Field[];
-    @JsonMember({elements: Field, name: 'pseudo_fields'})
+    @JsonProperty({type: Field, name: 'pseudo_fields'})
     public pseudoFields: Field[];
-    @JsonMember()
+    @JsonProperty({type: Layout})
     public layout: Layout;
-    @JsonMember({name: 'export'})
+    @JsonProperty({name: 'export', type: BiRequest})
     public exportQry: BiRequest;
-    @JsonMember({elements: Group})
+    @JsonProperty({type: Group})
     public groups: Group[];
-    @JsonMember({elements: Object})
-    public filter: Object[];
+    @JsonProperty()
+    public filter: [];
     public isSample: boolean;
-
-    static fromJSON(json: any): Board {
-        const board = TypedJSON.parse(json, Board);
-
-        if (json.hasOwnProperty('filter')) {
-            board.filter = DeserializationHelper.map<String, Filter>(
-                toPairs(json.filter).map(item => [TypedJSON.stringify(item[0]), item[1]]),
-                String, Filter
-            );
-        }
-        return board;
-    }
 
     prepare() {
         // ToDo take from @JsonMember

@@ -5,10 +5,10 @@ stages:
 
 build_npm:
   stage: build
-  image: node:8.4
+  image: node:14.3
   script:
-    - yarn install
-    - yarn build
+    - npm install
+    - npm run build
     - cp -r boards/ dist/
   tags:
     - docker

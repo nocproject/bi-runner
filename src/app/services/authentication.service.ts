@@ -1,20 +1,20 @@
 import { forwardRef, Inject, Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { of } from 'rxjs/observable/of';
-import { catchError, map } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of, Subject, throwError } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
 
 import { APIService } from './api.service';
 import { MessageService } from './message.service';
 
 import { BiRequestBuilder, Message, MessageType, Methods, Result, User } from '../model';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class AuthenticationService {
-    private userSubject = new BehaviorSubject<User>(new User());
-    public user$: Observable<User> = this.userSubject.asObservable();
+    private userSubject = new Subject<User>();
+    public displayName$ = this.displayName();
     private isLogInSubject = new BehaviorSubject<boolean>(false);
     public isLogIn$: Observable<boolean> = this.isLogInSubject.asObservable();
     private accessLevelSubject = new BehaviorSubject<number>(-1);
@@ -26,50 +26,37 @@ export class AuthenticationService {
                 private messagesService: MessageService) {
     }
 
-    private _isLoginOpen = false;
-
-    get isLoginOpen(): boolean {
-        return this._isLoginOpen;
-    }
-
-    set isLoginOpen(value: boolean) {
-        this._isLoginOpen = value;
-    }
-
-    private _isLogin = false;
-
-    get isLogin(): boolean {
-        return this._isLogin;
-    }
-
     set isLogin(value: boolean) {
-        this._isLogin = value;
+        this.isLogInSubject.next(value);
     }
 
-    checkConnection(): Observable<boolean> {
+    set user(value: User) {
+        this.userSubject.next(value);
+    }
+
+    hasCookies(): Observable<boolean> {
         if (!this.isLogInSubject.getValue()) {
-            return this.userInfo();
-        } else {
-            return of(true);
+            return this.http.get<boolean>('/api/login/is_logged/');
         }
+        return of(true);
     }
 
-    userInfo(): Observable<boolean> {
-        return this.http.get('/main/desktop/user_settings/')
+    displayName(): Observable<string> {
+        return this.http.get<User>('/main/desktop/user_settings/')
             .pipe(
-                map((response: HttpResponse<User>) => {
-                        if (response) {
-                            const user = User.fromJSON(response);
-
-                            this.userSubject.next(user);
-                            this.isLogInSubject.next(true);
-
-                            return true;
-                        }
-                        return false;
+                map(user => {
+                    let name = user.username;
+                    if (user.first_name && user.first_name.length > 0
+                        && user.last_name && user.last_name.length > 0) {
+                        name = `${user.first_name} ${user.last_name}`;
+                    } else if (user.first_name && user.first_name.length > 0) {
+                        name = user.first_name;
+                    } else if (user.last_name && user.last_name.length > 0) {
+                        name = user.last_name;
                     }
-                ),
-                catchError(() => of(false))
+
+                    return name;
+                })
             );
     }
 
@@ -79,8 +66,8 @@ export class AuthenticationService {
                 new BiRequestBuilder()
                     .method(Methods.GET_USER_ACCESS)
                     .params([{id: id}])
-                    .build())
-            .map(response => response.result)
+                    .build()).pipe(
+            map(response => response.result))
             .subscribe(level => this.accessLevelSubject.next(level),
                 () => this.accessLevelSubject.next(-1));
     }
@@ -92,16 +79,33 @@ export class AuthenticationService {
             params: [param]
         };
 
-        return this.http.post<Result>('/api/login/', JSON.stringify(query))
-            .map(response => response.result)
-            .catch(response => {
+        return this.http.post<Result>('/api/login/', JSON.stringify(query)).pipe(
+            map(response => response.result),
+            tap(success => this.isLogInSubject.next(success)),
+            catchError((response: HttpErrorResponse) => {
                 this.messagesService.message(new Message(MessageType.DANGER, response.toString()));
-                return Observable.throw(response.toString());
-            });
+                return throwError(response.toString());
+            }));
     }
 
     logout(): void {
         this.isLogInSubject.next(false);
-        this.isLoginOpen = true;
     }
+
+    private static handleError(error: HttpErrorResponse) {
+        console.log(error);
+        if (error.error instanceof ErrorEvent) {
+            // A client-side or network error occurred. Handle it accordingly.
+            console.error('An error occurred:', error.error.message);
+        } else {
+            // The backend returned an unsuccessful response code.
+            // The response body may contain clues as to what went wrong,
+            console.error(
+                `Backend returned code ${error.status}, ` +
+                `body was: ${error.error}`);
+        }
+        // return an observable with a user-facing error message
+        return throwError(
+            'Something bad happened; please try again later.');
+    };
 }

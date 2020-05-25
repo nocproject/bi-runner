@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { map, publishReplay, refCount, switchMap } from 'rxjs/operators';
 
 import { cloneDeep, findIndex, head } from 'lodash';
@@ -8,8 +8,9 @@ import { cloneDeep, findIndex, head } from 'lodash';
 import { APIService } from './api.service';
 
 import { BiRequestBuilder, Board, Datasource, Field, IOption, Methods } from '@app/model';
+import { FilterService } from '@board/services';
 import { BoardService } from './board.service';
-import { FilterService } from '../board/services/filter.service';
+import { deserialize } from 'typescript-json-serializer';
 
 @Injectable()
 export class DatasourceService {
@@ -26,15 +27,15 @@ export class DatasourceService {
                         new BiRequestBuilder()
                             .method(Methods.GET_DATASOURCE_INFO)
                             .params([board.datasource])
-                            .build())
-                        .map(response => {
-                            const datasource = Datasource.fromJSON(response.result);
+                            .build()).pipe(
+                        map(response => {
+                            const datasource = deserialize<Datasource>(response.result, Datasource);
                             datasource.origFields = cloneDeep(datasource.fields);
                             datasource.fields = this._fields(board, board.filterFields, datasource);
                             datasource.tableFields = this._fields(board, board.agvFields, datasource);
                             this.filterService.fields = datasource.fields;
                             return datasource;
-                        });
+                        }));
                 }),
                 publishReplay(1),
                 refCount()
@@ -42,24 +43,23 @@ export class DatasourceService {
     }
 
     name(): Observable<string> {
-        return this.datasource$.map(d => d.name);
+        return this.datasource$.pipe(map(d => d.name));
     }
 
     isSample(): Observable<boolean> {
-        return this.datasource$.map(d => d.sample);
+        return this.datasource$.pipe(map(d => d.sample));
     }
 
     fields(): Observable<Field[]> {
-        return this.datasource$.map(d => d.fields);
+        return this.datasource$.pipe(map(d => d.fields));
     }
 
     tableFields(): Observable<Field[]> {
-        return this.datasource$.map(d => d.tableFields);
+        return this.datasource$.pipe(map(d => d.tableFields));
     }
 
     fieldByName(name: string): Observable<Field> {
-        console.log(name);
-        return this.datasource$.map(d => d.getFieldByName(name));
+        return this.datasource$.pipe(map(d => d.getFieldByName(name)));
     }
 
     fieldsAsOption(): Observable<IOption[]> {
@@ -82,7 +82,7 @@ export class DatasourceService {
         return this.boardService.board$
             .pipe(
                 switchMap((board: Board) => {
-                    return this.datasource$.map(d => d.origFields)
+                    return this.datasource$.pipe(map(d => d.origFields))
                         .pipe(
                             map(array => array
                                 .filter(field => field.isSelectable)

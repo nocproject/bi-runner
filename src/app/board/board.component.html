@@ -1,5 +1,5 @@
 <div class="container-fluid">
-    <bi-selector [board]="boardResolver.board$ | async"></bi-selector>
+    <bi-selector [board]="board"></bi-selector>
     <div class="row" *ngFor="let row of rows">
         <div *ngFor="let data of row.cells" [ngSwitch]="data.widget.type" class="{{ data.cell.getClasses() }}">
             <bi-bar *ngSwitchCase="'barChart'" [data]="data"></bi-bar>
@@ -14,5 +14,5 @@
             <bi-box *ngSwitchCase="'boxPlot'" [data]="data"></bi-box>
         </div>
     </div>
-    <bi-export [board]="boardResolver.board$ | async"></bi-export>
+    <bi-export [board]="board"></bi-export>
 </div>

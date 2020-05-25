@@ -1,8 +1,8 @@
 import { AbstractControl, FormGroup, ValidationErrors } from '@angular/forms';
 
 import { includes, isEmpty, isInteger, isNaN, toNumber } from 'lodash';
-import * as moment from 'moment';
-import { Moment } from 'moment';
+import moment from 'moment';
+import { Moment } from 'moment/moment';
 
 export class BIValidators {
     public static form(form: FormGroup): ValidationErrors | null {

@@ -1,4 +1,4 @@
-$bootstrap-sass-asset-helper: true !default;
+$bootstrap-sass-asset-helper: false !default;
 //
 // Variables
 // --------------------------------------------------
@@ -88,7 +88,8 @@ $headings-color:          inherit !default;
 
 // [converter] If $bootstrap-sass-asset-helper if used, provide path relative to the assets load path.
 // [converter] This is because some asset helpers, such as Sprockets, do not work with file-relative paths.
-$icon-font-path: if($bootstrap-sass-asset-helper, "bootstrap/", "../fonts/") !default;
+//$icon-font-path: if($bootstrap-sass-asset-helper, "bootstrap/", "../fonts/") !default;
+$icon-font-path: '../node_modules/bootstrap-sass/assets/fonts/bootstrap/';
 
 //** File name for all font files.
 $icon-font-name:          "glyphicons-halflings-regular" !default;
@@ -203,7 +204,6 @@ $input-color:                    $gray !default;
 //** `<input>` border color
 $input-border:                   #ccc !default;
 
-// TODO: Rename `$input-border-radius` to `$input-border-radius-base` in v4
 //** Default `.form-control` border radius
 // This has no effect on `<select>`s in some browsers, due to the limited stylability of `<select>`s in CSS.
 $input-border-radius:            $border-radius-base !default;

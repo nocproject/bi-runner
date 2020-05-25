@@ -1,18 +1,18 @@
-import { JsonMember, JsonObject } from '@upe/typedjson';
+import { JsonProperty, Serializable } from 'typescript-json-serializer';
 
 import { Filter } from './filter';
 
-@JsonObject()
+@Serializable()
 export class Group {
-    @JsonMember()
+    @JsonProperty()
     name: string;
-    @JsonMember()
+    @JsonProperty()
     active: boolean;
-    @JsonMember()
+    @JsonProperty()
     association: '$and' | '$or';
-    @JsonMember()
+    @JsonProperty()
     public range: boolean;
-    @JsonMember({elements: Filter})
+    @JsonProperty({type: Filter})
     filters: Filter[];
 
     // public isEmpty(): boolean {

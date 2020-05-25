@@ -1,23 +1,22 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AbstractControl } from '@angular/forms/src/model';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { clone, findIndex, indexOf, isEqual } from 'lodash';
 
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
-import { of } from 'rxjs/observable/of';
+import { Observable, of, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { Field } from '@app/model';
 import { DatasourceService } from '@app/services';
+import { EventService } from '@board/services';
 import { EventType } from '../model/event.interface';
 import { FieldConfig, FilterConfig } from '../model/filters-form-config.interface';
-import { EventService } from '../../services/event.service';
 import { FieldConfigService } from '../services/field-config.service';
 
 @Component({
     selector: 'bi-filter-form',
-    templateUrl: './filter.component.html'
+    templateUrl: './filter.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FilterComponent implements OnInit, OnDestroy {
     @Input()
@@ -70,8 +69,8 @@ export class FilterComponent implements OnInit, OnDestroy {
             const changed = FilterComponent.changeDetection(data, this.prevData);
             switch (changed) {
                 case 'name': {
-                    this.valueFieldConfig$ = this.datasourceService.datasource$
-                        .map(datasource => {
+                    this.valueFieldConfig$ = this.datasourceService.datasource$.pipe(
+                        map(datasource => {
                             const field: Field = datasource.getFieldByName(data.name);
                             const valueConfig: FieldConfig = FieldConfigService.fieldValueConfig(data, field);
                             const conditions = FieldConfigService.conditions(field);
@@ -90,7 +89,7 @@ export class FilterComponent implements OnInit, OnDestroy {
                             this.initControl(valueConfig);
 
                             return valueConfig;
-                        });
+                        }));
                     break;
                 }
                 case 'condition': {

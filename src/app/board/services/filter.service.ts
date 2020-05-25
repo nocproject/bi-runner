@@ -1,16 +1,15 @@
 import { Injectable } from '@angular/core';
 
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 import { cloneDeep, find, findIndex, flatMap } from 'lodash';
-import * as d3 from 'd3';
+import { timeParse } from 'd3-time-format';
 
+import { DatasourceService } from '@app/services';
 import { Field, Filter, FilterBuilder, Group, GroupBuilder, Value } from '@app/model';
 //
 import { EventService } from './event.service';
-import { EventType } from '../filters-form/model/event.interface';
-import { FilterGroupConfig } from '../filters-form/model/filters-form-config.interface';
+import { EventType, FilterGroupConfig } from '../filters-form/model';
 
 @Injectable()
 export class FilterService {
@@ -144,11 +143,11 @@ export class FilterService {
                     if (filter.condition.match(/interval/i)) {
                         const raw = filter.values[0].value.split(' - ');
                         values = [
-                            new Value(d3.time.format('%d.%m.%Y').parse(raw[0])),
-                            new Value(d3.time.format('%d.%m.%Y').parse(raw[1]))
+                            new Value(timeParse('%d.%m.%Y')(raw[0])),
+                            new Value(timeParse('%d.%m.%Y')(raw[1]))
                         ];
                     } else {
-                        values = [new Value(d3.time.format('%d.%m.%Y').parse(filter.values[0].value))];
+                        values = [new Value(timeParse('%d.%m.%Y')(filter.values[0].value))];
                     }
                     filter.values = values;
                 }
@@ -158,8 +157,8 @@ export class FilterService {
                             const raw = filter.values[0].value.split(' - ');
                             if (raw.length === 2) {
                                 values = [
-                                    new Value(d3.time.format('%d.%m.%Y %H:%M').parse(raw[0])),
-                                    new Value(d3.time.format('%d.%m.%Y %H:%M').parse(raw[1]))
+                                    new Value(timeParse('%d.%m.%Y %H:%M')(raw[0])),
+                                    new Value(timeParse('%d.%m.%Y %H:%M')(raw[1]))
                                 ];
                             } else {
                                 values = [
@@ -168,7 +167,7 @@ export class FilterService {
                                 ];
                             }
                         } else {
-                            values = [new Value(d3.time.format('%d.%m.%Y %H:%M').parse(filter.values[0].value))];
+                            values = [new Value(timeParse('%d.%m.%Y %H:%M')(filter.values[0].value))];
                         }
                         filter.values = values;
                     }

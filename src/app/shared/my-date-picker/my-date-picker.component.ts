@@ -1,5 +1,5 @@
 import {
-    ChangeDetectorRef, Component, ElementRef, EventEmitter, forwardRef, Input, OnChanges, Output, Renderer,
+    ChangeDetectorRef, Component, ElementRef, EventEmitter, forwardRef, Input, OnChanges, Output, Renderer2,
     SimpleChanges, ViewChild, ViewEncapsulation
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -148,17 +148,18 @@ export class MyDatePicker implements OnChanges, ControlValueAccessor {
         ariaLabelNextYear: <string> 'Next Year'
     };
 
-    constructor(public elem: ElementRef, private renderer: Renderer, private cdr: ChangeDetectorRef, private localeService: LocaleService, private utilService: UtilService) {
+    constructor(public elem: ElementRef, private renderer: Renderer2, private cdr: ChangeDetectorRef, private localeService: LocaleService, private utilService: UtilService) {
         this.setLocaleOptions();
-        renderer.listenGlobal('document', 'click', (event: any) => {
-            if (this.showSelector && event.target && this.elem.nativeElement !== event.target && !this.elem.nativeElement.contains(event.target)) {
-                this.showSelector = false;
-                this.calendarToggle.emit(CalToggle.CloseByOutClick);
-            }
-            if (this.opts.monthSelector || this.opts.yearSelector) {
-                this.resetMonthYearSelect();
-            }
-        });
+        //*** error
+        // renderer.listenGlobal('document', 'click', (event: any) => {
+        //     if (this.showSelector && event.target && this.elem.nativeElement !== event.target && !this.elem.nativeElement.contains(event.target)) {
+        //         this.showSelector = false;
+        //         this.calendarToggle.emit(CalToggle.CloseByOutClick);
+        //     }
+        //     if (this.opts.monthSelector || this.opts.yearSelector) {
+        //         this.resetMonthYearSelect();
+        //     }
+        // });
     }
 
     setLocaleOptions(): void {

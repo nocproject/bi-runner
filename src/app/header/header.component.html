@@ -29,7 +29,7 @@
                         </li>
                     </ul>
                 </li>
-                <li class="not-active"><a>{{ boardTitle }}</a></li>
+                <li class="not-active"><a>{{ (board$ | async).title }}</a></li>
                 <li [ngClass]="{'disabled': exportSpin}">
                     <a type="button" class="hand" (click)="onExport()" translate>
                         <i *ngIf="exportSpin"
@@ -56,7 +56,8 @@
                 </li>
                 <li class="dropdown" dropdown>
                     <a dropdownToggle class="dropdown-toggle">
-                        <i class='fa fa-user icon-offset'></i>{{ (user$ | async).display() }}<span class="caret"></span>
+                        <i class='fa fa-user icon-offset'></i>{{ displayName$ | async }}<span
+                            class="caret"></span>
                     </a>
                     <ul *dropdownMenu class="dropdown-menu" role="menu">
                         <li><a class="hand" (click)="about.open()" translate>
@@ -85,7 +86,7 @@
     <bi-modal-header translate>HEADER.ABOUT_DLG.TITLE</bi-modal-header>
     <bi-modal-content>
         <p translate [translateParams]="{value: version}">HEADER.ABOUT_DLG.CONTENT</p>
-        <small>Copyright © 2007-2017, The NOC Project</small>
+        <small>Copyright © 2007-2020, The NOC Project</small>
     </bi-modal-content>
     <bi-modal-footer>
         <button class="btn btn-default" (click)="about.close()" translate>HEADER.ABOUT_DLG.CLOSE</button>
@@ -98,16 +99,16 @@
         <form id="#saveForm" [formGroup]="saveForm">
             <label for="save-title" class="control-label" translate>HEADER.SAVE_DLG.NAME</label>
             <input id="save-title" class="form-control" required autofocus
-                   [ngModel]="boardTitle" formControlName="title">
+                   formControlName="title">
             <div *ngIf="saveForm.get('title').hasError('required')">
                 <div class="ng-invalid" translate>VALIDATOR.REQUIRED</div>
             </div>
             <div *ngIf="titleError">
-                <div class="ng-invalid" translate>{{ titleError }}</div>
+                <div class="ng-invalid">{{ titleError | translate }}</div>
             </div>
             <label for="save-description" class="control-label" translate>HEADER.SAVE_DLG.DESCRIPTION</label>
             <input id="save-description" class="form-control"
-                   [ngModel]="boardDesc" formControlName="description">
+                   formControlName="description">
         </form>
     </bi-modal-content>
     <bi-modal-footer>

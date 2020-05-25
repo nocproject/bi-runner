@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, finalize, map } from 'rxjs/operators';
 
 import { BiRequest, Result } from '../model';
@@ -30,8 +28,8 @@ export class APIService {
                         // The backend returned an unsuccessful response code.
                         console.error(`Backend returned code ${error.status}`);
                     }
-                    // return an ErrorObservable with a user-facing error message
-                    return new ErrorObservable('Something bad happened; please try again later.');
+                    console.error(query);
+                    return throwError('Something bad happened; please try again later.');
                 }),
                 finalize(() => this.decreaseQty())
             );

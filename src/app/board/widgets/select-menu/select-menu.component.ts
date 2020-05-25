@@ -1,13 +1,11 @@
 import { Component } from '@angular/core';
 
 import { last } from 'lodash';
-import * as d3 from 'd3';
-import * as dc from 'dc';
+import { timeFormat, timeParse } from 'd3-time-format';
 import { BaseMixin, SelectMenu } from 'dc';
-import * as crossfilter from 'crossfilter';
 
-import { Restore, WidgetComponent } from '../widget.component';
 import { FilterBuilder, Result, Value } from '@app/model';
+import { Restore, WidgetComponent } from '../widget.component';
 
 @Component({
     selector: 'bi-menu',
@@ -16,16 +14,14 @@ import { FilterBuilder, Result, Value } from '@app/model';
 export class SelectMenuComponent extends WidgetComponent {
     draw(response: Result): BaseMixin<SelectMenu> {
         const prompt = this.languageService.selectMenuPrompt;
-        const chart: SelectMenu = dc.selectMenu(`#${this.data.cell.name}`);
-        const ndx = crossfilter(response.zip(false));
+        const chart: SelectMenu = new SelectMenu(`#${this.data.cell.name}`);
+        const ndx = this.initialState(chart, response.zip(false));
         const dimension = ndx.dimension(d => d.date);
         const values = dimension.group().reduceSum(d => d.cnt);
-        const data = values.all();
+        const data: any = values.all();
 
-        this.initialState(chart);
-
-        if(data.length) {
-            chart.filter(last(data).key);
+        if (data.length) {
+            chart.filter(last(data)['key']);
         }
         chart.dimension(dimension);
         chart.group(values);
@@ -55,12 +51,12 @@ export class SelectMenuComponent extends WidgetComponent {
     getValue(widget: BaseMixin<any>, filter): Value[] {
         return widget.filters()
             .filter(d => d.length)
-            .map(d => new Value(d3.time.format('%Y-%m-%d %H:%M:%S').parse(d)));
+            .map(d => new Value(timeParse('%Y-%m-%d %H:%M:%S')(d)));
     }
 
     restore(values: Value[]): Restore {
         return {
-            title: values.map(item => d3.time.format('%Y-%m-%d %H:%M:%S')(item.value)).join(', '),
+            title: values.map(item => timeFormat('%Y-%m-%d %H:%M:%S')(item.value)).join(', '),
             filter: values.map(item => new Value(item.value, item.desc))
         };
     }

@@ -40,7 +40,7 @@
                     <i class="checkbox fa fa-plus"
                        (click)="onAddFilter()"></i>
                     <i class="checkbox fa fa-times-circle"
-                       style="padding-left: 0;"
+                       style="padding-left: 5px;"
                        (click)="onDeleteGroup()"></i>
                 </div>
             </div>
@@ -60,7 +60,7 @@
                         (click)="onDisable()" translate>SELECTOR.FORM.DISABLE_BTN
                 </button>
                 <button class="btn btn-default btn-sm"
-                        [disabled]="!hasFilters || !group.valid || group.value.active"
+                        [disabled]="!hasFilters || group.value.active || !group.valid"
                         (click)="onApply()" translate>SELECTOR.FORM.APPLY_BTN
                 </button>
             </div>

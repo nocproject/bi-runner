@@ -1,16 +1,16 @@
-import { JsonMember, JsonObject } from '@upe/typedjson';
+import { Serializable, JsonProperty } from 'typescript-json-serializer';
 
 import { max, startsWith } from 'lodash';
 import { BiQuery } from './bi-query';
 import { Field, FieldBuilder } from './field';
 
-@JsonObject()
+@Serializable()
 export class BiRequest {
-    @JsonMember()
+    @JsonProperty()
     public id: number;
-    @JsonMember()
+    @JsonProperty()
     public method: string;
-    @JsonMember({elements: BiQuery})
+    @JsonProperty({type: BiQuery})
     params: BiQuery[];
 
     public getFields(): Field[] {

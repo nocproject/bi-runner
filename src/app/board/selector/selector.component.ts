@@ -2,10 +2,9 @@ import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
 import { head } from 'lodash';
-import * as moment from 'moment';
+import moment from 'moment';
 
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import { Observable, Subscription } from 'rxjs';
 import { filter, flatMap, map } from 'rxjs/operators';
 
 import { APIService, DatasourceService, LanguageService } from '@app/services';
@@ -24,12 +23,10 @@ import {
 import { ReportRangeComponent } from '../report-range/report-range.component';
 import { ModalComponent } from '../../shared/modal/modal';
 //
-import { EventType } from '../filters-form/model/event.interface';
-import { EventService } from '../services/event.service';
-import { FilterService } from '../services/filter.service';
+import { EventType } from '../filters-form/model';
+import { EventService, FilterService } from '../services/';
 
 @Component({
-    // changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'bi-selector',
     templateUrl: './selector.component.html'
 })
@@ -89,16 +86,14 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
             new BiRequestBuilder()
                 .method(Methods.QUERY)
                 .params([{
-                    fields: [
-                        {
-                            expr: 'max(date)',
-                            alias: 'date'
-                        }
-                    ],
+                    fields: [{
+                        expr: 'max(date)',
+                        alias: 'date'
+                    }],
                     datasource: this.board.datasource
                 }])
                 .build())
-            .pipe(flatMap(response => head(response.data['result'])));
+            .pipe(flatMap(response => response.data['result']));
 
         this.ratioForm = this.fb.group({
             ratio: this.filterService.ratioSubject.getValue()
@@ -176,14 +171,13 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
             filter((group: Group) => group.name === 'startEnd')
         ).subscribe(
             (group: Group) => {
-                let from = null;
+                let from = group.filters[0].values[0].value;
                 let to = null;
-                if (Range.isNotRange(group.filters[0].values[0].value)) {
-                    from = new Date(group.filters[0].values[0].value);
+                if (Range.isNotRange(from)) {
+                    from = new Date(from);
                     to = new Date(group.filters[0].values[1].value);
                     this.reportRangeText = SelectorComponent.rangeText(from, to);
                 } else {
-                    from = group.filters[0].values[0].value;
                     this.reportRangeText = `DATETIME_RANGE.${Range.getDates(from, false).text}`;
                 }
                 this.values = {

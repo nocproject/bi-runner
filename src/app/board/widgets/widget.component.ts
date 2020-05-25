@@ -1,10 +1,24 @@
-import { AfterViewInit, ElementRef, forwardRef, Inject, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+    AfterViewInit,
+    Directive,
+    ElementRef,
+    forwardRef,
+    Inject,
+    Input,
+    OnDestroy,
+    OnInit,
+    ViewChild
+} from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
-import { BaseMixin } from 'dc';
+
+import { BaseMixin, config } from 'dc';
+import { timeFormat } from 'd3-time-format';
+import { schemeCategory10 } from 'd3-scale-chromatic';
+import crossfilter from 'crossfilter2';
 import { clone, startsWith } from 'lodash';
 
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import { Observable, Subscription } from 'rxjs';
 import { debounceTime, filter, map, switchMap } from 'rxjs/operators';
 
 import {
@@ -19,10 +33,9 @@ import {
     WhereBuilder
 } from '@app/model';
 import { APIService, DatasourceService, LanguageService } from '@app/services';
-import { FilterService } from '../services/filter.service';
-import { EventService } from '../services/event.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { EventService, FilterService } from '@board/services';
 
+@Directive()
 export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestroy {
     @Input()
     data: CellAndWidget;
@@ -55,6 +68,8 @@ export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestro
     }
 
     ngOnInit() {
+        config.defaultColors(schemeCategory10);
+        config.dateFormat(timeFormat('%d.%m.%y'));
         this.filterService.lastUpdatedWidget = '';
     }
 
@@ -84,7 +99,7 @@ export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestro
         chart.on('renderlet', () => this.showSpinner = false);
     }
 
-    initialState(widget: BaseMixin<any>) {
+    initialState(widget: BaseMixin<any>, response): any {
         const cell = widget.anchorName();
         const values: Value[] = this.filterService.initChart(cell);
 
@@ -95,6 +110,7 @@ export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestro
             this.title = data.title;
             this.showReset = true;
         }
+        return crossfilter(response);
     }
 
     onReset(): void {

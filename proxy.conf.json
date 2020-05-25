@@ -6,25 +6,25 @@
     "secure": false
   },
   "/list": {
-    "target": "http://localhost:4200/",
+    "target": "http://localhost:4201/",
     "logLevel": "debug",
     "ignorePath": true,
     "changeOrigin": false
   },
   "/login": {
-    "target": "http://localhost:4200/",
+    "target": "http://localhost:4201/",
     "logLevel": "debug",
     "ignorePath": true,
     "changeOrigin": false
   },
   "/share/**": {
-    "target": "http://localhost:4200/",
+    "target": "http://localhost:4201/",
     "logLevel": "debug",
     "ignorePath": true,
     "changeOrigin": false
   },
   "/board/**": {
-    "target": "http://localhost:4200/",
+    "target": "http://localhost:4201/",
     "logLevel": "debug",
     "ignorePath": true,
     "changeOrigin": false

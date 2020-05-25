@@ -10,7 +10,7 @@ import { BIValidators } from '../validators';
     selector: 'bi-form-model',
     template: `
         <div class="form-group" [formGroup]="form">
-            <label class="control-label" translate>{{ config.label }}:</label>
+            <label class="control-label">{{ config.label | translate }}:</label>
             <bi-dropdown *ngFor="let dict of dicts"
                          [config]="dict.config"
                          [field]="dict.field"

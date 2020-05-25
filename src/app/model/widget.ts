@@ -1,22 +1,22 @@
-import { JsonMember, JsonObject } from '@upe/typedjson';
+import { JsonProperty, Serializable } from 'typescript-json-serializer';
 
 import { Map } from './map';
 import { BiRequest } from './bi-request';
 
-@JsonObject()
+@Serializable()
 export class Widget {
-    @JsonMember()
+    @JsonProperty()
     public id: number;
-    @JsonMember()
+    @JsonProperty()
     public cell: string;
-    @JsonMember()
+    @JsonProperty()
     public note: string;
-    @JsonMember()
+    @JsonProperty()
     public title: string;
-    @JsonMember({name: 'type'})
+    @JsonProperty()
     public type: string;
-    @JsonMember()
+    @JsonProperty({type: BiRequest})
     public query: BiRequest;
-    @JsonMember()
+    @JsonProperty({type: Map})
     public map?: Map;
 }

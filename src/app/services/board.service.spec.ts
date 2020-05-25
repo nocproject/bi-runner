@@ -1,20 +1,17 @@
-import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { getTestBed, TestBed } from '@angular/core/testing';
-
-import { APIService } from '@app/services';
 //
-import { Board } from './board';
-import { Methods } from './methods.enum';
-import { BiRequestBuilder } from './bi-request';
+import { APIService, BoardService } from '@app/services';
+import { Board } from '@app/model';
+import { Methods } from '@app/model';
 // Test data
-import * as rebootsBoardBody from '/Users/dima/Projects/bi-runner/src/app/test-response/rebootsBoardBody.json';
+import * as rebootsBoardBody from '@test/rebootsBoardBody.json';
 
 describe('Deserialization: Board', () => {
     let injector: TestBed;
     let httpMock: HttpTestingController;
     let board: Board;
-    let api: APIService;
+    let service: BoardService;
 
     beforeAll(() => {
         TestBed.configureTestingModule({
@@ -22,28 +19,21 @@ describe('Deserialization: Board', () => {
                 HttpClientTestingModule
             ],
             providers: [
-                {
-                    provide: APIService,
-                    useFactory: (backend) => new APIService(backend),
-                    deps: [HttpClient]
-                }
+                APIService,
+                BoardService,
             ]
         });
 
         injector = getTestBed();
-        api = injector.get(APIService);
-        httpMock = injector.get(HttpTestingController);
+        httpMock = injector.inject(HttpTestingController);
+        service = injector.inject(BoardService);
+        service.getById('1').subscribe(data =>
+            board = data
+        );
 
-        // Perform a request and make sure we get the response we expect
-        api.execute(new BiRequestBuilder()
-            .method(Methods.GET_DASHBOARD)
-            .params([])
-            .build())
-            .subscribe(data => board = Board.fromJSON(data.result));
-
-        const req = httpMock.expectOne('/api/bi/');
-        expect(req.request.method).toBe('POST');
-        req.flush(rebootsBoardBody);
+        const dashboardReq = httpMock.expectOne('/api/bi/');
+        expect(dashboardReq.request.body.method).toBe(Methods.GET_DASHBOARD);
+        dashboardReq.flush(rebootsBoardBody);
     });
 
     it('should return instance of Board', () => {

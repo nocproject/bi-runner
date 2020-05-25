@@ -1,12 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { merge, switchMap } from 'rxjs/operators';
 
 import { Board } from '@app/model';
+import { FieldsTableService, FilterService } from '@board/services';
 import { CounterService } from '../../services/counter.service';
-import { FilterService } from '../../services/filter.service';
-import { FieldsTableService } from '../../services/fields-table.service';
 
 @Component({
     selector: 'bi-counter',

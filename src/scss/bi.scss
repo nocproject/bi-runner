@@ -1,6 +1,6 @@
 @import "variables";
 @import "../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
-@import "../../node_modules/dc/style/dc";
+@import "../../node_modules/dc/dist/style/dc";
 @import "chart";
 @import "bootstrap-dialog";
 @import "awesome-bootstrap-checkbox";
@@ -119,4 +119,32 @@ body {
 
 .dc-chart g.map path {
   stroke: #fff;
+}
+// ng-treeview
+.treeview-item > .form-inline {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+}
+
+.treeview-item > .form-inline .form-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  padding-left: 0;
+}
+
+.treeview-item > .form-inline .form-check-input {
+  position: relative;
+  margin-top: 0;
+  margin-right: .25rem;
+  margin-left: 0;
+}
+
+.treeview-item > .form-inline label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0;
 }

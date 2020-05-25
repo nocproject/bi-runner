@@ -8,18 +8,17 @@ import { ValueControl } from '../value-control';
     template: `
         <div class="form-group"
              [formGroup]="form">
-            <label class="control-label" translate>{{ config.label }}:</label>
+            <label class="control-label">{{ config.label | translate}}:</label>
             <input class="form-control"
                    #input
                    [placeholder]="config.placeholder"
                    [formControlName]="config.controlName">
-            <div ngxErrors="{{ config.controlName }}" class="ng-invalid">
-                <div ngxError="required" translate>
-                    VALIDATOR.REQUIRED
-                </div>
-                <div *ngIf="form.get(config.controlName).hasError('invalid')"
-                     [translate]="form.get(config.controlName).errors['msg']">
-                </div>
+            <!--            ToDo check upgrade to 9 -->
+            <div *ngIf="form.get(config.controlName).hasError('required')" translate>
+                VALIDATOR.REQUIRED
+            </div>
+            <div *ngIf="form.get(config.controlName).hasError('invalid')"
+                 [translate]="form.get(config.controlName).errors['msg']">
             </div>
         </div>
     `
@@ -29,7 +28,7 @@ export class FormInputComponent extends ValueControl implements AfterViewInit {
     input: ElementRef;
 
     ngAfterViewInit(): void {
-    //     this.input.nativeElement.focus();
-    //     this.input.nativeElement.setSelectionRange(0, 0);
+        //     this.input.nativeElement.focus();
+        //     this.input.nativeElement.setSelectionRange(0, 0);
     }
 }

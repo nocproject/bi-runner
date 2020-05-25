@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 
 import { finalize, first, map, tap } from 'rxjs/operators';
 
-import * as moment from 'moment';
+import moment from 'moment';
 
 import { BiRequestBuilder, Message, MessageType, Methods } from '@app/model';
 import { APIService, MessageService } from '@app/services';
@@ -64,13 +64,14 @@ export class BoardListComponent implements OnInit {
     }
 
     onImport(file, el: HTMLInputElement) {
-        let reader = new FileReader();
+        const reader = new FileReader();
 
-        reader.onload = () => {
+        reader.onload = async () => {
             let query;
 
             try {
-                query = JSON.parse(reader.result);
+                const blob = new Blob([reader.result], {type: 'application/json'});
+                query = await blob.text();
             } catch (error) {
                 this.messages.message(new Message(MessageType.DANGER, error));
             }

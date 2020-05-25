@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { AuthGuard, BoardService } from './services';
+import { AuthGuard, BoardResolver } from './services';
 
 import { BoardComponent } from './board';
 import { LoginComponent } from './login/login.component';
@@ -25,20 +25,20 @@ const routes: Routes = [
         canActivate: [AuthGuard]
     },
     {
-        path: 'share/:id',
+        path: 'share/:boardId',
         component: ShareComponent,
         canDeactivate: [ShareCanDeactivateGuard],
         canActivate: [AuthGuard],
         resolve: {
-            detail: BoardService
+            detail: BoardResolver
         }
     },
     {
-        path: 'board/:id',
+        path: 'board/:boardId',
         component: BoardComponent,
         canActivate: [AuthGuard],
         resolve: {
-            detail: BoardService
+            detail: BoardResolver
         }
     }
 ];

@@ -1,56 +1,51 @@
-import { JsonMember, JsonObject } from '@upe/typedjson';
+import { JsonProperty, Serializable } from 'typescript-json-serializer';
 
 import { Value } from './value';
 import { Range } from './range';
-import { Field } from './field';
+import { Field, FieldBuilder } from './field';
 
-@JsonObject({initializer: Filter.fromJSON})
+@Serializable()
 export class Filter {
-    @JsonMember({elements: Value})
-    public values: Value[];
-    @JsonMember()
+    @JsonProperty()
     public condition: string;
-    @JsonMember()
+    @JsonProperty()
     public name: string;
-    @JsonMember()
+    @JsonProperty()
     public association: '$and' | '$or';
-    @JsonMember()
+    @JsonProperty()
     public alias: string;
-    // form data
-    public value: string;
-    @JsonMember()
+    @JsonProperty({type: Field})
     public field: Field;
-
-    static fromJSON(json: any): Filter {
-        if (json.hasOwnProperty('field')) {
-            json.type = json.field.type;
-        } else {
-            const field = new Field();
-            field.type = json.type;
-            json.field = field;
-        }
-        if (json.hasOwnProperty('type') && json.hasOwnProperty('values')) {
-            if (json.type.match(/Date/)) {
-                if (!json.condition.match(/periodic/)) {
-                    if (Range.isNotRange(json.values[0].value)) {
-                        json.values[0].value = new Date(json.values[0].value);
-                    }
-                }
-                if (json.values[1] && json.condition.match(/interval/) && !json.condition.match(/periodic/)) {
-                    json.values[1].value = new Date(json.values[1].value);
-                }
+    @JsonProperty({
+        onDeserialize: (value, self) => {
+            if (self.field) {
+                return self.field.type;
             }
+            self.field = new FieldBuilder().type(value).build();
+            return value;
         }
-        // console.log(Object.assign(Object.create(Filter.prototype), json));
-        return Object.assign(Object.create(Filter.prototype), json);
-    }
+    })
+    public type: string;
+    @JsonProperty({
+        name: 'values',
+        onDeserialize: (value, self) => {
+            const type = self.type ? self.type : self.field.type;
+            return value.map(v => {
+                if (type.match(/Date/) && Range.isNotRange(v.value)) { // isNotRange use for validate date
+                    return {value: new Date(v.value)};
+                }
+                return v;
+            });
+        }
+    })
+    public values: Value[];
 
     public isEmpty(): boolean {
         return this.values && this.values.length === 0;
     }
 
     public getType(): string {
-        return this.field.type
+        return this.field.type;
     }
 
     public isPseudo(): boolean {

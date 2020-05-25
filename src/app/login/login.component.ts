@@ -29,7 +29,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
-        this.authService.isLoginOpen = false;
     }
 
     onLogin(): void {
@@ -38,7 +37,6 @@ export class LoginComponent implements OnInit, OnDestroy {
                 if (response) {
                     this.router.navigate([this.returnUrl]);
                     this.message = '';
-                    this.authService.isLogin = true;
                 } else {
                     this.message = 'Username or password incorrect!';
                     setTimeout(() => this.message = '', 5000);

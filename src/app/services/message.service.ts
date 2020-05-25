@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Observable ,  BehaviorSubject } from 'rxjs';
 import { cloneDeep, remove } from 'lodash';
 
 import { Message } from '../model';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class MessageService {
     private messagesSubject = new BehaviorSubject<Message[]>([]);
     messages$: Observable<Message[]> = this.messagesSubject.asObservable();

@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { TranslateModule } from '@ngx-translate/core';
-import { NgxErrorsModule } from '@ultimate/ngxerrors';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { TreeviewModule } from 'ngx-treeview';
 
@@ -33,7 +32,6 @@ export const COMPONENTS = [
     imports: [
         CommonModule,
         ReactiveFormsModule,
-        NgxErrorsModule,
         TooltipModule,
         TranslateModule,
         TreeviewModule.forRoot()

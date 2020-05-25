@@ -1,9 +1,10 @@
 import { Field } from '@app/model';
 import { FormGroup } from '@angular/forms';
-import { Input, OnInit } from '@angular/core';
+import { Input, OnInit, Directive } from '@angular/core';
 
 import { FieldConfig } from '../model/filters-form-config.interface';
 
+@Directive()
 export class ValueControl  implements OnInit {
     @Input()
     config: FieldConfig;
