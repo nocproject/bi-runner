@@ -13,8 +13,7 @@ import {
 } from '@angular/core';
 import { ControlValueAccessor, FormControl, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import { Observable ,  Subscription } from 'rxjs';
 import { first, map, tap } from 'rxjs/operators';
 
 import { includes, isEmpty, isNil, remove } from 'lodash';

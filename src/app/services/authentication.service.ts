@@ -1,9 +1,7 @@
+
+import {throwError as observableThrowError,  Observable ,  BehaviorSubject ,  of } from 'rxjs';
 import { forwardRef, Inject, Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { of } from 'rxjs/observable/of';
 import { catchError, map } from 'rxjs/operators';
 
 import { APIService } from './api.service';
@@ -79,8 +77,8 @@ export class AuthenticationService {
                 new BiRequestBuilder()
                     .method(Methods.GET_USER_ACCESS)
                     .params([{id: id}])
-                    .build())
-            .map(response => response.result)
+                    .build()).pipe(
+            map(response => response.result))
             .subscribe(level => this.accessLevelSubject.next(level),
                 () => this.accessLevelSubject.next(-1));
     }
@@ -92,11 +90,11 @@ export class AuthenticationService {
             params: [param]
         };
 
-        return this.http.post<Result>('/api/login/', JSON.stringify(query))
-            .map(response => response.result)
+        return this.http.post<Result>('/api/login/', JSON.stringify(query)).pipe(
+            map(response => response.result))
             .catch(response => {
                 this.messagesService.message(new Message(MessageType.DANGER, response.toString()));
-                return Observable.throw(response.toString());
+                return observableThrowError(response.toString());
             });
     }
 

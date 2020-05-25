@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { map, publishReplay, refCount, switchMap } from 'rxjs/operators';
 
 import { cloneDeep, findIndex, head } from 'lodash';
@@ -26,15 +26,15 @@ export class DatasourceService {
                         new BiRequestBuilder()
                             .method(Methods.GET_DATASOURCE_INFO)
                             .params([board.datasource])
-                            .build())
-                        .map(response => {
+                            .build()).pipe(
+                        map(response => {
                             const datasource = Datasource.fromJSON(response.result);
                             datasource.origFields = cloneDeep(datasource.fields);
                             datasource.fields = this._fields(board, board.filterFields, datasource);
                             datasource.tableFields = this._fields(board, board.agvFields, datasource);
                             this.filterService.fields = datasource.fields;
                             return datasource;
-                        });
+                        }));
                 }),
                 publishReplay(1),
                 refCount()
@@ -42,24 +42,24 @@ export class DatasourceService {
     }
 
     name(): Observable<string> {
-        return this.datasource$.map(d => d.name);
+        return this.datasource$.pipe(map(d => d.name));
     }
 
     isSample(): Observable<boolean> {
-        return this.datasource$.map(d => d.sample);
+        return this.datasource$.pipe(map(d => d.sample));
     }
 
     fields(): Observable<Field[]> {
-        return this.datasource$.map(d => d.fields);
+        return this.datasource$.pipe(map(d => d.fields));
     }
 
     tableFields(): Observable<Field[]> {
-        return this.datasource$.map(d => d.tableFields);
+        return this.datasource$.pipe(map(d => d.tableFields));
     }
 
     fieldByName(name: string): Observable<Field> {
         console.log(name);
-        return this.datasource$.map(d => d.getFieldByName(name));
+        return this.datasource$.pipe(map(d => d.getFieldByName(name)));
     }
 
     fieldsAsOption(): Observable<IOption[]> {
@@ -82,7 +82,7 @@ export class DatasourceService {
         return this.boardService.board$
             .pipe(
                 switchMap((board: Board) => {
-                    return this.datasource$.map(d => d.origFields)
+                    return this.datasource$.pipe(map(d => d.origFields))
                         .pipe(
                             map(array => array
                                 .filter(field => field.isSelectable)

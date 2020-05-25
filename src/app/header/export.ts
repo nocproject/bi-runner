@@ -1,4 +1,5 @@
-import { Observable } from 'rxjs/Observable';
+
+import {throwError as observableThrowError,  Observable } from 'rxjs';
 import { flatMap, head } from 'lodash';
 import * as d3 from 'd3';
 import * as saver from 'file-saver';
@@ -36,7 +37,7 @@ export class Export {
         if (durationFilters.length > 0) {
             const rangeGroup = head(filterService.getFilter('startEnd'));
             if (!rangeGroup) {
-                return Observable.throw('You must set report range!');
+                return observableThrowError('You must set report range!');
             }
             const range = reportRange(rangeGroup);
             fields.push(durationByReport(range));

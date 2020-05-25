@@ -4,8 +4,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { head } from 'lodash';
 import * as moment from 'moment';
 
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import { Observable ,  Subscription } from 'rxjs';
 import { filter, flatMap, map } from 'rxjs/operators';
 
 import { APIService, DatasourceService, LanguageService } from '@app/services';

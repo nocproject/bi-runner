@@ -4,7 +4,7 @@ import { IMyDate, IMyDateModel, IMyDpOptions } from '../../shared/my-date-picker
 
 import * as d3 from 'd3';
 import { cloneDeep, isEqual, reduce } from 'lodash';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 import { BIValidators } from '../filters-form/components/validators';
 import { IDateRange, IOption, Range } from '@app/model';

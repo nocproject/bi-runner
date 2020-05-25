@@ -1,7 +1,9 @@
+
+import {map} from 'rxjs/operators';
 import { forwardRef, Inject, Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
 
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import { AuthenticationService } from './authentication.service';
 
@@ -13,13 +15,13 @@ export class AuthGuard implements CanActivate {
     }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-        return this.authService.checkConnection()
-            .map(isLogin => {
+        return this.authService.checkConnection().pipe(
+            map(isLogin => {
                 if (!isLogin) {
                     this.router.navigate(['login'], {queryParams: {url: state.url}});
                     return false;
                 }
                 return true;
-            });
+            }));
     }
 }

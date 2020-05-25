@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { merge, switchMap } from 'rxjs/operators';
 
 import { Board } from '@app/model';

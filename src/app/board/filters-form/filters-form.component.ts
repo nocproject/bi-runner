@@ -1,8 +1,9 @@
+
+import {filter} from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { Subscription } from 'rxjs/Subscription';
-import { of } from 'rxjs/observable/of';
+import { Subscription ,  of } from 'rxjs';
 
 import { cloneDeep } from 'lodash';
 import * as d3 from 'd3';
@@ -113,8 +114,8 @@ export class FiltersFormComponent implements OnInit {
             }]
         };
         this.filtersForm = this.createForm(this.config);
-        this.eventSubscription = this.eventService.event$
-            .filter(event => event !== null)
+        this.eventSubscription = this.eventService.event$.pipe(
+            filter(event => event !== null))
             .subscribe(event => {
                 switch (event.type) {
                     case EventType.Restore: {

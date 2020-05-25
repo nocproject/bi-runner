@@ -3,8 +3,7 @@ import { AfterViewInit, ElementRef, forwardRef, Inject, Input, OnDestroy, OnInit
 import { BaseMixin } from 'dc';
 import { clone, startsWith } from 'lodash';
 
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import { Observable ,  Subscription } from 'rxjs';
 import { debounceTime, filter, map, switchMap } from 'rxjs/operators';
 
 import {

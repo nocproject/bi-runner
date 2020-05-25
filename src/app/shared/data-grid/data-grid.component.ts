@@ -12,8 +12,7 @@ import {
 import { FormControl, FormGroup } from '@angular/forms';
 
 import { flatMap, includes } from 'lodash';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import { Observable ,  Subscription } from 'rxjs';
 
 @Component({
     selector: 'bi-data-grid',
