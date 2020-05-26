@@ -22,7 +22,7 @@
               "src/favicon.ico"
             ],
             "styles": [
-              "src/styles.sass"
+              "src/styles.scss"
             ],
             "scripts": []
           },
@@ -78,7 +78,7 @@
             "tsConfig": "src/tsconfig.spec.json",
             "scripts": [],
             "styles": [
-              "src/styles.sass"
+              "src/styles.scss"
             ],
             "assets": [
               "src/assets",
@@ -130,7 +130,7 @@
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "bi",
-      "style": "sass"
+      "style": "scss"
     },
     "@schematics/angular:directive": {
       "prefix": "bi"

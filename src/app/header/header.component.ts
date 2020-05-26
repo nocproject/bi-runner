@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
-import { Observable ,  Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { finalize, first, map } from 'rxjs/operators';
 
 import { cloneDeep, includes } from 'lodash';
@@ -21,7 +21,7 @@ import {
 } from '@app/services';
 import { FilterService } from '../board/services/filter.service';
 
-import { BiRequestBuilder, Board, Field, IOption, Message, MessageType, Methods, User } from '../model';
+import { BiRequestBuilder, Board, Field, IOption, Message, MessageType, Methods } from '../model';
 import { ModalComponent } from '../shared/modal/modal';
 import { Export } from './export';
 
@@ -32,7 +32,7 @@ import { Export } from './export';
 })
 
 export class HeaderComponent implements OnInit, OnDestroy {
-    user$: Observable<User>;
+    displayName$: Observable<string>;
     isLogin$: Observable<boolean>;
     board$: Observable<Board>;
     isReportOpen$: Observable<boolean>;
@@ -66,7 +66,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.user$ = this.authService.user$;
+        this.displayName$ = this.authService.displayName$;
         this.isLogin$ = this.authService.isLogIn$;
         this.board$ = this.boardService.board$;
         this.isReportOpen$ = this.layoutService.isReportOpen$;

@@ -1,24 +1,25 @@
-import { JsonMember, JsonObject, TypedJSON } from '@upe/typedjson';
+// import { JsonMember, JsonObject, TypedJSON } from '@upe/typedjson';
 
 import { findIndex } from 'lodash';
 
 import { Field } from './field';
 
-@JsonObject()
+// @JsonObject()
 export class Datasource {
-    @JsonMember()
+    // @JsonMember()
     public name: string;
-    @JsonMember()
+    // @JsonMember()
     public description: string;
-    @JsonMember({elements: Field, name: 'fields'})
+    // @JsonMember({elements: Field, name: 'fields'})
     public fields: Field[];
-    @JsonMember()
+    // @JsonMember()
     public sample: boolean;
     public tableFields: Field[];
     public origFields: Field[];
 
     static fromJSON(json: any): Datasource {
-        return TypedJSON.parse(json, Datasource);
+        // return TypedJSON.parse(json, Datasource);
+        return new Datasource();
     }
 
     getFieldByName(name: string) {

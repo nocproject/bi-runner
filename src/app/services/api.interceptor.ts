@@ -1,7 +1,3 @@
-
-import {throwError as observableThrowError,  Observable } from 'rxjs';
-
-import {catchError, map} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import {
     HttpErrorResponse,
@@ -11,16 +7,17 @@ import {
     HttpRequest,
     HttpResponse
 } from '@angular/common/http';
+import { Router } from '@angular/router';
 
-
-
+import { Observable, throwError } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
 
 import { Message, MessageType } from '../model';
 import { MessageService } from './message.service';
 
 @Injectable()
 export class APIInterceptor implements HttpInterceptor {
-    constructor(private messagesService: MessageService) {
+    constructor(private router: Router, private messagesService: MessageService) {
     }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -36,8 +33,11 @@ export class APIInterceptor implements HttpInterceptor {
                     if (event.url && event.url.indexOf('/api/bi/')) {
                         if (event.body.error) {
                             this.messagesService.message(new Message(MessageType.DANGER, event.body.error));
-                            return observableThrowError(event.body.error);
+                            throw(event.body.error);
                         }
+                    }
+                    if (event.url === '/main/desktop/user_settings/') {
+                        console.log(event.url);
                     }
                 }
                 return event;
@@ -49,7 +49,7 @@ export class APIInterceptor implements HttpInterceptor {
                         this.messagesService.message(new Message(MessageType.DANGER, `${error.message} : status ${error.status}`));
                     }
                 }
-                return observableThrowError(err);
-            }),);
+                return throwError(err);
+            }));
     }
 }

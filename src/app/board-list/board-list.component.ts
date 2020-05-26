@@ -70,7 +70,8 @@ export class BoardListComponent implements OnInit {
             let query;
 
             try {
-                query = JSON.parse(reader.result);
+                //*** error
+                // query = JSON.parse(reader.result);
             } catch (error) {
                 this.messages.message(new Message(MessageType.DANGER, error));
             }

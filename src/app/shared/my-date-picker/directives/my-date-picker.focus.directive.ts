@@ -15,6 +15,7 @@ export class FocusDirective implements AfterViewInit {
         if (this.value === '0') {
             return;
         }
-        this.renderer.invokeElementMethod(this.el.nativeElement, 'focus', []);
+        //*** error
+        // this.renderer.invokeElementMethod(this.el.nativeElement, 'focus', []);
     }
 }

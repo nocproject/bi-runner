@@ -33,9 +33,9 @@ export class LineComponent extends WidgetComponent {
         chart.elasticY(true);
         chart.renderHorizontalGridLines(true);
         chart.dimension(dimension);
-        chart.x(d3.time.scale().domain([minDate, maxDate]));
+        chart.x(d3.scaleTime().domain([minDate, maxDate]));
         chart.yAxisLabel(null, this.yLabelOffset);
-        chart.xAxis().tickFormat(v => d3.time.format('%d.%m')(v));
+        chart.xAxis().tickFormat(v => d3.timeFormat('%d.%m')(v));
         chart.group(dim);
         chart.controlsUseVisibility(true);
         const newFilter = new FilterBuilder()

@@ -143,11 +143,11 @@ export class FilterService {
                     if (filter.condition.match(/interval/i)) {
                         const raw = filter.values[0].value.split(' - ');
                         values = [
-                            new Value(d3.time.format('%d.%m.%Y').parse(raw[0])),
-                            new Value(d3.time.format('%d.%m.%Y').parse(raw[1]))
+                            new Value(d3.timeParse('%d.%m.%Y')(raw[0])),
+                            new Value(d3.timeParse('%d.%m.%Y')(raw[1]))
                         ];
                     } else {
-                        values = [new Value(d3.time.format('%d.%m.%Y').parse(filter.values[0].value))];
+                        values = [new Value(d3.timeParse('%d.%m.%Y')(filter.values[0].value))];
                     }
                     filter.values = values;
                 }
@@ -157,8 +157,8 @@ export class FilterService {
                             const raw = filter.values[0].value.split(' - ');
                             if (raw.length === 2) {
                                 values = [
-                                    new Value(d3.time.format('%d.%m.%Y %H:%M').parse(raw[0])),
-                                    new Value(d3.time.format('%d.%m.%Y %H:%M').parse(raw[1]))
+                                    new Value(d3.timeParse('%d.%m.%Y %H:%M')(raw[0])),
+                                    new Value(d3.timeParse('%d.%m.%Y %H:%M')(raw[1]))
                                 ];
                             } else {
                                 values = [
@@ -167,7 +167,7 @@ export class FilterService {
                                 ];
                             }
                         } else {
-                            values = [new Value(d3.time.format('%d.%m.%Y %H:%M').parse(filter.values[0].value))];
+                            values = [new Value(d3.timeParse('%d.%m.%Y %H:%M')(filter.values[0].value))];
                         }
                         filter.values = values;
                     }

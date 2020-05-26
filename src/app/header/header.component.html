@@ -56,7 +56,8 @@
                 </li>
                 <li class="dropdown" dropdown>
                     <a dropdownToggle class="dropdown-toggle">
-                        <i class='fa fa-user icon-offset'></i>{{ (user$ | async).display() }}<span class="caret"></span>
+                        <i class='fa fa-user icon-offset'></i>{{ displayName$ | async }}<span
+                            class="caret"></span>
                     </a>
                     <ul *dropdownMenu class="dropdown-menu" role="menu">
                         <li><a class="hand" (click)="about.open()" translate>

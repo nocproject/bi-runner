@@ -55,12 +55,12 @@ export class SelectMenuComponent extends WidgetComponent {
     getValue(widget: BaseMixin<any>, filter): Value[] {
         return widget.filters()
             .filter(d => d.length)
-            .map(d => new Value(d3.time.format('%Y-%m-%d %H:%M:%S').parse(d)));
+            .map(d => new Value(d3.timeParse('%Y-%m-%d %H:%M:%S')(d)));
     }
 
     restore(values: Value[]): Restore {
         return {
-            title: values.map(item => d3.time.format('%Y-%m-%d %H:%M:%S')(item.value)).join(', '),
+            title: values.map(item => d3.timeFormat('%Y-%m-%d %H:%M:%S')(item.value)).join(', '),
             filter: values.map(item => new Value(item.value, item.desc))
         };
     }

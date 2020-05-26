@@ -1,4 +1,4 @@
-import { JsonMember, JsonObject, TypedJSON } from '@upe/typedjson';
+// import { JsonMember, JsonObject, TypedJSON } from '@upe/typedjson';
 import { cloneDeep, toPairs } from 'lodash';
 
 import { Field } from './field';
@@ -9,56 +9,57 @@ import { BiRequest } from './bi-request';
 import { Widget } from './widget';
 import { DeserializationHelper } from './helpers';
 
-@JsonObject()
+// @JsonObject()
 export class Board {
-    @JsonMember()
+    // @JsonMember()
     public id: string;
-    @JsonMember()
+    // @JsonMember()
     public layoutId: string;
-    @JsonMember()
+    // @JsonMember()
     public title: string;
-    @JsonMember()
+    // @JsonMember()
     public description: string;
-    @JsonMember()
+    // @JsonMember()
     public datasource: string;
-    @JsonMember()
+    // @JsonMember()
     public format: number;
-    @JsonMember()
+    // @JsonMember()
     public sample: number;
-    @JsonMember()
+    // @JsonMember()
     public owner: string;
-    @JsonMember()
+    // @JsonMember()
     public created: string;
-    @JsonMember()
+    // @JsonMember()
     public changed: string;
-    @JsonMember({elements: Widget})
+    // @JsonMember({elements: Widget})
     public widgets: Widget[];
-    @JsonMember({elements: Field, name: 'agv_fields'})
+    // @JsonMember({elements: Field, name: 'agv_fields'})
     public agvFields: Field[];
-    @JsonMember({elements: Field, name: 'filter_fields'})
+    // @JsonMember({elements: Field, name: 'filter_fields'})
     public filterFields: Field[];
-    @JsonMember({elements: Field, name: 'pseudo_fields'})
+    // @JsonMember({elements: Field, name: 'pseudo_fields'})
     public pseudoFields: Field[];
-    @JsonMember()
+    // @JsonMember()
     public layout: Layout;
-    @JsonMember({name: 'export'})
+    // @JsonMember({name: 'export'})
     public exportQry: BiRequest;
-    @JsonMember({elements: Group})
+    // @JsonMember({elements: Group})
     public groups: Group[];
-    @JsonMember({elements: Object})
+    // @JsonMember({elements: Object})
     public filter: Object[];
     public isSample: boolean;
 
     static fromJSON(json: any): Board {
-        const board = TypedJSON.parse(json, Board);
+        // const board = TypedJSON.parse(json, Board);
 
         if (json.hasOwnProperty('filter')) {
-            board.filter = DeserializationHelper.map<String, Filter>(
-                toPairs(json.filter).map(item => [TypedJSON.stringify(item[0]), item[1]]),
-                String, Filter
-            );
+            //*** error
+            // board.filter = DeserializationHelper.map<String, Filter>(
+            //     toPairs(json.filter).map(item => [TypedJSON.stringify(item[0]), item[1]]),
+            //     String, Filter
+            // );
         }
-        return board;
+        return new Board();
     }
 
     prepare() {

@@ -1,24 +1,24 @@
-import { JsonMember, JsonObject } from '@upe/typedjson';
+// import { JsonMember, JsonObject } from '@upe/typedjson';
 
 import { Value } from './value';
 import { Range } from './range';
 import { Field } from './field';
 
-@JsonObject({initializer: Filter.fromJSON})
+// @JsonObject({initializer: Filter.fromJSON})
 export class Filter {
-    @JsonMember({elements: Value})
+    // @JsonMember({elements: Value})
     public values: Value[];
-    @JsonMember()
+    // @JsonMember()
     public condition: string;
-    @JsonMember()
+    // @JsonMember()
     public name: string;
-    @JsonMember()
+    // @JsonMember()
     public association: '$and' | '$or';
-    @JsonMember()
+    // @JsonMember()
     public alias: string;
     // form data
     public value: string;
-    @JsonMember()
+    // @JsonMember()
     public field: Field;
 
     static fromJSON(json: any): Filter {

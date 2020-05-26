@@ -1,4 +1,4 @@
-import { JsonMember, JsonObject, TypedJSON } from '@upe/typedjson';
+// import { JsonMember, JsonObject, TypedJSON } from '@upe/typedjson';
 import { toPairs } from 'lodash';
 
 import { Field } from './field';
@@ -17,15 +17,15 @@ import { DeserializationHelper } from './helpers';
 //          public clause: Map<String, Clause[]>;
 //      }
 
-@JsonObject({initializer: BiQuery.fromJSON})
+// @JsonObject({initializer: BiQuery.fromJSON})
 export class BiQuery {
-    @JsonMember()
+    // @JsonMember()
     public datasource: string;
-    @JsonMember()
+    // @JsonMember()
     public limit: number;
-    @JsonMember()
+    // @JsonMember()
     public sample: number;
-    @JsonMember({elements: Field})
+    // @JsonMember({elements: Field})
     public fields: Field[];
     // @JsonMapMember({elements: [String, String], name: 'filter'})
     // public where: Map<String, String>;
@@ -34,13 +34,13 @@ export class BiQuery {
 
     static fromJSON(json: any): BiQuery {
         function extract(name) {
-            if (json.hasOwnProperty(name)) {
-                json[name] = DeserializationHelper.map<String, String>(
-                    toPairs(json[name]).map(item => [TypedJSON.stringify(item[0]), TypedJSON.stringify(item[1])]),
-                    String, String
-                );
-                delete json[name];
-            }
+            // if (json.hasOwnProperty(name)) {
+            //     json[name] = DeserializationHelper.map<String, String>(
+            //         toPairs(json[name]).map(item => [TypedJSON.stringify(item[0]), TypedJSON.stringify(item[1])]),
+            //         String, String
+            //     );
+            //     delete json[name];
+            // }
         }
         extract('filter');
         extract('having');

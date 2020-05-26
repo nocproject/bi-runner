@@ -1,22 +1,22 @@
-import { JsonMember, JsonObject } from '@upe/typedjson';
+// import { JsonMember, JsonObject } from '@upe/typedjson';
 
 import { Map } from './map';
 import { BiRequest } from './bi-request';
 
-@JsonObject()
+// @JsonObject()
 export class Widget {
-    @JsonMember()
+    // @JsonMember()
     public id: number;
-    @JsonMember()
+    // @JsonMember()
     public cell: string;
-    @JsonMember()
+    // @JsonMember()
     public note: string;
-    @JsonMember()
+    // @JsonMember()
     public title: string;
-    @JsonMember({name: 'type'})
+    // @JsonMember({name: 'type'})
     public type: string;
-    @JsonMember()
+    // @JsonMember()
     public query: BiRequest;
-    @JsonMember()
+    // @JsonMember()
     public map?: Map;
 }

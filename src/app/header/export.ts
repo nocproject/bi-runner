@@ -266,7 +266,7 @@ function reportRange(group: Group): any[] {
 }
 
 function toDateTime(value) {
-    return `toDateTime('${d3.time.format('%Y-%m-%dT%H:%M:%S')(value)}')`;
+    return `toDateTime('${d3.timeFormat('%Y-%m-%dT%H:%M:%S')(value)}')`;
 }
 
 /**

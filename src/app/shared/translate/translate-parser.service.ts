@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Response } from '@angular/http';
+import { HttpResponse } from '@angular/common/http';
 
 import { TranslateParser } from '@ngx-translate/core';
 
@@ -20,9 +20,10 @@ export class TranslateParserService extends TranslateParser {
 
     getValue(target: any, key: string): string {
         let keys = key.split('.');
-        if (target instanceof Response) {
-            target = target.json();
-        }
+        //*** error
+        // if (target instanceof HttpResponse) {
+        //     target = target.json();
+        // }
 
         key = '';
         do {

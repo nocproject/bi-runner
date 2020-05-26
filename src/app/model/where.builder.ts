@@ -304,14 +304,14 @@ function toDate(v: Value) {
     if (typeof v.value === 'string') {
         v.value = new Date(v.value);
     }
-    return `toDate('${d3.time.format('%Y-%m-%d')(v.value)}')`;
+    return `toDate('${d3.timeFormat('%Y-%m-%d')(v.value)}')`;
 }
 
 function toDateTime(v: Value) {
     if (typeof v.value === 'string') {
         v.value = new Date(v.value);
     }
-    return `'${d3.time.format('%Y-%m-%dT%H:%M:%S')(v.value)}'`;
+    return `'${d3.timeFormat('%Y-%m-%dT%H:%M:%S')(v.value)}'`;
 }
 
 function toPeriodicTime(param) {

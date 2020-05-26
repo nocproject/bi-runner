@@ -1,16 +1,16 @@
-import { JsonMember, JsonObject } from '@upe/typedjson';
+// import { JsonMember, JsonObject } from '@upe/typedjson';
 
 import { max, startsWith } from 'lodash';
 import { BiQuery } from './bi-query';
 import { Field, FieldBuilder } from './field';
 
-@JsonObject()
+// @JsonObject()
 export class BiRequest {
-    @JsonMember()
+    // @JsonMember()
     public id: number;
-    @JsonMember()
+    // @JsonMember()
     public method: string;
-    @JsonMember({elements: BiQuery})
+    // @JsonMember({elements: BiQuery})
     params: BiQuery[];
 
     public getFields(): Field[] {

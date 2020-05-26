@@ -1,18 +1,18 @@
-import { JsonMember, JsonObject } from '@upe/typedjson';
+// import { JsonMember, JsonObject } from '@upe/typedjson';
 
 import { Filter } from './filter';
 
-@JsonObject()
+// @JsonObject()
 export class Group {
-    @JsonMember()
+    // @JsonMember()
     name: string;
-    @JsonMember()
+    // @JsonMember()
     active: boolean;
-    @JsonMember()
+    // @JsonMember()
     association: '$and' | '$or';
-    @JsonMember()
+    // @JsonMember()
     public range: boolean;
-    @JsonMember({elements: Filter})
+    // @JsonMember({elements: Filter})
     filters: Filter[];
 
     // public isEmpty(): boolean {

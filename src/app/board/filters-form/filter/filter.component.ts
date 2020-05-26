@@ -1,12 +1,10 @@
-
-import {map} from 'rxjs/operators';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AbstractControl } from '@angular/forms/src/model';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { clone, findIndex, indexOf, isEqual } from 'lodash';
 
-import { Observable ,  Subscription ,  of } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { Field } from '@app/model';
 import { DatasourceService } from '@app/services';

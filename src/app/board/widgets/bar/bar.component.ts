@@ -28,7 +28,7 @@ export class BarComponent extends WidgetComponent {
         chart.renderHorizontalGridLines(true);
         chart.dimension(dimension);
         chart.group(values);
-        chart.x(d3.scale.linear().domain([0, 24]));
+        chart.x(d3.scaleLinear().domain([0, 24]));
         chart.controlsUseVisibility(true);
         const newFilter = new FilterBuilder()
             .name('toHour(ts)')

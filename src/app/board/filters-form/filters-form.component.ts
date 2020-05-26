@@ -1,9 +1,8 @@
-
-import {filter} from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { Subscription ,  of } from 'rxjs';
+import { of, Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 import { cloneDeep } from 'lodash';
 import * as d3 from 'd3';
@@ -275,21 +274,21 @@ export class FiltersFormComponent implements OnInit {
 
         if (filter.getType() === 'Date') {
             if (filter.condition.match(/interval/i)) {
-                value = `${d3.time.format('%d.%m.%Y')(filter.values[0].value)} - ${d3.time.format('%d.%m.%Y')(filter.values[1].value)}`;
+                value = `${d3.timeFormat('%d.%m.%Y')(filter.values[0].value)} - ${d3.timeFormat('%d.%m.%Y')(filter.values[1].value)}`;
             } else {
-                value = d3.time.format('%d.%m.%Y')(filter.values[0].value);
+                value = d3.timeFormat('%d.%m.%Y')(filter.values[0].value);
             }
         } else if (filter.getType() === 'DateTime') {
             if (filter.condition.match(/periodic/i)) {
                 value = filter.values[0].value;
             } else if (filter.condition.match(/interval/i)) {
                 if (Range.isNotRange(filter.values[0].value)) {
-                    value = `${d3.time.format('%d.%m.%Y %H:%M')(filter.values[0].value)} - ${d3.time.format('%d.%m.%Y %H:%M')(filter.values[1].value)}`;
+                    value = `${d3.timeFormat('%d.%m.%Y %H:%M')(filter.values[0].value)} - ${d3.timeFormat('%d.%m.%Y %H:%M')(filter.values[1].value)}`;
                 } else {
                     value = filter.values[0].value;
                 }
             } else {
-                value = d3.time.format('%d.%m.%Y %H:%M')(filter.values[0].value);
+                value = d3.timeFormat('%d.%m.%Y %H:%M')(filter.values[0].value);
             }
         } else if (filter.condition.match('empty')) {
             // skip empty value

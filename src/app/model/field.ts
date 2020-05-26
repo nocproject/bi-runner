@@ -1,42 +1,42 @@
-import { JsonMember, JsonObject } from '@upe/typedjson';
+// import { JsonMember, JsonObject } from '@upe/typedjson';
 
 import { Expression } from './expression';
 
-@JsonObject({initializer: Field.fromJSON, knownTypes: [Expression]})
+// @JsonObject({initializer: Field.fromJSON, knownTypes: [Expression]})
 export class Field {
     // @JsonMember
     public expr: string;
-    @JsonMember()
+    // @JsonMember()
     public label: string;
-    @JsonMember()
+    // @JsonMember()
     public alias: string;
-    @JsonMember()
+    // @JsonMember()
     public desc: boolean;
-    @JsonMember({type: Number})
+    // @JsonMember({type: Number})
     public order: number;
-    @JsonMember({type: Number})
+    // @JsonMember({type: Number})
     public group: number;
-    @JsonMember()
+    // @JsonMember()
     public format: string;
-    @JsonMember()
+    // @JsonMember()
     public name: string;
-    @JsonMember()
+    // @JsonMember()
     public description: string;
-    @JsonMember()
+    // @JsonMember()
     public dict: string;
-    @JsonMember()
+    // @JsonMember()
     public type: string;
-    @JsonMember()
+    // @JsonMember()
     public model: string;
-    @JsonMember()
+    // @JsonMember()
     public pseudo: boolean;
-    @JsonMember()
+    // @JsonMember()
     public enable: boolean;
-    @JsonMember()
+    // @JsonMember()
     public aggFunc: string;
-    @JsonMember()
+    // @JsonMember()
     public hide: boolean | string;
-    @JsonMember()
+    // @JsonMember()
     public allowAggFuncs: boolean;
     //
     public isSelectable: boolean;

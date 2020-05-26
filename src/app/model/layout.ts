@@ -1,21 +1,21 @@
-import { JsonMember, JsonObject } from '@upe/typedjson';
+// import { JsonMember, JsonObject } from '@upe/typedjson';
 
 import { Cell } from './cell';
 
-@JsonObject()
+// @JsonObject()
 export class Layout {
-    @JsonMember()
+    // @JsonMember()
     public id: string;
-    @JsonMember()
+    // @JsonMember()
     public name: string;
-    @JsonMember()
+    // @JsonMember()
     public description: string;
-    @JsonMember()
+    // @JsonMember()
     public uuid: string;
-    @JsonMember({elements: Cell})
+    // @JsonMember({elements: Cell})
     public cells: Cell[];
-    @JsonMember({name: 'fav_status'})
+    // @JsonMember({name: 'fav_status'})
     public favStatus: boolean;
-    @JsonMember({name: 'is_builtin'})
+    // @JsonMember({name: 'is_builtin'})
     public isBuiltin: boolean;
 }

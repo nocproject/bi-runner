@@ -150,15 +150,16 @@ export class MyDatePicker implements OnChanges, ControlValueAccessor {
 
     constructor(public elem: ElementRef, private renderer: Renderer2, private cdr: ChangeDetectorRef, private localeService: LocaleService, private utilService: UtilService) {
         this.setLocaleOptions();
-        renderer.listenGlobal('document', 'click', (event: any) => {
-            if (this.showSelector && event.target && this.elem.nativeElement !== event.target && !this.elem.nativeElement.contains(event.target)) {
-                this.showSelector = false;
-                this.calendarToggle.emit(CalToggle.CloseByOutClick);
-            }
-            if (this.opts.monthSelector || this.opts.yearSelector) {
-                this.resetMonthYearSelect();
-            }
-        });
+        //*** error
+        // renderer.listenGlobal('document', 'click', (event: any) => {
+        //     if (this.showSelector && event.target && this.elem.nativeElement !== event.target && !this.elem.nativeElement.contains(event.target)) {
+        //         this.showSelector = false;
+        //         this.calendarToggle.emit(CalToggle.CloseByOutClick);
+        //     }
+        //     if (this.opts.monthSelector || this.opts.yearSelector) {
+        //         this.resetMonthYearSelect();
+        //     }
+        // });
     }
 
     setLocaleOptions(): void {

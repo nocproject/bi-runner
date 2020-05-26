@@ -203,7 +203,7 @@ class Data {
                 }
                 case 'rangeInput': {
                     if (control.value && !BIValidators.dateTimeRange(control)) {
-                        const dates = data.rangeInput.split(' - ').map(d => d3.time.format('%d.%m.%Y %H:%M').parse(d));
+                        const dates = data.rangeInput.split(' - ').map(d => d3.timeParse('%d.%m.%Y %H:%M')(d));
 
                         this.data.fromTime = dates[0];
                         this.data.toTime = dates[1];
@@ -233,7 +233,7 @@ class Data {
     }
 
     private textRange(): string {
-        return `${d3.time.format('%d.%m.%Y %H:%M')(this.data.fromTime)} - ${d3.time.format('%d.%m.%Y %H:%M')(this.data.toTime)}`;
+        return `${d3.timeFormat('%d.%m.%Y %H:%M')(this.data.fromTime)} - ${d3.timeFormat('%d.%m.%Y %H:%M')(this.data.toTime)}`;
     }
 }
 

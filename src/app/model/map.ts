@@ -1,13 +1,13 @@
-import { JsonMember, JsonObject } from '@upe/typedjson';
+// import { JsonMember, JsonObject } from '@upe/typedjson';
 
-@JsonObject()
+// @JsonObject()
 export class Map {
-    @JsonMember()
+    // @JsonMember()
     public name: string;
-    @JsonMember({elements: Number})
+    // @JsonMember({elements: Number})
     public rotate: [number, number, number];
-    @JsonMember({elements: Number})
+    // @JsonMember({elements: Number})
     public center: [number, number];
-    @JsonMember()
+    // @JsonMember()
     public scale: number;
 }

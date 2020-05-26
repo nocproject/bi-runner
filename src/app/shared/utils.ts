@@ -15,19 +15,19 @@ export class Utils {
     static dateToString(date, format?: string): string {
         format = typeof format !== 'undefined' ? format : '%d.%m.%y';
 
-        return d3.time.format(format)(date);
+        return d3.timeFormat(format)(date);
     };
 
     static dateToTimeString(date, format?: string): string {
         format = typeof format !== 'undefined' ? format : '%H:%M';
 
-        return d3.time.format(format)(date);
+        return d3.timeFormat(format)(date);
     };
 
     static dateToDateTimeString(date, format?: string): string {
         format = typeof format !== 'undefined' ? format : '%d.%m.%y %H:%M';
 
-        return d3.time.format(format)(date);
+        return d3.timeFormat(format)(date);
     };
 
     static spanView(id: number): string {

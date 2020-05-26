@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
 import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { TranslateLoader, TranslateModule, TranslateParser } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -29,7 +30,6 @@ import { TranslateParserService } from './shared/translate/translate-parser.serv
 
 export const APP_SERVICES = [
     APIService,
-    AuthenticationService,
     AuthGuard,
     BoardService,
     DatasourceService,
@@ -52,6 +52,7 @@ export const APP_SERVICES = [
         LoginModule,
         ShareModule,
         AppRoutingModule,
+        BrowserAnimationsModule,
         TranslateModule.forRoot({
             loader: {
                 provide: TranslateLoader,

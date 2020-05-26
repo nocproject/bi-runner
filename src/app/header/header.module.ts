@@ -11,6 +11,7 @@ import { WidgetsModule } from '../board/widgets/widgets.module';
 //
 import { AccessLevelComponent } from './access-level.component';
 import { HeaderComponent } from './header.component';
+import { RightComponent } from './right/right.component';
 
 export const COMPONENTS = [
     AccessLevelComponent,
@@ -28,7 +29,8 @@ export const COMPONENTS = [
         TranslateModule
     ],
     declarations: [
-        ...COMPONENTS
+        ...COMPONENTS,
+        RightComponent
     ],
     exports: [
         ...COMPONENTS

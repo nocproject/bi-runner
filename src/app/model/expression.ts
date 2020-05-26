@@ -1,5 +1,5 @@
-import { JsonObject } from '@upe/typedjson';
+// import { JsonObject } from '@upe/typedjson';
 
-@JsonObject()
+// @JsonObject()
 export class Expression {
 }

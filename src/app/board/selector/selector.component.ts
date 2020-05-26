@@ -4,21 +4,11 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { head } from 'lodash';
 import * as moment from 'moment';
 
-import { Observable ,  Subscription } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { filter, flatMap, map } from 'rxjs/operators';
 
 import { APIService, DatasourceService, LanguageService } from '@app/services';
-import {
-    BiRequestBuilder,
-    Board,
-    FilterBuilder,
-    Group,
-    GroupBuilder,
-    IOption,
-    Methods,
-    Range,
-    Value
-} from '@app/model';
+import { Board, FilterBuilder, Group, GroupBuilder, IOption, Range, Value } from '@app/model';
 
 import { ReportRangeComponent } from '../report-range/report-range.component';
 import { ModalComponent } from '../../shared/modal/modal';
@@ -84,20 +74,22 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
 
     ngOnInit() {
         this.isNotInRange = this.board.groups && !this.board.groups[0].range;
-        this.lastUpdate$ = this.api.execute(
-            new BiRequestBuilder()
-                .method(Methods.QUERY)
-                .params([{
-                    fields: [
-                        {
-                            expr: 'max(date)',
-                            alias: 'date'
-                        }
-                    ],
-                    datasource: this.board.datasource
-                }])
-                .build())
-            .pipe(flatMap(response => head(response.data['result'])));
+        this.lastUpdate$ = of('error on upgrade');
+        //*** error
+        // this.lastUpdate$ = this.api.execute(
+        //     new BiRequestBuilder()
+        //         .method(Methods.QUERY)
+        //         .params([{
+        //             fields: [
+        //                 {
+        //                     expr: 'max(date)',
+        //                     alias: 'date'
+        //                 }
+        //             ],
+        //             datasource: this.board.datasource
+        //         }])
+        //         .build())
+        //     .pipe(flatMap(response => head(response.data['result'])));
 
         this.ratioForm = this.fb.group({
             ratio: this.filterService.ratioSubject.getValue()
