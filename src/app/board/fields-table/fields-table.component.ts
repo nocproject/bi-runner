@@ -37,11 +37,11 @@ export class FieldsTableComponent implements OnInit, OnDestroy {
 
     onGroupBy(field: Field, control: any): void {
         const fields = [];
-        const index = findIndex(this.board.exportQry.params[0].fields, e => e.expr === field.name);
+        const index = findIndex(this.board.export.params[0].fields, e => e.expr === field.name);
 
         field.grouped = control.checked;
         if (field.grouped && index === -1) {
-            field.group = this.board.exportQry.maxGroupBy();
+            field.group = this.board.export.maxGroupBy();
             field.expr = field.name;
             field.label = field.description;
             if (field.dict) {
@@ -70,13 +70,13 @@ export class FieldsTableComponent implements OnInit, OnDestroy {
                 field.hide = true;
             }
             fields.push(field);
-            this.board.exportQry.params[0].fields = this.board.exportQry.params[0].fields.concat(fields);
+            this.board.export.params[0].fields = this.board.export.params[0].fields.concat(fields);
             this.fieldsTableService.fieldsNext(fields);
         }
         if (!field.grouped && index !== -1) {
-            remove(this.board.exportQry.params[0].fields, e => e.expr === field.name);
+            remove(this.board.export.params[0].fields, e => e.expr === field.name);
             if (field.dict || 'ip' === field.name) {
-                remove(this.board.exportQry.params[0].fields, e => e.alias === (field.name + '_text'));
+                remove(this.board.export.params[0].fields, e => e.alias === (field.name + '_text'));
             }
             this.fieldsTableService.removeField(field);
         }

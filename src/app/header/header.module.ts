@@ -8,10 +8,8 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { ModalModule } from '../shared/modal/modal.module';
 import { WidgetsModule } from '../board/widgets/widgets.module';
 //
-//
 import { AccessLevelComponent } from './access-level.component';
 import { HeaderComponent } from './header.component';
-import { RightComponent } from './right/right.component';
 
 export const COMPONENTS = [
     AccessLevelComponent,
@@ -30,7 +28,6 @@ export const COMPONENTS = [
     ],
     declarations: [
         ...COMPONENTS,
-        RightComponent
     ],
     exports: [
         ...COMPONENTS

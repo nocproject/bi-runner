@@ -39,7 +39,7 @@ export class BoardComponent implements OnInit, OnDestroy {
             map(data => data['detail'])
         ).subscribe((board: Board) => {
                 this.filterService.initFilters(board.groups);
-                this.fieldsTableService.fieldsNext(board.exportQry.params[0].fields);
+                this.fieldsTableService.fieldsNext(board.export.params[0].fields);
                 this.board = board;
                 this.rows = this.widgetsByRow(board.layout.cells, board.widgets);
                 this.filterService.ratioSubject.next(board.sample ? board.sample : 1);

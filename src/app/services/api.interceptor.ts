@@ -36,9 +36,6 @@ export class APIInterceptor implements HttpInterceptor {
                             throw(event.body.error);
                         }
                     }
-                    if (event.url === '/main/desktop/user_settings/') {
-                        console.log(event.url);
-                    }
                 }
                 return event;
             }),

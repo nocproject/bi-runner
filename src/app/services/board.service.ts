@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
 
 import { Observable ,  BehaviorSubject } from 'rxjs';
-import { map, publishLast, refCount, share } from 'rxjs/operators';
+import { map, publishLast, refCount, share, tap } from 'rxjs/operators';
 
 import { APIService } from './api.service';
 
@@ -24,7 +24,7 @@ export class BoardService implements Resolve<Board> {
                 .params([route.params['id']])
                 .build())
             .pipe(
-                map(response => Board.fromJSON(response.result)),
+                map(response => response.result),
                 publishLast(),
                 refCount()
             );

@@ -42,7 +42,7 @@ export class Board {
     // @JsonMember()
     public layout: Layout;
     // @JsonMember({name: 'export'})
-    public exportQry: BiRequest;
+    public export: BiRequest;
     // @JsonMember({elements: Group})
     public groups: Group[];
     // @JsonMember({elements: Object})
@@ -65,7 +65,7 @@ export class Board {
     prepare() {
         // ToDo take from @JsonMember
         const obj = cloneDeep(this);
-        obj.exportQry.setFields(obj.exportQry.getFields()
+        obj.export.setFields(obj.export.getFields()
             .map(f => {
                 if ('hide' in f && f.hide) {
                     f.hide = 'yes';
@@ -76,11 +76,11 @@ export class Board {
             }));
         obj['agv_fields'] = this.agvFields;
         obj['filter_fields'] = this.filterFields;
-        obj['export'] = obj.exportQry;
+        obj['export'] = obj.export;
         obj['pseudo_fields'] = this.pseudoFields;
         delete obj['agvFields'];
         delete obj['filterFields'];
-        delete obj['exportQry'];
+        delete obj['export'];
         delete obj['pseudoFields'];
 
         return obj;

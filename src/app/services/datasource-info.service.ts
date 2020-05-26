@@ -156,7 +156,7 @@ export class DatasourceService {
                 }
 
                 index = findIndex(
-                    head(board.exportQry.params).fields, e => (e.alias ? e.alias : e.expr) === field.name);
+                    head(board.export.params).fields, e => (e.alias ? e.alias : e.expr) === field.name);
 
                 if (index !== -1) {
                     field.grouped = true;
