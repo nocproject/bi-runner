@@ -4,6 +4,8 @@ import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/r
 import { Observable ,  BehaviorSubject } from 'rxjs';
 import { map, publishLast, refCount, share, tap } from 'rxjs/operators';
 
+import { deserialize } from 'typescript-json-serializer';
+
 import { APIService } from './api.service';
 
 import { BiRequestBuilder, Board, Methods } from '@app/model';
@@ -24,7 +26,7 @@ export class BoardService implements Resolve<Board> {
                 .params([route.params['id']])
                 .build())
             .pipe(
-                map(response => response.result),
+                map(response => deserialize<Board>(response.result, Board)),
                 publishLast(),
                 refCount()
             );

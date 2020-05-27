@@ -1,14 +1,17 @@
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { getTestBed, TestBed } from '@angular/core/testing';
-
+//
+import { deserialize } from 'typescript-json-serializer';
+//
 import { APIService } from '@app/services';
 //
 import { Board } from './board';
 import { Methods } from './methods.enum';
 import { BiRequestBuilder } from './bi-request';
-// Test data
 import * as rebootsBoardBody from '/Users/dima/Projects/bi-runner/src/app/test-response/rebootsBoardBody.json';
+// Test data
+// import * as rebootsBoardBody from '../test-response/rebootsBoardBody.json';
 
 describe('Deserialization: Board', () => {
     let injector: TestBed;
@@ -39,7 +42,9 @@ describe('Deserialization: Board', () => {
             .method(Methods.GET_DASHBOARD)
             .params([])
             .build())
-            .subscribe(data => board = Board.fromJSON(data.result));
+            .subscribe(data => {
+                board = deserialize<Board>(data.result, Board);
+            });
 
         const req = httpMock.expectOne('/api/bi/');
         expect(req.request.method).toBe('POST');

@@ -3,8 +3,12 @@
   "compilerOptions": {
     "downlevelIteration": true,
     "importHelpers": true,
+    "esModuleInterop": true,
     "outDir": "./dist/out-tsc",
     "baseUrl": "src",
+    "types": [
+      "jest"
+    ],
     "paths": {
       "@app/model": [
         "app/model/index"

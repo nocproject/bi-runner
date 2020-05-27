@@ -1,42 +1,40 @@
-// import { JsonMember, JsonObject } from '@upe/typedjson';
+import { JsonProperty, Serializable } from 'typescript-json-serializer';
 
-import { Expression } from './expression';
-
-// @JsonObject({initializer: Field.fromJSON, knownTypes: [Expression]})
+@Serializable()
 export class Field {
-    // @JsonMember
+    @JsonProperty()
     public expr: string;
-    // @JsonMember()
+    @JsonProperty()
     public label: string;
-    // @JsonMember()
+    @JsonProperty()
     public alias: string;
-    // @JsonMember()
+    @JsonProperty()
     public desc: boolean;
-    // @JsonMember({type: Number})
+    @JsonProperty()
     public order: number;
-    // @JsonMember({type: Number})
+    @JsonProperty()
     public group: number;
-    // @JsonMember()
+    @JsonProperty()
     public format: string;
-    // @JsonMember()
+    @JsonProperty()
     public name: string;
-    // @JsonMember()
+    @JsonProperty()
     public description: string;
-    // @JsonMember()
+    @JsonProperty()
     public dict: string;
-    // @JsonMember()
+    @JsonProperty()
     public type: string;
-    // @JsonMember()
+    @JsonProperty()
     public model: string;
-    // @JsonMember()
+    @JsonProperty()
     public pseudo: boolean;
-    // @JsonMember()
+    @JsonProperty()
     public enable: boolean;
-    // @JsonMember()
+    @JsonProperty()
     public aggFunc: string;
-    // @JsonMember()
+    @JsonProperty()
     public hide: boolean | string;
-    // @JsonMember()
+    @JsonProperty()
     public allowAggFuncs: boolean;
     //
     public isSelectable: boolean;
@@ -55,11 +53,6 @@ export class Field {
         json['grouped'] = false;
         json['isAgg'] = false;
 
-        // if (json.hasOwnProperty('expr')) {
-        //     if (typeof json['expr'] === 'object') {
-        //         json['expr'].__type = 'Expression';
-        //     }
-        // }
         if ('is_agg' in json) {
             json['isAgg'] = json['is_agg'];
             delete json['is_agg'];
