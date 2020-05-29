@@ -1,20 +1,26 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "downlevelIteration": true,
-    "importHelpers": true,
-    "esModuleInterop": true,
     "outDir": "./dist/out-tsc",
     "baseUrl": "src",
-    "types": [
-      "jest"
+    "sourceMap": false,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "importHelpers": true,
+    "target": "ES2015",
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "lib": [
+      "es2015",
+      "dom"
     ],
     "paths": {
       "@app/model": [
         "app/model/index"
-      ],
-      "@filter/model": [
-        "app/board/filters/model/index"
       ],
       "@app/services": [
         "app/services/index"
@@ -24,21 +30,14 @@
       ],
       "@env/*": [
         "environments/*"
+      ],
+      "@filter/model": [
+        "app/board/filters/model/index"
       ]
-    },
-    "sourceMap": true,
-    "declaration": false,
-    "moduleResolution": "node",
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "target": "es2015",
-    "typeRoots": [
-      "node_modules/@types"
-    ],
-    "lib": [
-      "es2016",
-      "dom"
-    ],
-    "module": "esnext"
+    }
+  },
+  "angularCompilerOptions": {
+    "fullTemplateTypeCheck": true,
+    "strictInjectionParameters": true
   }
 }

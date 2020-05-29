@@ -23,7 +23,7 @@ export class CounterService {
         return this.execQuery(board,
             (params) => {
                 const cloned = cloneDeep(params);
-                const fields = board.export.getFields();
+                const fields = board.exportQry.getFields();
 
                 if (fields) cloned['fields'] = fields;
                 else cloned['fields'] = undefined;

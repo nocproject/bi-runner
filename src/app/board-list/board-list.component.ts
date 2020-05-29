@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 
 import { finalize, first, map, tap } from 'rxjs/operators';
 
-import * as moment from 'moment';
+import moment from 'moment';
 
 import { BiRequestBuilder, Message, MessageType, Methods } from '@app/model';
 import { APIService, MessageService } from '@app/services';

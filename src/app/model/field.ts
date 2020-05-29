@@ -32,36 +32,37 @@ export class Field {
     public enable: boolean;
     @JsonProperty()
     public aggFunc: string;
-    @JsonProperty()
+    @JsonProperty({onDeserialize: (value) => value === 'yes' || value === 'true'})
     public hide: boolean | string;
     @JsonProperty()
     public allowAggFuncs: boolean;
     //
-    public isSelectable: boolean;
-    public isGrouping: boolean;
-    public grouped: boolean;
+    public isSelectable: boolean = true;
+    public isGrouping: boolean = true;
+    public grouped: boolean = false;
+    @JsonProperty({name: 'is_agg'})
+    public isAgg: boolean = false;
     public datasource: string;
-    public isAgg: boolean;
 
     public isSortable(): boolean {
         return 'desc' in this;
     }
 
-    static fromJSON(json) {
-        json['isSelectable'] = true;
-        json['isGrouping'] = true;
-        json['grouped'] = false;
-        json['isAgg'] = false;
-
-        if ('is_agg' in json) {
-            json['isAgg'] = json['is_agg'];
-            delete json['is_agg'];
-        }
-        if ('hide' in json) {
-            json['hide'] = json['hide'] === 'yes' || json['hide'] === 'true';
-        }
-        return Object.assign(Object.create(Field.prototype), json);
-    }
+    // static fromJSON(json) {
+    //     json['isSelectable'] = true;
+    //     json['isGrouping'] = true;
+    //     json['grouped'] = false;
+    //     json['isAgg'] = false;
+    //
+    //     if ('is_agg' in json) {
+    //         json['isAgg'] = json['is_agg'];
+    //         delete json['is_agg'];
+    //     }
+    //     if ('hide' in json) {
+    //         json['hide'] = json['hide'] === 'yes' || json['hide'] === 'true';
+    //     }
+    //     return Object.assign(Object.create(Field.prototype), json);
+    // }
 }
 
 export class FieldBuilder {

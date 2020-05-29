@@ -30,7 +30,7 @@ export class Export {
         const board: Board = boardResolver.getBoard();
         const where = WhereBuilder.makeWhere(filterService.allFilters(), true);
         const having = WhereBuilder.makeWhere(filterService.allFilters(), false);
-        const params = board.export.params;
+        const params = board.exportQry.params;
         const fields = params[0].fields.filter(f => f.alias !== 'duration_se' && f.alias !== 'exclusion_intervals');
         const durationFilters: Filter[] = filterService.filtersByName('exclusion_intervals');
 
@@ -66,7 +66,7 @@ export class Export {
 
     static save(data,
                 boardResolver: BoardService) {
-        const fields: Field[] = boardResolver.getBoard().export.params[0].fields;
+        const fields: Field[] = boardResolver.getBoard().exportQry.params[0].fields;
         const title: string = boardResolver.getBoard().title;
         const pairs = fields
             .map(field => [field.alias ? field.alias : field.expr, field.label])

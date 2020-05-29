@@ -1,13 +1,13 @@
-// import { JsonMember, JsonObject } from '@upe/typedjson';
+import { JsonProperty, Serializable } from 'typescript-json-serializer';
 
-// @JsonObject()
+@Serializable()
 export class Map {
-    // @JsonMember()
+    @JsonProperty()
     public name: string;
-    // @JsonMember({elements: Number})
+    @JsonProperty()
     public rotate: [number, number, number];
-    // @JsonMember({elements: Number})
+    @JsonProperty()
     public center: [number, number];
-    // @JsonMember()
+    @JsonProperty()
     public scale: number;
 }

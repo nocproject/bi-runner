@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import * as dc from 'dc';
 import { BarChart, BaseMixin } from 'dc';
 import * as d3 from 'd3';
-import * as crossfilter from 'crossfilter';
+import crossfilter from 'crossfilter';
 
 import { Restore, WidgetComponent } from '../widget.component';
 import { FilterBuilder, Result, Value } from '@app/model';

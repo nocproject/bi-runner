@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 import * as dc from 'dc';
 import { BaseMixin, RowChart } from 'dc';
-import * as crossfilter from 'crossfilter';
+import crossfilter from 'crossfilter';
 
 import { Restore, WidgetComponent } from '../widget.component';
 import { FilterBuilder, Result, Value } from '@app/model';

@@ -1,24 +1,24 @@
-// import { JsonMember, JsonObject } from '@upe/typedjson';
+import { JsonProperty, Serializable } from 'typescript-json-serializer';
 
 import { Value } from './value';
 import { Range } from './range';
 import { Field } from './field';
 
-// @JsonObject({initializer: Filter.fromJSON})
+@Serializable()
 export class Filter {
-    // @JsonMember({elements: Value})
+    @JsonProperty({type: Value})
     public values: Value[];
-    // @JsonMember()
+    @JsonProperty()
     public condition: string;
-    // @JsonMember()
+    @JsonProperty()
     public name: string;
-    // @JsonMember()
+    @JsonProperty()
     public association: '$and' | '$or';
-    // @JsonMember()
+    @JsonProperty()
     public alias: string;
     // form data
     public value: string;
-    // @JsonMember()
+    @JsonProperty()
     public field: Field;
 
     static fromJSON(json: any): Filter {

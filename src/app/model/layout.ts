@@ -1,21 +1,21 @@
-// import { JsonMember, JsonObject } from '@upe/typedjson';
+import { JsonProperty, Serializable } from 'typescript-json-serializer';
 
 import { Cell } from './cell';
 
-// @JsonObject()
+@Serializable()
 export class Layout {
-    // @JsonMember()
+    @JsonProperty()
     public id: string;
-    // @JsonMember()
+    @JsonProperty()
     public name: string;
-    // @JsonMember()
+    @JsonProperty()
     public description: string;
-    // @JsonMember()
+    @JsonProperty()
     public uuid: string;
-    // @JsonMember({elements: Cell})
+    @JsonProperty({type: Cell})
     public cells: Cell[];
-    // @JsonMember({name: 'fav_status'})
+    @JsonProperty({name: 'fav_status'})
     public favStatus: boolean;
-    // @JsonMember({name: 'is_builtin'})
+    @JsonProperty({name: 'is_builtin'})
     public isBuiltin: boolean;
 }

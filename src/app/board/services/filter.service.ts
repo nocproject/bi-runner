@@ -135,7 +135,7 @@ export class FilterService {
 
     private nextFilter(groups: Group[]) {
         groups.forEach(group => group.filters
-            // .filter(filter => !filter.isEmpty() && filter.field)
+            .filter(filter => !filter.isEmpty() && filter.field)
             .forEach(filter => {
                 let values: Value[];
 

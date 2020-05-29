@@ -46,7 +46,6 @@ export class AuthenticationService {
             .pipe(
                 map(user => {
                     let name = user.username;
-                    console.log(user);
                     if (user.first_name && user.first_name.length > 0
                         && user.last_name && user.last_name.length > 0) {
                         name = `${user.first_name} ${user.last_name}`;

@@ -1,55 +1,40 @@
-// import { JsonMember, JsonObject, TypedJSON } from '@upe/typedjson';
+import { JsonProperty, Serializable } from 'typescript-json-serializer';
+
 import { toPairs } from 'lodash';
 
 import { Field } from './field';
-import { DeserializationHelper } from './helpers';
 
-// ToDo need recursion for where
-// doesn't work:
-//      type Clause = Map<String, Clause>;
-//
-// doesn't work:
-//      @JsonMember({type: Clause})
-//      public filter: Clause;
-//
-//      export class Clause {
-//          @JsonMember
-//          public clause: Map<String, Clause[]>;
-//      }
-
-// @JsonObject({initializer: BiQuery.fromJSON})
+@Serializable()
 export class BiQuery {
-    // @JsonMember()
+    @JsonProperty()
     public datasource: string;
-    // @JsonMember()
+    @JsonProperty()
     public limit: number;
-    // @JsonMember()
+    @JsonProperty()
     public sample: number;
-    // @JsonMember({elements: Field})
+    @JsonProperty({type: Field})
     public fields: Field[];
-    // @JsonMapMember({elements: [String, String], name: 'filter'})
-    // public where: Map<String, String>;
     public filter: {};
     public having: {};
 
-    static fromJSON(json: any): BiQuery {
-        function extract(name) {
-            // if (json.hasOwnProperty(name)) {
-            //     json[name] = DeserializationHelper.map<String, String>(
-            //         toPairs(json[name]).map(item => [TypedJSON.stringify(item[0]), TypedJSON.stringify(item[1])]),
-            //         String, String
-            //     );
-            //     delete json[name];
-            // }
-        }
-        extract('filter');
-        extract('having');
-        if (json.hasOwnProperty('fields')) {
-            json.fields = DeserializationHelper.array<Field>(json.fields, Field);
-        }
-
-        return Object.assign(Object.create(BiQuery.prototype), json);
-    }
+    // static fromJSON(json: any): BiQuery {
+    //     function extract(name) {
+    //         // if (json.hasOwnProperty(name)) {
+    //         //     json[name] = DeserializationHelper.map<String, String>(
+    //         //         toPairs(json[name]).map(item => [TypedJSON.stringify(item[0]), TypedJSON.stringify(item[1])]),
+    //         //         String, String
+    //         //     );
+    //         //     delete json[name];
+    //         // }
+    //     }
+    //     extract('filter');
+    //     extract('having');
+    //     if (json.hasOwnProperty('fields')) {
+    //         json.fields = DeserializationHelper.array<Field>(json.fields, Field);
+    //     }
+    //
+    //     return Object.assign(Object.create(BiQuery.prototype), json);
+    // }
 
     // toJSON() {
     //     return Object.assign({}, this, {

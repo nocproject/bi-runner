@@ -11,7 +11,6 @@ export * from './filter';
 export * from './filter.builder';
 export * from './group.builder';
 export * from './group';
-export * from './helpers';
 export * from './ioption';
 export * from './layout';
 export * from './map';

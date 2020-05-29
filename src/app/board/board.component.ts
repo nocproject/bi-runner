@@ -8,16 +8,12 @@ import { head } from 'lodash';
 
 import { Board, Cell, Widget, WidgetRow } from '@app/model';
 import { BoardService, LayoutService } from '@app/services';
-// import { DatasourceService } from './services/datasource-info.service';
 import { FilterService } from './services/filter.service';
 import { FieldsTableService } from './services/fields-table.service';
 
 @Component({
     selector: 'bi-board',
     templateUrl: './board.component.html',
-    // providers: [
-    //     DatasourceService
-    // ]
 })
 
 export class BoardComponent implements OnInit, OnDestroy {
@@ -39,7 +35,7 @@ export class BoardComponent implements OnInit, OnDestroy {
             map(data => data['detail'])
         ).subscribe((board: Board) => {
                 this.filterService.initFilters(board.groups);
-                this.fieldsTableService.fieldsNext(board.export.params[0].fields);
+                this.fieldsTableService.fieldsNext(board.exportQry.params[0].fields);
                 this.board = board;
                 this.rows = this.widgetsByRow(board.layout.cells, board.widgets);
                 this.filterService.ratioSubject.next(board.sample ? board.sample : 1);

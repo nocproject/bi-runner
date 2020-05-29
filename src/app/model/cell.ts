@@ -1,22 +1,22 @@
-// import { JsonMember, JsonObject } from '@upe/typedjson';
+import { JsonProperty, Serializable } from 'typescript-json-serializer';
 
-// @JsonObject()
+@Serializable()
 export class Cell {
-    // @JsonMember()
+    @JsonProperty()
     public md: number;
-    // @JsonMember()
+    @JsonProperty()
     public name: string;
-    // @JsonMember()
+    @JsonProperty()
     public lg: number;
-    // @JsonMember()
+    @JsonProperty()
     public height: number;
-    // @JsonMember()
+    @JsonProperty()
     public sm: number;
-    // @JsonMember()
+    @JsonProperty()
     public xs: number;
-    // @JsonMember()
+    @JsonProperty()
     public row: number;
-    // @JsonMember()
+    @JsonProperty()
     public offset: number;
 
     public getClasses(): string {

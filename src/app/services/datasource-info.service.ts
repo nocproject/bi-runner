@@ -10,6 +10,7 @@ import { APIService } from './api.service';
 import { BiRequestBuilder, Board, Datasource, Field, IOption, Methods } from '@app/model';
 import { BoardService } from './board.service';
 import { FilterService } from '../board/services/filter.service';
+import { deserialize } from 'typescript-json-serializer';
 
 @Injectable()
 export class DatasourceService {
@@ -28,7 +29,7 @@ export class DatasourceService {
                             .params([board.datasource])
                             .build()).pipe(
                         map(response => {
-                            const datasource = Datasource.fromJSON(response.result);
+                            const datasource = deserialize<Datasource>(response.result, Datasource);
                             datasource.origFields = cloneDeep(datasource.fields);
                             datasource.fields = this._fields(board, board.filterFields, datasource);
                             datasource.tableFields = this._fields(board, board.agvFields, datasource);
@@ -156,7 +157,7 @@ export class DatasourceService {
                 }
 
                 index = findIndex(
-                    head(board.export.params).fields, e => (e.alias ? e.alias : e.expr) === field.name);
+                    head(board.exportQry.params).fields, e => (e.alias ? e.alias : e.expr) === field.name);
 
                 if (index !== -1) {
                     field.grouped = true;

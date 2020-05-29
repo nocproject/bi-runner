@@ -8,7 +8,7 @@ import { head, sortBy, startsWith } from 'lodash';
 import * as d3 from 'd3';
 import * as dc from 'dc';
 import { BaseMixin, DataTableWidget } from 'dc';
-import * as crossfilter from 'crossfilter';
+import crossfilter from 'crossfilter';
 
 import { Field, IOption, Result, Value } from '@app/model';
 import { Restore, WidgetComponent } from '../widget.component';
