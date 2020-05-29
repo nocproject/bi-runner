@@ -89,7 +89,7 @@ export class ReportRangeComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (changes.initValues && changes.initValues.currentValue) {
+        if (changes.initValues?.currentValue) {
             this.form.setValue(
                 this.data.restore(changes.initValues.currentValue, this.fromControlName, this.toControlName).values(), {
                     emitEvent: false,

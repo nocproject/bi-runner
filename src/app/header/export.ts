@@ -66,18 +66,19 @@ export class Export {
 
     static save(data,
                 boardResolver: BoardService) {
-        const fields: Field[] = boardResolver.getBoard().exportQry.params[0].fields;
-        const title: string = boardResolver.getBoard().title;
-        const pairs = fields
-            .map(field => [field.alias ? field.alias : field.expr, field.label])
-            .reduce((acc, [key, value]) => {
-                acc[key] = value;
-                return acc;
-            }, {});
-        saver.saveAs(
-            new Blob([toCsv(data.result, data.fields.map(field => pairs[field]), '"', ';')]
-                , {type: 'text/plain;charset=utf-8'}), `${title}.csv`
-        );
+        // *** error
+        // const fields: Field[] = boardResolver.getBoard().exportQry.params[0].fields;
+        // const title: string = boardResolver.getBoard().title;
+        // const pairs = fields
+        //     .map(field => [field.alias ? field.alias : field.expr, field.label])
+        //     .reduce((acc, [key, value]) => {
+        //         acc[key] = value;
+        //         return acc;
+        //     }, {});
+        // saver.saveAs(
+        //     new Blob([toCsv(data.result, data.fields.map(field => pairs[field]), '"', ';')]
+        //         , {type: 'text/plain;charset=utf-8'}), `${title}.csv`
+        // );
     }
 }
 

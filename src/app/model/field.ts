@@ -3,7 +3,7 @@ import { JsonProperty, Serializable } from 'typescript-json-serializer';
 @Serializable()
 export class Field {
     @JsonProperty()
-    public expr: string;
+    public expr: string | {};
     @JsonProperty()
     public label: string;
     @JsonProperty()

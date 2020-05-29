@@ -43,8 +43,8 @@ export class Board {
     public exportQry: BiRequest;
     @JsonProperty({type: Group})
     public groups: Group[];
-    @JsonProperty({type: Object})
-    public filter: Object[];
+    @JsonProperty()
+    public filter: [];
     public isSample: boolean;
 
     // static fromJSON(json: any): Board {

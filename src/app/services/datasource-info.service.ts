@@ -59,7 +59,6 @@ export class DatasourceService {
     }
 
     fieldByName(name: string): Observable<Field> {
-        console.log(name);
         return this.datasource$.pipe(map(d => d.getFieldByName(name)));
     }
 

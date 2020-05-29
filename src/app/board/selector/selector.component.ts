@@ -4,7 +4,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { head } from 'lodash';
 import moment from 'moment';
 
-import { Observable, of, Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { filter, flatMap, map } from 'rxjs/operators';
 
 import { APIService, DatasourceService, LanguageService } from '@app/services';
@@ -84,18 +84,14 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
 
     ngOnInit() {
         this.isNotInRange = this.board.groups && !this.board.groups[0].range;
-        this.lastUpdate$ = of('error on upgrade');
-        //*** error
         this.lastUpdate$ = this.api.execute(
             new BiRequestBuilder()
                 .method(Methods.QUERY)
                 .params([{
-                    fields: [
-                        {
-                            expr: 'max(date)',
-                            alias: 'date'
-                        }
-                    ],
+                    fields: [{
+                        expr: 'max(date)',
+                        alias: 'date'
+                    }],
                     datasource: this.board.datasource
                 }])
                 .build())
@@ -177,14 +173,13 @@ export class SelectorComponent implements AfterViewInit, OnInit, OnDestroy {
             filter((group: Group) => group.name === 'startEnd')
         ).subscribe(
             (group: Group) => {
-                let from = null;
+                let from = group.filters[0].values[0].value;
                 let to = null;
-                if (Range.isNotRange(group.filters[0].values[0].value)) {
-                    from = new Date(group.filters[0].values[0].value);
+                if (Range.isNotRange(from)) {
+                    from = new Date(from);
                     to = new Date(group.filters[0].values[1].value);
                     this.reportRangeText = SelectorComponent.rangeText(from, to);
                 } else {
-                    from = group.filters[0].values[0].value;
                     this.reportRangeText = `DATETIME_RANGE.${Range.getDates(from, false).text}`;
                 }
                 this.values = {

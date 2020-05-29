@@ -277,7 +277,6 @@ export class BiDropdownComponent implements OnInit, OnDestroy, OnChanges, Contro
                 break;
         }
         return new BiRequestBuilder()
-            .id(2)
             .method(method)
             .params([params])
             .build();
