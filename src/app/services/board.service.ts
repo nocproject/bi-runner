@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
 
 import { Observable ,  BehaviorSubject } from 'rxjs';
-import { map, publishLast, refCount, share, tap } from 'rxjs/operators';
+import { map, publishLast, refCount, share } from 'rxjs/operators';
 
 import { deserialize } from 'typescript-json-serializer';
 
 import { APIService } from './api.service';
 
-import { BiRequestBuilder, Board, Methods } from '@app/model';
+import { BiRequestBuilder, Board, Methods } from '../model';
 
 @Injectable()
 export class BoardService implements Resolve<Board> {

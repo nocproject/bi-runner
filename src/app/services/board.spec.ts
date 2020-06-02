@@ -1,23 +1,18 @@
-import { HttpClient } from '@angular/common/http';
+import { ActivatedRouteSnapshot } from '@angular/router';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { getTestBed, TestBed } from '@angular/core/testing';
 //
-import { deserialize } from 'typescript-json-serializer';
-//
-import { APIService } from '@app/services';
-//
-import { Board } from './board';
-import { Methods } from './methods.enum';
-import { BiRequestBuilder } from './bi-request';
-import * as rebootsBoardBody from '/Users/dima/Projects/bi-runner/src/app/test-response/rebootsBoardBody.json';
+import { APIService, BoardService } from '@app/services';
+import { Board } from '@app/model';
+import { Methods } from '@app/model';
 // Test data
-// import * as rebootsBoardBody from '../test-response/rebootsBoardBody.json';
+import * as rebootsBoardBody from '@test/rebootsBoardBody.json';
 
 describe('Deserialization: Board', () => {
     let injector: TestBed;
     let httpMock: HttpTestingController;
     let board: Board;
-    let api: APIService;
+    let service: BoardService;
 
     beforeAll(() => {
         TestBed.configureTestingModule({
@@ -25,30 +20,29 @@ describe('Deserialization: Board', () => {
                 HttpClientTestingModule
             ],
             providers: [
+                APIService,
                 {
-                    provide: APIService,
-                    useFactory: (backend) => new APIService(backend),
-                    deps: [HttpClient]
+                    provide: BoardService,
+                    useFactory: (api) => new BoardService(api),
+                    deps: [APIService]
                 }
+
             ]
         });
 
         injector = getTestBed();
-        api = injector.get(APIService);
-        httpMock = injector.get(HttpTestingController);
+        httpMock = injector.inject(HttpTestingController);
+        service = injector.inject(BoardService);
+        let route = new ActivatedRouteSnapshot();
+        route.params = {id: '1'};
+        service.resolve(route, null);
+        service.board$.subscribe(data =>
+            board = data
+        );
 
-        // Perform a request and make sure we get the response we expect
-        api.execute(new BiRequestBuilder()
-            .method(Methods.GET_DASHBOARD)
-            .params([])
-            .build())
-            .subscribe(data => {
-                board = deserialize<Board>(data.result, Board);
-            });
-
-        const req = httpMock.expectOne('/api/bi/');
-        expect(req.request.method).toBe('POST');
-        req.flush(rebootsBoardBody);
+        const dashboardReq = httpMock.expectOne('/api/bi/');
+        expect(dashboardReq.request.body.method).toBe(Methods.GET_DASHBOARD);
+        dashboardReq.flush(rebootsBoardBody);
     });
 
     it('should return instance of Board', () => {
