@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { of, Subscription } from 'rxjs';
@@ -18,13 +18,14 @@ import {
     FiltersFormConfig
 } from './model/filters-form-config.interface';
 import { EventType } from './model/event.interface';
-import { EventService } from '../services/event.service';
+import { EventService } from '@board/services';
 import { BIValidators } from './components/validators';
 import { FieldConfigService } from './services/field-config.service';
 
 @Component({
     selector: 'bi-filters-form',
-    templateUrl: './filters-form.component.html'
+    templateUrl: './filters-form.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FiltersFormComponent implements OnInit {
     config: FiltersFormConfig;

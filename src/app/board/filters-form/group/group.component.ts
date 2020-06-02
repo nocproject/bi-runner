@@ -1,18 +1,17 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 
 import { Subscription } from 'rxjs';
 
 import { cloneDeep } from 'lodash';
 
-import { FilterGroupConfig } from '../model/filters-form-config.interface';
-import { EventType } from '../model/event.interface';
-import { EventService } from '../../services/event.service';
-import { FilterService } from '../../services/filter.service';
+import { EventService, FilterService } from '@board/services';
+import { EventType, FilterGroupConfig } from '../model';
 
 @Component({
     selector: 'bi-filters-group',
-    templateUrl: './group.component.html'
+    templateUrl: './group.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GroupComponent implements OnInit, OnDestroy {
     @Input()

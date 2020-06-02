@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { clone, findIndex, indexOf, isEqual } from 'lodash';
@@ -8,14 +8,15 @@ import { map } from 'rxjs/operators';
 
 import { Field } from '@app/model';
 import { DatasourceService } from '@app/services';
+import { EventService } from '@board/services';
 import { EventType } from '../model/event.interface';
 import { FieldConfig, FilterConfig } from '../model/filters-form-config.interface';
-import { EventService } from '../../services/event.service';
 import { FieldConfigService } from '../services/field-config.service';
 
 @Component({
     selector: 'bi-filter-form',
-    templateUrl: './filter.component.html'
+    templateUrl: './filter.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FilterComponent implements OnInit, OnDestroy {
     @Input()
