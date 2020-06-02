@@ -21,8 +21,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     public board: Board;
     private subscription: Subscription;
 
-    constructor(public boardResolver: BoardService,
-                private route: ActivatedRoute,
+    constructor(private route: ActivatedRoute,
                 private layoutService: LayoutService,
                 private fieldsTableService: FieldsTableService,
                 private filterService: FilterService) {
@@ -39,7 +38,6 @@ export class BoardComponent implements OnInit, OnDestroy {
                 this.board = board;
                 this.rows = this.widgetsByRow(board.layout.cells, board.widgets);
                 this.filterService.ratioSubject.next(board.sample ? board.sample : 1);
-                this.boardResolver.next(board);
                 this.layoutService.isReportOpenSubject.next(true);
             }
         );

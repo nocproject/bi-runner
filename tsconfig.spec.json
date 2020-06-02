@@ -1,5 +1,6 @@
 {
   "extends": "./tsconfig.json",
+  "outDir": "./out-tsc/spec",
   "files": [
     "src/polyfills.ts"
   ],

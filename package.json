@@ -4,7 +4,7 @@
   "description": "NOC BI",
   "scripts": {
     "ng": "ng",
-    "start dev": "ng serve --proxy-config proxy.conf.json",
+    "start dev": "ng serve --proxy-config proxy.conf.json --port 4201",
     "build": "ng build --prod --base-href=/ui/bi2/",
     "test": "ng test",
     "lint": "ng lint",

@@ -43,9 +43,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     lang: string;
     // save as form
     saveForm: FormGroup;
-    boardTitle: string;
     titleError: string;
-    boardDesc: string;
     // add field form
     addFieldForm: FormGroup;
     fieldName: string;
@@ -74,9 +72,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
         this.boardSubscription = this.board$
             .subscribe(board => {
-                    if (board && board.id) {
-                        setTimeout(() => this.boardTitle = board.title, 0);
-                        setTimeout(() => this.boardDesc = board.description, 0);
+                    if (board?.id) {
+                        this.saveForm.patchValue({title: board.title, description: board.description});
                         this.authService.initAccessLevel(board.id);
                         this.newFields$ = this.datasource.newFieldsAsOption();
                     }
@@ -99,6 +96,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         );
     }
 
+    // ToDo Make custom decorator
     ngOnDestroy(): void {
         if (this.boardSubscription) {
             this.boardSubscription.unsubscribe();
@@ -146,7 +144,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
                 this.messages.message(new Message(MessageType.INFO, 'MESSAGES.SAVED'));
                 modal.close();
                 this.location.replaceState(`/board/${response.result}`);
-                this.boardTitle = board.title;
+                this.saveForm.patchValue({title: board.title, description: board.description});
                 board.id = response.result;
                 this.boardService.next(board);
             }, error => {

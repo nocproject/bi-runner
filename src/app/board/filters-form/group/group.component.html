@@ -60,7 +60,7 @@
                         (click)="onDisable()" translate>SELECTOR.FORM.DISABLE_BTN
                 </button>
                 <button class="btn btn-default btn-sm"
-                        [disabled]="!hasFilters || !group.valid || group.value.active"
+                        [disabled]="!hasFilters || group.value.active || !group.valid"
                         (click)="onApply()" translate>SELECTOR.FORM.APPLY_BTN
                 </button>
             </div>

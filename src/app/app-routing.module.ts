@@ -8,6 +8,7 @@ import { LoginComponent } from './login/login.component';
 import { ShareComponent } from './share/share.component';
 import { ShareCanDeactivateGuard } from './share/share-can-deactivate.guard';
 import { BoardListComponent } from './board-list/board-list.component';
+import { BoardResolver } from './services/board.resolver';
 
 const routes: Routes = [
     {
@@ -34,11 +35,11 @@ const routes: Routes = [
         }
     },
     {
-        path: 'board/:id',
+        path: 'board/:boardId',
         component: BoardComponent,
         canActivate: [AuthGuard],
         resolve: {
-            detail: BoardService
+            detail: BoardResolver
         }
     }
 ];

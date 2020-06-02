@@ -71,8 +71,10 @@ export class TableComponent extends WidgetComponent {
         chart.showGroups(false);
         chart.columns(cols);
         if (sort) {
-            chart.sortBy(d => parseFloat(d[sort.field]));
-            chart.order(sort.direct);
+            // *** error
+            console.warn("sorting doesn't work");
+            // chart.sortBy(d => parseFloat(d[sort.field]));
+            // chart.order(sort.direct);
         }
         this.catchEvents(chart);
         chart.render();

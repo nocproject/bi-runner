@@ -1,4 +1,3 @@
-import { ActivatedRouteSnapshot } from '@angular/router';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { getTestBed, TestBed } from '@angular/core/testing';
 //
@@ -21,22 +20,14 @@ describe('Deserialization: Board', () => {
             ],
             providers: [
                 APIService,
-                {
-                    provide: BoardService,
-                    useFactory: (api) => new BoardService(api),
-                    deps: [APIService]
-                }
-
+                BoardService,
             ]
         });
 
         injector = getTestBed();
         httpMock = injector.inject(HttpTestingController);
         service = injector.inject(BoardService);
-        let route = new ActivatedRouteSnapshot();
-        route.params = {id: '1'};
-        service.resolve(route, null);
-        service.board$.subscribe(data =>
+        service.getById('1').subscribe(data =>
             board = data
         );
 

@@ -1,5 +1,3 @@
-import { ActivatedRouteSnapshot } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { getTestBed, TestBed } from '@angular/core/testing';
 
@@ -18,57 +16,36 @@ import * as interfacesDatasourceInfoBody from '@test/interfacesDatasourceInfoBod
 import * as interfacesBoardBody from '@test/interfacesBoardBody.json';
 
 let fields: Field[];
+
 function init(json, jsonInfo) {
     let injector: TestBed;
     let httpMock: HttpTestingController;
-    let service: DatasourceService;
 
     TestBed.configureTestingModule({
         imports: [
             HttpClientTestingModule
         ],
         providers: [
+            APIService,
             BoardService,
+            DatasourceService,
             EventService,
-            {
-                provide: DatasourceService,
-                useFactory: (api, boardService, filterService) => new DatasourceService(api, boardService, filterService),
-                deps: [APIService, BoardService, FilterService]
-            },
-            {
-                provide: APIService,
-                useFactory: (backend) => new APIService(backend),
-                deps: [HttpClient]
-            },
-            {
-                provide: FilterService,
-                useFactory: (eventService) => new FilterService(eventService),
-                deps: [EventService]
-
-            }
+            FilterService
         ]
     });
 
     injector = getTestBed();
-    // api = injector.inject(APIService);
     httpMock = injector.inject(HttpTestingController);
 
     // Returns a services with the MockBackend so we can test with dummy responses
-    let resolver = TestBed.inject(BoardService);
-    let route = new ActivatedRouteSnapshot();
-    route.params = {id: '1'};
-    resolver.resolve(route, null);
-    // filterService = TestBed.inject(FilterService);
-    service = TestBed.inject(DatasourceService);
-    // Perform a request and make sure we get the response we expect
-    service.fields().subscribe(data =>
-        fields = data
-    );
-
-    // When the request subscribes for results on a connection, return a fake response
+    let boardService = TestBed.inject(BoardService);
+    boardService.getById('1').subscribe();
     const dashboardReq = httpMock.expectOne('/api/bi/');
     expect(dashboardReq.request.body.method).toBe(Methods.GET_DASHBOARD);
     dashboardReq.flush(json);
+    //
+    let service: DatasourceService = TestBed.inject(DatasourceService);
+    service.datasource$.subscribe(data => fields = data.fields);
     const infoReq = httpMock.expectOne('/api/bi/');
     expect(infoReq.request.body.method).toBe(Methods.GET_DATASOURCE_INFO);
     infoReq.flush(jsonInfo);
