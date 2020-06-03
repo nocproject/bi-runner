@@ -5,9 +5,8 @@ import { Subscription } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
 import { head, sortBy, startsWith } from 'lodash';
-import * as d3 from 'd3';
-import * as dc from 'dc';
-import { BaseMixin, DataTableWidget } from 'dc';
+import { ascending, descending } from 'd3-array';
+import { BaseMixin, dataTable, DataTableWidget } from 'dc';
 import crossfilter from 'crossfilter';
 
 import { Field, IOption, Result, Value } from '@app/model';
@@ -31,7 +30,7 @@ export class TableComponent extends WidgetComponent {
     private addSubscription: Subscription;
 
     draw(response: Result): BaseMixin<DataTableWidget> {
-        const chart: DataTableWidget = dc.dataTable(`#${this.data.cell.name}`);
+        const chart: DataTableWidget = dataTable(`#${this.data.cell.name}`);
         const ndx = crossfilter(response.zip(false));
         const dimension = ndx.dimension(d => d.date);
         const cols = this.data.widget.query.getLabeledFields()
@@ -52,7 +51,7 @@ export class TableComponent extends WidgetComponent {
                     return (d) => d[param];
                 }
             });
-        const sort = head(
+        const sort: any = head(
             sortBy(this.data.widget.query.getFields()
                 .filter(field => 'desc' in field), 'order')
                 .map(field => {
@@ -62,7 +61,7 @@ export class TableComponent extends WidgetComponent {
                         name = field.alias;
                     }
 
-                    return {field: name, direct: field.desc ? d3.descending : d3.ascending};
+                    return {field: name, direct: field.desc ? descending : ascending};
                 })
         );
 
@@ -71,10 +70,8 @@ export class TableComponent extends WidgetComponent {
         chart.showGroups(false);
         chart.columns(cols);
         if (sort) {
-            // *** error
-            console.warn("sorting doesn't work");
-            // chart.sortBy(d => parseFloat(d[sort.field]));
-            // chart.order(sort.direct);
+            chart.sortBy(d => parseFloat(d[sort.field]));
+            chart.order(sort.direct);
         }
         this.catchEvents(chart);
         chart.render();

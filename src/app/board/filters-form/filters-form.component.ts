@@ -5,19 +5,19 @@ import { of, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
 import { cloneDeep } from 'lodash';
-import * as d3 from 'd3';
+import { timeFormat } from 'd3-time-format';
 
 import { environment } from '@env/environment';
 
 import { Field, FieldBuilder, Filter, Group, Range } from '@app/model';
 import {
+    EventType,
     FieldConfig,
     FilterConfig,
     FilterGroupConfig,
     FiltersConfig,
     FiltersFormConfig
-} from './model/filters-form-config.interface';
-import { EventType } from './model/event.interface';
+} from './model';
 import { EventService } from '@board/services';
 import { BIValidators } from './components/validators';
 import { FieldConfigService } from './services/field-config.service';
@@ -275,21 +275,21 @@ export class FiltersFormComponent implements OnInit {
 
         if (filter.getType() === 'Date') {
             if (filter.condition.match(/interval/i)) {
-                value = `${d3.timeFormat('%d.%m.%Y')(filter.values[0].value)} - ${d3.timeFormat('%d.%m.%Y')(filter.values[1].value)}`;
+                value = `${timeFormat('%d.%m.%Y')(filter.values[0].value)} - ${timeFormat('%d.%m.%Y')(filter.values[1].value)}`;
             } else {
-                value = d3.timeFormat('%d.%m.%Y')(filter.values[0].value);
+                value = timeFormat('%d.%m.%Y')(filter.values[0].value);
             }
         } else if (filter.getType() === 'DateTime') {
             if (filter.condition.match(/periodic/i)) {
                 value = filter.values[0].value;
             } else if (filter.condition.match(/interval/i)) {
                 if (Range.isNotRange(filter.values[0].value)) {
-                    value = `${d3.timeFormat('%d.%m.%Y %H:%M')(filter.values[0].value)} - ${d3.timeFormat('%d.%m.%Y %H:%M')(filter.values[1].value)}`;
+                    value = `${timeFormat('%d.%m.%Y %H:%M')(filter.values[0].value)} - ${timeFormat('%d.%m.%Y %H:%M')(filter.values[1].value)}`;
                 } else {
                     value = filter.values[0].value;
                 }
             } else {
-                value = d3.timeFormat('%d.%m.%Y %H:%M')(filter.values[0].value);
+                value = timeFormat('%d.%m.%Y %H:%M')(filter.values[0].value);
             }
         } else if (filter.condition.match('empty')) {
             // skip empty value

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { BehaviorSubject ,  Observable } from 'rxjs';
 
-import { Event } from '../filters-form/model/event.interface';
+import { Event } from '../filters-form/model';
 
 @Injectable()
 export class EventService {

@@ -2,291 +2,13 @@
   "id": 0,
   "error": null,
   "result": {
+    "id": "5ed1622cb86725b2f5d6b946",
     "layoutId": "580e1ba498601c0f96b7e809",
-    "pseudo_fields": [],
-    "layout": {
-      "uuid": "f2736f99-a568-4820-b746-1e71d48b4374",
-      "cells": [
-        {
-          "md": 6,
-          "row": 0,
-          "name": "c11",
-          "height": 200
-        },
-        {
-          "md": 6,
-          "row": 0,
-          "name": "c12",
-          "height": 200
-        },
-        {
-          "md": 6,
-          "row": 1,
-          "name": "c21",
-          "height": 200
-        },
-        {
-          "md": 6,
-          "row": 1,
-          "name": "c22",
-          "height": 200
-        },
-        {
-          "md": 12,
-          "row": 4,
-          "name": "table1",
-          "height": 360
-        }
-      ],
-      "description": "",
-      "name": "c2x2",
-      "id": "580e1ba498601c0f96b7e809"
-    },
+    "title": "\u041f\u0435\u0440\u0435\u0437\u0430\u0433\u0440\u0443\u0437\u043a\u0438 v2.test",
     "description": "\u043e\u043f\u0438\u0441\u0430\u043d\u0438\u0435 \u043e\u0442\u0447\u0435\u0442\u0430 \u043f\u043e \u043f\u0435\u0440\u0435\u0437\u0430\u0433\u0440\u0443\u0437\u043a\u0430\u043c",
-    "format": 2,
-    "title": "\u041f\u0435\u0440\u0435\u0437\u0430\u0433\u0440\u0443\u0437\u043a\u0438 v2",
-    "sample": 1,
-    "agv_fields": [
-      {
-        "group": 2,
-        "name": "administrative_domain",
-        "description": "\u0417.\u041e.",
-        "grouped": false,
-        "isSelectable": true,
-        "isGrouping": true
-      },
-      {
-        "group": 1,
-        "name": "container",
-        "description": "\u0410\u0434\u0440\u0435\u0441",
-        "grouped": false,
-        "isSelectable": true,
-        "isGrouping": true
-      },
-      {
-        "group": 1,
-        "name": "ip",
-        "description": "IP \u0430\u0434\u0440\u0435\u0441",
-        "grouped": false,
-        "isSelectable": true,
-        "isGrouping": true
-      },
-      {
-        "group": 1,
-        "name": "managed_object",
-        "description": "\u0418\u043c\u044f \u043e\u0431\u044a\u0435\u043a\u0442\u0430",
-        "grouped": false,
-        "isSelectable": true,
-        "isGrouping": true
-      },
-      {
-        "group": 1,
-        "name": "platform",
-        "description": "\u041f\u043b\u0430\u0442\u0444\u043e\u0440\u043c\u0430",
-        "grouped": false,
-        "isSelectable": true,
-        "isGrouping": true
-      },
-      {
-        "group": 1,
-        "name": "profile",
-        "description": "\u041f\u0440\u043e\u0444\u0438\u043b\u044c \u043e\u0431\u044a\u0435\u043a\u0442\u0430",
-        "grouped": false,
-        "isSelectable": true,
-        "isGrouping": true
-      },
-      {
-        "group": 1,
-        "name": "segment",
-        "description": "\u0421\u0435\u0433\u043c\u0435\u043d\u0442 \u0441\u0435\u0442\u0438",
-        "grouped": false,
-        "isSelectable": true,
-        "isGrouping": true
-      },
-      {
-        "group": 1,
-        "name": "vendor",
-        "description": "\u041f\u0440\u043e\u0438\u0437\u0432\u043e\u0434\u0438\u0442\u0435\u043b\u044c",
-        "grouped": false,
-        "isSelectable": true,
-        "isGrouping": true
-      },
-      {
-        "group": 1,
-        "name": "version",
-        "description": "\u0412\u0435\u0440\u0441\u0438\u044f",
-        "grouped": false,
-        "isSelectable": true,
-        "isGrouping": true
-      },
-      {
-        "group": 2,
-        "name": "pool",
-        "description": "\u0418\u043c\u044f \u043f\u0443\u043b\u0430",
-        "grouped": false,
-        "isSelectable": true,
-        "isGrouping": true
-      },
-      {
-        "group": 0,
-        "name": "date",
-        "description": "\u0414\u0430\u0442\u0430",
-        "grouped": false,
-        "isSelectable": true,
-        "isGrouping": true
-      },
-      {
-        "group": 0,
-        "name": "ts",
-        "description": "\u0421\u043e\u0437\u0434\u0430\u043d\u043e",
-        "grouped": false,
-        "isSelectable": true,
-        "isGrouping": true
-      }
-    ],
     "datasource": "reboots",
-    "groups": [
-      {
-        "active": true,
-        "filters": [
-          {
-            "values": [
-              {
-                "value": "ld"
-              }
-            ],
-            "condition": "interval",
-            "type": "DateTime",
-            "name": "ts",
-            "association": "$and"
-          }
-        ],
-        "association": "$and",
-        "name": "startEnd"
-      },
-      {
-        "active": false,
-        "filters": [
-          {
-            "name": "ts",
-            "pseudo": false,
-            "values": [
-              {
-                "value": "2017-10-18T21:00:00.000Z"
-              },
-              {
-                "value": "2017-10-19T20:59:00.000Z"
-              }
-            ],
-            "association": "$and",
-            "type": "DateTime",
-            "condition": "interval"
-          }
-        ],
-        "name": "form",
-        "association": "$and"
-      }
-    ],
-    "filter_fields": [
-      {
-        "grouped": false,
-        "isSelectable": true,
-        "name": "administrative_domain",
-        "group": 2,
-        "isGrouping": true
-      },
-      {
-        "grouped": false,
-        "isSelectable": true,
-        "name": "container",
-        "group": 1,
-        "isGrouping": true
-      },
-      {
-        "grouped": false,
-        "isSelectable": true,
-        "name": "ip",
-        "group": 1,
-        "isGrouping": true
-      },
-      {
-        "grouped": false,
-        "isSelectable": true,
-        "name": "managed_object",
-        "group": 1,
-        "isGrouping": true
-      },
-      {
-        "grouped": false,
-        "isSelectable": true,
-        "name": "platform",
-        "group": 1,
-        "isGrouping": true
-      },
-      {
-        "grouped": false,
-        "isSelectable": true,
-        "name": "profile",
-        "group": 1,
-        "isGrouping": true
-      },
-      {
-        "grouped": false,
-        "isSelectable": true,
-        "name": "segment",
-        "group": 1,
-        "isGrouping": true
-      },
-      {
-        "grouped": false,
-        "isSelectable": true,
-        "name": "ts",
-        "group": 0,
-        "isGrouping": true
-      },
-      {
-        "grouped": false,
-        "isSelectable": true,
-        "name": "vendor",
-        "group": 1,
-        "isGrouping": true
-      },
-      {
-        "grouped": false,
-        "isSelectable": true,
-        "name": "version",
-        "group": 1,
-        "isGrouping": true
-      },
-      {
-        "grouped": false,
-        "isSelectable": true,
-        "name": "x",
-        "group": 3,
-        "isGrouping": true
-      },
-      {
-        "grouped": false,
-        "isSelectable": true,
-        "name": "y",
-        "group": 3,
-        "isGrouping": true
-      },
-      {
-        "grouped": false,
-        "isSelectable": true,
-        "name": "pool",
-        "group": 2,
-        "isGrouping": true
-      },
-      {
-        "grouped": false,
-        "isSelectable": true,
-        "name": "date",
-        "group": 0,
-        "isGrouping": true
-      }
-    ],
+    "format": 2,
+    "sample": 1,
     "widgets": [
       {
         "cell": "c11",
@@ -294,10 +16,47 @@
         "title": "\u041f\u0435\u0440\u0435\u0437\u0430\u0433\u0440\u0443\u0437\u043e\u043a \u0432 \u0434\u0435\u043d\u044c",
         "type": "lineChart",
         "query": {
+          "id": 0,
+          "method": "query",
           "params": [
             {
+              "datasource": "reboots",
+              "fields": [
+                {
+                  "isSelectable": true,
+                  "isGrouping": true,
+                  "grouped": false,
+                  "isAgg": false,
+                  "expr": "date",
+                  "desc": true,
+                  "order": 0,
+                  "group": 0
+                },
+                {
+                  "isSelectable": true,
+                  "isGrouping": true,
+                  "grouped": false,
+                  "isAgg": false,
+                  "expr": "count()",
+                  "alias": "cnt"
+                }
+              ],
               "filter": {
                 "$and": [
+                  {
+                    "$and": [
+                      {
+                        "$lt": [
+                          {
+                            "$field": "ts"
+                          },
+                          {
+                            "$field": "'2019-06-01T00:00:00'"
+                          }
+                        ]
+                      }
+                    ]
+                  },
                   {
                     "$and": [
                       {
@@ -306,40 +65,19 @@
                             "$field": "ts"
                           },
                           {
-                            "$field": "toDateTime('2017-11-02T00:00:00')"
+                            "$field": "'2019-01-01T00:00:00'"
                           },
                           {
-                            "$field": "toDateTime('2017-11-02T23:59:59')"
+                            "$field": "'2019-12-31T23:59:59'"
                           }
                         ]
                       }
                     ]
                   }
                 ]
-              },
-              "fields": [
-                {
-                  "group": 0,
-                  "isGrouping": true,
-                  "expr": "date",
-                  "grouped": false,
-                  "isSelectable": true,
-                  "order": 0,
-                  "desc": true
-                },
-                {
-                  "expr": "count()",
-                  "grouped": false,
-                  "isSelectable": true,
-                  "isGrouping": true,
-                  "alias": "cnt"
-                }
-              ],
-              "datasource": "reboots"
+              }
             }
-          ],
-          "id": 0,
-          "method": "query"
+          ]
         }
       },
       {
@@ -348,10 +86,48 @@
         "title": "\u0413\u0440\u0443\u043f\u043f\u0438\u0440\u043e\u0432\u043a\u0430 \u043f\u043e \u0434\u043d\u044e \u043d\u0435\u0434\u0435\u043b\u0438",
         "type": "rowChart",
         "query": {
+          "id": 0,
+          "method": "query",
           "params": [
             {
+              "datasource": "reboots",
+              "fields": [
+                {
+                  "isSelectable": true,
+                  "isGrouping": true,
+                  "grouped": false,
+                  "isAgg": false,
+                  "expr": "toDayOfWeek(date)",
+                  "alias": "day",
+                  "desc": true,
+                  "order": 0,
+                  "group": 0
+                },
+                {
+                  "isSelectable": true,
+                  "isGrouping": true,
+                  "grouped": false,
+                  "isAgg": false,
+                  "expr": "count()",
+                  "alias": "cnt"
+                }
+              ],
               "filter": {
                 "$and": [
+                  {
+                    "$and": [
+                      {
+                        "$lt": [
+                          {
+                            "$field": "ts"
+                          },
+                          {
+                            "$field": "'2019-06-01T00:00:00'"
+                          }
+                        ]
+                      }
+                    ]
+                  },
                   {
                     "$and": [
                       {
@@ -360,112 +136,106 @@
                             "$field": "ts"
                           },
                           {
-                            "$field": "toDateTime('2017-11-02T00:00:00')"
+                            "$field": "'2019-01-01T00:00:00'"
                           },
                           {
-                            "$field": "toDateTime('2017-11-02T23:59:59')"
+                            "$field": "'2019-12-31T23:59:59'"
                           }
                         ]
                       }
                     ]
                   }
                 ]
-              },
-              "fields": [
-                {
-                  "group": 0,
-                  "isGrouping": true,
-                  "grouped": false,
-                  "expr": "toDayOfWeek(date)",
-                  "alias": "day",
-                  "isSelectable": true,
-                  "order": 0,
-                  "desc": true
-                },
-                {
-                  "expr": "count()",
-                  "grouped": false,
-                  "isSelectable": true,
-                  "isGrouping": true,
-                  "alias": "cnt"
-                }
-              ],
-              "datasource": "reboots"
+              }
             }
-          ],
-          "id": 0,
-          "method": "query"
+          ]
         }
       },
       {
         "cell": "c21",
-        "note": "\u043f\u043e \u0441\u0435\u0433\u043c\u0435\u043d\u0442\u0443 \u0441\u0435\u0442\u0438",
+        "note": "Network Segment",
         "title": "\u0413\u0440\u0443\u043f\u043f\u0438\u0440\u043e\u0432\u043a\u0430 \u043f\u043e \u0441\u0435\u0433\u043c\u0435\u043d\u0442\u0443 \u0441\u0435\u0442\u0438, \u0442\u043e\u043f 10",
-        "type": "pieChart",
+        "type": "selectablePieChart",
         "query": {
+          "id": 88,
+          "method": "query",
           "params": [
             {
-              "filter": {
-                "$and": [
-                  {
-                    "$and": [
-                      {
-                        "$between": [
-                          {
-                            "$field": "ts"
-                          },
-                          {
-                            "$field": "toDateTime('2017-11-02T00:00:00')"
-                          },
-                          {
-                            "$field": "toDateTime('2017-11-02T23:59:59')"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
+              "datasource": "reboots",
+              "limit": 10,
               "fields": [
                 {
-                  "expr": "segment",
-                  "group": 0,
-                  "isGrouping": true,
                   "isSelectable": true,
-                  "grouped": false
+                  "isGrouping": true,
+                  "grouped": false,
+                  "isAgg": false,
+                  "expr": "segment",
+                  "group": 0
                 },
                 {
-                  "group": 1,
+                  "isSelectable": true,
                   "isGrouping": true,
-                  "alias": "name",
+                  "grouped": false,
+                  "isAgg": false,
                   "expr": {
                     "$lookup": [
                       "networksegment",
                       {
                         "$field": "segment"
                       }
-                    ],
-                    "__type": "Expression"
+                    ]
                   },
-                  "grouped": false,
-                  "isSelectable": true
+                  "alias": "name",
+                  "group": 1
                 },
                 {
+                  "isSelectable": true,
                   "isGrouping": true,
                   "grouped": false,
+                  "isAgg": false,
                   "expr": "count()",
                   "alias": "cnt",
-                  "isSelectable": true,
-                  "order": 0,
-                  "desc": true
+                  "desc": true,
+                  "order": 0
                 }
               ],
-              "limit": 10,
-              "datasource": "reboots"
+              "filter": {
+                "$and": [
+                  {
+                    "$and": [
+                      {
+                        "$lt": [
+                          {
+                            "$field": "ts"
+                          },
+                          {
+                            "$field": "'2019-06-01T00:00:00'"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "$and": [
+                      {
+                        "$between": [
+                          {
+                            "$field": "ts"
+                          },
+                          {
+                            "$field": "'2019-01-01T00:00:00'"
+                          },
+                          {
+                            "$field": "'2019-12-31T23:59:59'"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
             }
-          ],
-          "id": 0,
-          "method": "query"
+          ]
         }
       },
       {
@@ -474,10 +244,57 @@
         "title": "\u041f\u0435\u0440\u0435\u0437\u0430\u0433\u0440\u0443\u0437\u043a\u0438 \u043f\u043e \u043d\u043e\u043c\u0435\u0440\u0443 \u0447\u0430\u0441\u0430",
         "type": "barChart",
         "query": {
+          "id": 0,
+          "method": "query",
           "params": [
             {
+              "datasource": "reboots",
+              "fields": [
+                {
+                  "isSelectable": true,
+                  "isGrouping": true,
+                  "grouped": false,
+                  "isAgg": false,
+                  "expr": "toHour(ts)",
+                  "alias": "hour",
+                  "desc": true,
+                  "order": 0,
+                  "group": 0
+                },
+                {
+                  "isSelectable": true,
+                  "isGrouping": true,
+                  "grouped": false,
+                  "isAgg": false,
+                  "expr": "count()",
+                  "alias": "cnt"
+                },
+                {
+                  "isSelectable": true,
+                  "isGrouping": true,
+                  "grouped": false,
+                  "isAgg": false,
+                  "expr": "toHour(ts)",
+                  "alias": "name",
+                  "group": 1
+                }
+              ],
               "filter": {
                 "$and": [
+                  {
+                    "$and": [
+                      {
+                        "$lt": [
+                          {
+                            "$field": "ts"
+                          },
+                          {
+                            "$field": "'2019-06-01T00:00:00'"
+                          }
+                        ]
+                      }
+                    ]
+                  },
                   {
                     "$and": [
                       {
@@ -486,61 +303,129 @@
                             "$field": "ts"
                           },
                           {
-                            "$field": "toDateTime('2017-11-02T00:00:00')"
+                            "$field": "'2019-01-01T00:00:00'"
                           },
                           {
-                            "$field": "toDateTime('2017-11-02T23:59:59')"
+                            "$field": "'2019-12-31T23:59:59'"
                           }
                         ]
                       }
                     ]
                   }
                 ]
-              },
-              "fields": [
-                {
-                  "group": 0,
-                  "isGrouping": true,
-                  "grouped": false,
-                  "expr": "toHour(ts)",
-                  "alias": "hour",
-                  "isSelectable": true,
-                  "order": 0,
-                  "desc": true
-                },
-                {
-                  "expr": "count()",
-                  "grouped": false,
-                  "isSelectable": true,
-                  "isGrouping": true,
-                  "alias": "cnt"
-                },
-                {
-                  "group": 1,
-                  "isGrouping": true,
-                  "alias": "name",
-                  "expr": "toHour(ts)",
-                  "grouped": false,
-                  "isSelectable": true
-                }
-              ],
-              "datasource": "reboots"
+              }
             }
-          ],
-          "id": 0,
-          "method": "query"
+          ]
         }
       },
       {
         "cell": "table1",
         "note": "\u043e\u0431\u043e\u0440\u0443\u0434\u043e\u0432\u0430\u043d\u0438\u0435",
         "title": "\u041f\u043e \u043a\u043e\u043b\u0438\u0447\u0435\u0441\u0442\u0432\u0443 \u043f\u0435\u0440\u0435\u0437\u0430\u0433\u0440\u0443\u0437\u043e\u043a, \u0442\u043e\u043f 10",
-        "type": "dataTable",
+        "type": "topTable",
         "query": {
+          "id": 0,
+          "method": "query",
           "params": [
             {
+              "datasource": "reboots",
+              "limit": 10,
+              "fields": [
+                {
+                  "isSelectable": true,
+                  "isGrouping": true,
+                  "grouped": false,
+                  "isAgg": false,
+                  "expr": "date",
+                  "label": "\u0414\u0430\u0442\u0430",
+                  "alias": "date",
+                  "group": 0,
+                  "format": "dateToString"
+                },
+                {
+                  "isSelectable": true,
+                  "isGrouping": true,
+                  "grouped": false,
+                  "isAgg": false,
+                  "expr": "managed_object",
+                  "group": 1
+                },
+                {
+                  "isSelectable": true,
+                  "isGrouping": true,
+                  "grouped": false,
+                  "isAgg": false,
+                  "expr": "administrative_domain",
+                  "group": 2
+                },
+                {
+                  "isSelectable": true,
+                  "isGrouping": true,
+                  "grouped": false,
+                  "isAgg": false,
+                  "expr": "segment",
+                  "group": 3
+                },
+                {
+                  "isSelectable": true,
+                  "isGrouping": true,
+                  "grouped": false,
+                  "isAgg": false,
+                  "expr": {
+                    "$lookup": [
+                      "managedobject",
+                      {
+                        "$field": "managed_object"
+                      }
+                    ]
+                  },
+                  "label": "\u041e\u0431\u043e\u0440\u0443\u0434\u043e\u0432\u0430\u043d\u0438\u0435",
+                  "alias": "name"
+                },
+                {
+                  "isSelectable": true,
+                  "isGrouping": true,
+                  "grouped": false,
+                  "isAgg": false,
+                  "expr": {
+                    "$lookup": [
+                      "networksegment",
+                      {
+                        "$field": "segment"
+                      }
+                    ]
+                  },
+                  "label": "\u0421\u0435\u0433\u043c\u0435\u043d\u0442 \u0441\u0435\u0442\u0438",
+                  "alias": "segment_name"
+                },
+                {
+                  "isSelectable": true,
+                  "isGrouping": true,
+                  "grouped": false,
+                  "isAgg": false,
+                  "expr": "count()",
+                  "label": "\u041a\u043e\u043b-\u0432\u043e \u043f\u0435\u0440\u0435\u0437\u0430\u0433\u0440\u0443\u0437\u043e\u043a",
+                  "alias": "qty",
+                  "desc": true,
+                  "order": 0
+                }
+              ],
               "filter": {
                 "$and": [
+                  {
+                    "$and": [
+                      {
+                        "$lt": [
+                          {
+                            "$field": "ts"
+                          },
+                          {
+                            "$field": "'2019-06-01T00:00:00'"
+                          }
+                        ]
+                      }
+                    ]
+                  },
                   {
                     "$and": [
                       {
@@ -549,133 +434,461 @@
                             "$field": "ts"
                           },
                           {
-                            "$field": "toDateTime('2017-11-02T00:00:00')"
+                            "$field": "'2019-01-01T00:00:00'"
                           },
                           {
-                            "$field": "toDateTime('2017-11-02T23:59:59')"
+                            "$field": "'2019-12-31T23:59:59'"
                           }
                         ]
                       }
                     ]
                   }
                 ]
-              },
+              }
+            }
+          ]
+        }
+      },
+      {
+        "cell": "table2",
+        "note": "\u0440\u0443\u0447\u043d\u0430\u044f \u0432\u044b\u0431\u043e\u0440\u043a\u0430",
+        "title": "\u041f\u0440\u043e\u0438\u0437\u0432\u043e\u043b\u044c\u043d\u0430\u044f \u0432\u044b\u0431\u043e\u0440\u043a\u0430, \u0442\u043e\u043f (max 25)",
+        "type": "topTable",
+        "query": {
+          "id": 0,
+          "method": "query",
+          "params": [
+            {
+              "datasource": "alarms",
+              "limit": 1,
               "fields": [
                 {
-                  "group": 0,
+                  "isSelectable": true,
                   "isGrouping": true,
-                  "format": "dateToString",
+                  "grouped": false,
+                  "isAgg": false,
                   "expr": "date",
-                  "label": "\u0414\u0430\u0442\u0430",
-                  "grouped": false,
-                  "alias": "date",
-                  "isSelectable": true
-                },
-                {
-                  "expr": "managed_object",
-                  "group": 1,
-                  "isGrouping": true,
-                  "isSelectable": true,
-                  "grouped": false
-                },
-                {
-                  "expr": "administrative_domain",
-                  "group": 2,
-                  "isGrouping": true,
-                  "isSelectable": true,
-                  "grouped": false
-                },
-                {
-                  "expr": "segment",
-                  "group": 3,
-                  "isGrouping": true,
-                  "isSelectable": true,
-                  "grouped": false
-                },
-                {
-                  "isGrouping": true,
-                  "grouped": false,
-                  "expr": {
-                    "$lookup": [
-                      "managedobject",
-                      {
-                        "$field": "managed_object"
-                      }
-                    ],
-                    "__type": "Expression"
-                  },
-                  "label": "\u041e\u0431\u043e\u0440\u0443\u0434\u043e\u0432\u0430\u043d\u0438\u0435",
-                  "alias": "name",
-                  "isSelectable": true
-                },
-                {
-                  "isGrouping": true,
-                  "grouped": false,
-                  "expr": {
-                    "$lookup": [
-                      "networksegment",
-                      {
-                        "$field": "segment"
-                      }
-                    ],
-                    "__type": "Expression"
-                  },
-                  "label": "\u0421\u0435\u0433\u043c\u0435\u043d\u0442 \u0441\u0435\u0442\u0438",
-                  "alias": "segment_name",
-                  "isSelectable": true
-                },
-                {
-                  "isGrouping": true,
-                  "grouped": false,
-                  "expr": "count()",
-                  "label": "\u041a\u043e\u043b-\u0432\u043e \u043f\u0435\u0440\u0435\u0437\u0430\u0433\u0440\u0443\u0437\u043e\u043a",
-                  "alias": "qty",
-                  "isSelectable": true,
-                  "order": 0,
-                  "desc": true
+                  "label": "\u0414\u0430\u0442\u0430 \u0441\u043e\u0437\u0434\u0430\u043d\u0438\u044f",
+                  "format": "dateToString"
                 }
               ],
-              "limit": 10,
-              "datasource": "reboots"
+              "filter": {
+                "$and": [
+                  {
+                    "$and": [
+                      {
+                        "$lt": [
+                          {
+                            "$field": "ts"
+                          },
+                          {
+                            "$field": "'2019-06-01T00:00:00'"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "$and": [
+                      {
+                        "$between": [
+                          {
+                            "$field": "ts"
+                          },
+                          {
+                            "$field": "'2019-01-01T00:00:00'"
+                          },
+                          {
+                            "$field": "'2019-12-31T23:59:59'"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
             }
-          ],
-          "id": 0,
-          "method": "query"
+          ]
         }
       }
     ],
+    "layout": {
+      "id": "580e1ba498601c0f96b7e809",
+      "name": "c2x2",
+      "description": "",
+      "uuid": "f2736f99-a568-4820-b746-1e71d48b4374",
+      "cells": [
+        {
+          "md": 6,
+          "name": "c11",
+          "lg": 0,
+          "height": 250,
+          "sm": 0,
+          "xs": 0,
+          "row": 0
+        },
+        {
+          "md": 6,
+          "name": "c12",
+          "lg": 0,
+          "height": 250,
+          "sm": 0,
+          "xs": 0,
+          "row": 0
+        },
+        {
+          "md": 6,
+          "name": "c21",
+          "lg": 0,
+          "height": 250,
+          "sm": 0,
+          "xs": 0,
+          "row": 1
+        },
+        {
+          "md": 6,
+          "name": "c22",
+          "lg": 0,
+          "height": 250,
+          "sm": 0,
+          "xs": 0,
+          "row": 1
+        },
+        {
+          "md": 12,
+          "name": "table1",
+          "lg": 0,
+          "height": 360,
+          "sm": 0,
+          "xs": 0,
+          "row": 4
+        },
+        {
+          "md": 12,
+          "name": "table2",
+          "lg": 0,
+          "height": 360,
+          "sm": 0,
+          "xs": 0,
+          "row": 4
+        }
+      ]
+    },
+    "groups": [
+      {
+        "name": "startEnd",
+        "active": true,
+        "association": "$and",
+        "filters": [
+          {
+            "values": [
+              {
+                "value": "ly"
+              }
+            ],
+            "condition": "interval",
+            "name": "ts",
+            "association": "$and",
+            "field": {
+              "isSelectable": true,
+              "isGrouping": true,
+              "grouped": false,
+              "isAgg": false,
+              "type": "DateTime"
+            }
+          }
+        ]
+      },
+      {
+        "association": "$and",
+        "active": true,
+        "name": "form",
+        "filters": [
+          {
+            "association": "$and",
+            "name": "ts",
+            "condition": "$lt",
+            "field": {
+              "isSelectable": true,
+              "isGrouping": true,
+              "grouped": false,
+              "isAgg": false,
+              "name": "ts",
+              "description": "Created",
+              "dict": null,
+              "type": "DateTime",
+              "group": 0,
+              "pseudo": false,
+              "enable": true
+            },
+            "values": [
+              {
+                "value": "2019-05-31T21:00:00.000Z"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "agv_fields": [
+      {
+        "isSelectable": true,
+        "isGrouping": true,
+        "grouped": false,
+        "isAgg": false,
+        "group": 2,
+        "name": "administrative_domain",
+        "description": "\u0417.\u041e."
+      },
+      {
+        "isSelectable": true,
+        "isGrouping": true,
+        "grouped": false,
+        "isAgg": false,
+        "group": 1,
+        "name": "container",
+        "description": "\u0410\u0434\u0440\u0435\u0441"
+      },
+      {
+        "isSelectable": true,
+        "isGrouping": true,
+        "grouped": false,
+        "isAgg": false,
+        "group": 1,
+        "name": "ip",
+        "description": "IP \u0430\u0434\u0440\u0435\u0441"
+      },
+      {
+        "isSelectable": true,
+        "isGrouping": true,
+        "grouped": false,
+        "isAgg": false,
+        "group": 1,
+        "name": "managed_object",
+        "description": "\u0418\u043c\u044f \u043e\u0431\u044a\u0435\u043a\u0442\u0430"
+      },
+      {
+        "isSelectable": true,
+        "isGrouping": true,
+        "grouped": false,
+        "isAgg": false,
+        "group": 1,
+        "name": "platform",
+        "description": "\u041f\u043b\u0430\u0442\u0444\u043e\u0440\u043c\u0430"
+      },
+      {
+        "isSelectable": true,
+        "isGrouping": true,
+        "grouped": false,
+        "isAgg": false,
+        "group": 1,
+        "name": "profile",
+        "description": "\u041f\u0440\u043e\u0444\u0438\u043b\u044c \u043e\u0431\u044a\u0435\u043a\u0442\u0430"
+      },
+      {
+        "isSelectable": true,
+        "isGrouping": true,
+        "grouped": false,
+        "isAgg": false,
+        "group": 1,
+        "name": "segment",
+        "description": "\u0421\u0435\u0433\u043c\u0435\u043d\u0442 \u0441\u0435\u0442\u0438"
+      },
+      {
+        "isSelectable": true,
+        "isGrouping": true,
+        "grouped": false,
+        "isAgg": false,
+        "group": 1,
+        "name": "vendor",
+        "description": "\u041f\u0440\u043e\u0438\u0437\u0432\u043e\u0434\u0438\u0442\u0435\u043b\u044c"
+      },
+      {
+        "isSelectable": true,
+        "isGrouping": true,
+        "grouped": false,
+        "isAgg": false,
+        "group": 1,
+        "name": "version",
+        "description": "\u0412\u0435\u0440\u0441\u0438\u044f"
+      },
+      {
+        "isSelectable": true,
+        "isGrouping": true,
+        "grouped": false,
+        "isAgg": false,
+        "group": 2,
+        "name": "pool",
+        "description": "\u0418\u043c\u044f \u043f\u0443\u043b\u0430"
+      },
+      {
+        "isSelectable": true,
+        "isGrouping": true,
+        "grouped": false,
+        "isAgg": false,
+        "group": 0,
+        "name": "date",
+        "description": "\u0414\u0430\u0442\u0430"
+      },
+      {
+        "isSelectable": true,
+        "isGrouping": true,
+        "grouped": false,
+        "isAgg": false,
+        "group": 0,
+        "name": "ts",
+        "description": "\u0421\u043e\u0437\u0434\u0430\u043d\u043e"
+      }
+    ],
+    "filter_fields": [
+      {
+        "isSelectable": true,
+        "isGrouping": true,
+        "grouped": false,
+        "isAgg": false,
+        "group": 2,
+        "name": "administrative_domain"
+      },
+      {
+        "isSelectable": true,
+        "isGrouping": true,
+        "grouped": false,
+        "isAgg": false,
+        "group": 1,
+        "name": "container"
+      },
+      {
+        "isSelectable": true,
+        "isGrouping": true,
+        "grouped": false,
+        "isAgg": false,
+        "group": 1,
+        "name": "ip"
+      },
+      {
+        "isSelectable": true,
+        "isGrouping": true,
+        "grouped": false,
+        "isAgg": false,
+        "group": 1,
+        "name": "managed_object"
+      },
+      {
+        "isSelectable": true,
+        "isGrouping": true,
+        "grouped": false,
+        "isAgg": false,
+        "group": 1,
+        "name": "platform"
+      },
+      {
+        "isSelectable": true,
+        "isGrouping": true,
+        "grouped": false,
+        "isAgg": false,
+        "group": 1,
+        "name": "profile"
+      },
+      {
+        "isSelectable": true,
+        "isGrouping": true,
+        "grouped": false,
+        "isAgg": false,
+        "group": 1,
+        "name": "segment"
+      },
+      {
+        "isSelectable": true,
+        "isGrouping": true,
+        "grouped": false,
+        "isAgg": false,
+        "group": 0,
+        "name": "ts"
+      },
+      {
+        "isSelectable": true,
+        "isGrouping": true,
+        "grouped": false,
+        "isAgg": false,
+        "group": 1,
+        "name": "vendor"
+      },
+      {
+        "isSelectable": true,
+        "isGrouping": true,
+        "grouped": false,
+        "isAgg": false,
+        "group": 1,
+        "name": "version"
+      },
+      {
+        "isSelectable": true,
+        "isGrouping": true,
+        "grouped": false,
+        "isAgg": false,
+        "group": 3,
+        "name": "x"
+      },
+      {
+        "isSelectable": true,
+        "isGrouping": true,
+        "grouped": false,
+        "isAgg": false,
+        "group": 3,
+        "name": "y"
+      },
+      {
+        "isSelectable": true,
+        "isGrouping": true,
+        "grouped": false,
+        "isAgg": false,
+        "group": 2,
+        "name": "pool"
+      },
+      {
+        "isSelectable": true,
+        "isGrouping": true,
+        "grouped": false,
+        "isAgg": false,
+        "group": 0,
+        "name": "date"
+      }
+    ],
     "export": {
+      "id": 0,
+      "method": "query",
       "params": [
         {
+          "datasource": "reboots",
           "fields": [
             {
-              "group": 0,
+              "isSelectable": true,
               "isGrouping": true,
-              "format": "dateToString",
+              "grouped": false,
+              "isAgg": false,
               "expr": "date",
               "label": "\u0414\u0430\u0442\u0430",
-              "grouped": false,
               "alias": "date",
-              "isSelectable": true
+              "group": 0,
+              "format": "dateToString",
+              "hide": "no"
             },
             {
+              "isSelectable": true,
               "isGrouping": true,
               "grouped": false,
+              "isAgg": false,
               "expr": "count()",
               "label": "\u041a\u043e\u043b-\u0432\u043e",
               "alias": "qty",
-              "isSelectable": true,
+              "desc": true,
               "order": 0,
-              "desc": true
+              "hide": "no"
             }
-          ],
-          "datasource": "reboots"
+          ]
         }
-      ],
-      "id": 0,
-      "method": "query"
+      ]
     },
-    "isSample": false,
-    "id": "59e9b6b7c165cf607b9383e6"
+    "pseudo_fields": []
   }
 }

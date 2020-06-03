@@ -1,5 +1,5 @@
 import { cloneDeep, head, startsWith } from 'lodash';
-import * as d3 from 'd3';
+import { timeFormat } from 'd3-time-format';
 
 import { Group } from './group';
 import { Filter } from './filter';
@@ -304,14 +304,14 @@ function toDate(v: Value) {
     if (typeof v.value === 'string') {
         v.value = new Date(v.value);
     }
-    return `toDate('${d3.timeFormat('%Y-%m-%d')(v.value)}')`;
+    return `toDate('${timeFormat('%Y-%m-%d')(v.value)}')`;
 }
 
 function toDateTime(v: Value) {
     if (typeof v.value === 'string') {
         v.value = new Date(v.value);
     }
-    return `'${d3.timeFormat('%Y-%m-%dT%H:%M:%S')(v.value)}'`;
+    return `'${timeFormat('%Y-%m-%dT%H:%M:%S')(v.value)}'`;
 }
 
 function toPeriodicTime(param) {

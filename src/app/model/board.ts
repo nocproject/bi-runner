@@ -74,7 +74,7 @@ export class Board {
             }));
         obj['agv_fields'] = this.agvFields;
         obj['filter_fields'] = this.filterFields;
-        obj['exportQry'] = obj.exportQry;
+        obj['export'] = obj.exportQry;
         obj['pseudo_fields'] = this.pseudoFields;
         delete obj['agvFields'];
         delete obj['filterFields'];

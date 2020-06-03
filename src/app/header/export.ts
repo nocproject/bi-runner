@@ -1,8 +1,8 @@
 
 import {throwError as observableThrowError,  Observable } from 'rxjs';
 import { flatMap, head } from 'lodash';
-import * as d3 from 'd3';
-import * as saver from 'file-saver';
+import { timeFormat } from 'd3-time-format';
+// import * as saver from 'file-saver';
 
 import { APIService, BoardService } from '@app/services';
 //
@@ -20,7 +20,7 @@ import {
     WhereBuilder
 } from '../model';
 //
-import { FilterService } from '../board/services/filter.service';
+import { FilterService } from '@board/services';
 
 export class Export {
 
@@ -267,7 +267,7 @@ function reportRange(group: Group): any[] {
 }
 
 function toDateTime(value) {
-    return `toDateTime('${d3.timeFormat('%Y-%m-%dT%H:%M:%S')(value)}')`;
+    return `toDateTime('${timeFormat('%Y-%m-%dT%H:%M:%S')(value)}')`;
 }
 
 /**

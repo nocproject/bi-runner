@@ -22,7 +22,7 @@ export class TranslateParserService extends TranslateParser {
         let keys = key.split('.');
         //*** error
         // if (target instanceof HttpResponse) {
-        //     target = target.json();
+            // target = target.json();
         // }
 
         key = '';

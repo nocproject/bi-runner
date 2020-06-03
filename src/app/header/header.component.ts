@@ -7,6 +7,7 @@ import { Observable, Subscription } from 'rxjs';
 import { finalize, first, map } from 'rxjs/operators';
 
 import { cloneDeep, includes } from 'lodash';
+import { serialize } from 'typescript-json-serializer';
 
 import { environment } from '@env/environment';
 
@@ -19,7 +20,7 @@ import {
     LayoutService,
     MessageService
 } from '@app/services';
-import { FilterService } from '../board/services/filter.service';
+import { FilterService } from '@board/services';
 
 import { BiRequestBuilder, Board, Field, IOption, Message, MessageType, Methods } from '../model';
 import { ModalComponent } from '../shared/modal/modal';

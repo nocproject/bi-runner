@@ -34,3 +34,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 ## Build
 
 `ng build ng build --prod --aot --no-sourcemap --base-href=/ui/dist/` 
+
+### Docker
+
+`docker run --rm -it -p 4200:4200 -v `pwd`:/home/node node:8.4 /bin/sh`

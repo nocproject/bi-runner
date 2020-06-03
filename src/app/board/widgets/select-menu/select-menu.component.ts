@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
 
 import { last } from 'lodash';
-import * as d3 from 'd3';
-import * as dc from 'dc';
-import { BaseMixin, SelectMenu } from 'dc';
+import { timeFormat, timeParse } from 'd3-time-format';
+import { BaseMixin, selectMenu, SelectMenu } from 'dc';
 import crossfilter from 'crossfilter';
 
 import { Restore, WidgetComponent } from '../widget.component';
@@ -16,7 +15,7 @@ import { FilterBuilder, Result, Value } from '@app/model';
 export class SelectMenuComponent extends WidgetComponent {
     draw(response: Result): BaseMixin<SelectMenu> {
         const prompt = this.languageService.selectMenuPrompt;
-        const chart: SelectMenu = dc.selectMenu(`#${this.data.cell.name}`);
+        const chart: SelectMenu = selectMenu(`#${this.data.cell.name}`);
         const ndx = crossfilter(response.zip(false));
         const dimension = ndx.dimension(d => d.date);
         const values = dimension.group().reduceSum(d => d.cnt);
@@ -24,7 +23,7 @@ export class SelectMenuComponent extends WidgetComponent {
 
         this.initialState(chart);
 
-        if(data.length) {
+        if (data.length) {
             chart.filter(last(data).key);
         }
         chart.dimension(dimension);
@@ -55,12 +54,12 @@ export class SelectMenuComponent extends WidgetComponent {
     getValue(widget: BaseMixin<any>, filter): Value[] {
         return widget.filters()
             .filter(d => d.length)
-            .map(d => new Value(d3.timeParse('%Y-%m-%d %H:%M:%S')(d)));
+            .map(d => new Value(timeParse('%Y-%m-%d %H:%M:%S')(d)));
     }
 
     restore(values: Value[]): Restore {
         return {
-            title: values.map(item => d3.timeFormat('%Y-%m-%d %H:%M:%S')(item.value)).join(', '),
+            title: values.map(item => timeFormat('%Y-%m-%d %H:%M:%S')(item.value)).join(', '),
             filter: values.map(item => new Value(item.value, item.desc))
         };
     }

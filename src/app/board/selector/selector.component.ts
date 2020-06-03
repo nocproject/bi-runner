@@ -23,12 +23,10 @@ import {
 import { ReportRangeComponent } from '../report-range/report-range.component';
 import { ModalComponent } from '../../shared/modal/modal';
 //
-import { EventType } from '../filters-form/model/event.interface';
-import { EventService } from '../services/event.service';
-import { FilterService } from '../services/filter.service';
+import { EventType } from '../filters-form/model';
+import { EventService, FilterService } from '../services/';
 
 @Component({
-    // changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'bi-selector',
     templateUrl: './selector.component.html'
 })

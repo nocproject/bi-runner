@@ -12,9 +12,8 @@
                         </div>
                         <div class="col-md-3">
                             <button type="button" class="btn btn-default"
-                                    (click)="openRangeDlg(selectRange)"
-                                    translate>
-                                {{reportRangeText}}
+                                    (click)="openRangeDlg(selectRange)">
+                                {{reportRangeText | translate}}
                             </button>
                         </div>
                         <div *ngIf="isSample$ | async" class="col-md-2 text-right">Ratio:</div>

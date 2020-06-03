@@ -1,5 +1,7 @@
 import { JsonProperty, Serializable } from 'typescript-json-serializer';
 
+export type YesNo = 'yes' | 'no';
+
 @Serializable()
 export class Field {
     @JsonProperty()
@@ -32,8 +34,11 @@ export class Field {
     public enable: boolean;
     @JsonProperty()
     public aggFunc: string;
-    @JsonProperty({onDeserialize: (value) => value === 'yes' || value === 'true'})
-    public hide: boolean | string;
+    @JsonProperty({
+        onDeserialize: (value) => value === 'yes' || value === 'true',
+        onSerialize: (value) => value ? 'yes' : 'no'
+    })
+    public hide: boolean | YesNo;
     @JsonProperty()
     public allowAggFuncs: boolean;
     //
@@ -47,22 +52,6 @@ export class Field {
     public isSortable(): boolean {
         return 'desc' in this;
     }
-
-    // static fromJSON(json) {
-    //     json['isSelectable'] = true;
-    //     json['isGrouping'] = true;
-    //     json['grouped'] = false;
-    //     json['isAgg'] = false;
-    //
-    //     if ('is_agg' in json) {
-    //         json['isAgg'] = json['is_agg'];
-    //         delete json['is_agg'];
-    //     }
-    //     if ('hide' in json) {
-    //         json['hide'] = json['hide'] === 'yes' || json['hide'] === 'true';
-    //     }
-    //     return Object.assign(Object.create(Field.prototype), json);
-    // }
 }
 
 export class FieldBuilder {
@@ -120,6 +109,13 @@ export class FieldBuilder {
 
     public pseudo(pseudo: boolean): FieldBuilder {
         this.field.pseudo = pseudo;
+        return this;
+    }
+
+    public hide(hide: boolean | YesNo): FieldBuilder {
+        if (typeof hide === 'boolean') {
+            this.field.hide = hide;
+        }
         return this;
     }
 

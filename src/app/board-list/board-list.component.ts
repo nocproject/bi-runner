@@ -64,14 +64,14 @@ export class BoardListComponent implements OnInit {
     }
 
     onImport(file, el: HTMLInputElement) {
-        let reader = new FileReader();
+        const reader = new FileReader();
 
-        reader.onload = () => {
+        reader.onload = async () => {
             let query;
 
             try {
-                //*** error
-                // query = JSON.parse(reader.result);
+                const blob = new Blob([reader.result], {type: 'application/json'});
+                query = await blob.text();
             } catch (error) {
                 this.messages.message(new Message(MessageType.DANGER, error));
             }

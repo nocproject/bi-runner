@@ -2,7 +2,7 @@ import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IMyDate, IMyDateModel, IMyDpOptions } from '../../shared/my-date-picker/interfaces';
 
-import * as d3 from 'd3';
+import { timeFormat, timeParse } from 'd3';
 import { cloneDeep, isEqual, reduce } from 'lodash';
 import { Subscription } from 'rxjs';
 
@@ -203,7 +203,7 @@ class Data {
                 }
                 case 'rangeInput': {
                     if (control.value && !BIValidators.dateTimeRange(control)) {
-                        const dates = data.rangeInput.split(' - ').map(d => d3.timeParse('%d.%m.%Y %H:%M')(d));
+                        const dates = data.rangeInput.split(' - ').map(d => timeParse('%d.%m.%Y %H:%M')(d));
 
                         this.data.fromTime = dates[0];
                         this.data.toTime = dates[1];
@@ -233,7 +233,7 @@ class Data {
     }
 
     private textRange(): string {
-        return `${d3.timeFormat('%d.%m.%Y %H:%M')(this.data.fromTime)} - ${d3.timeFormat('%d.%m.%Y %H:%M')(this.data.toTime)}`;
+        return `${timeFormat('%d.%m.%Y %H:%M')(this.data.fromTime)} - ${timeFormat('%d.%m.%Y %H:%M')(this.data.toTime)}`;
     }
 }
 
