@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { BaseMixin, geoChoroplethChart, GeoChoroplethChart } from 'dc';
+import { BaseMixin, GeoChoroplethChart } from 'dc';
 // import { json } from 'd3-fetch';
 // import { geoAlbers } from 'd3-geo'
 import crossfilter from 'crossfilter';
@@ -14,7 +14,7 @@ import { FilterBuilder, Result, Value } from '@app/model';
 })
 export class GeoComponent extends WidgetComponent {
     draw(response: Result): BaseMixin<GeoChoroplethChart> {
-        const chart: GeoChoroplethChart = geoChoroplethChart(`#${this.data.cell.name}`)
+        const chart: GeoChoroplethChart = new GeoChoroplethChart(`#${this.data.cell.name}`)
             .width(this.wrapperView.nativeElement.scrollWidth)
             .height(this.data.cell.height);
         // const ndx = crossfilter(response.zip(false));

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { BaseMixin, lineChart, LineChart } from 'dc';
+import { BaseMixin, LineChart } from 'dc';
 import { scaleTime } from 'd3-scale';
 import { timeFormat } from 'd3-time-format';
 import crossfilter from 'crossfilter';
@@ -15,7 +15,7 @@ import { Utils } from '../../../shared/utils';
 })
 export class LineComponent extends WidgetComponent {
     draw(response: Result): BaseMixin<LineChart> {
-        const chart: LineChart = lineChart(`#${this.data.cell.name}`);
+        const chart: LineChart = new LineChart(`#${this.data.cell.name}`);
         const ndx = crossfilter(response.zip(true));
         const dimension = ndx.dimension(d => d.date);
         const dim = dimension.group().reduceSum(d => d.cnt);

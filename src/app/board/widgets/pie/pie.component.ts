@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import crossfilter from 'crossfilter';
 import { select } from 'd3-selection';
 import * as dc from 'dc';
-import { BaseMixin, Legend, pieChart, PieChart } from 'dc';
+import { BaseMixin, Legend, legend, PieChart } from 'dc';
 
 import { FilterBuilder, Result, Value } from '@app/model';
 import { Restore, WidgetComponent } from '../widget.component';
@@ -18,7 +18,7 @@ import { Utils } from '../../../shared/utils';
 })
 export class PieComponent extends WidgetComponent {
     draw(response: Result): BaseMixin<PieChart> {
-        const chart: PieChart = pieChart(`#${this.data.cell.name}`);
+        const chart: PieChart = new PieChart(`#${this.data.cell.name}`);
         const ndx = crossfilter(response.zip(false));
         const dimension = ndx.dimension(d => new Value(d[Object.keys(d)[0]], d.name));
         const values = dimension.group().reduceSum(d => d['cnt']);

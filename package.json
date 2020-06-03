@@ -48,7 +48,6 @@
     "@angular/compiler-cli": "^9.1.9",
     "@angular/language-service": "^9.1.9",
     "@types/d3": "^5.7.2",
-    "@types/dc": "^0.0.26",
     "@types/file-saver": "^0.0.1",
     "@types/jest": "^25.2.3",
     "@types/lodash": "^4.14.100",

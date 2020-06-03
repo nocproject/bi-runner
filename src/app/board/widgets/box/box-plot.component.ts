@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { BaseMixin, boxPlot, BoxPlot } from 'dc';
+import { BaseMixin, BoxPlot } from 'dc';
 import crossfilter from 'crossfilter';
 
 import { Restore, WidgetComponent } from '../widget.component';
@@ -16,7 +16,7 @@ export class BoxPlotComponent extends WidgetComponent {
         // hard code two params 'duration' & 'UInt64'
         const key = 'duration';
         const type = 'UInt64';
-        const chart: BoxPlot = boxPlot(`#${this.data.cell.name}`);
+        const chart: BoxPlot = new BoxPlot(`#${this.data.cell.name}`);
         const ndx = crossfilter(response.zip(false));
         const dimension = ndx.dimension(() => key);
         const values = dimension.group().reduce(

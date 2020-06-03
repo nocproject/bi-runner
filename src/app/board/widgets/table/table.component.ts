@@ -6,7 +6,7 @@ import { map, switchMap } from 'rxjs/operators';
 
 import { head, sortBy, startsWith } from 'lodash';
 import { ascending, descending } from 'd3-array';
-import { BaseMixin, dataTable, DataTableWidget } from 'dc';
+import { BaseMixin, DataTable } from 'dc';
 import crossfilter from 'crossfilter';
 
 import { Field, IOption, Result, Value } from '@app/model';
@@ -29,8 +29,8 @@ export class TableComponent extends WidgetComponent {
     });
     private addSubscription: Subscription;
 
-    draw(response: Result): BaseMixin<DataTableWidget> {
-        const chart: DataTableWidget = dataTable(`#${this.data.cell.name}`);
+    draw(response: Result): BaseMixin<DataTable> {
+        const chart: DataTable = new DataTable(`#${this.data.cell.name}`);
         const ndx = crossfilter(response.zip(false));
         const dimension = ndx.dimension(d => d.date);
         const cols = this.data.widget.query.getLabeledFields()
@@ -66,8 +66,8 @@ export class TableComponent extends WidgetComponent {
         );
 
         chart.dimension(dimension);
-        chart.group(() => 'click on column header to switch');
-        chart.showGroups(false);
+        chart.section(() => 'click on column header to switch');
+        chart.showSections(false);
         chart.columns(cols);
         if (sort) {
             chart.sortBy(d => parseFloat(d[sort.field]));
