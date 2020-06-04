@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 
-import { BehaviorSubject ,  Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 import { cloneDeep, find, findIndex, flatMap } from 'lodash';
 import { timeParse } from 'd3-time-format';
 
+import { DatasourceService } from '@app/services';
 import { Field, Filter, FilterBuilder, Group, GroupBuilder, Value } from '@app/model';
 //
 import { EventService } from './event.service';

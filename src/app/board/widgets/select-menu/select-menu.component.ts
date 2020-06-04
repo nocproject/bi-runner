@@ -3,7 +3,6 @@ import { Component } from '@angular/core';
 import { last } from 'lodash';
 import { timeFormat, timeParse } from 'd3-time-format';
 import { BaseMixin, SelectMenu } from 'dc';
-import crossfilter from 'crossfilter';
 
 import { Restore, WidgetComponent } from '../widget.component';
 import { FilterBuilder, Result, Value } from '@app/model';
@@ -16,12 +15,10 @@ export class SelectMenuComponent extends WidgetComponent {
     draw(response: Result): BaseMixin<SelectMenu> {
         const prompt = this.languageService.selectMenuPrompt;
         const chart: SelectMenu = new SelectMenu(`#${this.data.cell.name}`);
-        const ndx = crossfilter(response.zip(false));
+        const ndx = this.initialState(chart, response.zip(false));
         const dimension = ndx.dimension(d => d.date);
         const values = dimension.group().reduceSum(d => d.cnt);
         const data = values.all();
-
-        this.initialState(chart);
 
         // if (data.length) {
         //     chart.filter(last(data).key);

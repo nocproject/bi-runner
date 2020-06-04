@@ -7,7 +7,7 @@ import { map, switchMap } from 'rxjs/operators';
 import { head, sortBy, startsWith } from 'lodash';
 import { ascending, descending } from 'd3-array';
 import { BaseMixin, DataTable } from 'dc';
-import crossfilter from 'crossfilter';
+import crossfilter from 'crossfilter2';
 
 import { Field, IOption, Result, Value } from '@app/model';
 import { Restore, WidgetComponent } from '../widget.component';

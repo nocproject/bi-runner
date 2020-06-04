@@ -1,9 +1,22 @@
-import { AfterViewInit, ElementRef, forwardRef, Inject, Input, OnDestroy, OnInit, ViewChild, Directive } from '@angular/core';
+import {
+    AfterViewInit,
+    Directive,
+    ElementRef,
+    forwardRef,
+    Inject,
+    Input,
+    OnDestroy,
+    OnInit,
+    ViewChild
+} from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+
 
 import { BaseMixin } from 'dc';
+import crossfilter from 'crossfilter2';
 import { clone, startsWith } from 'lodash';
 
-import { Observable ,  Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { debounceTime, filter, map, switchMap } from 'rxjs/operators';
 
 import {
@@ -18,9 +31,7 @@ import {
     WhereBuilder
 } from '@app/model';
 import { APIService, DatasourceService, LanguageService } from '@app/services';
-import { FilterService } from '../services/filter.service';
-import { EventService } from '../services/event.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { EventService, FilterService } from '@board/services';
 
 @Directive()
 export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestroy {
@@ -84,7 +95,7 @@ export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestro
         chart.on('renderlet', () => this.showSpinner = false);
     }
 
-    initialState(widget: BaseMixin<any>) {
+    initialState(widget: BaseMixin<any>, response): any {
         const cell = widget.anchorName();
         const values: Value[] = this.filterService.initChart(cell);
 
@@ -95,6 +106,7 @@ export abstract class WidgetComponent implements AfterViewInit, OnInit, OnDestro
             this.title = data.title;
             this.showReset = true;
         }
+        return crossfilter(response);
     }
 
     onReset(): void {

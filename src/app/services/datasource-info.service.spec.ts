@@ -65,15 +65,15 @@ describe('Service: DatasourceService for alarms', () => {
     });
 
     it('check selectable fields', () => {
-        expect(fields.filter(f => f.isSelectable).length).toBe(24);
+        expect(fields.filter(f => f.isSelectable).length).toBe(26);
     });
 
     it('check group #0', () => {
-        expect(fields.filter(f => f.group === 0).length).toBe(13);
+        expect(fields.filter(f => f.group === 0).length).toBe(14);
     });
 
     it('check group #1', () => {
-        expect(fields.filter(f => f.group === 1).length).toBe(9);
+        expect(fields.filter(f => f.group === 1).length).toBe(10);
     });
 
     it('check group #2', () => {
@@ -85,7 +85,7 @@ describe('Service: DatasourceService for alarms', () => {
     });
 
     it('check group #999', () => {
-        expect(fields.filter(f => f.group === 999).length).toBe(6);
+        expect(fields.filter(f => f.group === 999).length).toBe(4);
     });
 
     it('check tree-administrativedomain field', () => {
@@ -109,7 +109,7 @@ describe('Service: DatasourceService for alarms', () => {
     });
 
     it('check grouping fields', () => {
-        expect(fields.filter(f => f.isGrouping).length).toBe(24);
+        expect(fields.filter(f => f.isGrouping).length).toBe(26);
     });
 
     it('check pseudo fields', () => {

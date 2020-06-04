@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 
 import { BarChart, BaseMixin } from 'dc';
 import { scaleLinear } from 'd3-scale';
-import crossfilter from 'crossfilter';
 
 import { Restore, WidgetComponent } from '../widget.component';
 import { FilterBuilder, Result, Value } from '@app/model';
@@ -14,11 +13,9 @@ import { FilterBuilder, Result, Value } from '@app/model';
 export class BarComponent extends WidgetComponent {
     draw(response: Result): BaseMixin<BarChart> {
         const chart: BarChart = new BarChart(`#${this.data.cell.name}`);
-        const ndx = crossfilter(response.zip(false));
+        const ndx = this.initialState(chart, response.zip(false));
         const dimension = ndx.dimension(d => new Value(d[Object.keys(d)[0]], d.name));
         const values = dimension.group().reduceSum(d => d.cnt);
-
-        this.initialState(chart);
 
         chart.width(this.wrapperView.nativeElement.scrollWidth);
         chart.height(this.data.cell.height);

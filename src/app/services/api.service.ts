@@ -28,6 +28,7 @@ export class APIService {
                         // The backend returned an unsuccessful response code.
                         console.error(`Backend returned code ${error.status}`);
                     }
+                    console.error(query);
                     return throwError('Something bad happened; please try again later.');
                 }),
                 finalize(() => this.decreaseQty())

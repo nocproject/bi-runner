@@ -3,7 +3,6 @@ import { Component } from '@angular/core';
 import { BaseMixin, GeoChoroplethChart } from 'dc';
 // import { json } from 'd3-fetch';
 // import { geoAlbers } from 'd3-geo'
-import crossfilter from 'crossfilter';
 
 import { Restore, WidgetComponent } from '../widget.component';
 import { FilterBuilder, Result, Value } from '@app/model';
@@ -21,9 +20,7 @@ export class GeoComponent extends WidgetComponent {
         // const dimension = ndx.dimension(d => new Value(d[Object.keys(d)[0]], d.name));
         // const values = dimension.group().reduceSum(d => d.cnt);
 
-        this.initialState(chart);
-
-        const data = crossfilter([]);
+        const data = this.initialState(chart,[]);
         const dimension = data.dimension(d => d['state']);
         const values = dimension.group().reduceSum(d => d['value']);
 

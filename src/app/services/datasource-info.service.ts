@@ -8,8 +8,8 @@ import { cloneDeep, findIndex, head } from 'lodash';
 import { APIService } from './api.service';
 
 import { BiRequestBuilder, Board, Datasource, Field, IOption, Methods } from '@app/model';
+import { FilterService } from '@board/services';
 import { BoardService } from './board.service';
-import { FilterService } from '../board/services/filter.service';
 import { deserialize } from 'typescript-json-serializer';
 
 @Injectable()

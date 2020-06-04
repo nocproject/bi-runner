@@ -42,11 +42,15 @@ export class Field {
     @JsonProperty()
     public allowAggFuncs: boolean;
     //
+    // @JsonProperty()
     public isSelectable: boolean = true;
+    // @JsonProperty()
     public isGrouping: boolean = true;
+    // @JsonProperty()
     public grouped: boolean = false;
-    @JsonProperty({name: 'is_agg'})
+    // @JsonProperty({name: 'is_agg'})
     public isAgg: boolean = false;
+    @JsonProperty()
     public datasource: string;
 
     public isSortable(): boolean {

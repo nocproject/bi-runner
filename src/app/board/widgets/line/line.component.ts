@@ -3,7 +3,6 @@ import { Component } from '@angular/core';
 import { BaseMixin, LineChart } from 'dc';
 import { scaleTime } from 'd3-scale';
 import { timeFormat } from 'd3-time-format';
-import crossfilter from 'crossfilter';
 
 import { Restore, WidgetComponent } from '../widget.component';
 import { FilterBuilder, Result, Value } from '@app/model';
@@ -16,7 +15,7 @@ import { Utils } from '../../../shared/utils';
 export class LineComponent extends WidgetComponent {
     draw(response: Result): BaseMixin<LineChart> {
         const chart: LineChart = new LineChart(`#${this.data.cell.name}`);
-        const ndx = crossfilter(response.zip(true));
+        const ndx = this.initialState(chart, response.zip(true));
         const dimension = ndx.dimension(d => d.date);
         const dim = dimension.group().reduceSum(d => d.cnt);
         let minDate, maxDate;
@@ -27,7 +26,6 @@ export class LineComponent extends WidgetComponent {
         } else {
             minDate = maxDate = new Date;
         }
-        this.initialState(chart);
         chart.width(this.wrapperView.nativeElement.scrollWidth);
         chart.height(this.data.cell.height);
         chart.elasticY(true);
