@@ -17,7 +17,7 @@ import { Observable ,  Subscription } from 'rxjs';
 import { first, map, tap } from 'rxjs/operators';
 
 import { includes, isEmpty, isNil, remove } from 'lodash';
-import { TreeviewComponent, TreeviewItem } from 'ngx-treeview';
+import { TreeviewComponent, TreeviewConfig, TreeviewItem } from 'ngx-treeview';
 import { TranslateService } from '@ngx-translate/core';
 
 import { BiRequestBuilder, Field, Methods, Result } from '@app/model';
@@ -53,12 +53,12 @@ export class BiDropdownComponent implements OnInit, OnDestroy, OnChanges, Contro
     open = false;
     search = true;
     notFound = true;
-    treeConfig = {
+    treeConfig = TreeviewConfig.create({
         hasAllCheckBox: false,
         hasFilter: false,
         hasCollapseExpand: false,
         decoupleChildFromParent: false
-    };
+    });
     private propagateChange: (_: any) => void;
     private searchSubscription: Subscription;
 

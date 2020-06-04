@@ -11,7 +11,7 @@ import { MessageService } from '@app/services';
             <button type="button" class="close" aria-label="Close" (click)="close(message)">
                 <span>&times;</span>
             </button>
-            <div translate>{{message.text}}</div>
+            <div>{{message.text | translate}}</div>
         </div>
     `,
     styleUrls: ['./messages.component.scss']

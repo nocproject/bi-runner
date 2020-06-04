@@ -104,7 +104,7 @@
                 <div class="ng-invalid" translate>VALIDATOR.REQUIRED</div>
             </div>
             <div *ngIf="titleError">
-                <div class="ng-invalid" translate>{{ titleError }}</div>
+                <div class="ng-invalid">{{ titleError | translate }}</div>
             </div>
             <label for="save-description" class="control-label" translate>HEADER.SAVE_DLG.DESCRIPTION</label>
             <input id="save-description" class="form-control"
