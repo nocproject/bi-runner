@@ -2,7 +2,7 @@
 import {throwError as observableThrowError,  Observable } from 'rxjs';
 import { flatMap, head } from 'lodash';
 import { timeFormat } from 'd3-time-format';
-// import * as saver from 'file-saver';
+import * as saver from 'file-saver';
 
 import { APIService, BoardService } from '@app/services';
 //
@@ -65,20 +65,19 @@ export class Export {
     }
 
     static save(data,
-                boardResolver: BoardService) {
-        // *** error
-        // const fields: Field[] = boardResolver.getBoard().exportQry.params[0].fields;
-        // const title: string = boardResolver.getBoard().title;
-        // const pairs = fields
-        //     .map(field => [field.alias ? field.alias : field.expr, field.label])
-        //     .reduce((acc, [key, value]) => {
-        //         acc[key] = value;
-        //         return acc;
-        //     }, {});
-        // saver.saveAs(
-        //     new Blob([toCsv(data.result, data.fields.map(field => pairs[field]), '"', ';')]
-        //         , {type: 'text/plain;charset=utf-8'}), `${title}.csv`
-        // );
+                boardService: BoardService) {
+        const fields: Field[] = boardService.getBoard().exportQry.params[0].fields;
+        const title: string = boardService.getBoard().title;
+        const pairs = fields
+            .map(field => [field.alias ? field.alias : field.expr, field.label])
+            .reduce((acc, [key, value]) => {
+                acc[key.toString()] = value;
+                return acc;
+            }, {});
+        saver.saveAs(
+            new Blob([toCsv(data.result, data.fields.map(field => pairs[field]), '"', ';')]
+                , {type: 'text/plain;charset=utf-8'}), `${title}.csv`
+        );
     }
 }
 
