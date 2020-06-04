@@ -121,13 +121,13 @@ body {
   stroke: #fff;
 }
 // ng-treeview
-.form-inline {
+.treeview-item > .form-inline {
   display: flex;
   flex-flow: row wrap;
   align-items: center;
 }
 
-.form-inline .form-check {
+.treeview-item > .form-inline .form-check {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -135,14 +135,14 @@ body {
   padding-left: 0;
 }
 
-.form-inline .form-check-input {
+.treeview-item > .form-inline .form-check-input {
   position: relative;
   margin-top: 0;
   margin-right: .25rem;
   margin-left: 0;
 }
 
-.form-inline label {
+.treeview-item > .form-inline label {
   display: flex;
   align-items: center;
   justify-content: center;
