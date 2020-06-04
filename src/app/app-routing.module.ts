@@ -1,14 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { AuthGuard, BoardService } from './services';
+import { AuthGuard, BoardResolver } from './services';
 
 import { BoardComponent } from './board';
 import { LoginComponent } from './login/login.component';
 import { ShareComponent } from './share/share.component';
 import { ShareCanDeactivateGuard } from './share/share-can-deactivate.guard';
 import { BoardListComponent } from './board-list/board-list.component';
-import { BoardResolver } from './services/board.resolver';
 
 const routes: Routes = [
     {
@@ -26,12 +25,12 @@ const routes: Routes = [
         canActivate: [AuthGuard]
     },
     {
-        path: 'share/:id',
+        path: 'share/:boardId',
         component: ShareComponent,
         canDeactivate: [ShareCanDeactivateGuard],
         canActivate: [AuthGuard],
         resolve: {
-            detail: BoardService
+            detail: BoardResolver
         }
     },
     {
