@@ -11,7 +11,6 @@ import { AppComponent } from './app.component';
 import {
     APIInterceptor,
     APIService,
-    AuthenticationService,
     AuthGuard,
     BoardService,
     DatasourceService,
@@ -35,7 +34,6 @@ export const APP_SERVICES = [
     DatasourceService,
     LanguageService,
     LayoutService,
-    MessageService
 ];
 
 @NgModule({

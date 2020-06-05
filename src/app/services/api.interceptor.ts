@@ -7,7 +7,6 @@ import {
     HttpRequest,
     HttpResponse
 } from '@angular/common/http';
-import { Router } from '@angular/router';
 
 import { Observable, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
@@ -17,7 +16,7 @@ import { MessageService } from './message.service';
 
 @Injectable()
 export class APIInterceptor implements HttpInterceptor {
-    constructor(private router: Router, private messagesService: MessageService) {
+    constructor(private messagesService: MessageService) {
     }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {

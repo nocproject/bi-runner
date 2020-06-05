@@ -5,7 +5,9 @@ import { cloneDeep, remove } from 'lodash';
 
 import { Message } from '../model';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class MessageService {
     private messagesSubject = new BehaviorSubject<Message[]>([]);
     messages$: Observable<Message[]> = this.messagesSubject.asObservable();
