@@ -6,15 +6,17 @@ import { TranslateModule } from '@ngx-translate/core';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { TreeviewModule } from 'ngx-treeview';
 
+import {
+    BiDropdownComponent,
+    FormSelectComponent,
+    FormDictionaryComponent,
+    FormInputComponent,
+    FormModelComponent
+} from '@filter/components';
 import { GroupComponent } from './group/group.component';
 import { FilterComponent } from './filter/filter.component';
 import { FiltersFormComponent } from './filters-form.component';
 import { SpinnerComponent } from './spinner.component';
-import { BiDropdownComponent } from './components/dropdown/dropdown.component';
-import { FormSelectComponent } from './components/form-select/form-select.component';
-import { FormDictionaryComponent } from './components/form-dictionary/form-dictionary.component';
-import { FormInputComponent } from './components/form-input/form-input.component';
-import { FormModelComponent } from './components/form-model/form-model.component';
 
 export const COMPONENTS = [
     GroupComponent,

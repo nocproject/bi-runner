@@ -21,7 +21,7 @@ import { TreeviewComponent, TreeviewConfig, TreeviewItem } from 'ngx-treeview';
 import { TranslateService } from '@ngx-translate/core';
 
 import { BiRequestBuilder, Field, Methods, Result } from '@app/model';
-import { FieldConfig } from '../../model/filters-form-config.interface';
+import { FieldConfig } from '../../model/';
 import { APIService } from '@app/services';
 
 // import { FieldConfig } from '../../model/filters-form-config.interface';

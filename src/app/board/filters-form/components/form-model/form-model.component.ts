@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
 import { Field, FieldBuilder } from '@app/model';
-import { FieldConfig } from '../../model/filters-form-config.interface';
+import { FieldConfig } from '../../model';
 import { ValueControl } from '../value-control';
 import { BIValidators } from '../validators';
 

@@ -33,6 +33,9 @@
       ],
       "@filter/model": [
         "app/board/filters/model/index"
+      ],
+      "@filter/components": [
+        "app/board/filters-form/components/index"
       ]
     }
   },

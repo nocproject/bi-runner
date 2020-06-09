@@ -9,8 +9,7 @@ import { map } from 'rxjs/operators';
 import { Field } from '@app/model';
 import { DatasourceService } from '@app/services';
 import { EventService } from '@board/services';
-import { EventType } from '../model/event.interface';
-import { FieldConfig, FilterConfig } from '../model/filters-form-config.interface';
+import { EventType, FieldConfig, FilterConfig } from '../model';
 import { FieldConfigService } from '../services/field-config.service';
 
 @Component({
