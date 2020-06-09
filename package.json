@@ -9,6 +9,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
+    "jest": "jest --watch",
     "postinstall": "ngcc"
   },
   "private": true,
@@ -46,6 +47,9 @@
     "@angular/cli": "^9.1.7",
     "@angular/compiler-cli": "^9.1.9",
     "@angular/language-service": "^9.1.9",
+    "@babel/preset-typescript": "^7.10.1",
+    "@testing-library/angular": "^9.3.1",
+    "@testing-library/jest-dom": "^5.9.0",
     "@types/d3": "^5.7.2",
     "@types/file-saver": "^0.0.1",
     "@types/jest": "^25.2.3",

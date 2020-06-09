@@ -5,8 +5,7 @@ import { Field, Methods } from '../model';
 import { APIService } from '../services';
 import { BoardService } from './board.service';
 import { DatasourceService } from './datasource-info.service';
-import { FilterService } from '../board/services/filter.service';
-import { EventService } from '../board/services/event.service';
+import { EventService, FilterService } from '@board/services';
 // Test data
 import * as alarmsDatasourceInfoBody from '@test/alarmsDatasourceInfoBody.json';
 import * as alarmsBoardBody from '@test/alarmsBoardBody.json';
