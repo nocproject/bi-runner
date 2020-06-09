@@ -41,7 +41,7 @@ describe('Deserialization: Board', () => {
     });
 
     it('check id property', () => {
-        expect(board.id).toBe('59e9b6b7c165cf607b9383e6');
+        expect(board.id).toBe('5ed1622cb86725b2f5d6b946');
     });
 
     it('check layoutId property', () => {
@@ -69,7 +69,7 @@ describe('Deserialization: Board', () => {
     });
 
     it('check widgets property', () => {
-        expect(board.widgets.length).toBe(5);
+        expect(board.widgets.length).toBe(6);
     });
 
     it('check agvFields property', () => {
