@@ -16,6 +16,7 @@ import { Utils } from '../../../shared/utils';
 })
 export class PieComponent extends WidgetComponent {
     draw(response: Result): BaseMixin<PieChart> {
+        // @ts-ignore
         const chart: PieChart = new PieChart(`#${this.data.cell.name}`);
         const ndx = this.initialState(chart, response.zip(false));
         const dimension = ndx.dimension(d => new Value(d[Object.keys(d)[0]], d.name));
@@ -25,6 +26,7 @@ export class PieComponent extends WidgetComponent {
         const height = this.data.cell.height - (this.isSelectable() ? 50 : 0);
         const legendWidth = width - 1.5 * height;
         const offset = 30;
+        // @ts-ignore
         const legend: Legend = new Legend();
 
         // legend.x(width / 2 + offset / 2) // legend right

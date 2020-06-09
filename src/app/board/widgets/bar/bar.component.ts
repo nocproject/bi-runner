@@ -12,6 +12,7 @@ import { Restore, WidgetComponent } from '../widget.component';
 })
 export class BarComponent extends WidgetComponent {
     draw(response: Result): BaseMixin<BarChart> {
+        // @ts-ignore
         const chart: BarChart = new BarChart(`#${this.data.cell.name}`);
         const ndx = this.initialState(chart, response.zip(false));
         const dimension = ndx.dimension(d => new Value(d[Object.keys(d)[0]], d.name));

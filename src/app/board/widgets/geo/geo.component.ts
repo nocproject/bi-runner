@@ -13,6 +13,7 @@ import { Restore, WidgetComponent } from '../widget.component';
 })
 export class GeoComponent extends WidgetComponent {
     draw(response: Result): BaseMixin<GeoChoroplethChart> {
+        // @ts-ignore
         const chart: GeoChoroplethChart = new GeoChoroplethChart(`#${this.data.cell.name}`)
             .width(this.wrapperView.nativeElement.scrollWidth)
             .height(this.data.cell.height);

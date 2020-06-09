@@ -14,6 +14,7 @@ import { Restore, WidgetComponent } from '../widget.component';
 export class SelectMenuComponent extends WidgetComponent {
     draw(response: Result): BaseMixin<SelectMenu> {
         const prompt = this.languageService.selectMenuPrompt;
+        // @ts-ignore
         const chart: SelectMenu = new SelectMenu(`#${this.data.cell.name}`);
         const ndx = this.initialState(chart, response.zip(false));
         const dimension = ndx.dimension(d => d.date);

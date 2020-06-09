@@ -13,6 +13,7 @@ import { Utils } from '../../../shared/utils';
 export class RowComponent extends WidgetComponent {
     draw(response: Result): BaseMixin<RowChart> {
         const days = this.languageService.days;
+        // @ts-ignore
         const chart: RowChart = new RowChart(`#${this.data.cell.name}`);
         const ndx = this.initialState(chart, response.zip(false));
         const dimension = ndx.dimension(d => new Value(d.day, days[d.day - 1]));

@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
-
+// @ts-ignore
 import { BaseMixin, config } from 'dc';
 import { timeFormat } from 'd3-time-format';
 import { schemeCategory10 } from 'd3-scale-chromatic';

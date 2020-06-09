@@ -15,6 +15,7 @@ export class BoxPlotComponent extends WidgetComponent {
         // hard code two params 'duration' & 'UInt64'
         const key = 'duration';
         const type = 'UInt64';
+        // @ts-ignore
         const chart: BoxPlot = new BoxPlot(`#${this.data.cell.name}`);
         const ndx = this.initialState(chart, response.zip(false));
         const dimension = ndx.dimension(() => key);

@@ -6,6 +6,7 @@ import { map, switchMap } from 'rxjs/operators';
 
 import { head, sortBy, startsWith } from 'lodash';
 import { ascending, descending } from 'd3-array';
+// @ts-ignore
 import { BaseMixin, DataTable } from 'dc';
 import crossfilter from 'crossfilter2';
 

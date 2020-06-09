@@ -14,6 +14,7 @@ import { Utils } from '../../../shared/utils';
 })
 export class LineComponent extends WidgetComponent {
     draw(response: Result): BaseMixin<LineChart> {
+        // @ts-ignore
         const chart: LineChart = new LineChart(`#${this.data.cell.name}`);
         const ndx = this.initialState(chart, response.zip(true));
         const dimension = ndx.dimension(d => d.date);
