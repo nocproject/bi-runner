@@ -26,6 +26,7 @@
     "@angular/router": "^9.1.9",
     "@ngx-translate/core": "^12.1.2",
     "@ngx-translate/http-loader": "^4.0.0",
+    "@storybook/addon-knobs": "^5.3.19",
     "@swimlane/ngx-datatable": "^17.0.0",
     "bootstrap-sass": "^3.3.7",
     "core-js": "^3.6.5",
