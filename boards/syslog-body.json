@@ -1,0 +1,253 @@
+{
+  "id": "0",
+  "method": "set_dashboard",
+  "params": [
+    {
+      "layoutId": "580e1ba498601c0f96b7e809",
+      "pseudo_fields": [],
+      "layout": {
+        "uuid": "f2736f99-a568-4820-b746-1e71d48b4374",
+        "cells": [
+          {
+            "md": 6,
+            "name": "c11",
+            "lg": null,
+            "height": 200,
+            "sm": null,
+            "xs": null,
+            "row": 0
+          },
+          {
+            "md": 6,
+            "name": "c12",
+            "lg": null,
+            "height": 200,
+            "sm": null,
+            "xs": null,
+            "row": 0
+          },
+          {
+            "md": 12,
+            "height": 400,
+            "name": "table2",
+            "row": 10
+          }
+        ],
+        "name": "c2x2",
+        "fav_status": false,
+        "is_builtin": false,
+        "id": "580e1ba498601c0f96b7e809",
+        "description": ""
+      },
+      "description": "Syslog",
+      "format": 2,
+      "title": "Syslog",
+      "export": {
+        "params": [
+          {
+            "fields": [
+              {
+                "alias": "date",
+                "format": "dateToString",
+                "group": 0,
+                "label": "\u0414\u0430\u0442\u0430",
+                "expr": "date"
+              },
+              {
+                "alias": "qty",
+                "label": "\u041a\u043e\u043b-\u0432\u043e",
+                "expr": "count()",
+                "order": 0,
+                "desc": true
+              }
+            ],
+            "datasource": "syslog"
+          }
+        ],
+        "id": 0,
+        "method": "query"
+      },
+      "datasource": "syslog",
+      "groups": [
+        {
+          "active": true,
+          "filters": [
+            {
+              "values": [
+                {
+                  "value": "l7"
+                }
+              ],
+              "condition": "interval",
+              "type": "DateTime",
+              "name": "ts",
+              "association": "$and"
+            }
+          ],
+          "association": "$and",
+          "name": "startEnd"
+        }
+      ],
+      "filter_fields": [
+        {
+          "group": 0,
+          "name": "severity"
+        },
+        {
+          "group": 0,
+          "name": "facility"
+        },
+        {
+          "group": 0,
+          "name": "ts"
+        },
+        {
+          "group": 0,
+          "name": "managed_object"
+        },
+        {
+          "group": 0,
+          "name": "date"
+        },
+        {
+          "group": 0,
+          "name": "message"
+        }
+      ],
+      "widgets": [
+        {
+          "cell": "c11",
+          "note": "by facility",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "facility",
+                    "group": 0,
+                    "alias": "name"
+                  },
+                  {
+                    "expr": "count()",
+                    "desc": true,
+                    "order": 0,
+                    "alias": "cnt"
+                  }
+                ],
+                "limit": 10,
+                "datasource": "syslog"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          },
+          "type": "selectablePieChart",
+          "title": "\u0413\u0440\u0443\u043f\u043f\u0438\u0440\u043e\u0432\u043a\u0430 \u043f\u043e facility, \u0442\u043e\u043f 10"
+        },
+        {
+          "cell": "c12",
+          "note": "by severity",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "severity",
+                    "group": 0,
+                    "alias": "name"
+                  },
+                  {
+                    "expr": "count()",
+                    "desc": true,
+                    "order": 0,
+                    "alias": "cnt"
+                  }
+                ],
+                "limit": 10,
+                "datasource": "syslog"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          },
+          "type": "selectablePieChart",
+          "title": "\u0413\u0440\u0443\u043f\u043f\u0438\u0440\u043e\u0432\u043a\u0430 \u043f\u043e severity, \u0442\u043e\u043f 10"
+        },
+        {
+          "cell": "table1",
+          "note": "syslog",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "alias": "date",
+                    "format": "dateToDateTimeString",
+                    "label": "\u0414\u0430\u0442\u0430",
+                    "group": 0,
+                    "expr": "ts"
+                  }
+                ],
+                "limit": 10,
+                "datasource": "syslog"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          },
+          "type": "dataTable",
+          "title": "Syslog, \u0442\u043e\u043f 10"
+        },
+        {
+          "cell": "table2",
+          "query": {
+            "params": [
+              {
+                "fields": [
+                  {
+                    "expr": "ts",
+                    "alias": "ts",
+                    "label": "\u0414\u0430\u0442\u0430"
+                  }
+                ],
+                "limit": 20,
+                "datasource": "syslog"
+              }
+            ],
+            "id": 0,
+            "method": "query"
+          },
+          "note": "\u0440\u0443\u0447\u043d\u0430\u044f \u0432\u044b\u0431\u043e\u0440\u043a\u0430",
+          "type": "topTable",
+          "title": "\u041f\u0440\u043e\u0438\u0437\u0432\u043e\u043b\u044c\u043d\u0430\u044f \u0432\u044b\u0431\u043e\u0440\u043a\u0430 1, \u0442\u043e\u043f (max 25)"
+        }
+      ],
+      "agv_fields": [
+        {
+          "group": 0,
+          "name": "severity"
+        },
+        {
+          "group": 0,
+          "name": "facility"
+        },
+        {
+          "group": 0,
+          "name": "ts"
+        },
+        {
+          "group": 0,
+          "name": "managed_object"
+        },
+        {
+          "group": 0,
+          "name": "date"
+        },
+        {
+          "group": 0,
+          "name": "message"
+        }
+      ]
+    }
+  ]
+}

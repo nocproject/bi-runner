@@ -3,364 +3,1599 @@
   "method": "set_dashboard",
   "params": [
     {
+      "id": "5abc7241e828320513e597f3",
       "datasource": "alarms",
-      "title": "Аварии v2",
-      "description": "описание отчета по авариям",
+      "description": "\u043e\u043f\u0438\u0441\u0430\u043d\u0438\u0435 \u043e\u0442\u0447\u0435\u0442\u0430 \u043f\u043e \u0430\u0432\u0430\u0440\u0438\u044f\u043c",
       "format": 2,
-      "layoutId": "580e1ba498601c0f96b7e809",
-      "layout": {
-        "uuid": "f2736f99-a568-4820-b746-1e71d48b4374",
-        "cells": [
-          {
-            "md": 6,
-            "name": "c11",
-            "lg": null,
-            "height": 250,
-            "sm": null,
-            "xs": null,
-            "row": 0
-          },
-          {
-            "md": 6,
-            "name": "c12",
-            "lg": null,
-            "height": 250,
-            "sm": null,
-            "xs": null,
-            "row": 0
-          },
-          {
-            "md": 6,
-            "name": "c21",
-            "lg": null,
-            "height": 250,
-            "sm": null,
-            "xs": null,
-            "row": 1
-          },
-          {
-            "md": 6,
-            "name": "c22",
-            "lg": null,
-            "height": 250,
-            "sm": null,
-            "xs": null,
-            "row": 1
-          },
-          {
-            "md": 6,
-            "row": 4,
-            "name": "c31",
-            "height": 250
-          },
-          {
-            "md": 6,
-            "row": 4,
-            "name": "c32",
-            "height": 250
-          },
-          {
-            "md": 12,
-            "row": 10,
-            "name": "table1",
-            "height": 200
-          },
-          {
-            "md": 12,
-            "row": 20,
-            "name": "table2",
-            "height": 200
-          }
-        ],
-        "description": "",
-        "fav_status": false,
-        "is_builtin": false,
-        "id": "580e1ba498601c0f96b7e809",
-        "name": "c2x2"
-      },
       "groups": [
         {
           "active": true,
           "association": "$and",
-          "range": true,
           "filters": [
             {
-              "type": "DateTime",
               "association": "$and",
+              "name": "ts",
+              "field": {
+                "type": "DateTime"
+              },
+              "condition": "interval",
               "values": [
                 {
-                  "value": "ly"
+                  "value": "l7"
                 }
               ],
-              "name": "ts",
-              "condition": "interval"
+              "type": "DateTime"
             }
           ],
-          "name": "startEnd"
+          "name": "startEnd",
+          "range": true
+        },
+        {
+          "active": false,
+          "association": "$and",
+          "filters": [
+            {
+              "values": [
+                {
+                  "value": "444171915913065437"
+                }
+              ],
+              "field": {
+                "enable": true,
+                "group": 1,
+                "name": "alarm_class",
+                "isAgg": false,
+                "pseudo": false,
+                "isGrouping": true,
+                "grouped": false,
+                "dict": "alarmclass",
+                "datasource": "alarms",
+                "isSelectable": true,
+                "type": "Dictionary",
+                "description": "Alarm Class"
+              },
+              "condition": "in",
+              "name": "alarm_class",
+              "association": "$and",
+              "type": "Dictionary"
+            }
+          ],
+          "name": "form"
         }
       ],
-      "filter_fields": [
+      "layout": {
+        "cells": [
+          {
+            "height": 250,
+            "md": 6,
+            "name": "c11",
+            "row": 0
+          },
+          {
+            "height": 250,
+            "md": 6,
+            "name": "c12",
+            "row": 0
+          },
+          {
+            "height": 250,
+            "md": 6,
+            "name": "c21",
+            "row": 1
+          },
+          {
+            "height": 250,
+            "md": 6,
+            "name": "c22",
+            "row": 1
+          },
+          {
+            "height": 250,
+            "md": 6,
+            "name": "c31",
+            "row": 4
+          },
+          {
+            "height": 250,
+            "md": 6,
+            "name": "c32",
+            "row": 4
+          },
+          {
+            "height": 200,
+            "md": 12,
+            "name": "table1",
+            "row": 10
+          },
+          {
+            "height": 200,
+            "md": 12,
+            "name": "table2",
+            "row": 20
+          }
+        ],
+        "description": "",
+        "id": "580e1ba498601c0f96b7e809",
+        "name": "c2x2",
+        "uuid": "f2736f99-a568-4820-b746-1e71d48b4374"
+      },
+      "layoutId": "580e1ba498601c0f96b7e809",
+      "sample": 1,
+      "title": "\u0410\u0432\u0430\u0440\u0438\u0438 v2",
+      "widgets": [
         {
-          "group": 2,
-          "name": "administrative_domain"
+          "cell": "c11",
+          "note": "\u043f\u043e \u0432\u0440\u0435\u043c\u0435\u043d\u0438",
+          "query": {
+            "id": 0,
+            "method": "query",
+            "params": [
+              {
+                "fields": [
+                  {
+                    "group": 0,
+                    "isGrouping": true,
+                    "isAgg": false,
+                    "expr": "date",
+                    "grouped": false,
+                    "isSelectable": true,
+                    "order": 0,
+                    "desc": true
+                  },
+                  {
+                    "isGrouping": true,
+                    "isAgg": false,
+                    "alias": "cnt",
+                    "expr": "count()",
+                    "grouped": false,
+                    "isSelectable": true
+                  }
+                ],
+                "datasource": "alarms",
+                "filter": {
+                  "$and": [
+                    {
+                      "$not": {
+                        "$or": [
+                          {
+                            "$and": [
+                              {
+                                "$lte": [
+                                  {
+                                    "$field": "'2020-06-08T00:00:00'"
+                                  },
+                                  {
+                                    "$field": "ts"
+                                  }
+                                ]
+                              },
+                              {
+                                "$lte": [
+                                  {
+                                    "$field": "'2020-06-14T23:59:59'"
+                                  },
+                                  {
+                                    "$field": "ts"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "$and": [
+                              {
+                                "$gte": [
+                                  {
+                                    "$field": "'2020-06-08T00:00:00'"
+                                  },
+                                  {
+                                    "$field": "close_ts"
+                                  }
+                                ]
+                              },
+                              {
+                                "$gte": [
+                                  {
+                                    "$field": "'2020-06-14T23:59:59'"
+                                  },
+                                  {
+                                    "$field": "close_ts"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "title": "\u0410\u0432\u0430\u0440\u0438\u0438 \u043f\u043e \u0412\u0440\u0435\u043c\u0435\u043d\u0438",
+          "type": "lineChart"
         },
         {
-          "group": 0,
-          "name": "alarm_id"
+          "cell": "c21",
+          "note": "Platform",
+          "query": {
+            "id": 0,
+            "method": "query",
+            "params": [
+              {
+                "fields": [
+                  {
+                    "group": 0,
+                    "isGrouping": true,
+                    "isAgg": false,
+                    "expr": "platform",
+                    "grouped": false,
+                    "isSelectable": true
+                  },
+                  {
+                    "group": 1,
+                    "isGrouping": true,
+                    "isAgg": false,
+                    "alias": "name",
+                    "expr": {
+                      "$lookup": [
+                        "platform",
+                        {
+                          "$field": "platform"
+                        }
+                      ]
+                    },
+                    "grouped": false,
+                    "isSelectable": true
+                  },
+                  {
+                    "isGrouping": true,
+                    "isAgg": false,
+                    "grouped": false,
+                    "expr": "count()",
+                    "alias": "cnt",
+                    "isSelectable": true,
+                    "order": 0,
+                    "desc": true
+                  }
+                ],
+                "limit": 10,
+                "datasource": "alarms",
+                "filter": {
+                  "$and": [
+                    {
+                      "$not": {
+                        "$or": [
+                          {
+                            "$and": [
+                              {
+                                "$lte": [
+                                  {
+                                    "$field": "'2020-06-08T00:00:00'"
+                                  },
+                                  {
+                                    "$field": "ts"
+                                  }
+                                ]
+                              },
+                              {
+                                "$lte": [
+                                  {
+                                    "$field": "'2020-06-14T23:59:59'"
+                                  },
+                                  {
+                                    "$field": "ts"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "$and": [
+                              {
+                                "$gte": [
+                                  {
+                                    "$field": "'2020-06-08T00:00:00'"
+                                  },
+                                  {
+                                    "$field": "close_ts"
+                                  }
+                                ]
+                              },
+                              {
+                                "$gte": [
+                                  {
+                                    "$field": "'2020-06-14T23:59:59'"
+                                  },
+                                  {
+                                    "$field": "close_ts"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "title": "\u0413\u0440\u0443\u043f\u043f\u0438\u0440\u043e\u0432\u043a\u0430 \u043f\u043e \u043f\u043b\u0430\u0442\u0444\u043e\u0440\u043c\u0435, \u0442\u043e\u043f 10",
+          "type": "selectablePieChart"
         },
         {
-          "group": 0,
-          "name": "close_ts"
+          "cell": "c12",
+          "note": "\u043f\u043e \u0434\u043d\u044e \u043d\u0435\u0434\u0435\u043b\u0438",
+          "query": {
+            "id": 0,
+            "method": "query",
+            "params": [
+              {
+                "fields": [
+                  {
+                    "group": 0,
+                    "isGrouping": true,
+                    "isAgg": false,
+                    "grouped": false,
+                    "expr": "toDayOfWeek(date)",
+                    "alias": "day",
+                    "isSelectable": true,
+                    "order": 0,
+                    "desc": true
+                  },
+                  {
+                    "isGrouping": true,
+                    "isAgg": false,
+                    "alias": "cnt",
+                    "expr": "count()",
+                    "grouped": false,
+                    "isSelectable": true
+                  }
+                ],
+                "datasource": "alarms",
+                "filter": {
+                  "$and": [
+                    {
+                      "$not": {
+                        "$or": [
+                          {
+                            "$and": [
+                              {
+                                "$lte": [
+                                  {
+                                    "$field": "'2020-06-08T00:00:00'"
+                                  },
+                                  {
+                                    "$field": "ts"
+                                  }
+                                ]
+                              },
+                              {
+                                "$lte": [
+                                  {
+                                    "$field": "'2020-06-14T23:59:59'"
+                                  },
+                                  {
+                                    "$field": "ts"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "$and": [
+                              {
+                                "$gte": [
+                                  {
+                                    "$field": "'2020-06-08T00:00:00'"
+                                  },
+                                  {
+                                    "$field": "close_ts"
+                                  }
+                                ]
+                              },
+                              {
+                                "$gte": [
+                                  {
+                                    "$field": "'2020-06-14T23:59:59'"
+                                  },
+                                  {
+                                    "$field": "close_ts"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "title": "\u0410\u0432\u0430\u0440\u0438\u0438 \u043f\u043e \u0434\u043d\u044e \u043d\u0435\u0434\u0435\u043b\u0438",
+          "type": "rowChart"
         },
         {
-          "group": 1,
-          "name": "container"
+          "cell": "c22",
+          "note": "\u043f\u043e \u0432\u0440\u0435\u043c\u0435\u043d\u0438",
+          "query": {
+            "id": 0,
+            "method": "query",
+            "params": [
+              {
+                "fields": [
+                  {
+                    "group": 0,
+                    "isGrouping": true,
+                    "isAgg": false,
+                    "grouped": false,
+                    "expr": "toHour(ts)",
+                    "alias": "hour",
+                    "isSelectable": true,
+                    "order": 0,
+                    "desc": true
+                  },
+                  {
+                    "isGrouping": true,
+                    "isAgg": false,
+                    "alias": "cnt",
+                    "expr": "count()",
+                    "grouped": false,
+                    "isSelectable": true
+                  },
+                  {
+                    "group": 1,
+                    "isGrouping": true,
+                    "isAgg": false,
+                    "alias": "name",
+                    "expr": "toHour(ts)",
+                    "grouped": false,
+                    "isSelectable": true
+                  }
+                ],
+                "datasource": "alarms",
+                "filter": {
+                  "$and": [
+                    {
+                      "$not": {
+                        "$or": [
+                          {
+                            "$and": [
+                              {
+                                "$lte": [
+                                  {
+                                    "$field": "'2020-06-08T00:00:00'"
+                                  },
+                                  {
+                                    "$field": "ts"
+                                  }
+                                ]
+                              },
+                              {
+                                "$lte": [
+                                  {
+                                    "$field": "'2020-06-14T23:59:59'"
+                                  },
+                                  {
+                                    "$field": "ts"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "$and": [
+                              {
+                                "$gte": [
+                                  {
+                                    "$field": "'2020-06-08T00:00:00'"
+                                  },
+                                  {
+                                    "$field": "close_ts"
+                                  }
+                                ]
+                              },
+                              {
+                                "$gte": [
+                                  {
+                                    "$field": "'2020-06-14T23:59:59'"
+                                  },
+                                  {
+                                    "$field": "close_ts"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "title": "\u0410\u0432\u0430\u0440\u0438\u0438 \u043f\u043e \u043d\u043e\u043c\u0435\u0440\u0443 \u0447\u0430\u0441\u0430",
+          "type": "barChart"
         },
         {
-          "group": 0,
-          "name": "direct_services"
+          "cell": "c31",
+          "note": "Network Segment",
+          "query": {
+            "id": 0,
+            "method": "query",
+            "params": [
+              {
+                "fields": [
+                  {
+                    "group": 0,
+                    "isGrouping": true,
+                    "isAgg": false,
+                    "expr": "segment",
+                    "grouped": false,
+                    "isSelectable": true
+                  },
+                  {
+                    "group": 1,
+                    "isGrouping": true,
+                    "isAgg": false,
+                    "alias": "name",
+                    "expr": {
+                      "$lookup": [
+                        "networksegment",
+                        {
+                          "$field": "segment"
+                        }
+                      ]
+                    },
+                    "grouped": false,
+                    "isSelectable": true
+                  },
+                  {
+                    "isGrouping": true,
+                    "isAgg": false,
+                    "grouped": false,
+                    "expr": "count()",
+                    "alias": "cnt",
+                    "isSelectable": true,
+                    "order": 0,
+                    "desc": true
+                  }
+                ],
+                "limit": 10,
+                "datasource": "alarms",
+                "filter": {
+                  "$and": [
+                    {
+                      "$not": {
+                        "$or": [
+                          {
+                            "$and": [
+                              {
+                                "$lte": [
+                                  {
+                                    "$field": "'2020-06-08T00:00:00'"
+                                  },
+                                  {
+                                    "$field": "ts"
+                                  }
+                                ]
+                              },
+                              {
+                                "$lte": [
+                                  {
+                                    "$field": "'2020-06-14T23:59:59'"
+                                  },
+                                  {
+                                    "$field": "ts"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "$and": [
+                              {
+                                "$gte": [
+                                  {
+                                    "$field": "'2020-06-08T00:00:00'"
+                                  },
+                                  {
+                                    "$field": "close_ts"
+                                  }
+                                ]
+                              },
+                              {
+                                "$gte": [
+                                  {
+                                    "$field": "'2020-06-14T23:59:59'"
+                                  },
+                                  {
+                                    "$field": "close_ts"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "title": "\u0413\u0440\u0443\u043f\u043f\u0438\u0440\u043e\u0432\u043a\u0430 \u043f\u043e \u0441\u0435\u0433\u043c\u0435\u043d\u0442\u0443 \u0441\u0435\u0442\u0438, \u0442\u043e\u043f 10",
+          "type": "selectablePieChart"
         },
         {
-          "group": 0,
-          "name": "direct_subscribers"
+          "cell": "table2",
+          "note": "\u0440\u0443\u0447\u043d\u0430\u044f \u0432\u044b\u0431\u043e\u0440\u043a\u0430",
+          "query": {
+            "id": 0,
+            "method": "query",
+            "params": [
+              {
+                "fields": [
+                  {
+                    "isGrouping": true,
+                    "isAgg": false,
+                    "grouped": false,
+                    "expr": {
+                      "$lookup": [
+                        "profile",
+                        {
+                          "$field": "profile"
+                        }
+                      ]
+                    },
+                    "label": "\u041f\u0440\u043e\u0444\u0438\u043b\u044c",
+                    "alias": "profile_text",
+                    "isSelectable": true
+                  },
+                  {
+                    "isGrouping": true,
+                    "isAgg": false,
+                    "grouped": false,
+                    "expr": {
+                      "$lookup": [
+                        "vendor",
+                        {
+                          "$field": "vendor"
+                        }
+                      ]
+                    },
+                    "label": "\u041f\u0440\u043e\u0438\u0437\u0432\u043e\u0434\u0438\u0442\u0435\u043b\u044c",
+                    "alias": "vendor_text",
+                    "isSelectable": true
+                  },
+                  {
+                    "isGrouping": true,
+                    "isAgg": false,
+                    "grouped": false,
+                    "expr": {
+                      "$lookup": [
+                        "platform",
+                        {
+                          "$field": "platform"
+                        }
+                      ]
+                    },
+                    "label": "\u041f\u043b\u0430\u0442\u0444\u043e\u0440\u043c\u0430",
+                    "alias": "platform_text",
+                    "isSelectable": true
+                  },
+                  {
+                    "isGrouping": true,
+                    "isAgg": false,
+                    "grouped": false,
+                    "expr": {
+                      "$lookup": [
+                        "version",
+                        {
+                          "$field": "version"
+                        }
+                      ]
+                    },
+                    "label": "\u0412\u0435\u0440\u0441\u0438\u044f \u041f\u041e",
+                    "alias": "version_text",
+                    "isSelectable": true
+                  },
+                  {
+                    "isGrouping": true,
+                    "isAgg": false,
+                    "grouped": false,
+                    "expr": "severity",
+                    "label": "\u0412\u0430\u0436\u043d\u043e\u0441\u0442\u044c",
+                    "alias": "xxx",
+                    "isSelectable": true,
+                    "order": 0,
+                    "desc": true
+                  }
+                ],
+                "limit": 10,
+                "datasource": "alarms",
+                "filter": {
+                  "$and": [
+                    {
+                      "$not": {
+                        "$or": [
+                          {
+                            "$and": [
+                              {
+                                "$lte": [
+                                  {
+                                    "$field": "'2020-06-08T00:00:00'"
+                                  },
+                                  {
+                                    "$field": "ts"
+                                  }
+                                ]
+                              },
+                              {
+                                "$lte": [
+                                  {
+                                    "$field": "'2020-06-14T23:59:59'"
+                                  },
+                                  {
+                                    "$field": "ts"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "$and": [
+                              {
+                                "$gte": [
+                                  {
+                                    "$field": "'2020-06-08T00:00:00'"
+                                  },
+                                  {
+                                    "$field": "close_ts"
+                                  }
+                                ]
+                              },
+                              {
+                                "$gte": [
+                                  {
+                                    "$field": "'2020-06-14T23:59:59'"
+                                  },
+                                  {
+                                    "$field": "close_ts"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "title": "\u041f\u0440\u043e\u0438\u0437\u0432\u043e\u043b\u044c\u043d\u0430\u044f \u0432\u044b\u0431\u043e\u0440\u043a\u0430 2, \u0442\u043e\u043f (max 25)",
+          "type": "topTable"
         },
         {
-          "group": 0,
-          "name": "escalation_ts"
+          "cell": "table1",
+          "note": "\u0440\u0443\u0447\u043d\u0430\u044f \u0432\u044b\u0431\u043e\u0440\u043a\u0430",
+          "query": {
+            "id": 0,
+            "method": "query",
+            "params": [
+              {
+                "fields": [
+                  {
+                    "isGrouping": true,
+                    "isAgg": false,
+                    "expr": "reopens",
+                    "label": "\u041a\u043e\u043b-\u0432\u043e \u043f\u0435\u0440\u0435\u043e\u0442\u043a\u0440\u044b\u0442\u0438\u0439",
+                    "grouped": false,
+                    "isSelectable": true
+                  },
+                  {
+                    "isGrouping": true,
+                    "isAgg": false,
+                    "format": "secondsToString",
+                    "expr": {
+                      "$minus": [
+                        {
+                          "$field": "close_ts"
+                        },
+                        {
+                          "$field": "ts"
+                        }
+                      ]
+                    },
+                    "label": "\u0414\u043b\u0438\u0442\u0435\u043b\u044c\u043d\u043e\u0441\u0442\u044c (\u0447\u0430\u0441:\u043c\u0438\u043d:\u0441\u0435\u043a)",
+                    "grouped": false,
+                    "alias": "xxx",
+                    "isSelectable": true,
+                    "order": 0,
+                    "desc": true
+                  }
+                ],
+                "limit": 20,
+                "datasource": "alarms",
+                "filter": {
+                  "$and": [
+                    {
+                      "$not": {
+                        "$or": [
+                          {
+                            "$and": [
+                              {
+                                "$lte": [
+                                  {
+                                    "$field": "'2020-06-08T00:00:00'"
+                                  },
+                                  {
+                                    "$field": "ts"
+                                  }
+                                ]
+                              },
+                              {
+                                "$lte": [
+                                  {
+                                    "$field": "'2020-06-14T23:59:59'"
+                                  },
+                                  {
+                                    "$field": "ts"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "$and": [
+                              {
+                                "$gte": [
+                                  {
+                                    "$field": "'2020-06-08T00:00:00'"
+                                  },
+                                  {
+                                    "$field": "close_ts"
+                                  }
+                                ]
+                              },
+                              {
+                                "$gte": [
+                                  {
+                                    "$field": "'2020-06-14T23:59:59'"
+                                  },
+                                  {
+                                    "$field": "close_ts"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "title": "\u041f\u0440\u043e\u0438\u0437\u0432\u043e\u043b\u044c\u043d\u0430\u044f \u0432\u044b\u0431\u043e\u0440\u043a\u0430 1, \u0442\u043e\u043f (max 25)",
+          "type": "topTable"
         },
         {
-          "group": 0,
-          "name": "escalation_tt"
+          "cell": "c32",
+          "note": "Profile",
+          "query": {
+            "id": 0,
+            "method": "query",
+            "params": [
+              {
+                "fields": [
+                  {
+                    "group": 0,
+                    "isGrouping": true,
+                    "isAgg": false,
+                    "expr": "profile",
+                    "grouped": false,
+                    "isSelectable": true
+                  },
+                  {
+                    "group": 1,
+                    "isGrouping": true,
+                    "isAgg": false,
+                    "alias": "name",
+                    "expr": {
+                      "$lookup": [
+                        "profile",
+                        {
+                          "$field": "profile"
+                        }
+                      ]
+                    },
+                    "grouped": false,
+                    "isSelectable": true
+                  },
+                  {
+                    "isGrouping": true,
+                    "isAgg": false,
+                    "grouped": false,
+                    "expr": "count()",
+                    "alias": "cnt",
+                    "isSelectable": true,
+                    "order": 0,
+                    "desc": true
+                  }
+                ],
+                "limit": 10,
+                "datasource": "alarms",
+                "filter": {
+                  "$and": [
+                    {
+                      "$not": {
+                        "$or": [
+                          {
+                            "$and": [
+                              {
+                                "$lte": [
+                                  {
+                                    "$field": "'2020-06-08T00:00:00'"
+                                  },
+                                  {
+                                    "$field": "ts"
+                                  }
+                                ]
+                              },
+                              {
+                                "$lte": [
+                                  {
+                                    "$field": "'2020-06-14T23:59:59'"
+                                  },
+                                  {
+                                    "$field": "ts"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "$and": [
+                              {
+                                "$gte": [
+                                  {
+                                    "$field": "'2020-06-08T00:00:00'"
+                                  },
+                                  {
+                                    "$field": "close_ts"
+                                  }
+                                ]
+                              },
+                              {
+                                "$gte": [
+                                  {
+                                    "$field": "'2020-06-14T23:59:59'"
+                                  },
+                                  {
+                                    "$field": "close_ts"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "title": "\u0413\u0440\u0443\u043f\u043f\u0438\u0440\u043e\u0432\u043a\u0430 \u043f\u043e \u043f\u0440\u043e\u0444\u0438\u043b\u044e, \u0442\u043e\u043f 10",
+          "type": "selectablePieChart"
         },
         {
-          "group": 1,
-          "name": "managed_object"
-        },
-        {
-          "group": 1,
-          "name": "platform"
-        },
-        {
-          "group": 1,
-          "name": "profile"
-        },
-        {
-          "group": 0,
-          "name": "reopens"
-        },
-        {
-          "group": 1,
-          "name": "root"
-        },
-        {
-          "group": 1,
-          "name": "segment"
-        },
-        {
-          "group": 1,
-          "name": "alarm_class"
-        },
-        {
-          "group": 0,
-          "name": "severity"
-        },
-        {
-          "group": 0,
-          "name": "total_objects"
-        },
-        {
-          "group": 0,
-          "name": "total_services"
-        },
-        {
-          "group": 0,
-          "name": "total_subscribers"
-        },
-        {
-          "group": 1,
-          "name": "version"
-        },
-        {
-          "group": 0,
-          "name": "x"
-        },
-        {
-          "group": 0,
-          "name": "y"
-        },
-        {
-          "group": 0,
-          "name": "ts"
-        },
-        {
-          "group": 1,
-          "name": "vendor"
-        },
-        {
-          "group": 1,
-          "name": "ip"
-        },
-        {
-          "group": 2,
-          "name": "pool"
-        },
-        {
-          "group": 0,
-          "name": "date"
-        },
-        {
-          "group": 0,
-          "name": "exclusion_intervals"
-        },
-        {
-          "group": 0,
-          "name": "duration"
-        },
-        {
-          "group": 0,
-          "name": "reboots"
+          "cell": "zc22",
+          "note": "\u043f\u043e \u043f\u0443\u043b\u0443",
+          "query": {
+            "id": 0,
+            "method": "query",
+            "params": [
+              {
+                "fields": [
+                  {
+                    "group": 0,
+                    "isGrouping": true,
+                    "isAgg": false,
+                    "expr": "pool",
+                    "grouped": false,
+                    "isSelectable": true
+                  },
+                  {
+                    "isGrouping": true,
+                    "isAgg": false,
+                    "alias": "name",
+                    "expr": {
+                      "$lookup": [
+                        "pool",
+                        {
+                          "$field": "pool"
+                        }
+                      ]
+                    },
+                    "grouped": false,
+                    "isSelectable": true
+                  },
+                  {
+                    "isGrouping": true,
+                    "isAgg": false,
+                    "grouped": false,
+                    "expr": "count()",
+                    "alias": "cnt",
+                    "isSelectable": true,
+                    "order": 0,
+                    "desc": true
+                  }
+                ],
+                "limit": 10,
+                "datasource": "alarms"
+              }
+            ]
+          },
+          "title": "\u0413\u0440\u0443\u043f\u043f\u0438\u0440\u043e\u0432\u043a\u0430 \u043f\u043e \u043f\u0443\u043b\u0443, \u0442\u043e\u043f 10",
+          "type": "pieChart"
         }
       ],
       "agv_fields": [
         {
           "group": 2,
-          "name": "administrative_domain"
+          "name": "administrative_domain",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
           "group": 0,
-          "name": "ts"
+          "name": "ts",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
           "group": 0,
-          "name": "alarm_id"
+          "name": "alarm_id",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
           "group": 0,
-          "name": "direct_services"
+          "name": "direct_services",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
           "group": 0,
-          "name": "direct_subscribers"
+          "name": "direct_subscribers",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
           "group": 0,
-          "name": "duration"
+          "name": "duration",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
           "group": 0,
-          "name": "escalation_ts"
+          "name": "escalation_ts",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
           "group": 0,
-          "name": "escalation_tt"
+          "name": "escalation_tt",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
           "group": 1,
-          "name": "managed_object"
+          "name": "managed_object",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
           "group": 1,
-          "name": "platform"
+          "name": "platform",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
           "group": 1,
-          "name": "profile"
+          "name": "profile",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
           "group": 0,
-          "name": "reopens"
+          "name": "reopens",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
           "group": 0,
-          "name": "reboots"
+          "name": "reboots",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
           "group": 1,
-          "name": "segment"
+          "name": "segment",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
           "group": 0,
           "name": "severity",
-          "description": "Важность"
+          "isAgg": false,
+          "description": "\u0412\u0430\u0436\u043d\u043e\u0441\u0442\u044c",
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
           "group": 0,
-          "name": "total_objects"
+          "name": "total_objects",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
           "group": 0,
-          "name": "total_services"
+          "name": "total_services",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
           "group": 0,
-          "name": "total_subscribers"
+          "name": "total_subscribers",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
           "group": 1,
-          "name": "version"
+          "name": "version",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
           "group": 1,
-          "name": "vendor"
+          "name": "vendor",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
           "group": 1,
-          "name": "ip"
+          "name": "ip",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
           "group": 2,
-          "name": "pool"
+          "name": "pool",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "container",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
           "group": 0,
-          "name": "date"
+          "name": "close_ts",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
           "group": 1,
-          "name": "container"
+          "name": "alarm_class",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "root",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 3,
+          "name": "services",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 3,
+          "name": "subscribers",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "isGrouping": true,
+          "isSelectable": true,
+          "group": 0,
+          "grouped": false,
+          "hide": false,
+          "name": "services",
+          "isAgg": false,
+          "pseudo": false
+        },
+        {
+          "isGrouping": true,
+          "isSelectable": true,
+          "group": 0,
+          "grouped": false,
+          "hide": false,
+          "name": "subscribers",
+          "isAgg": false,
+          "pseudo": false
+        },
+        {
+          "isGrouping": true,
+          "isSelectable": true,
+          "group": 0,
+          "allowAggFuncs": false,
+          "grouped": false,
+          "hide": false,
+          "name": "object_profile_name",
+          "isAgg": false,
+          "pseudo": false
+        }
+      ],
+      "filter_fields": [
+        {
+          "group": 2,
+          "name": "administrative_domain",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
           "group": 0,
-          "name": "close_ts"
+          "name": "alarm_id",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 0,
+          "name": "close_ts",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
           "group": 1,
-          "name": "alarm_class"
+          "name": "container",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 0,
+          "name": "direct_services",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 0,
+          "name": "direct_subscribers",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 0,
+          "name": "escalation_ts",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 0,
+          "name": "escalation_tt",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
           "group": 1,
-          "name": "root"
+          "name": "managed_object",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
-          "group": 3,
-          "name": "services"
+          "group": 1,
+          "name": "platform",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
-          "group": 3,
-          "name": "subscribers"
+          "group": 1,
+          "name": "profile",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 0,
+          "name": "reopens",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "root",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "segment",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "alarm_class",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 0,
+          "name": "severity",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 0,
+          "name": "total_objects",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 0,
+          "name": "total_services",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 0,
+          "name": "total_subscribers",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "version",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 0,
+          "name": "x",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 0,
+          "name": "y",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 0,
+          "name": "ts",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "vendor",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "ip",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 2,
+          "name": "pool",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 0,
+          "name": "exclusion_intervals",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 0,
+          "name": "duration",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 0,
+          "name": "reboots",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "isGrouping": true,
+          "isSelectable": true,
+          "group": 1,
+          "allowAggFuncs": false,
+          "grouped": false,
+          "hide": false,
+          "name": "object_profile_name",
+          "isAgg": false,
+          "pseudo": false
         }
       ],
       "export": {
+        "id": 0,
+        "method": "query",
         "params": [
           {
             "fields": [
               {
-                "expr": "date",
                 "group": 0,
+                "isGrouping": true,
+                "isAgg": false,
                 "format": "dateToString",
-                "label": "Дата"
+                "expr": "date",
+                "label": "\u0414\u0430\u0442\u0430",
+                "grouped": false,
+                "isSelectable": true,
+                "hide": "no"
               },
               {
-                "expr": "count()",
+                "hide": "no",
+                "isGrouping": true,
+                "isAgg": false,
                 "alias": "qty",
-                "label": "Кол-во"
+                "expr": "count()",
+                "label": "\u041a\u043e\u043b-\u0432\u043e",
+                "grouped": false,
+                "isSelectable": true
               },
               {
-                "expr": "sum(reboots)",
+                "hide": "no",
+                "isGrouping": true,
+                "isAgg": false,
                 "alias": "reboots_sum",
-                "label": "Кол-во перезагрузок (сум)"
+                "expr": "sum(reboots)",
+                "label": "\u041a\u043e\u043b-\u0432\u043e \u043f\u0435\u0440\u0435\u0437\u0430\u0433\u0440\u0443\u0437\u043e\u043a (\u0441\u0443\u043c)",
+                "grouped": false,
+                "isSelectable": true
               },
               {
+                "hide": "no",
+                "isGrouping": true,
+                "isAgg": false,
+                "alias": "duration_sum",
                 "expr": {
                   "$sum": {
                     "$minus": [
@@ -373,417 +1608,56 @@
                     ]
                   }
                 },
-                "alias": "duration_sum",
-                "label": "Продолжительность (сум)"
+                "label": "\u041f\u0440\u043e\u0434\u043e\u043b\u0436\u0438\u0442\u0435\u043b\u044c\u043d\u043e\u0441\u0442\u044c (\u0441\u0443\u043c)",
+                "grouped": false,
+                "isSelectable": true
+              },
+              {
+                "label": "Object Name",
+                "expr": {
+                  "$lookup": [
+                    "managedobject",
+                    {
+                      "$field": "managed_object"
+                    }
+                  ]
+                },
+                "alias": "managed_object_text",
+                "hide": "no"
+              },
+              {
+                "name": "managed_object",
+                "description": "Object Name",
+                "type": "dict-managedobject",
+                "dict": "managedobject",
+                "isSelectable": true,
+                "isGrouping": true,
+                "grouped": true,
+                "isAgg": false,
+                "group": 1,
+                "datasource": "alarms",
+                "pseudo": false,
+                "enable": true,
+                "expr": "managed_object",
+                "label": "Object Name",
+                "hide": "yes"
               }
             ],
             "datasource": "alarms"
           }
-        ],
-        "id": 0,
-        "method": "query"
+        ]
       },
-      "widgets": [
-        {
-          "cell": "c11",
-          "note": "по времени",
-          "title": "Аварии по Времени",
-          "type": "lineChart",
-          "query": {
-            "params": [
-              {
-                "fields": [
-                  {
-                    "expr": "date",
-                    "group": 0,
-                    "order": 0,
-                    "desc": true
-                  },
-                  {
-                    "expr": "count()",
-                    "alias": "cnt"
-                  }
-                ],
-                "datasource": "alarms"
-              }
-            ],
-            "id": 0,
-            "method": "query"
-          }
-        },
-        {
-          "cell": "c21",
-          "note": "по платформе",
-          "title": "Группировка по платформе, топ 10",
-          "type": "selectablePieChart",
-          "query": {
-            "params": [
-              {
-                "fields": [
-                  {
-                    "expr": "platform",
-                    "group": 0
-                  },
-                  {
-                    "expr": {
-                      "$lookup": [
-                        "platform",
-                        {
-                          "$field": "platform"
-                        }
-                      ]
-                    },
-                    "group": 1,
-                    "alias": "name"
-                  },
-                  {
-                    "expr": "count()",
-                    "alias": "cnt",
-                    "order": 0,
-                    "desc": true
-                  }
-                ],
-                "limit": 10,
-                "datasource": "alarms"
-              }
-            ],
-            "id": 0,
-            "method": "query"
-          }
-        },
-        {
-          "cell": "c12",
-          "note": "по дню недели",
-          "title": "Аварии по дню недели",
-          "type": "rowChart",
-          "query": {
-            "params": [
-              {
-                "fields": [
-                  {
-                    "expr": "toDayOfWeek(date)",
-                    "alias": "day",
-                    "group": 0,
-                    "order": 0,
-                    "desc": true
-                  },
-                  {
-                    "expr": "count()",
-                    "alias": "cnt"
-                  }
-                ],
-                "datasource": "alarms"
-              }
-            ],
-            "id": 0,
-            "method": "query"
-          }
-        },
-        {
-          "cell": "c22",
-          "note": "по времени",
-          "title": "Аварии по номеру часа",
-          "type": "barChart",
-          "query": {
-            "params": [
-              {
-                "fields": [
-                  {
-                    "expr": "toHour(ts)",
-                    "alias": "hour",
-                    "group": 0,
-                    "order": 0,
-                    "desc": true
-                  },
-                  {
-                    "expr": "count()",
-                    "alias": "cnt"
-                  },
-                  {
-                    "expr": "toHour(ts)",
-                    "group": 1,
-                    "alias": "name"
-                  }
-                ],
-                "datasource": "alarms"
-              }
-            ],
-            "id": 0,
-            "method": "query"
-          }
-        },
-        {
-          "note": "по сегменту сети",
-          "query": {
-            "params": [
-              {
-                "fields": [
-                  {
-                    "expr": "segment",
-                    "group": 0
-                  },
-                  {
-                    "expr": {
-                      "$lookup": [
-                        "networksegment",
-                        {
-                          "$field": "segment"
-                        }
-                      ]
-                    },
-                    "group": 1,
-                    "alias": "name"
-                  },
-                  {
-                    "expr": "count()",
-                    "alias": "cnt",
-                    "order": 0,
-                    "desc": true
-                  }
-                ],
-                "limit": 10,
-                "datasource": "alarms"
-              }
-            ],
-            "id": 0,
-            "method": "query"
-          },
-          "cell": "c31",
-          "type": "selectablePieChart",
-          "title": "Группировка по сегменту сети, топ 10"
-        },
-        {
-          "note": "ручная выборка",
-          "query": {
-            "params": [
-              {
-                "fields": [
-                  {
-                    "expr": {
-                      "$lookup": [
-                        "profile",
-                        {
-                          "$field": "profile"
-                        }
-                      ]
-                    },
-                    "alias": "profile_text",
-                    "label": "Профиль"
-                  },
-                  {
-                    "expr": {
-                      "$lookup": [
-                        "vendor",
-                        {
-                          "$field": "vendor"
-                        }
-                      ]
-                    },
-                    "alias": "vendor_text",
-                    "label": "Производитель"
-                  },
-                  {
-                    "expr": {
-                      "$lookup": [
-                        "platform",
-                        {
-                          "$field": "platform"
-                        }
-                      ]
-                    },
-                    "alias": "platform_text",
-                    "label": "Платформа"
-                  },
-                  {
-                    "expr": {
-                      "$lookup": [
-                        "version",
-                        {
-                          "$field": "version"
-                        }
-                      ]
-                    },
-                    "alias": "version_text",
-                    "label": "Версия ПО"
-                  },
-                  {
-                    "expr": "severity",
-                    "label": "Важность",
-                    "alias": "xxx",
-                    "order": 0,
-                    "desc": true
-                  }
-                ],
-                "limit": 10,
-                "datasource": "alarms"
-              }
-            ],
-            "id": 0,
-            "method": "query"
-          },
-          "cell": "table2",
-          "type": "topTable",
-          "title": "Произвольная выборка 2, топ (max 25)"
-        },
-        {
-          "cell": "table1",
-          "query": {
-            "params": [
-              {
-                "fields": [
-                  {
-                    "expr": "severity",
-                    "label": "Важность",
-                    "alias": "severity"
-                  },
-                  {
-                    "expr": {
-                      "$lookup": [
-                        "managedobject",
-                        {
-                          "$field": "managed_object"
-                        }
-                      ]
-                    },
-                    "alias": "managed_object_text",
-                    "label": "Имя оборудования"
-                  },
-                  {
-                    "expr": "date",
-                    "label": "Дата создания",
-                    "format": "dateToString"
-                  },
-                  {
-                    "expr": "reopens",
-                    "label": "Кол-во переоткрытий"
-                  },
-                  {
-                    "expr": {
-                      "$lookup": [
-                        "container",
-                        {
-                          "$field": "container"
-                        }
-                      ]
-                    },
-                    "alias": "container_text",
-                    "label": "Контейнер (Адрес)"
-                  },
-                  {
-                    "format": "secondsToString",
-                    "expr": {
-                      "$minus": [
-                        {
-                          "$field": "close_ts"
-                        },
-                        {
-                          "$field": "ts"
-                        }
-                      ]
-                    },
-                    "label": "Длительность (час:мин:сек)",
-                    "alias": "xxx",
-                    "order": 0,
-                    "desc": true
-                  }
-                ],
-                "limit": 20,
-                "datasource": "alarms"
-              }
-            ],
-            "id": 0,
-            "method": "query"
-          },
-          "note": "ручная выборка",
-          "type": "topTable",
-          "title": "Произвольная выборка 1, топ (max 25)"
-        },
-        {
-          "cell": "c32",
-          "query": {
-            "params": [
-              {
-                "fields": [
-                  {
-                    "expr": "profile",
-                    "group": 0
-                  },
-                  {
-                    "expr": {
-                      "$lookup": [
-                        "profile",
-                        {
-                          "$field": "profile"
-                        }
-                      ]
-                    },
-                    "group": 1,
-                    "alias": "name"
-                  },
-                  {
-                    "expr": "count()",
-                    "alias": "cnt",
-                    "order": 0,
-                    "desc": true
-                  }
-                ],
-                "limit": 10,
-                "datasource": "alarms"
-              }
-            ],
-            "id": 0,
-            "method": "query"
-          },
-          "note": "по профилю",
-          "type": "selectablePieChart",
-          "title": "Группировка по профилю, топ 10"
-        },
-        {
-          "cell": "zc22",
-          "note": "по пулу",
-          "title": "Группировка по пулу, топ 10",
-          "type": "pieChart",
-          "query": {
-            "params": [
-              {
-                "fields": [
-                  {
-                    "expr": "pool",
-                    "group": 0
-                  },
-                  {
-                    "expr": {
-                      "$lookup": [
-                        "pool",
-                        {
-                          "$field": "pool"
-                        }
-                      ]
-                    },
-                    "alias": "name"
-                  },
-                  {
-                    "expr": "count()",
-                    "alias": "cnt",
-                    "order": 0,
-                    "desc": true
-                  }
-                ],
-                "limit": 10,
-                "datasource": "alarms"
-              }
-            ],
-            "id": 0,
-            "method": "query"
-          }
-        }
-      ],
       "pseudo_fields": [
         {
-          "description": "ИП Длительность",
+          "group": 999,
+          "isGrouping": false,
+          "isAgg": false,
+          "pseudo": true,
           "name": "exclusion_intervals",
+          "grouped": false,
+          "isSelectable": false,
           "type": "DateTime",
-          "pseudo": true
+          "description": "\u0418\u041f \u0414\u043b\u0438\u0442\u0435\u043b\u044c\u043d\u043e\u0441\u0442\u044c"
         }
       ]
     }

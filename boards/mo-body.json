@@ -3,70 +3,28 @@
   "method": "set_dashboard",
   "params": [
     {
-      "layoutId": "580e1ba498601c0f96b7e809",
-      "layout": {
-        "uuid": "f2736f99-a568-4820-b746-1e71d48b4374",
-        "cells": [
-          {
-            "md": 6,
-            "name": "c11",
-            "lg": null,
-            "height": 200,
-            "sm": null,
-            "xs": null,
-            "row": 0,
-            "offset": 40
-          },
-          {
-            "md": 6,
-            "name": "c12",
-            "lg": null,
-            "height": 200,
-            "sm": null,
-            "xs": null,
-            "row": 0
-          },
-          {
-            "md": 6,
-            "name": "c21",
-            "lg": null,
-            "height": 200,
-            "sm": null,
-            "xs": null,
-            "row": 5
-          },
-          {
-            "md": 6,
-            "name": "c22",
-            "lg": null,
-            "height": 200,
-            "sm": null,
-            "xs": null,
-            "row": 5
-          }
-        ],
-        "description": "",
-        "fav_status": false,
-        "is_builtin": false,
-        "id": "580e1ba498601c0f96b7e809",
-        "name": "c2x2"
-      },
+      "id": "5aba5b02e828323a4cd2616a",
+      "datasource": "managedobjects",
       "description": "Managed objects",
+      "format": 2,
       "groups": [
         {
           "active": true,
           "association": "$and",
           "filters": [
             {
-              "type": "DateTime",
               "association": "$and",
+              "name": "ts",
+              "field": {
+                "type": "DateTime"
+              },
+              "condition": "interval",
               "values": [
                 {
-                  "value": "ty"
+                  "value": "tm"
                 }
               ],
-              "name": "ts",
-              "condition": "interval"
+              "type": "DateTime"
             }
           ],
           "name": "startEnd"
@@ -80,10 +38,9 @@
               "name": "is_managed",
               "condition": "$eq",
               "field": {
-                "dict": null,
-                "type": "UInt8",
                 "name": "is_managed",
                 "description": "Is Managed",
+                "type": "UInt8",
                 "isSelectable": true,
                 "isGrouping": true,
                 "grouped": false,
@@ -96,88 +53,146 @@
                 {
                   "value": "1"
                 }
-              ]
+              ],
+              "type": "UInt8"
             }
           ],
           "name": "form"
         }
       ],
-      "title": "Managed objects",
-      "format": 2,
-      "export": {
-        "params": [
+      "layout": {
+        "cells": [
           {
-            "fields": [
-              {
-                "alias": "date",
-                "expr": "date",
-                "group": 0,
-                "format": "dateToString",
-                "label": "Дата"
-              },
-              {
-                "alias": "qty",
-                "desc": true,
-                "expr": "count()",
-                "order": 0,
-                "label": "Кол-во"
-              }
-            ],
-            "datasource": "managedobjects"
+            "height": 200,
+            "md": 6,
+            "name": "c11",
+            "offset": 40,
+            "row": 0
+          },
+          {
+            "height": 200,
+            "md": 6,
+            "name": "c12",
+            "row": 0
+          },
+          {
+            "height": 200,
+            "md": 6,
+            "name": "c21",
+            "row": 5
+          },
+          {
+            "height": 200,
+            "md": 6,
+            "name": "c22",
+            "row": 5
           }
         ],
-        "id": 0,
-        "method": "query"
+        "description": "",
+        "id": "580e1ba498601c0f96b7e809",
+        "name": "c2x2",
+        "uuid": "f2736f99-a568-4820-b746-1e71d48b4374"
       },
-      "datasource": "managedobjects",
+      "layoutId": "580e1ba498601c0f96b7e809",
+      "sample": 1,
+      "title": "Managed objects",
       "widgets": [
         {
           "cell": "c11",
-          "note": "по дате",
-          "title": "Срез данных, 100 последних значений",
-          "type": "selectMenu",
+          "note": "\u043f\u043e \u0434\u0430\u0442\u0435",
           "query": {
+            "id": 0,
+            "method": "query",
             "params": [
               {
                 "fields": [
                   {
-                    "alias": "date",
-                    "expr": "ts",
-                    "label": "Дата выгрузки",
-                    "format": "dateToDateTimeString",
                     "group": 0,
+                    "isGrouping": true,
+                    "isAgg": false,
+                    "format": "dateToDateTimeString",
+                    "expr": "ts",
+                    "label": "\u0414\u0430\u0442\u0430 \u0432\u044b\u0433\u0440\u0443\u0437\u043a\u0438",
+                    "grouped": false,
+                    "alias": "date",
+                    "isSelectable": true,
                     "order": 0,
                     "desc": true
                   },
                   {
+                    "isGrouping": true,
+                    "isAgg": false,
+                    "grouped": false,
                     "expr": "count()",
                     "alias": "cnt",
+                    "isSelectable": true,
                     "order": 1,
                     "desc": true
                   }
                 ],
                 "limit": 100,
-                "datasource": "managedobjects"
+                "datasource": "managedobjects",
+                "filter": {
+                  "$and": [
+                    {
+                      "$and": [
+                        {
+                          "$eq": [
+                            {
+                              "$field": "is_managed"
+                            },
+                            "1"
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "$and": [
+                        {
+                          "$between": [
+                            {
+                              "$field": "ts"
+                            },
+                            {
+                              "$field": "'2020-06-01T00:00:00'"
+                            },
+                            {
+                              "$field": "'2020-06-30T23:59:59'"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
               }
-            ],
-            "id": 0,
-            "method": "query"
-          }
+            ]
+          },
+          "title": "\u0421\u0440\u0435\u0437 \u0434\u0430\u043d\u043d\u044b\u0445, 100 \u043f\u043e\u0441\u043b\u0435\u0434\u043d\u0438\u0445 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0439",
+          "type": "selectMenu"
         },
         {
           "cell": "c12",
-          "note": "по количеству",
-          "title": "Платформа количество объектов, топ 10",
-          "type": "selectablePieChart",
+          "note": "Platform",
           "query": {
+            "id": 0,
+            "method": "query",
             "params": [
               {
                 "fields": [
                   {
+                    "group": 0,
+                    "isGrouping": true,
+                    "isAgg": false,
                     "expr": "platform",
-                    "group": 0
+                    "grouped": false,
+                    "isSelectable": true
                   },
                   {
+                    "group": 1,
+                    "isGrouping": true,
+                    "isAgg": false,
+                    "alias": "name",
                     "expr": {
                       "$lookup": [
                         "platform",
@@ -186,38 +201,83 @@
                         }
                       ]
                     },
-                    "group": 1,
-                    "alias": "name"
+                    "grouped": false,
+                    "isSelectable": true
                   },
                   {
+                    "isGrouping": true,
+                    "isAgg": false,
+                    "grouped": false,
                     "expr": "count()",
                     "alias": "cnt",
+                    "isSelectable": true,
                     "order": 0,
                     "desc": true
                   }
                 ],
                 "limit": 10,
-                "datasource": "managedobjects"
+                "datasource": "managedobjects",
+                "filter": {
+                  "$and": [
+                    {
+                      "$and": [
+                        {
+                          "$eq": [
+                            {
+                              "$field": "is_managed"
+                            },
+                            "1"
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "$and": [
+                        {
+                          "$between": [
+                            {
+                              "$field": "ts"
+                            },
+                            {
+                              "$field": "'2020-06-01T00:00:00'"
+                            },
+                            {
+                              "$field": "'2020-06-30T23:59:59'"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
               }
-            ],
-            "id": 0,
-            "method": "query"
-          }
+            ]
+          },
+          "title": "\u041f\u043b\u0430\u0442\u0444\u043e\u0440\u043c\u0430 \u043a\u043e\u043b\u0438\u0447\u0435\u0441\u0442\u0432\u043e \u043e\u0431\u044a\u0435\u043a\u0442\u043e\u0432, \u0442\u043e\u043f 10",
+          "type": "selectablePieChart"
         },
         {
           "cell": "c22",
-          "note": "по количеству",
-          "title": "Версии количество объектов, топ 10",
-          "type": "selectablePieChart",
+          "note": "Version",
           "query": {
+            "id": 0,
+            "method": "query",
             "params": [
               {
                 "fields": [
                   {
+                    "group": 0,
+                    "isGrouping": true,
+                    "isAgg": false,
                     "expr": "version",
-                    "group": 0
+                    "grouped": false,
+                    "isSelectable": true
                   },
                   {
+                    "group": 1,
+                    "isGrouping": true,
+                    "isAgg": false,
+                    "alias": "name",
                     "expr": {
                       "$lookup": [
                         "version",
@@ -226,38 +286,83 @@
                         }
                       ]
                     },
-                    "group": 1,
-                    "alias": "name"
+                    "grouped": false,
+                    "isSelectable": true
                   },
                   {
+                    "isGrouping": true,
+                    "isAgg": false,
+                    "grouped": false,
                     "expr": "count()",
                     "alias": "cnt",
+                    "isSelectable": true,
                     "order": 0,
                     "desc": true
                   }
                 ],
                 "limit": 10,
-                "datasource": "managedobjects"
+                "datasource": "managedobjects",
+                "filter": {
+                  "$and": [
+                    {
+                      "$and": [
+                        {
+                          "$eq": [
+                            {
+                              "$field": "is_managed"
+                            },
+                            "1"
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "$and": [
+                        {
+                          "$between": [
+                            {
+                              "$field": "ts"
+                            },
+                            {
+                              "$field": "'2020-06-01T00:00:00'"
+                            },
+                            {
+                              "$field": "'2020-06-30T23:59:59'"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
               }
-            ],
-            "id": 0,
-            "method": "query"
-          }
+            ]
+          },
+          "title": "\u0412\u0435\u0440\u0441\u0438\u0438 \u043a\u043e\u043b\u0438\u0447\u0435\u0441\u0442\u0432\u043e \u043e\u0431\u044a\u0435\u043a\u0442\u043e\u0432, \u0442\u043e\u043f 10",
+          "type": "selectablePieChart"
         },
         {
           "cell": "c21",
-          "note": "по количеству",
-          "title": "Производители количество объектов, топ 10",
-          "type": "selectablePieChart",
+          "note": "Vendor",
           "query": {
+            "id": 0,
+            "method": "query",
             "params": [
               {
                 "fields": [
                   {
+                    "group": 0,
+                    "isGrouping": true,
+                    "isAgg": false,
                     "expr": "vendor",
-                    "group": 0
+                    "grouped": false,
+                    "isSelectable": true
                   },
                   {
+                    "group": 1,
+                    "isGrouping": true,
+                    "isAgg": false,
+                    "alias": "name",
                     "expr": {
                       "$lookup": [
                         "vendor",
@@ -266,40 +371,84 @@
                         }
                       ]
                     },
-                    "group": 1,
-                    "alias": "name"
+                    "grouped": false,
+                    "isSelectable": true
                   },
                   {
+                    "isGrouping": true,
+                    "isAgg": false,
+                    "grouped": false,
                     "expr": "count()",
                     "alias": "cnt",
+                    "isSelectable": true,
                     "order": 0,
                     "desc": true
                   }
                 ],
                 "limit": 10,
-                "datasource": "managedobjects"
+                "datasource": "managedobjects",
+                "filter": {
+                  "$and": [
+                    {
+                      "$and": [
+                        {
+                          "$eq": [
+                            {
+                              "$field": "is_managed"
+                            },
+                            "1"
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "$and": [
+                        {
+                          "$between": [
+                            {
+                              "$field": "ts"
+                            },
+                            {
+                              "$field": "'2020-06-01T00:00:00'"
+                            },
+                            {
+                              "$field": "'2020-06-30T23:59:59'"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
               }
-            ],
-            "id": 0,
-            "method": "query"
-          }
+            ]
+          },
+          "title": "\u041f\u0440\u043e\u0438\u0437\u0432\u043e\u0434\u0438\u0442\u0435\u043b\u0438 \u043a\u043e\u043b\u0438\u0447\u0435\u0441\u0442\u0432\u043e \u043e\u0431\u044a\u0435\u043a\u0442\u043e\u0432, \u0442\u043e\u043f 10",
+          "type": "selectablePieChart"
         },
         {
           "cell": "table1",
-          "note": "объекты",
-          "title": "Объекты",
-          "type": "dataTable",
+          "note": "\u043e\u0431\u044a\u0435\u043a\u0442\u044b",
           "query": {
+            "id": 0,
+            "method": "query",
             "params": [
               {
                 "fields": [
                   {
-                    "alias": "date",
+                    "isGrouping": true,
+                    "isAgg": false,
+                    "format": "dateToDateTimeString",
                     "expr": "ts",
-                    "label": "Дата выгрузки",
-                    "format": "dateToDateTimeString"
+                    "label": "\u0414\u0430\u0442\u0430 \u0432\u044b\u0433\u0440\u0443\u0437\u043a\u0438",
+                    "grouped": false,
+                    "alias": "date",
+                    "isSelectable": true
                   },
                   {
+                    "isGrouping": true,
+                    "isAgg": false,
+                    "grouped": false,
                     "expr": {
                       "$lookup": [
                         "vendor",
@@ -308,10 +457,14 @@
                         }
                       ]
                     },
+                    "label": "\u041f\u0440\u043e\u0438\u0437\u0432\u043e\u0434\u0438\u0442\u0435\u043b\u044c",
                     "alias": "vendor_text",
-                    "label": "Производитель"
+                    "isSelectable": true
                   },
                   {
+                    "isGrouping": true,
+                    "isAgg": false,
+                    "grouped": false,
                     "expr": {
                       "$lookup": [
                         "platform",
@@ -320,10 +473,14 @@
                         }
                       ]
                     },
+                    "label": "\u041f\u043b\u0430\u0442\u0444\u043e\u0440\u043c\u0430",
                     "alias": "platform_text",
-                    "label": "Платформа"
+                    "isSelectable": true
                   },
                   {
+                    "isGrouping": true,
+                    "isAgg": false,
+                    "grouped": false,
                     "expr": {
                       "$lookup": [
                         "version",
@@ -332,295 +489,1073 @@
                         }
                       ]
                     },
+                    "label": "\u0412\u0435\u0440\u0441\u0438\u044f \u041f\u041e",
                     "alias": "version_text",
-                    "label": "Версия ПО"
+                    "isSelectable": true
                   }
                 ],
                 "limit": 10,
                 "datasource": "managedobjects"
               }
-            ],
-            "id": 0,
-            "method": "query"
-          }
-        }
-      ],
-      "filter_fields": [
-        {
-          "name": "date",
-          "group": 1
-        },
-        {
-          "name": "ts",
-          "group": 1
-        },
-        {
-          "name": "managed_object",
-          "group": 1
-        },
-        {
-          "name": "administrative_domain",
-          "group": 1
-        },
-        {
-          "name": "segment",
-          "group": 1
-        },
-        {
-          "name": "container",
-          "group": 1
-        },
-        {
-          "name": "level",
-          "group": 1
-        },
-        {
-          "name": "x",
-          "group": 1
-        },
-        {
-          "name": "y",
-          "group": 1
-        },
-        {
-          "name": "pool",
-          "group": 1
-        },
-        {
-          "name": "name",
-          "group": 1
-        },
-        {
-          "name": "ip",
-          "group": 1
-        },
-        {
-          "name": "is_managed",
-          "group": 1
-        },
-        {
-          "name": "profile",
-          "group": 1
-        },
-        {
-          "name": "vendor",
-          "group": 1
-        },
-        {
-          "name": "platform",
-          "group": 1
-        },
-        {
-          "name": "version",
-          "group": 1
-        },
-        {
-          "name": "n_interfaces",
-          "group": 1
-        },
-        {
-          "name": "n_subscribers",
-          "group": 1
-        },
-        {
-          "name": "n_services",
-          "group": 1
-        },
-        {
-          "name": "n_neighbors",
-          "group": 1
-        },
-        {
-          "name": "n_links",
-          "group": 1
-        },
-        {
-          "name": "nri_links",
-          "group": 1
-        },
-        {
-          "name": "mac_links",
-          "group": 1
-        },
-        {
-          "name": "stp_links",
-          "group": 1
-        },
-        {
-          "name": "lldp_links",
-          "group": 1
-        },
-        {
-          "name": "cdp_links",
-          "group": 1
-        },
-        {
-          "name": "has_stp",
-          "group": 1
-        },
-        {
-          "name": "has_lldp",
-          "group": 1
-        },
-        {
-          "name": "has_cdp",
-          "group": 1
-        },
-        {
-          "name": "has_snmp",
-          "group": 1
-        },
-        {
-          "name": "has_snmp_v1",
-          "group": 1
-        },
-        {
-          "name": "has_snmp_v2c",
-          "group": 1
-        },
-        {
-          "name": "tags",
-          "group": 1
+            ]
+          },
+          "title": "\u041e\u0431\u044a\u0435\u043a\u0442\u044b",
+          "type": "dataTable"
         }
       ],
       "agv_fields": [
         {
+          "group": 1,
           "name": "date",
-          "group": 1
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
+          "group": 1,
           "name": "ts",
-          "group": 1
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
+          "group": 1,
           "name": "managed_object",
-          "group": 1
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
+          "group": 1,
           "name": "administrative_domain",
-          "group": 1
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
+          "group": 1,
           "name": "segment",
-          "group": 1
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
+          "group": 1,
           "name": "container",
-          "group": 1
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
+          "group": 1,
           "name": "level",
-          "group": 1
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
+          "group": 1,
           "name": "x",
-          "group": 1
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
+          "group": 1,
           "name": "y",
-          "group": 1
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
+          "group": 1,
           "name": "pool",
-          "group": 1
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
+          "group": 1,
           "name": "name",
-          "group": 1
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
+          "group": 1,
           "name": "ip",
-          "group": 1
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
+          "group": 1,
           "name": "is_managed",
-          "group": 1
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
+          "group": 1,
           "name": "profile",
-          "group": 1
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
+          "group": 1,
           "name": "vendor",
-          "group": 1
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
+          "group": 1,
           "name": "platform",
-          "group": 1
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
+          "group": 1,
           "name": "version",
-          "group": 1
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
+          "group": 1,
           "name": "n_interfaces",
-          "group": 1
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
+          "group": 1,
           "name": "n_subscribers",
-          "group": 1
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
+          "group": 1,
           "name": "n_services",
-          "group": 1
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
+          "group": 1,
           "name": "n_neighbors",
-          "group": 1
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
+          "group": 1,
           "name": "n_links",
-          "group": 1
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
+          "group": 1,
           "name": "nri_links",
-          "group": 1
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
+          "group": 1,
           "name": "mac_links",
-          "group": 1
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
+          "group": 1,
           "name": "stp_links",
-          "group": 1
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
+          "group": 1,
           "name": "lldp_links",
-          "group": 1
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
+          "group": 1,
           "name": "cdp_links",
-          "group": 1
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
+          "group": 1,
           "name": "has_stp",
-          "group": 1
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
+          "group": 1,
           "name": "has_lldp",
-          "group": 1
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
+          "group": 1,
           "name": "has_cdp",
-          "group": 1
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
+          "group": 1,
           "name": "has_snmp",
-          "group": 1
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
+          "group": 1,
           "name": "has_snmp_v1",
-          "group": 1
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
+          "group": 1,
           "name": "has_snmp_v2c",
-          "group": 1
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
         },
         {
+          "group": 1,
           "name": "tags",
-          "group": 1
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "isGrouping": true,
+          "isSelectable": true,
+          "group": "5",
+          "grouped": false,
+          "hide": false,
+          "name": "tags",
+          "isAgg": false,
+          "pseudo": false
+        },
+        {
+          "isGrouping": true,
+          "isSelectable": true,
+          "group": "5",
+          "grouped": false,
+          "hide": false,
+          "name": "uptime",
+          "isAgg": false,
+          "pseudo": false
+        },
+        {
+          "isGrouping": true,
+          "isSelectable": true,
+          "group": "3",
+          "grouped": false,
+          "hide": false,
+          "name": "bootprom_version",
+          "isAgg": false,
+          "pseudo": false
+        },
+        {
+          "isGrouping": true,
+          "isSelectable": true,
+          "group": "3",
+          "grouped": false,
+          "hide": false,
+          "name": "hw_version",
+          "isAgg": false,
+          "pseudo": false
+        },
+        {
+          "isGrouping": true,
+          "isSelectable": true,
+          "group": 0,
+          "allowAggFuncs": false,
+          "grouped": false,
+          "hide": false,
+          "name": "serials",
+          "isAgg": false,
+          "pseudo": false
+        },
+        {
+          "isGrouping": true,
+          "isSelectable": true,
+          "group": 1,
+          "allowAggFuncs": false,
+          "grouped": false,
+          "hide": false,
+          "name": "n_reboots",
+          "isAgg": false,
+          "pseudo": false
+        },
+        {
+          "isGrouping": true,
+          "isSelectable": true,
+          "group": 1,
+          "allowAggFuncs": false,
+          "grouped": false,
+          "hide": false,
+          "name": "availability",
+          "isAgg": false,
+          "pseudo": false
+        },
+        {
+          "isGrouping": true,
+          "isSelectable": true,
+          "group": 1,
+          "allowAggFuncs": false,
+          "grouped": false,
+          "hide": false,
+          "name": "total_unavailability",
+          "isAgg": false,
+          "pseudo": false
+        },
+        {
+          "isGrouping": true,
+          "isSelectable": true,
+          "group": 1,
+          "allowAggFuncs": false,
+          "grouped": false,
+          "hide": false,
+          "name": "n_outages",
+          "isAgg": false,
+          "pseudo": false
+        },
+        {
+          "isGrouping": true,
+          "isSelectable": true,
+          "group": 1,
+          "allowAggFuncs": false,
+          "grouped": false,
+          "hide": false,
+          "name": "n_stp_topo_changes",
+          "isAgg": false,
+          "pseudo": false
+        },
+        {
+          "isGrouping": true,
+          "isSelectable": true,
+          "group": 1,
+          "allowAggFuncs": false,
+          "grouped": false,
+          "hide": false,
+          "name": "location",
+          "isAgg": false,
+          "pseudo": false
+        },
+        {
+          "isGrouping": true,
+          "isSelectable": true,
+          "group": 1,
+          "allowAggFuncs": false,
+          "grouped": false,
+          "hide": false,
+          "name": "hostname",
+          "isAgg": false,
+          "pseudo": false
+        },
+        {
+          "isGrouping": true,
+          "isSelectable": true,
+          "group": 1,
+          "allowAggFuncs": false,
+          "grouped": false,
+          "hide": false,
+          "name": "object_profile",
+          "isAgg": false,
+          "pseudo": false
+        },
+        {
+          "name": "bfd_links",
+          "group": 0,
+          "isSelectable": true,
+          "isGrouping": true,
+          "pseudo": false,
+          "hide": false,
+          "grouped": false,
+          "isAgg": false,
+          "allowAggFuncs": false
+        },
+        {
+          "name": "fdp_links",
+          "group": 0,
+          "isSelectable": true,
+          "isGrouping": true,
+          "pseudo": false,
+          "hide": false,
+          "grouped": false,
+          "isAgg": false,
+          "allowAggFuncs": false
+        },
+        {
+          "name": "huawei_ndp_links",
+          "group": 0,
+          "isSelectable": true,
+          "isGrouping": true,
+          "pseudo": false,
+          "hide": false,
+          "grouped": false,
+          "isAgg": false,
+          "allowAggFuncs": false
+        },
+        {
+          "name": "lacp_links",
+          "group": 0,
+          "isSelectable": true,
+          "isGrouping": true,
+          "pseudo": false,
+          "hide": false,
+          "grouped": false,
+          "isAgg": false,
+          "allowAggFuncs": false
+        },
+        {
+          "name": "oam_links",
+          "group": 0,
+          "isSelectable": true,
+          "isGrouping": true,
+          "pseudo": false,
+          "hide": false,
+          "grouped": false,
+          "isAgg": false,
+          "allowAggFuncs": false
+        },
+        {
+          "name": "rep_links",
+          "group": 0,
+          "isSelectable": true,
+          "isGrouping": true,
+          "pseudo": false,
+          "hide": false,
+          "grouped": false,
+          "isAgg": false,
+          "allowAggFuncs": false
+        },
+        {
+          "name": "udld_links",
+          "group": 0,
+          "isSelectable": true,
+          "isGrouping": true,
+          "pseudo": false,
+          "hide": false,
+          "grouped": false,
+          "isAgg": false,
+          "allowAggFuncs": false
+        },
+        {
+          "name": "xmac_links",
+          "group": 0,
+          "isSelectable": true,
+          "isGrouping": true,
+          "pseudo": false,
+          "hide": false,
+          "grouped": false,
+          "isAgg": false,
+          "allowAggFuncs": false
+        },
+        {
+          "name": "other_links",
+          "group": 0,
+          "isSelectable": true,
+          "isGrouping": true,
+          "pseudo": false,
+          "allowAggFuncs": false
         }
       ],
+      "filter_fields": [
+        {
+          "group": 1,
+          "name": "date",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "ts",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "managed_object",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "administrative_domain",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "segment",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "container",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "level",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "x",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "y",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "pool",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "name",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "ip",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "is_managed",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "profile",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "vendor",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "platform",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "version",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "n_interfaces",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "n_subscribers",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "n_services",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "n_neighbors",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "n_links",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "nri_links",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "mac_links",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "stp_links",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "lldp_links",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "cdp_links",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "has_stp",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "has_lldp",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "has_cdp",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "has_snmp",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "has_snmp_v1",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "has_snmp_v2c",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "group": 1,
+          "name": "tags",
+          "isAgg": false,
+          "grouped": false,
+          "isSelectable": true,
+          "isGrouping": true
+        },
+        {
+          "isGrouping": true,
+          "isSelectable": true,
+          "group": "5",
+          "grouped": false,
+          "hide": false,
+          "name": "tags",
+          "isAgg": false,
+          "pseudo": false
+        },
+        {
+          "isGrouping": true,
+          "isSelectable": true,
+          "group": "5",
+          "grouped": false,
+          "hide": false,
+          "name": "uptime",
+          "isAgg": false,
+          "pseudo": false
+        },
+        {
+          "isGrouping": true,
+          "isSelectable": true,
+          "group": "3",
+          "grouped": false,
+          "hide": false,
+          "name": "bootprom_version",
+          "isAgg": false,
+          "pseudo": false
+        },
+        {
+          "isGrouping": true,
+          "isSelectable": true,
+          "group": "3",
+          "grouped": false,
+          "hide": false,
+          "name": "hw_version",
+          "isAgg": false,
+          "pseudo": false
+        },
+        {
+          "isGrouping": true,
+          "isSelectable": true,
+          "group": 0,
+          "allowAggFuncs": false,
+          "grouped": false,
+          "hide": false,
+          "name": "serials",
+          "isAgg": false,
+          "pseudo": false
+        },
+        {
+          "isGrouping": true,
+          "isSelectable": true,
+          "group": 1,
+          "allowAggFuncs": false,
+          "grouped": false,
+          "hide": false,
+          "name": "n_reboots",
+          "isAgg": false,
+          "pseudo": false
+        },
+        {
+          "isGrouping": true,
+          "isSelectable": true,
+          "group": 1,
+          "allowAggFuncs": false,
+          "grouped": false,
+          "hide": false,
+          "name": "availability",
+          "isAgg": false,
+          "pseudo": false
+        },
+        {
+          "isGrouping": true,
+          "isSelectable": true,
+          "group": 1,
+          "allowAggFuncs": false,
+          "grouped": false,
+          "hide": false,
+          "name": "total_unavailability",
+          "isAgg": false,
+          "pseudo": false
+        },
+        {
+          "isGrouping": true,
+          "isSelectable": true,
+          "group": 1,
+          "allowAggFuncs": false,
+          "grouped": false,
+          "hide": false,
+          "name": "n_outages",
+          "isAgg": false,
+          "pseudo": false
+        },
+        {
+          "isGrouping": true,
+          "isSelectable": true,
+          "group": 1,
+          "allowAggFuncs": false,
+          "grouped": false,
+          "hide": false,
+          "name": "n_stp_topo_changes",
+          "isAgg": false,
+          "pseudo": false
+        },
+        {
+          "isGrouping": true,
+          "isSelectable": true,
+          "group": 1,
+          "allowAggFuncs": false,
+          "grouped": false,
+          "hide": false,
+          "name": "location",
+          "isAgg": false,
+          "pseudo": false
+        },
+        {
+          "isGrouping": true,
+          "isSelectable": true,
+          "group": 1,
+          "allowAggFuncs": false,
+          "grouped": false,
+          "hide": false,
+          "name": "hostname",
+          "isAgg": false,
+          "pseudo": false
+        },
+        {
+          "isGrouping": true,
+          "isSelectable": true,
+          "group": 1,
+          "allowAggFuncs": false,
+          "grouped": false,
+          "hide": false,
+          "name": "object_profile",
+          "isAgg": false,
+          "pseudo": false
+        },
+        {
+          "name": "bfd_links",
+          "group": 0,
+          "isSelectable": true,
+          "isGrouping": true,
+          "pseudo": false,
+          "hide": false,
+          "grouped": false,
+          "isAgg": false,
+          "allowAggFuncs": false
+        },
+        {
+          "name": "fdp_links",
+          "group": 0,
+          "isSelectable": true,
+          "isGrouping": true,
+          "pseudo": false,
+          "hide": false,
+          "grouped": false,
+          "isAgg": false,
+          "allowAggFuncs": false
+        },
+        {
+          "name": "huawei_ndp_links",
+          "group": 0,
+          "isSelectable": true,
+          "isGrouping": true,
+          "pseudo": false,
+          "hide": false,
+          "grouped": false,
+          "isAgg": false,
+          "allowAggFuncs": false
+        },
+        {
+          "name": "lacp_links",
+          "group": 0,
+          "isSelectable": true,
+          "isGrouping": true,
+          "pseudo": false,
+          "hide": false,
+          "grouped": false,
+          "isAgg": false,
+          "allowAggFuncs": false
+        },
+        {
+          "name": "oam_links",
+          "group": 0,
+          "isSelectable": true,
+          "isGrouping": true,
+          "pseudo": false,
+          "hide": false,
+          "grouped": false,
+          "isAgg": false,
+          "allowAggFuncs": false
+        },
+        {
+          "name": "rep_links",
+          "group": 0,
+          "isSelectable": true,
+          "isGrouping": true,
+          "pseudo": false,
+          "hide": false,
+          "grouped": false,
+          "isAgg": false,
+          "allowAggFuncs": false
+        },
+        {
+          "name": "udld_links",
+          "group": 0,
+          "isSelectable": true,
+          "isGrouping": true,
+          "pseudo": false,
+          "hide": false,
+          "grouped": false,
+          "isAgg": false,
+          "allowAggFuncs": false
+        },
+        {
+          "name": "xmac_links",
+          "group": 0,
+          "isSelectable": true,
+          "isGrouping": true,
+          "pseudo": false,
+          "hide": false,
+          "grouped": false,
+          "isAgg": false,
+          "allowAggFuncs": false
+        },
+        {
+          "name": "other_links",
+          "group": 0,
+          "isSelectable": true,
+          "isGrouping": true,
+          "pseudo": false,
+          "allowAggFuncs": false
+        }
+      ],
+      "export": {
+        "id": 0,
+        "method": "query",
+        "params": [
+          {
+            "fields": [
+              {
+                "group": 0,
+                "isGrouping": true,
+                "isAgg": false,
+                "format": "dateToString",
+                "expr": "date",
+                "label": "\u0414\u0430\u0442\u0430",
+                "grouped": false,
+                "alias": "date",
+                "isSelectable": true,
+                "hide": "no"
+              },
+              {
+                "hide": "no",
+                "isGrouping": true,
+                "isAgg": false,
+                "grouped": false,
+                "expr": "count()",
+                "label": "\u041a\u043e\u043b-\u0432\u043e",
+                "alias": "qty",
+                "isSelectable": true,
+                "order": 0,
+                "desc": true
+              }
+            ],
+            "datasource": "managedobjects"
+          }
+        ]
+      },
       "pseudo_fields": []
     }
   ]
