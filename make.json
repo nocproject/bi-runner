@@ -1,6 +1,6 @@
 {
   "name": "bi-runner",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "dst_prefix": "ui/bi2/",
   "src_prefix": "",
   "files": [
