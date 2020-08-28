@@ -16,6 +16,10 @@ export class FieldsTableService {
         this.fieldsSubject.next(this.fieldsSubject.getValue().concat(fields));
     }
 
+    replaceFields(fields: Field[]) {
+        this.fieldsSubject.next(fields);
+    }
+
     allFields(): Field[] {
         return cloneDeep(this.fieldsSubject.getValue());
     }

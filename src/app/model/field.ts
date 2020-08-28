@@ -116,6 +116,21 @@ export class FieldBuilder {
         return this;
     }
 
+    public isSelectable(isSelectable: boolean): FieldBuilder {
+        this.field.isSelectable = isSelectable;
+        return this;
+    }
+
+    public isGrouping(isGrouping: boolean): FieldBuilder {
+        this.field.isGrouping = isGrouping;
+        return this;
+    }
+
+    public grouped(grouped: boolean): FieldBuilder {
+        this.field.grouped = grouped;
+        return this;
+    }
+
     public hide(hide: boolean | YesNo): FieldBuilder {
         if (typeof hide === 'boolean') {
             this.field.hide = hide;

@@ -134,7 +134,8 @@
       "DESCRIPTION": "Description",
       "TYPE": "Type",
       "GROUP_BY": "add field to grouping",
-      "TITLE": "On"
+      "TITLE": "On",
+      "SELECT_ALL": "Select/Deselect All"
     },
     "FORM": {
       "DISABLE_BTN": "Disable",
