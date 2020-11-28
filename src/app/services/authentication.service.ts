@@ -7,8 +7,11 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { APIService } from './api.service';
 import { MessageService } from './message.service';
 
-import { BiRequestBuilder, Message, MessageType, Methods, Result, User } from '../model';
+import { BiRequestBuilder, Message, MessageType, Methods, User } from '../model';
 
+class Result {
+    status: boolean;
+}
 @Injectable({
     providedIn: 'root'
 })
@@ -73,14 +76,8 @@ export class AuthenticationService {
     }
 
     login(param: Object): Observable<boolean> {
-        const query = {
-            jsonrpc: '2.0',
-            method: 'login',
-            params: [param]
-        };
-
-        return this.http.post<Result>('/api/login/', JSON.stringify(query)).pipe(
-            map(response => response.result),
+        return this.http.post<Result>('/api/login/login', JSON.stringify(param)).pipe(
+            map(response => response.status),
             tap(success => this.isLogInSubject.next(success)),
             catchError((response: HttpErrorResponse) => {
                 this.messagesService.message(new Message(MessageType.DANGER, response.toString()));
