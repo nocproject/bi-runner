@@ -93,61 +93,55 @@ export class FieldsTableComponent implements OnInit, OnDestroy {
 
     // private
     makeFields(): Field[] {
-        return this.fields.reduce((acc, field) => {
-            if (field.isGrouping && field.grouped) {
-                field.group = this.board.exportQry.maxGroupBy();
-                field.expr = field.name;
-                field.label = field.description;
-                if (field.dict) {
-                    const dictionaryField = new FieldBuilder()
-                        .label(field.description)
-                        .expr({
-                            $lookup: [
-                                field.dict,
-                                {
-                                    $field: field.name
-                                }
-                            ]
-                        })
-                        .alias(field.name + '_text')
-                        .isGrouping(false)
-                        .build();
-                    field.hide = true;
-                    this.board.exportQry.params[0].fields = this.board.exportQry.params[0].fields.concat(dictionaryField);
-                    acc.push(dictionaryField);
+        return this.fields
+            .filter(field => field.isGrouping)
+            .reduce((acc, field) => {
+                if (field.grouped) {
+                    field.group = this.board.exportQry.maxGroupBy();
+                    field.expr = field.name;
+                    field.label = field.description;
+                    if (field.dict) {
+                        const dictionaryField = new FieldBuilder()
+                            .label(field.description)
+                            .expr({
+                                $lookup: [
+                                    field.dict,
+                                    {
+                                        $field: field.name
+                                    }
+                                ]
+                            })
+                            .alias(field.name + '_text')
+                            .isGrouping(false)
+                            .build();
+                        field.hide = true;
+                        acc.push(dictionaryField);
+                    }
+                    if ('ip' === field.name) {
+                        const ipField = new FieldBuilder()
+                            .expr('IPv4NumToString(ip)')
+                            .alias('ip_text')
+                            .label('IP адрес')
+                            .isGrouping(false)
+                            .build();
+                        field.hide = true;
+                        acc.push(ipField);
+                    }
+                    acc.push(field);
                 }
-                if ('ip' === field.name) {
-                    const ipField = new FieldBuilder()
-                        .expr('IPv4NumToString(ip)')
-                        .alias('ip_text')
-                        .label('IP адрес')
-                        .isGrouping(false)
-                        .build();
-                    field.hide = true;
-                    this.board.exportQry.params[0].fields = this.board.exportQry.params[0].fields.concat(ipField);
-                    acc.push(ipField);
-                }
-                this.board.exportQry.params[0].fields = this.board.exportQry.params[0].fields.concat(field);
-                acc.push(field);
-            }
-            if (field.isGrouping && !field.grouped) {
-                remove(this.board.exportQry.params[0].fields, (e: Field) => e.expr === field.name);
-                if (field.dict || 'ip' === field.name) {
-                    remove(this.board.exportQry.params[0].fields, (e: Field) => e.alias === (field.name + '_text'));
-                }
-            }
-            return acc;
-        }, [
-            new FieldBuilder()
-                .alias('qty')
-                .desc(true)
-                .expr('count()')
-                .grouped(false)
-                .isGrouping(false)
-                .isSelectable(false)
-                .label('Кол-во')
-                .order(0)
-                .build()
-        ]);
+                this.board.exportQry.params[0].fields = acc;
+                return acc;
+            }, [
+                new FieldBuilder()
+                    .alias('qty')
+                    .desc(true)
+                    .expr('count()')
+                    .grouped(false)
+                    .isGrouping(false)
+                    .isSelectable(false)
+                    .label('Кол-во')
+                    .order(0)
+                    .build()
+            ]);
     }
 }
